@@ -1,4 +1,22 @@
-cmake_minimum_required(VERSION 3.8)
+# Based on examples from https://github.com/ruslo/hunter/tree/master/examples
+
+cmake_minimum_required(VERSION 3.5)
+
+# Set HUNTER_ROOT environment variable to local directory if not set already
+string(COMPARE EQUAL "${HUNTER_ROOT}" "" hunter_root_is_empty)
+if(hunter_root_is_empty)
+    get_filename_component(HUNTER_ROOT
+        "${CMAKE_CURRENT_LIST_DIR}/hunter_installs"
+        ABSOLUTE
+    )
+endif()
+
+include("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.18.20.tar.gz"
+    SHA1 "acf2623efa85254cd4cc101516517877e65fc42e"
+)
+
 project(SkeletonCode)
 
 add_definitions(-Wno-deprecated-declarations -DCMAKE_BUILD_TYPE=Release -DGLM_FORCE_RADIANS)
@@ -13,35 +31,34 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-s")  ## Strip binary
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(SOURCE_FILES
-        main.cpp
-        objloader.cpp
-        objloader.hpp)
+# Download dependencies
+if(NOT APPLE)
+    hunter_add_package(glew)
+endif()
+hunter_add_package(glfw)
+hunter_add_package(glm)
 
+# Find dependencies
+if(APPLE)
+    find_library(OPEN_GL OpenGL)
+else()
+    find_package(glew CONFIG REQUIRED)
+endif()
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glm REQUIRED)
 
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+# Add executables
+add_executable(skeletoncode
+    main.cpp
+    objloader.cpp
+    objloader.hpp
+)
 
-# Configuring packages
-
-#Find GLM
-find_package(GLM REQUIRED)
-include_directories(${GLM_INCLUDE_DIRS})
-#MESSAGE(STATUS "GLM: " ${GLM_INCLUDE_DIRS})
-
-#Find GLEW
-find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIR})
-
-#Find OPENGL
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-
-#Find GLFW
-find_package(GLFW REQUIRED)
-include_directories(${GLFW_INCLUDE_DIR})
-
-add_executable(SkeletonCode ${SOURCE_FILES})
-target_link_libraries(SkeletonCode
-                        ${GLEW_LIBRARY}
-                        ${OPENGL_LIBRARIES}
-                        ${GLFW_LIBRARIES})
+# Link libraries
+if(APPLE)
+    target_link_libraries(skeletoncode ${OPEN_GL})
+else()
+    target_link_libraries(skeletoncode glew::glew)
+endif()
+target_link_libraries(skeletoncode glfw)
+target_link_libraries(skeletoncode glm)
