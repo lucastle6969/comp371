@@ -9,15 +9,15 @@
 #endif
 
 #define GLFW_INCLUDE_NONE // don't include deprecated gl headers on macOS
-#include "GLFW/glfw3.h"	// include GLFW helper library
+#include <GLFW/glfw3.h>	// include GLFW helper library
 
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "objloader.hpp"  //include the object loader
 
 using namespace std;
