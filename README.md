@@ -26,6 +26,8 @@ See [CLion Setup](#markdown-header-clion-setup) below for help importing the pro
 
 Using Clion, you should be able to open the project and press the green play button to run the program.
 
+*Note, dependencies will be downloaded and built from source the first time, so you will need to wait several minutes.*
+
 For more details see [CLion Setup](#markdown-header-clion-project-setup).
 
 ## Expected Output
