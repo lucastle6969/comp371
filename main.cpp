@@ -1,8 +1,16 @@
 //example skeleton code
 //modified from http://learnopengl.com/
 
-#include "GL/glew.h"	// include GL Extension Wrangler
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
+#else
+#include <GL/glew.h> // include GL Extension Wrangler
+#endif
+
+#define GLFW_INCLUDE_NONE // don't include deprecated gl headers on macOS
 #include "GLFW/glfw3.h"	// include GLFW helper library
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -42,6 +50,7 @@ int main()
 	// Set all the required options for GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
