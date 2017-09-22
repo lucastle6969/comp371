@@ -163,7 +163,7 @@ int main()
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
-	loadOBJ("../cube.obj", vertices, normals, UVs); //read the vertices from the cube.obj file
+	loadOBJ("../pacman.obj", vertices, normals, UVs); //read the vertices from the cube.obj file
 
 	GLuint VAO, VBO,EBO;
 	glGenVertexArrays(1, &VAO);
