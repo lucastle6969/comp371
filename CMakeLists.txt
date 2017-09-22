@@ -52,6 +52,7 @@ add_executable(skeletoncode
     main.cpp
     objloader.cpp
     objloader.hpp
+    utils.hpp
 )
 
 # Link libraries
