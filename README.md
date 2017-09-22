@@ -10,8 +10,9 @@ Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunte
 
 ## Basic Requirements
 
-* [CMake](https://cmake.org) version 3.5 or higher (may work with lower, but earlier versions are [known to be buggy](https://docs.hunter.sh/en/latest/quick-start/cmake.html) with Hunter)
-    * On Windows: Make sure to check option for "add CMake to system path".
+* [CMake](https://cmake.org) version 3.8 or higher
+      * On Windows: Make sure to check option for "add CMake to system path".
+      * On Linux: If you need to build from source, [don't forget the `--system-curl` flag](https://github.com/ruslo/hunter/issues/328#issuecomment-198672048)!
 * Appropriate C++ build tools for your system:
     * XCode tools on Mac
     * MinGW on Windows

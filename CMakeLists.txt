@@ -1,6 +1,6 @@
 # Based on examples from https://github.com/ruslo/hunter/tree/master/examples
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 # Set HUNTER_ROOT environment variable to local directory if not set already
 string(COMPARE EQUAL "${HUNTER_ROOT}" "" hunter_root_is_empty)
@@ -13,8 +13,8 @@ endif()
 
 include("cmake/HunterGate.cmake")
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.18.20.tar.gz"
-    SHA1 "acf2623efa85254cd4cc101516517877e65fc42e"
+    URL "https://github.com/ruslo/hunter/archive/v0.19.104.tar.gz"
+    SHA1 "34a6ae7bc9d6a6599d21c239a60ebc05abe8abb4"
 )
 
 project(SkeletonCode)
