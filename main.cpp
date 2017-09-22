@@ -88,7 +88,7 @@ int main()
 	// Vertex shader
 
 	// Read the Vertex Shader code from the file
-	string vertex_shader_path = "../vertex.shader";
+	string vertex_shader_path = "../vertex.glsl";
 	string VertexShaderCode;
 	std::ifstream VertexShaderStream(vertex_shader_path, ios::in);
 
@@ -105,7 +105,7 @@ int main()
 	}
 
 	// Read the Fragment Shader code from the file
-	string fragment_shader_path = "../fragment.shader";
+	string fragment_shader_path = "../fragment.glsl";
 	std::string FragmentShaderCode;
 	std::ifstream FragmentShaderStream(fragment_shader_path, std::ios::in);
 
