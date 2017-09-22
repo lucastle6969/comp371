@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 # Set HUNTER_ROOT environment variable to local directory if not set already
-string(COMPARE EQUAL "${HUNTER_ROOT}" "" hunter_root_is_empty)
+string(COMPARE EQUAL "$ENV{HUNTER_ROOT}" "" hunter_root_is_empty)
 if(hunter_root_is_empty)
     get_filename_component(HUNTER_ROOT
         "${CMAKE_CURRENT_LIST_DIR}/hunter_installs"
