@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <vector>
 #include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -34,6 +35,21 @@ const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
 const glm::vec3 eye(0.0f, 0.0f, 3.0f);
 
+void getGridVertices(const int& x_min, const int& x_max,
+                     const int& y_min, const int& y_max,
+                     vector<glm::vec2>& grid)
+{
+	// vertical lines
+	for (int x = x_min; x <= x_max; x++) {
+		grid.emplace_back(x, y_min);
+		grid.emplace_back(x, y_max);
+	}
+	// horizontal lines
+	for (int y = y_min; y <= y_max; y++) {
+		grid.emplace_back(x_min, y);
+		grid.emplace_back(x_max, y);
+	}
+}
 
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
