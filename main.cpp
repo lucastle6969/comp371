@@ -108,8 +108,14 @@ int main()
 
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 2.0f, 100.0f);
 
-	GLuint shaderProgram = prepareShaderProgram("../vertex.glsl", "../fragment.glsl");
-	glUseProgram(shaderProgram);
+	const string vertex_shader_path = "../vertex.glsl";
+	const string fragment_shader_path = "../fragment.glsl";
+	bool shader_program_ok;
+	GLuint shader_program = prepareShaderProgram(&vertex_shader_path, &fragment_shader_path, &shader_program_ok);
+	if (!shader_program_ok) {
+		return -1;
+	}
+	glUseProgram(shader_program);
 
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
@@ -127,7 +133,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
 
-	auto vPosition = (GLuint)glGetAttribLocation(shaderProgram, "vPosition");
+	auto vPosition = (GLuint)glGetAttribLocation(shader_program, "vPosition");
 	glEnableVertexAttribArray(vPosition);
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
@@ -150,7 +156,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_2);
 	glBufferData(GL_ARRAY_BUFFER, grid_vertices.size() * sizeof(glm::vec3), &grid_vertices.front(), GL_STATIC_DRAW);
 
-	auto vPosition2 = (GLuint)glGetAttribLocation(shaderProgram, "vPosition");
+	auto vPosition2 = (GLuint)glGetAttribLocation(shader_program, "vPosition");
 	glEnableVertexAttribArray(vPosition2);
 	glVertexAttribPointer(vPosition2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
@@ -163,7 +169,7 @@ int main()
 	pacman_scale = glm::vec3(0.1f);
 	grid_scale = glm::vec3(25.0f);
 
-	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shaderProgram, "mvp_matrix");
+	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
