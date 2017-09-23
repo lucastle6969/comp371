@@ -178,7 +178,8 @@ int main()
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
-	glDeleteShader(vertexShader); //free up memory
+	// free up memory
+	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
 	glUseProgram(shaderProgram);
@@ -188,19 +189,14 @@ int main()
 	std::vector<glm::vec2> UVs;
 	loadOBJ("../pacman.obj", vertices, normals, UVs); //read the vertices from the cube.obj file
 
-	GLuint VAO, VBO,EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	GLuint VAO;
 	GLuint vertices_VBO, normals_VBO;
 
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &vertices_VBO);
-
 	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
 	glBindVertexArray(VAO);
 
+	glGenBuffers(1, &vertices_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
@@ -212,9 +208,9 @@ int main()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(1);
 
+	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
+	glBindVertexArray(0);
 
 	triangle_scale = glm::vec3(1.0f);
 
