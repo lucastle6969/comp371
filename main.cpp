@@ -190,23 +190,19 @@ int main()
 	loadOBJ("../pacman.obj", vertices, normals, UVs); //read the vertices from the cube.obj file
 
 	GLuint VAO;
-	GLuint vertices_VBO, normals_VBO;
+	GLuint vertices_buffer;
 
 	glGenVertexArrays(1, &VAO);
 	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
 	glBindVertexArray(VAO);
 
-	glGenBuffers(1, &vertices_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO);
+	glGenBuffers(1, &vertices_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
 
-	glGenBuffers(1, &normals_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, normals_VBO);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals.front(), GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(1);
+	GLuint vPosition = (auto)glGetAttribLocation(shaderProgram, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
