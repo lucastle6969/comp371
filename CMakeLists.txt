@@ -53,6 +53,8 @@ add_executable(pacman
     objloader.cpp
     objloader.hpp
     utils.hpp
+    shaderprogram.hpp
+    shaderprogram.cpp
 )
 
 # Link libraries
