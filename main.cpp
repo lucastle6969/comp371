@@ -28,26 +28,28 @@ const GLuint WIDTH = 800, HEIGHT = 800;
 
 glm::vec3 camera_position;
 glm::vec3 triangle_scale;
+glm::vec3 pacman_scale;
+glm::vec3 grid_scale;
 glm::mat4 projection_matrix;
 
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
-const glm::vec3 eye(0.0f, 0.0f, 3.0f);
+const glm::vec3 eye(0.0f, 0.0f, 50.0f);
 
 void getGridVertices(const int& x_min, const int& x_max,
                      const int& y_min, const int& y_max,
-                     vector<glm::vec2>& grid)
+                     vector<glm::vec3>& grid)
 {
 	// vertical lines
 	for (int x = x_min; x <= x_max; x++) {
-		grid.emplace_back(x, y_min);
-		grid.emplace_back(x, y_max);
+		grid.emplace_back(x, y_min, 0.0f);
+		grid.emplace_back(x, y_max, 0.0f);
 	}
 	// horizontal lines
 	for (int y = y_min; y <= y_max; y++) {
-		grid.emplace_back(x_min, y);
-		grid.emplace_back(x_max, y);
+		grid.emplace_back(x_min, y, 0.0f);
+		grid.emplace_back(x_max, y, 0.0f);
 	}
 }
 
@@ -208,7 +210,33 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+
+	// generate grid vertices
+	std::vector<glm::vec3> grid_vertices;
+	getGridVertices(-10, 10, -10, 10, grid_vertices);
+
+	// create vao for grid
+	GLuint VAO2, vertices_buffer_2;
+	glGenVertexArrays(1, &VAO2);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO2);
+
+	glGenBuffers(1, &vertices_buffer_2);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_2);
+	glBufferData(GL_ARRAY_BUFFER, grid_vertices.size() * sizeof(glm::vec3), &grid_vertices.front(), GL_STATIC_DRAW);
+
+	auto vPosition2 = (GLuint)glGetAttribLocation(shaderProgram, "vPosition");
+	glEnableVertexAttribArray(vPosition2);
+	glVertexAttribPointer(vPosition2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
+	// unbind buffer and vao
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+
 	triangle_scale = glm::vec3(1.0f);
+	pacman_scale = glm::vec3(0.1f);
+	grid_scale = glm::vec3(25.0f);
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shaderProgram, "mvp_matrix");
 
@@ -227,7 +255,7 @@ int main()
 		view_matrix = glm::lookAt(eye, center, up);
 
 		glm::mat4 model_matrix;
-		model_matrix = glm::scale(model_matrix, triangle_scale);
+		model_matrix = glm::scale(model_matrix, pacman_scale);
 
 		glm::mat4 mvp_matrix = projection_matrix * view_matrix * model_matrix;
 
@@ -235,6 +263,16 @@ int main()
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, (GLuint)vertices.size());
+		glBindVertexArray(0);
+
+		model_matrix = glm::scale(model_matrix, grid_scale);
+
+		mvp_matrix = projection_matrix * view_matrix * model_matrix;
+
+		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
+
+		glBindVertexArray(VAO2);
+		glDrawArrays(GL_LINES, 0, (GLuint)grid_vertices.size());
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
