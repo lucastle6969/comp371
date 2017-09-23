@@ -40,17 +40,17 @@ const glm::vec3 eye(0.0f, 0.0f, 50.0f);
 
 void getGridVertices(const int& x_min, const int& x_max,
                      const int& y_min, const int& y_max,
-                     vector<glm::vec3>& grid)
+                     vector<glm::vec3>* grid)
 {
 	// vertical lines
 	for (int x = x_min; x <= x_max; x++) {
-		grid.emplace_back(x, y_min, 0.0f);
-		grid.emplace_back(x, y_max, 0.0f);
+		grid->emplace_back(x, y_min, 0.0f);
+		grid->emplace_back(x, y_max, 0.0f);
 	}
 	// horizontal lines
 	for (int y = y_min; y <= y_max; y++) {
-		grid.emplace_back(x_min, y, 0.0f);
-		grid.emplace_back(x_max, y, 0.0f);
+		grid->emplace_back(x_min, y, 0.0f);
+		grid->emplace_back(x_max, y, 0.0f);
 	}
 }
 
@@ -144,7 +144,7 @@ int main()
 
 	// generate grid vertices
 	std::vector<glm::vec3> grid_vertices;
-	getGridVertices(-10, 10, -10, 10, grid_vertices);
+	getGridVertices(-10, 10, -10, 10, &grid_vertices);
 
 	// create vao for grid
 	GLuint VAO2, vertices_buffer_2;
