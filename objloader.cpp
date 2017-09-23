@@ -12,10 +12,11 @@
 #pragma warning(disable:4996)
 
 bool loadOBJ(
-	const char * path,
-	std::vector<glm::vec3> & out_vertices,
-	std::vector<glm::vec3> & out_normals,
-	std::vector<glm::vec2> & out_uvs) {
+	const char* path,
+	std::vector<glm::vec3>* out_vertices,
+	std::vector<glm::vec3>* out_normals,
+	std::vector<glm::vec2>* out_uvs
+) {
 
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	std::vector<glm::vec3> temp_vertices;
@@ -102,8 +103,8 @@ bool loadOBJ(
 		glm::vec3 normal = temp_normals[normalIndex - 1];
 
 		// Put the attributes in buffers
-		out_vertices.push_back(vertex);
-		out_normals.push_back(normal);
+		out_vertices->push_back(vertex);
+		out_normals->push_back(normal);
 
 		// do the same for uvs if available
 		if (i < uvIndices.size()) {
@@ -114,7 +115,7 @@ bool loadOBJ(
 			glm::vec2 uv = temp_uvs[uvIndex - 1];
 
 			// Put the attributes in buffers
-			out_uvs.push_back(uv);
+			out_uvs->push_back(uv);
 		}
 
 	}
