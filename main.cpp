@@ -197,9 +197,7 @@ int main()
 
 	triangle_scale = glm::vec3(1.0f);
 
-	GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection_matrix");
-	GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "view_matrix");
-	GLuint transformLoc = glGetUniformLocation(shaderProgram, "model_matrix");
+	GLuint mvp_matrix_loc = glGetUniformLocation(shaderProgram, "mvp_matrix");
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -218,9 +216,9 @@ int main()
 		glm::mat4 model_matrix;
 		model_matrix = glm::scale(model_matrix, triangle_scale);
 
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_matrix));
-		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(view_matrix));
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
+		glm::mat4 mvp_matrix = projection_matrix * view_matrix * model_matrix;
+
+		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
