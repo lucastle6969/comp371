@@ -108,10 +108,9 @@ int main()
 
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 2.0f, 100.0f);
 
-	const string vertex_shader_path = "../vertex.glsl";
-	const string fragment_shader_path = "../fragment.glsl";
 	bool shader_program_ok;
-	GLuint shader_program = prepareShaderProgram(&vertex_shader_path, &fragment_shader_path, &shader_program_ok);
+	GLuint shader_program = prepareShaderProgram("../vertex.glsl", "../fragment.glsl",
+	                                             &shader_program_ok);
 	if (!shader_program_ok) {
 		return -1;
 	}

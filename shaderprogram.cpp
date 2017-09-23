@@ -10,15 +10,15 @@
 #include <fstream>
 
 // Build and compile our shader program
-GLuint prepareShaderProgram(const std::string* vertex_shader_path,
-                            const std::string* fragment_shader_path,
+GLuint prepareShaderProgram(const std::string& vertex_shader_path,
+                            const std::string& fragment_shader_path,
                             bool* ok)
 {
 	*ok = true;
 
 	// Read the Vertex Shader code from the file
 	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(*vertex_shader_path, std::ios::in);
+	std::ifstream VertexShaderStream(vertex_shader_path, std::ios::in);
 
 	if (VertexShaderStream.is_open()) {
 		std::string Line;
@@ -27,14 +27,14 @@ GLuint prepareShaderProgram(const std::string* vertex_shader_path,
 		VertexShaderStream.close();
 	}
 	else {
-		printf("Impossible to open %s. Are you in the right directory ?\n", (*vertex_shader_path).c_str());
+		printf("Impossible to open %s. Are you in the right directory ?\n", (vertex_shader_path).c_str());
 		getchar();
 		exit(-1);
 	}
 
 	// Read the Fragment Shader code from the file
 	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(*fragment_shader_path, std::ios::in);
+	std::ifstream FragmentShaderStream(fragment_shader_path, std::ios::in);
 
 	if (FragmentShaderStream.is_open()) {
 		std::string Line;
@@ -43,7 +43,7 @@ GLuint prepareShaderProgram(const std::string* vertex_shader_path,
 		FragmentShaderStream.close();
 	}
 	else {
-		printf("Impossible to open %s. Are you in the right directory?\n", (*fragment_shader_path).c_str());
+		printf("Impossible to open %s. Are you in the right directory?\n", (fragment_shader_path).c_str());
 		getchar();
 		exit(-1);
 	}

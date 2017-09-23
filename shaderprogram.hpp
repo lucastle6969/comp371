@@ -11,8 +11,8 @@
 #include <string>
 
 GLuint prepareShaderProgram(
-	const std::string* vertex_shader_path,
-    const std::string* fragment_shader_path,
+	const std::string& vertex_shader_path,
+	const std::string& fragment_shader_path,
 	bool* ok
 );
 
