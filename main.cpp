@@ -51,6 +51,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GL_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
@@ -76,13 +77,17 @@ int main()
 	}
 	#endif
 
+	// Set up z-buffer
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
 	// Define the viewport dimensions
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 
 	glViewport(0, 0, width, height);
 
-	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.0f, 100.0f);
+	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 2.0f, 100.0f);
 
 	// Build and compile our shader program
 	// Vertex shader
@@ -208,7 +213,7 @@ int main()
 		// Render
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::mat4 view_matrix;
 		view_matrix = glm::lookAt(eye, center, up);
