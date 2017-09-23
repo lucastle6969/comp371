@@ -9,4 +9,4 @@ bool loadOBJ(
 	std::vector<glm::vec2> & out_uvs
 );
 
-#endif
+#endif // OBJLOADER_H
