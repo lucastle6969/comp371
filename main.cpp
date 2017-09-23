@@ -23,7 +23,7 @@
 using namespace std;
 
 // Window dimensions
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 800, HEIGHT = 800;
 
 glm::vec3 camera_position;
 glm::vec3 triangle_scale;
