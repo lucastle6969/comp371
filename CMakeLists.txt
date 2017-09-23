@@ -17,7 +17,7 @@ HunterGate(
     SHA1 "34a6ae7bc9d6a6599d21c239a60ebc05abe8abb4"
 )
 
-project(SkeletonCode)
+project(PacMan3D)
 
 add_definitions(-Wno-deprecated-declarations -DCMAKE_BUILD_TYPE=Release -DGLM_FORCE_RADIANS)
 
@@ -48,7 +48,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm REQUIRED)
 
 # Add executables
-add_executable(skeletoncode
+add_executable(pacman
     main.cpp
     objloader.cpp
     objloader.hpp
@@ -57,9 +57,9 @@ add_executable(skeletoncode
 
 # Link libraries
 if(APPLE)
-    target_link_libraries(skeletoncode ${OPEN_GL})
+    target_link_libraries(pacman ${OPEN_GL})
 else()
-    target_link_libraries(skeletoncode glew::glew)
+    target_link_libraries(pacman glew::glew)
 endif()
-target_link_libraries(skeletoncode glfw)
-target_link_libraries(skeletoncode glm)
+target_link_libraries(pacman glfw)
+target_link_libraries(pacman glm)
