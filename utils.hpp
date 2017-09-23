@@ -2,6 +2,9 @@
  *  Common utility functions
  */
 
+#ifndef PACMAN3D_UTILS_H
+#define PACMAN3D_UTILS_H
+
 namespace utils {
 
     // https://stackoverflow.com/a/30099727
@@ -11,3 +14,5 @@ namespace utils {
     inline void ignore_result(T) {}
 
 }
+
+#endif // PACMAN3D_UTILS_H
