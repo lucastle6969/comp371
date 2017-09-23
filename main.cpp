@@ -11,7 +11,7 @@
 #define GLFW_INCLUDE_NONE // don't include deprecated gl headers on macOS
 #include <GLFW/glfw3.h>	// include GLFW helper library
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -114,7 +114,7 @@ int main()
 	std::ifstream VertexShaderStream(vertex_shader_path, ios::in);
 
 	if (VertexShaderStream.is_open()) {
-		string Line = "";
+		string Line;
 		while (getline(VertexShaderStream, Line))
 			VertexShaderCode += "\n" + Line;
 		VertexShaderStream.close();
@@ -131,7 +131,7 @@ int main()
 	std::ifstream FragmentShaderStream(fragment_shader_path, std::ios::in);
 
 	if (FragmentShaderStream.is_open()) {
-		std::string Line = "";
+		std::string Line;
 		while (getline(FragmentShaderStream, Line))
 			FragmentShaderCode += "\n" + Line;
 		FragmentShaderStream.close();
@@ -144,7 +144,7 @@ int main()
 
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(vertexShader, 1, &VertexSourcePointer, NULL);
+	glShaderSource(vertexShader, 1, &VertexSourcePointer, nullptr);
 	glCompileShader(vertexShader);
 	// Check for compile time errors
 	GLint success;
@@ -152,19 +152,19 @@ int main()
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 	// Fragment shader
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(fragmentShader, 1, &FragmentSourcePointer, NULL);
+	glShaderSource(fragmentShader, 1, &FragmentSourcePointer, nullptr);
 	glCompileShader(fragmentShader);
 	// Check for compile time errors
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 	// Link shaders
@@ -175,7 +175,7 @@ int main()
 	// Check for linking errors
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
 	// free up memory
@@ -200,7 +200,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
 
-	GLuint vPosition = (auto)glGetAttribLocation(shaderProgram, "vPosition");
+	auto vPosition = (GLuint)glGetAttribLocation(shaderProgram, "vPosition");
 	glEnableVertexAttribArray(vPosition);
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
@@ -210,7 +210,7 @@ int main()
 
 	triangle_scale = glm::vec3(1.0f);
 
-	GLuint mvp_matrix_loc = glGetUniformLocation(shaderProgram, "mvp_matrix");
+	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shaderProgram, "mvp_matrix");
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -234,7 +234,7 @@ int main()
 		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, (GLuint)vertices.size());
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
