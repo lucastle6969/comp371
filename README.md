@@ -1,6 +1,6 @@
-# gl-obj-skeleton
+# 3d-pacman
 
-CMake Skeleton code for OpenGL. Works for macOS, Linux, Windows.
+3D PacMan game made with OpenGL. Works for macOS, Linux, Windows.
 
 **You will get the best results if you use CLion as your IDE.**
 
@@ -55,7 +55,7 @@ If the starter program runs as expected you should see something like:
 4. Fill out other details as you like - you may want the Markdown support plugin for looking at readme files.
 
 ### CLion Project setup
-1. On startup select "Open Project", and select the `gl-obj-skeleton` directory.
+1. On startup select "Open Project", and select the `3d-pacman` directory.
 2. Once the project is opened, it should automatically build.
 4. *Possible Windows error:* if you see a message similar to, `For MinGW to work correctly C:\Program Files\OpenSSH\bin\sh.exe must NOT be in your PATH` go to `File -> Settings -> Appearance & Behavior -> Path Variables` and add `PATH` to the Ignored Variables, hit OK, and try again.
 5. Press the green play button to build and run the application.
