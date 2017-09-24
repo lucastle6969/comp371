@@ -148,6 +148,29 @@ int main()
 	glBindVertexArray(0);
 
 
+	// generate axis vertices
+	std::vector<glm::vec3> axis_vertices;
+	getAxisVertices(-11, 11, -11, 11, -11, 11, &axis_vertices);
+
+	// create vao for grid
+	GLuint VAO3, vertices_buffer_3;
+	glGenVertexArrays(1, &VAO3);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO3);
+
+	glGenBuffers(1, &vertices_buffer_3);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_3);
+	glBufferData(GL_ARRAY_BUFFER, axis_vertices.size() * sizeof(glm::vec3), &axis_vertices.front(), GL_STATIC_DRAW);
+
+	auto vPosition3 = (GLuint)glGetAttribLocation(shader_program, "vPosition");
+	glEnableVertexAttribArray(vPosition3);
+	glVertexAttribPointer(vPosition3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
+	// unbind buffer and vao
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+
 	triangle_scale = glm::vec3(1.0f);
 	pacman_scale = glm::vec3(0.1f);
 	grid_scale = glm::vec3(25.0f);
@@ -187,6 +210,10 @@ int main()
 
 		glBindVertexArray(VAO2);
 		glDrawArrays(GL_LINES, 0, (GLuint)grid_vertices.size());
+		glBindVertexArray(0);
+
+		glBindVertexArray(VAO3);
+		glDrawArrays(GL_LINES, 0, (GLuint)axis_vertices.size());
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
