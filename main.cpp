@@ -23,8 +23,6 @@
 #include "shaderprogram.hpp" // include the shader program compiler
 #include "objloader.hpp"     // include the object loader
 
-using namespace std;
-
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
 
@@ -41,7 +39,7 @@ const glm::vec3 eye(0.0f, 0.0f, 50.0f);
 
 void getGridVertices(const int& x_min, const int& x_max,
                      const int& y_min, const int& y_max,
-                     vector<glm::vec3>* grid)
+                     std::vector<glm::vec3>* grid)
 {
 	// vertical lines
 	for (int x = x_min; x <= x_max; x++) {
