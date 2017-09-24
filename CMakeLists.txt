@@ -50,11 +50,13 @@ find_package(glm REQUIRED)
 # Add executables
 add_executable(pacman
     main.cpp
-    objloader.cpp
-    objloader.hpp
-    utils.hpp
+    glsetup.hpp
+    glsetup.cpp
     shaderprogram.hpp
     shaderprogram.cpp
+    objloader.hpp
+    objloader.cpp
+    utils.hpp
 )
 
 # Link libraries
