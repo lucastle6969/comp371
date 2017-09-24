@@ -53,6 +53,22 @@ void getGridVertices(const int& x_min, const int& x_max,
 	}
 }
 
+void getAxisVertices(const int& x_min, const int& x_max,
+					 const int& y_min, const int& y_max,
+					 const int& z_min, const int& z_max,
+					 std::vector<glm::vec3>* axes)
+{
+	// x-axis
+	axes->emplace_back(x_min, 0, 0);
+	axes->emplace_back(x_max, 0, 0);
+	// y-axis
+	axes->emplace_back(0, y_min, 0);
+	axes->emplace_back(0, y_max, 0);
+	// z-axis
+	axes->emplace_back(0, 0, z_min);
+	axes->emplace_back(0, 0, z_max);
+}
+
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
