@@ -22,6 +22,7 @@
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
 #include "objloader.hpp"     // include the object loader
+#include "constants.hpp"
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
@@ -44,29 +45,26 @@ void getGridVertices(const int& x_min, const int& x_max,
 	// vertical lines
 	for (int x = x_min; x <= x_max; x++) {
 		grid->emplace_back(x, y_min, 0.0f);
-		grid->emplace_back(x, y_max, 0.0f);
+		grid->emplace_back(x, x == 0 ? 0.0f : y_max, 0.0f); // leave room for y-axis
 	}
 	// horizontal lines
 	for (int y = y_min; y <= y_max; y++) {
 		grid->emplace_back(x_min, y, 0.0f);
-		grid->emplace_back(x_max, y, 0.0f);
+		grid->emplace_back(y == 0 ? 0.0f : x_max, y, 0.0f); // leave room for x-axis
 	}
 }
 
-void getAxisVertices(const int& x_min, const int& x_max,
-					 const int& y_min, const int& y_max,
-					 const int& z_min, const int& z_max,
-					 std::vector<glm::vec3>* axes)
+void getAxisVertices(const int& x_max, const int& y_max, const int& z_max, std::vector<glm::vec3>* axes)
 {
 	// x-axis
-	axes->emplace_back(x_min, 0, 0);
-	axes->emplace_back(x_max, 0, 0);
+	axes->emplace_back(0.0f, 0.0f, 0.0f);
+	axes->emplace_back(x_max, 0.0f, 0.0f);
 	// y-axis
-	axes->emplace_back(0, y_min, 0);
-	axes->emplace_back(0, y_max, 0);
+	axes->emplace_back(0.0f, 0.0f, 0.0f);
+	axes->emplace_back(0.0f, y_max, 0.0f);
 	// z-axis
-	axes->emplace_back(0, 0, z_min);
-	axes->emplace_back(0, 0, z_max);
+	axes->emplace_back(0.0f, 0.0f, 0.0f);
+	axes->emplace_back(0.0f, 0.0f, z_max);
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -116,9 +114,9 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
 
-	auto vPosition = (GLuint)glGetAttribLocation(shader_program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
+	glEnableVertexAttribArray(v_position);
+	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -139,9 +137,9 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_2);
 	glBufferData(GL_ARRAY_BUFFER, grid_vertices.size() * sizeof(glm::vec3), &grid_vertices.front(), GL_STATIC_DRAW);
 
-	auto vPosition2 = (GLuint)glGetAttribLocation(shader_program, "vPosition");
-	glEnableVertexAttribArray(vPosition2);
-	glVertexAttribPointer(vPosition2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	auto v_position2 = (GLuint)glGetAttribLocation(shader_program, "v_position");
+	glEnableVertexAttribArray(v_position2);
+	glVertexAttribPointer(v_position2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -150,7 +148,7 @@ int main()
 
 	// generate axis vertices
 	std::vector<glm::vec3> axis_vertices;
-	getAxisVertices(-11, 11, -11, 11, -11, 11, &axis_vertices);
+	getAxisVertices(10, 10, 10, &axis_vertices);
 
 	// create vao for grid
 	GLuint VAO3, vertices_buffer_3;
@@ -162,9 +160,9 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_3);
 	glBufferData(GL_ARRAY_BUFFER, axis_vertices.size() * sizeof(glm::vec3), &axis_vertices.front(), GL_STATIC_DRAW);
 
-	auto vPosition3 = (GLuint)glGetAttribLocation(shader_program, "vPosition");
-	glEnableVertexAttribArray(vPosition3);
-	glVertexAttribPointer(vPosition3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	auto v_position3 = (GLuint)glGetAttribLocation(shader_program, "v_position");
+	glEnableVertexAttribArray(v_position3);
+	glVertexAttribPointer(v_position3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -198,6 +196,9 @@ int main()
 
 		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
 
+		auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
+		glUniform1i(color_type_loc, COLOR_YELLOW);
+
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, (GLuint)vertices.size());
 		glBindVertexArray(0);
@@ -208,9 +209,15 @@ int main()
 
 		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
 
+		auto color_type_loc2 = (GLuint)glGetUniformLocation(shader_program, "color_type");
+		glUniform1i(color_type_loc2, COLOR_WHITE);
+
 		glBindVertexArray(VAO2);
 		glDrawArrays(GL_LINES, 0, (GLuint)grid_vertices.size());
 		glBindVertexArray(0);
+
+		auto color_type_loc3 = (GLuint)glGetUniformLocation(shader_program, "color_type");
+		glUniform1i(color_type_loc3, COLOR_COORDINATE_AXES);
 
 		glBindVertexArray(VAO3);
 		glDrawArrays(GL_LINES, 0, (GLuint)axis_vertices.size());

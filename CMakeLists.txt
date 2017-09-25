@@ -57,6 +57,7 @@ add_executable(pacman
     objloader.hpp
     objloader.cpp
     utils.hpp
+    constants.hpp
 )
 
 # Link libraries

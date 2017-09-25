@@ -1,0 +1,8 @@
+#ifndef PACMAN3D_CONSTANTS_H
+#define PACMAN3D_CONSTANTS_H
+
+const int COLOR_WHITE = 0;
+const int COLOR_COORDINATE_AXES = 1;
+const int COLOR_YELLOW = 2;
+
+#endif //PACMAN3D_CONSTANTS_H
