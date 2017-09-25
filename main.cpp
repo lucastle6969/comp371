@@ -116,7 +116,7 @@ int main()
 
 	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
 	glEnableVertexAttribArray(v_position);
-	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -139,7 +139,7 @@ int main()
 
 	auto v_position2 = (GLuint)glGetAttribLocation(shader_program, "v_position");
 	glEnableVertexAttribArray(v_position2);
-	glVertexAttribPointer(v_position2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(v_position2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -162,7 +162,7 @@ int main()
 
 	auto v_position3 = (GLuint)glGetAttribLocation(shader_program, "v_position");
 	glEnableVertexAttribArray(v_position3);
-	glVertexAttribPointer(v_position3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(v_position3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
 	// unbind buffer and vao
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
