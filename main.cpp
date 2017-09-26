@@ -36,7 +36,7 @@ glm::mat4 projection_matrix;
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
-const glm::vec3 eye(0.0f, 0.0f, 50.0f);
+glm::vec3 eye(6.0f, -50.0f, 50.0f);
 
 void getGridVertices(const int& x_min, const int& x_max,
                      const int& y_min, const int& y_max,
@@ -70,7 +70,19 @@ void getAxisVertices(const int& x_max, const int& y_max, const int& z_max, std::
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	std::cout << key << std::endl;	
+	std::cout << key << std::endl;
+	if (key == 264) {
+		eye.y -= 1;
+	}
+	if (key == 265) {
+		eye.y += 1;
+	}
+	if (key == 263) {
+		eye.x -= 1;
+	}
+	if (key == 262) {
+		eye.x += 1;
+	}
 }
 
 // The MAIN function, from here we start the application and run the game loop
