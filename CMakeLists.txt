@@ -62,6 +62,8 @@ add_executable(pacman
     grid.cpp
     pacman.hpp
     pacman.cpp
+    dot.hpp
+    dot.cpp
     objloader.hpp
     objloader.cpp
     utils.hpp

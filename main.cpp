@@ -25,6 +25,7 @@
 #include "worldorigin.hpp"
 #include "grid.hpp"
 #include "pacman.hpp"
+#include "dot.hpp"
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
@@ -90,6 +91,12 @@ int main()
 	Pacman pacman(shader_program, &grid);
 	pacman.scale(0.04f);
 	entities.push_back(&pacman);
+
+	Dot dot1(shader_program, &grid);
+	dot1.scale(0.2f);
+	dot1.moveRight(2);
+	dot1.moveUp(1);
+	entities.push_back(&dot1);
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
