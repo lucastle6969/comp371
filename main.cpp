@@ -115,6 +115,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				should_check_collisions = true;
 			}
 			break;
+		case GLFW_KEY_SPACE: {
+			// find a random new spot to place pacman
+			glm::vec3 pos = pacman->getPosition();
+			int x_pos;
+			int y_pos;
+			do {
+				x_pos = rand() % 21 - 10;
+				y_pos = rand() % 21 - 10;
+			} while (pos.x == x_pos && pos.y == y_pos);
+			pacman->setPosition(x_pos, y_pos);
+		}
 		default:
 			break;
 	}
