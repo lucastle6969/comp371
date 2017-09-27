@@ -13,6 +13,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -35,26 +36,55 @@ const GLuint NUM_DOTS = 25;
 
 glm::mat4 projection_matrix;
 
+Pacman* pacman;
+
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
 glm::vec3 eye(0.0f, 0.0f, 20.0f);
 
+time_t last_movement_tick = 0;
+const clock_t MOVE_WAITING_TIME = 2500;
+bool canMoveAgain()
+{
+	clock_t t = clock();
+	if (t - last_movement_tick < MOVE_WAITING_TIME) {
+		return false;
+	}
+	last_movement_tick = t;
+	return true;
+}
+
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	std::cout << key << std::endl;
-	if (key == 264) {
-		eye.y -= 1;
-	}
-	if (key == 265) {
-		eye.y += 1;
-	}
-	if (key == 263) {
-		eye.x -= 1;
-	}
-	if (key == 262) {
-		eye.x += 1;
+	switch (key) {
+		case 265: // up
+			eye.y += 1;
+			break;
+		case 264: // down
+			eye.y -=1;
+			break;
+		case 263: // left
+			eye.x -= 1;
+			break;
+		case 262: // right
+			eye.x += 1;
+			break;
+		case 87: // w
+			if (canMoveAgain()) pacman->moveUp();
+			break;
+		case 65: // a
+			if (canMoveAgain()) pacman->moveLeft();
+			break;
+		case 83: // s
+			if (canMoveAgain()) pacman->moveDown();
+			break;
+		case 68: // d
+			if (canMoveAgain()) pacman->moveRight();
+		default:
+			break;
 	}
 }
 
@@ -93,7 +123,7 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*grid);
 
-	auto pacman = new Pacman(shader_program, grid);
+	pacman = new Pacman(shader_program, grid);
 	pacman->scale(0.04f);
 	// copy pointer to entity list
 	entities.push_back(&*pacman);

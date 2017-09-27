@@ -77,7 +77,7 @@ void Entity::scale(const float& scalar)
 	this->scale_matrix = glm::scale(this->scale_matrix, glm::vec3(scalar));
 }
 
-void Entity::moveUp(const int& units = 1)
+void Entity::moveUp(const int& units)
 {
 	static glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -85,7 +85,7 @@ void Entity::moveUp(const int& units = 1)
 	this->orient((float)(M_PI / 2));
 }
 
-void Entity::moveDown(const int& units = 1)
+void Entity::moveDown(const int& units)
 {
 	static glm::vec3 down_vec = glm::vec3(0.0f, -1.0f, 0.0f);
 
@@ -93,15 +93,15 @@ void Entity::moveDown(const int& units = 1)
 	this->orient((float)(3 * M_PI / 2));
 }
 
-void Entity::moveLeft(const int& units = 1)
+void Entity::moveLeft(const int& units)
 {
 	static glm::vec3 left_vec = glm::vec3(-1.0f, 0.0f, 0.0f);
 
 	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * left_vec);
-	this->orient((float)(2 * M_PI));
+	this->orient((float)M_PI);
 }
 
-void Entity::moveRight(const int& units = 1)
+void Entity::moveRight(const int& units)
 {
 	static glm::vec3 right_vec = glm::vec3(1.0f, 0.0f, 0.0f);
 

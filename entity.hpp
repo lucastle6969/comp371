@@ -35,10 +35,10 @@ public:
 	virtual const GLenum* getDrawMode();
 	glm::mat4& getModelMatrix();
 	void scale(const float& scalar);
-	void moveUp(const int& units);
-	void moveDown(const int& units);
-	void moveLeft(const int& units);
-	void moveRight(const int& units);
+	void moveUp(const int& units = 1);
+	void moveDown(const int& units = 1);
+	void moveLeft(const int& units = 1);
+	void moveRight(const int& units = 1);
 	void setPosition(const float& x, const float& y, const float&z = 0.0f);
 };
 
