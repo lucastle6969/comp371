@@ -16,6 +16,7 @@ public:
 	explicit Pacman(const GLuint& shader_program) : Pacman(shader_program, nullptr) {}
 	Pacman(const GLuint& shader_program, Entity* parent);
 	const int* getColorType() override;
+	const GLenum* getDrawMode() override;
 };
 
 #endif //PACMAN3D_PACMAN_H

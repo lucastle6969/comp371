@@ -118,10 +118,11 @@ int main()
 
 			GLuint* vao = entity->getVAO();
 			std::vector<glm::vec3>* vertices = entity->getVertices();
-			if (vao != nullptr && vertices != nullptr) {
+			const GLenum* draw_mode = entity->getDrawMode();
+			if (vao != nullptr && vertices != nullptr && draw_mode != nullptr) {
 				// draw, if and ONLY if we have non-null VAO and vertices
 				glBindVertexArray(*vao);
-				glDrawArrays(GL_LINES, 0, (GLuint)(*vertices).size());
+				glDrawArrays(*draw_mode, 0, (GLuint)(*vertices).size());
 				glBindVertexArray(0);
 			}
 		}

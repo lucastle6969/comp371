@@ -32,6 +32,7 @@ public:
 	std::vector<glm::vec3>* getVertices();
 	GLuint* getVAO();
 	virtual const int* getColorType();
+	virtual const GLenum* getDrawMode();
 	glm::mat4& getModelMatrix();
 	void scale(const float& scalar);
 	void moveUp(const int& units);

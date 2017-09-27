@@ -40,3 +40,9 @@ const int* Grid::getColorType()
 {
 	return &COLOR_WHITE;
 }
+
+const GLenum* Grid::getDrawMode()
+{
+	static const GLenum draw_mode = GL_LINES;
+	return &draw_mode;
+}

@@ -38,3 +38,9 @@ const int* WorldOrigin::getColorType()
 {
 	return &COLOR_COORDINATE_AXES;
 }
+
+const GLenum* WorldOrigin::getDrawMode()
+{
+	static const GLenum draw_mode = GL_LINES;
+	return &draw_mode;
+}

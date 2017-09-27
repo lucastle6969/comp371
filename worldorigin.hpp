@@ -24,6 +24,7 @@ public:
 		Entity* parent
 	);
 	const int* getColorType() override;
+	const GLenum* getDrawMode() override;
 };
 
 #endif //PACMAN3D_WORLDORIGIN_H

@@ -30,3 +30,9 @@ const int* Pacman::getColorType()
 {
 	return &COLOR_YELLOW;
 }
+
+const GLenum* Pacman::getDrawMode()
+{
+	static const GLenum draw_mode = GL_TRIANGLES;
+	return &draw_mode;
+}

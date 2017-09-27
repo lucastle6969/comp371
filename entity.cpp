@@ -51,6 +51,11 @@ const int* Entity::getColorType()
 	return nullptr;
 }
 
+const GLenum* Entity::getDrawMode()
+{
+	return nullptr;
+}
+
 glm::mat4& Entity::getModelMatrix()
 {
 	static glm::mat4 identity;
