@@ -92,6 +92,12 @@ void Entity::scale(const float& scalar)
 	this->scale_matrix = glm::scale(this->scale_matrix, glm::vec3(scalar));
 }
 
+void Entity::rotate(const float& angle, const glm::vec3& axis)
+{
+	// rotation angle is in radians
+	this->rotation_matrix = glm::rotate(this->rotation_matrix, angle, axis);
+}
+
 void Entity::moveUp(const int& units)
 {
 	static glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);

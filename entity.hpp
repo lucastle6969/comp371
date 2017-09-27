@@ -38,6 +38,7 @@ public:
 	glm::vec3 getPosition();
 	bool isHidden();
 	void scale(const float& scalar);
+	void rotate(const float& angle, const glm::vec3& axis);
 	void moveUp(const int& units = 1);
 	void moveDown(const int& units = 1);
 	void moveLeft(const int& units = 1);

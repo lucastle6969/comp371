@@ -43,6 +43,8 @@ const int WORLD_Z_MAX = 10;
 
 glm::mat4 projection_matrix;
 
+WorldOrigin* origin;
+Grid* grid;
 Pacman* pacman;
 
 std::vector<Dot*> dots;
@@ -50,7 +52,7 @@ std::vector<Dot*> dots;
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
-glm::vec3 eye(0.0f, 0.0f, 20.0f);
+const glm::vec3 eye(0.0f, 0.0f, 20.0f);
 
 time_t last_movement_tick = 0;
 const clock_t MOVE_WAITING_TIME = 2500;
@@ -67,22 +69,25 @@ bool canMoveAgain()
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
+	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
+	static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+
 	if (!action) {
 		// for now we only handle keydown actions
 		return;
 	}
 	switch (key) {
 		case 265: // up
-			eye.y += 1;
+			origin->rotate(-0.1f, x_axis);
 			break;
 		case 264: // down
-			eye.y -=1;
+			origin->rotate(0.1f, x_axis);
 			break;
 		case 263: // left
-			eye.x -= 1;
+			origin->rotate(-0.1f, y_axis);
 			break;
 		case 262: // right
-			eye.x += 1;
+			origin->rotate(0.1f, y_axis);
 			break;
 		case 87:
 		case 65:
@@ -159,11 +164,11 @@ int main()
 
 	std::vector<Entity*> entities;
 
-	auto origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
+	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	auto grid = new Grid(shader_program, WORLD_X_MIN, WORLD_X_MAX, WORLD_Y_MIN, WORLD_Y_MAX, origin);
+	grid = new Grid(shader_program, WORLD_X_MIN, WORLD_X_MAX, WORLD_Y_MIN, WORLD_Y_MAX, origin);
 	// copy pointer to entity list
 	entities.push_back(&*grid);
 
@@ -192,6 +197,8 @@ int main()
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
 
+	glm::mat4 view_matrix;
+
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -203,7 +210,6 @@ int main()
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 view_matrix;
 		view_matrix = glm::lookAt(eye, center, up);
 
 		for (Entity* entity : entities) {
