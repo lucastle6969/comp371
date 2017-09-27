@@ -26,6 +26,9 @@ Entity::Entity(Entity* parent)
 	// but only if this->vertices has already been defined.
 	// DERIVING CLASSES SHOULD CALL initVertexArray()!
 	this->vao = nullptr;
+
+	// can be toggled with this->hide(), this->unhide().
+	this->hidden = false;
 }
 
 Entity::~Entity()
@@ -79,6 +82,11 @@ glm::vec3 Entity::getPosition()
 	return glm::vec3(t[12], t[13], t[14]);
 }
 
+bool Entity::isHidden()
+{
+	return this->hidden;
+}
+
 void Entity::scale(const float& scalar)
 {
 	this->scale_matrix = glm::scale(this->scale_matrix, glm::vec3(scalar));
@@ -121,6 +129,16 @@ void Entity::setPosition(const float &x, const float &y, const float &z)
 	static glm::mat4 identity;
 
 	this->translation_matrix = glm::translate(identity, glm::vec3(x, y, z));
+}
+
+void Entity::hide()
+{
+	this->hidden = true;
+}
+
+void Entity::unhide()
+{
+	this->hidden = false;
 }
 
 void Entity::orient(const float& angle)

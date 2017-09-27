@@ -19,6 +19,7 @@ private:
 	glm::mat4 rotation_matrix;
 	glm::mat4 translation_matrix;
 	glm::mat4 model_matrix;
+	bool hidden;
 	void orient(const float& angle);
 
 protected:
@@ -35,12 +36,15 @@ public:
 	virtual const GLenum* getDrawMode();
 	glm::mat4& getModelMatrix();
 	glm::vec3 getPosition();
+	bool isHidden();
 	void scale(const float& scalar);
 	void moveUp(const int& units = 1);
 	void moveDown(const int& units = 1);
 	void moveLeft(const int& units = 1);
 	void moveRight(const int& units = 1);
 	void setPosition(const float& x, const float& y, const float&z = 0.0f);
+	void hide();
+	void unhide();
 };
 
 #endif //PACMAN3D_ENTITY_H

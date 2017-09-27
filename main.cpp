@@ -45,6 +45,8 @@ glm::mat4 projection_matrix;
 
 Pacman* pacman;
 
+std::vector<Dot*> dots;
+
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
@@ -79,25 +81,49 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case 262: // right
 			eye.x += 1;
 			break;
-		case 87: // w
-			if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
-				pacman->moveUp();
+		case 87:
+		case 65:
+		case 83:
+		case 68: {
+			if (!canMoveAgain()) {
+				break;
+			}
+			switch (key) {
+				case 87: // w
+					if (pacman->getPosition().y < WORLD_Y_MAX) {
+						pacman->moveUp();
+					}
+					break;
+				case 65: // a
+					if (pacman->getPosition().x > WORLD_X_MIN) {
+						pacman->moveLeft();
+					}
+					break;
+				case 83: // s
+					if (pacman->getPosition().y > WORLD_Y_MIN) {
+						pacman->moveDown();
+					}
+					break;
+				case 68: // d
+					if (pacman->getPosition().x < WORLD_X_MAX) {
+						pacman->moveRight();
+					}
+					break;
+			}
+			glm::vec3 pos = pacman->getPosition();
+			glm::vec3 dot_pos;
+			// Check if any of the dots overlap with pacman, and if so, remove them
+			for (auto i = (int)dots.size(); i--; ) {
+				dot_pos = dots[i]->getPosition();
+				if (pos.x == dot_pos.x && pos.y == dot_pos.y) {
+					// hide the dot from rendering
+					dots[i]->hide();
+					// remove the dot from our dots list (stays in entity list for de-allocation later)
+					dots.erase(dots.begin() + i);
+				}
 			}
 			break;
-		case 65: // a
-			if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
-				pacman->moveLeft();
-			}
-			break;
-		case 83: // s
-			if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
-				pacman->moveDown();
-			}
-			break;
-		case 68: // d
-			if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
-				pacman->moveRight();
-			}
+		}
 		default:
 			break;
 	}
@@ -149,9 +175,15 @@ int main()
 		auto dot = new Dot(shader_program, grid);
 		dot->scale(0.2f);
 		// place the dot randomly on the grid
-		dot->setPosition(rand() % 21 - 10, rand() % 21 - 10);
-		// copy the dot's pointer and include it in our entity list
+		int x_pos, y_pos;
+		do {
+			x_pos = rand() % 21 - 10;
+			y_pos = rand() % 21 - 10;
+		} while (x_pos == 0 && y_pos == 0);
+		dot->setPosition(x_pos, y_pos);
+		// copy the dot's pointer and include it in our entity list and dot list
 		entities.push_back(&*dot);
+		dots.push_back(dot);
 	}
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
@@ -172,6 +204,15 @@ int main()
 		view_matrix = glm::lookAt(eye, center, up);
 
 		for (Entity* entity : entities) {
+			// Check we're actually prepared to draw. If not, skip to next entity.
+			if (entity->isHidden()) continue;
+			GLuint* vao = entity->getVAO();
+			if (vao == nullptr) continue;
+			std::vector<glm::vec3>* vertices = entity->getVertices();
+			if (vertices == nullptr) continue;
+			const GLenum* draw_mode = entity->getDrawMode();
+			if (draw_mode == nullptr) continue;
+
 			// use the entity's model matrix to form a new Model View Projection matrix
 			glm::mat4 mvp_matrix = projection_matrix * view_matrix * entity->getModelMatrix();
 			// send the mvp_matrix variable content to the shader
@@ -179,22 +220,17 @@ int main()
 			// send the color_type variable to the shader (could be null)
 			glUniform1i(color_type_loc, *entity->getColorType());
 
-			GLuint* vao = entity->getVAO();
-			std::vector<glm::vec3>* vertices = entity->getVertices();
-			const GLenum* draw_mode = entity->getDrawMode();
-			if (vao != nullptr && vertices != nullptr && draw_mode != nullptr) {
-				// draw, if and ONLY if we have non-null VAO and vertices
-				glBindVertexArray(*vao);
-				glDrawArrays(*draw_mode, 0, (GLuint)(*vertices).size());
-				glBindVertexArray(0);
-			}
+			// Draw
+			glBindVertexArray(*vao);
+			glDrawArrays(*draw_mode, 0, (GLuint)(*vertices).size());
+			glBindVertexArray(0);
 		}
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
 
-	// Deallocate the memory for all our entities
+	// De-allocate the memory for all our entities
 	for (Entity* entity : entities) {
 		delete entity;
 	}
