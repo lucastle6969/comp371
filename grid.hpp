@@ -14,6 +14,13 @@ public:
 		const int& x_min,
 		const int& x_max,
 		const int& y_min,
+		const int& y_max
+	) : Grid(shader_program, x_min, x_max, y_min, y_max, nullptr) {}
+	Grid(
+		const GLuint& shader_program,
+		const int& x_min,
+		const int& x_max,
+		const int& y_min,
 		const int& y_max,
 		Entity* parent
 	);

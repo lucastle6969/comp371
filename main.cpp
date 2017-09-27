@@ -34,6 +34,13 @@ const GLuint WIDTH = 800, HEIGHT = 800;
 
 const GLuint NUM_DOTS = 25;
 
+const int WORLD_X_MIN = -10;
+const int WORLD_X_MAX = 10;
+const int WORLD_Y_MIN = -10;
+const int WORLD_Y_MAX = 10;
+const int WORLD_Z_MIN = -10;
+const int WORLD_Z_MAX = 10;
+
 glm::mat4 projection_matrix;
 
 Pacman* pacman;
@@ -73,16 +80,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			eye.x += 1;
 			break;
 		case 87: // w
-			if (canMoveAgain()) pacman->moveUp();
+			if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
+				pacman->moveUp();
+			}
 			break;
 		case 65: // a
-			if (canMoveAgain()) pacman->moveLeft();
+			if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
+				pacman->moveLeft();
+			}
 			break;
 		case 83: // s
-			if (canMoveAgain()) pacman->moveDown();
+			if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
+				pacman->moveDown();
+			}
 			break;
 		case 68: // d
-			if (canMoveAgain()) pacman->moveRight();
+			if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
+				pacman->moveRight();
+			}
 		default:
 			break;
 	}
@@ -115,11 +130,11 @@ int main()
 
 	std::vector<Entity*> entities;
 
-	auto origin = new WorldOrigin(shader_program);
+	auto origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	auto grid = new Grid(shader_program, origin);
+	auto grid = new Grid(shader_program, WORLD_X_MIN, WORLD_X_MAX, WORLD_Y_MIN, WORLD_Y_MAX, origin);
 	// copy pointer to entity list
 	entities.push_back(&*grid);
 

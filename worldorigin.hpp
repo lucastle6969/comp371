@@ -20,6 +20,12 @@ public:
 		const GLuint& shader_program,
 		const int& x_max,
 		const int& y_max,
+		const int& z_max
+	) : WorldOrigin(shader_program, x_max, y_max, z_max, nullptr) {}
+	WorldOrigin(
+		const GLuint& shader_program,
+		const int& x_max,
+		const int& y_max,
 		const int& z_max,
 		Entity* parent
 	);

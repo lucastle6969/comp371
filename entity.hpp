@@ -34,6 +34,7 @@ public:
 	virtual const int* getColorType();
 	virtual const GLenum* getDrawMode();
 	glm::mat4& getModelMatrix();
+	glm::vec3 getPosition();
 	void scale(const float& scalar);
 	void moveUp(const int& units = 1);
 	void moveDown(const int& units = 1);

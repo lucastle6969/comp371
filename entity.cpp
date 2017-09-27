@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
 #include "entity.hpp"
@@ -70,6 +71,12 @@ glm::mat4& Entity::getModelMatrix()
 			this->rotation_matrix *
 			this->scale_matrix;
 	return this->model_matrix;
+}
+
+glm::vec3 Entity::getPosition()
+{
+	float* t = glm::value_ptr(this->translation_matrix);
+	return glm::vec3(t[12], t[13], t[14]);
 }
 
 void Entity::scale(const float& scalar)
