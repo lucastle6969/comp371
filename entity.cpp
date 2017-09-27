@@ -109,6 +109,13 @@ void Entity::moveRight(const int& units = 1)
 	this->orient(0.0f);
 }
 
+void Entity::setPosition(const float &x, const float &y, const float &z)
+{
+	static glm::mat4 identity;
+
+	this->translation_matrix = glm::translate(identity, glm::vec3(x, y, z));
+}
+
 void Entity::orient(const float& angle)
 {
 	static glm::mat4 identity;

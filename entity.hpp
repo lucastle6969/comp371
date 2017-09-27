@@ -39,6 +39,7 @@ public:
 	void moveDown(const int& units);
 	void moveLeft(const int& units);
 	void moveRight(const int& units);
+	void setPosition(const float& x, const float& y, const float&z = 0.0f);
 };
 
 #endif //PACMAN3D_ENTITY_H

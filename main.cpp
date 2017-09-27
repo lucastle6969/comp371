@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>	// include GLFW helper library
 
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -29,6 +30,8 @@
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
+
+const GLuint NUM_DOTS = 25;
 
 glm::mat4 projection_matrix;
 
@@ -82,21 +85,29 @@ int main()
 
 	std::vector<Entity*> entities;
 
-	WorldOrigin origin(shader_program);
-	entities.push_back(&origin);
+	auto origin = new WorldOrigin(shader_program);
+	// copy pointer to entity list
+	entities.push_back(&*origin);
 
-	Grid grid(shader_program, &origin);
-	entities.push_back(&grid);
+	auto grid = new Grid(shader_program, origin);
+	// copy pointer to entity list
+	entities.push_back(&*grid);
 
-	Pacman pacman(shader_program, &grid);
-	pacman.scale(0.04f);
-	entities.push_back(&pacman);
+	auto pacman = new Pacman(shader_program, grid);
+	pacman->scale(0.04f);
+	// copy pointer to entity list
+	entities.push_back(&*pacman);
 
-	Dot dot1(shader_program, &grid);
-	dot1.scale(0.2f);
-	dot1.moveRight(2);
-	dot1.moveUp(1);
-	entities.push_back(&dot1);
+	// add several dot pickups to the grid
+	for (int i = 0; i < NUM_DOTS; i++) {
+		// create a new dot
+		auto dot = new Dot(shader_program, grid);
+		dot->scale(0.2f);
+		// place the dot randomly on the grid
+		dot->setPosition(rand() % 21 - 10, rand() % 21 - 10);
+		// copy the dot's pointer and include it in our entity list
+		entities.push_back(&*dot);
+	}
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
@@ -136,6 +147,11 @@ int main()
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
+	}
+
+	// Deallocate the memory for all our entities
+	for (Entity* entity : entities) {
+		delete entity;
 	}
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
