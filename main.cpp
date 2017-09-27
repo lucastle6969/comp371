@@ -67,7 +67,10 @@ bool canMoveAgain()
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	std::cout << key << std::endl;
+	if (!action) {
+		// for now we only handle keydown actions
+		return;
+	}
 	switch (key) {
 		case 265: // up
 			eye.y += 1;
