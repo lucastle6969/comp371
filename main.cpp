@@ -44,6 +44,8 @@ const int WORLD_Z_MAX = 10;
 
 glm::mat4 projection_matrix;
 
+std::vector<Entity*> entities;
+
 WorldOrigin* origin;
 Grid* grid;
 Pacman* pacman;
@@ -136,7 +138,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				y_pos = randomY();
 			} while (pos.x == x_pos && pos.y == y_pos);
 			pacman->setPosition(x_pos, y_pos);
+			break;
 		}
+		case GLFW_KEY_U:
+			// incrementally scale up each entity
+			for (Entity* entity : entities) {
+				if (entity == origin || entity == grid) continue;
+				entity->scale(1.1f);
+			}
+			break;
+		case GLFW_KEY_J:
+			// incrementally scale down each entity
+			for (Entity* entity : entities) {
+				if (entity == origin || entity == grid) continue;
+				entity->scale(1.0f / 1.1f);
+			}
+			break;
 		default:
 			break;
 	}
@@ -181,8 +198,6 @@ int main()
 		return -1;
 	}
 	glUseProgram(shader_program);
-
-	std::vector<Entity*> entities;
 
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
