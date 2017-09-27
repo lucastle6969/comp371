@@ -79,37 +79,37 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		return;
 	}
 	switch (key) {
-		case 265: // up
+		case GLFW_KEY_UP:
 			origin->rotate(-0.1f, x_axis);
 			break;
-		case 264: // down
+		case GLFW_KEY_DOWN:
 			origin->rotate(0.1f, x_axis);
 			break;
-		case 263: // left
+		case GLFW_KEY_LEFT:
 			origin->rotate(-0.1f, y_axis);
 			break;
-		case 262: // right
+		case GLFW_KEY_RIGHT:
 			origin->rotate(0.1f, y_axis);
 			break;
-		case 87: // w
+		case GLFW_KEY_W:
 			if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
 				pacman->moveUp();
 				should_check_collisions = true;
 			}
 			break;
-		case 65: // a
+		case GLFW_KEY_A:
 			if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
 				pacman->moveLeft();
 				should_check_collisions = true;
 			}
 			break;
-		case 83: // s
+		case GLFW_KEY_S:
 			if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
 				pacman->moveDown();
 				should_check_collisions = true;
 			}
 			break;
-		case 68: // d
+		case GLFW_KEY_D:
 			if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
 				pacman->moveRight();
 				should_check_collisions = true;
