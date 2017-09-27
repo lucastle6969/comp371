@@ -34,11 +34,12 @@ const GLuint WIDTH = 800, HEIGHT = 800;
 
 const GLuint NUM_DOTS = 25;
 
+// bounds for placing grid, axes and objects
 const int WORLD_X_MIN = -10;
 const int WORLD_X_MAX = 10;
 const int WORLD_Y_MIN = -10;
 const int WORLD_Y_MAX = 10;
-const int WORLD_Z_MIN = -10;
+// this one is only used for the z-axis
 const int WORLD_Z_MAX = 10;
 
 glm::mat4 projection_matrix;
@@ -53,6 +54,16 @@ std::vector<Dot*> dots;
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
 const glm::vec3 eye(0.0f, 0.0f, 20.0f);
+
+int randomX()
+{
+	return rand() % (WORLD_X_MAX - WORLD_X_MIN + 1) + WORLD_X_MIN;
+}
+
+int randomY()
+{
+	return rand() % (WORLD_Y_MAX - WORLD_Y_MIN + 1) + WORLD_Y_MIN;
+}
 
 time_t last_movement_tick = 0;
 const clock_t MOVE_WAITING_TIME = 2500;
@@ -121,8 +132,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			int x_pos;
 			int y_pos;
 			do {
-				x_pos = rand() % 21 - 10;
-				y_pos = rand() % 21 - 10;
+				x_pos = randomX();
+				y_pos = randomY();
 			} while (pos.x == x_pos && pos.y == y_pos);
 			pacman->setPosition(x_pos, y_pos);
 		}
@@ -194,8 +205,8 @@ int main()
 		// place the dot randomly on the grid
 		int x_pos, y_pos;
 		do {
-			x_pos = rand() % 21 - 10;
-			y_pos = rand() % 21 - 10;
+			x_pos = randomX();
+			y_pos = randomY();
 		} while (x_pos == 0 && y_pos == 0);
 		dot->setPosition(x_pos, y_pos);
 		// copy the dot's pointer and include it in our entity list and dot list
