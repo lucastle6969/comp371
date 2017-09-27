@@ -72,6 +72,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 
+	bool should_check_collisions = false;
+
 	if (!action) {
 		// for now we only handle keydown actions
 		return;
@@ -89,51 +91,47 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case 262: // right
 			origin->rotate(0.1f, y_axis);
 			break;
-		case 87:
-		case 65:
-		case 83:
-		case 68: {
-			if (!canMoveAgain()) {
-				break;
-			}
-			switch (key) {
-				case 87: // w
-					if (pacman->getPosition().y < WORLD_Y_MAX) {
-						pacman->moveUp();
-					}
-					break;
-				case 65: // a
-					if (pacman->getPosition().x > WORLD_X_MIN) {
-						pacman->moveLeft();
-					}
-					break;
-				case 83: // s
-					if (pacman->getPosition().y > WORLD_Y_MIN) {
-						pacman->moveDown();
-					}
-					break;
-				case 68: // d
-					if (pacman->getPosition().x < WORLD_X_MAX) {
-						pacman->moveRight();
-					}
-					break;
-			}
-			glm::vec3 pos = pacman->getPosition();
-			glm::vec3 dot_pos;
-			// Check if any of the dots overlap with pacman, and if so, remove them
-			for (auto i = (int)dots.size(); i--; ) {
-				dot_pos = dots[i]->getPosition();
-				if (pos.x == dot_pos.x && pos.y == dot_pos.y) {
-					// hide the dot from rendering
-					dots[i]->hide();
-					// remove the dot from our dots list (stays in entity list for de-allocation later)
-					dots.erase(dots.begin() + i);
-				}
+		case 87: // w
+			if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
+				pacman->moveUp();
+				should_check_collisions = true;
 			}
 			break;
-		}
+		case 65: // a
+			if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
+				pacman->moveLeft();
+				should_check_collisions = true;
+			}
+			break;
+		case 83: // s
+			if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
+				pacman->moveDown();
+				should_check_collisions = true;
+			}
+			break;
+		case 68: // d
+			if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
+				pacman->moveRight();
+				should_check_collisions = true;
+			}
+			break;
 		default:
 			break;
+	}
+
+	if (should_check_collisions) {
+		glm::vec3 pos = pacman->getPosition();
+		glm::vec3 dot_pos;
+		// Check if any of the dots overlap with pacman, and if so, remove them
+		for (auto i = (int)dots.size(); i--; ) {
+			dot_pos = dots[i]->getPosition();
+			if (pos.x == dot_pos.x && pos.y == dot_pos.y) {
+				// hide the dot from rendering
+				dots[i]->hide();
+				// remove the dot from our dots list (stays in entity list for de-allocation later)
+				dots.erase(dots.begin() + i);
+			}
+		}
 	}
 }
 
