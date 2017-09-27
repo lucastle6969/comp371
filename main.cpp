@@ -21,51 +21,20 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
-#include "objloader.hpp"     // include the object loader
-#include "constants.hpp"
+#include "entity.hpp"
+#include "worldorigin.hpp"
+#include "grid.hpp"
+#include "pacman.hpp"
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
 
-glm::vec3 camera_position;
-glm::vec3 triangle_scale;
-glm::vec3 pacman_scale;
-glm::vec3 grid_scale;
 glm::mat4 projection_matrix;
 
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
-glm::vec3 eye(6.0f, -50.0f, 50.0f);
-
-void getGridVertices(const int& x_min, const int& x_max,
-                     const int& y_min, const int& y_max,
-                     std::vector<glm::vec3>* grid)
-{
-	// vertical lines
-	for (int x = x_min; x <= x_max; x++) {
-		grid->emplace_back(x, y_min, 0.0f);
-		grid->emplace_back(x, x == 0 ? 0.0f : y_max, 0.0f); // leave room for y-axis
-	}
-	// horizontal lines
-	for (int y = y_min; y <= y_max; y++) {
-		grid->emplace_back(x_min, y, 0.0f);
-		grid->emplace_back(y == 0 ? 0.0f : x_max, y, 0.0f); // leave room for x-axis
-	}
-}
-
-void getAxisVertices(const int& x_max, const int& y_max, const int& z_max, std::vector<glm::vec3>* axes)
-{
-	// x-axis
-	axes->emplace_back(0.0f, 0.0f, 0.0f);
-	axes->emplace_back(x_max, 0.0f, 0.0f);
-	// y-axis
-	axes->emplace_back(0.0f, 0.0f, 0.0f);
-	axes->emplace_back(0.0f, y_max, 0.0f);
-	// z-axis
-	axes->emplace_back(0.0f, 0.0f, 0.0f);
-	axes->emplace_back(0.0f, 0.0f, z_max);
-}
+glm::vec3 eye(0.0f, 0.0f, 20.0f);
 
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -110,82 +79,20 @@ int main()
 	}
 	glUseProgram(shader_program);
 
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normals;
-	std::vector<glm::vec2> UVs;
-	loadOBJ("../pacman.obj", &vertices, &normals, &UVs); //read the vertices from the cube.obj file
+	std::vector<Entity*> entities;
 
-	GLuint VAO;
-	GLuint vertices_buffer;
+	WorldOrigin origin(shader_program);
+	entities.push_back(&origin);
 
-	glGenVertexArrays(1, &VAO);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	glBindVertexArray(VAO);
+	Grid grid(shader_program, &origin);
+	entities.push_back(&grid);
 
-	glGenBuffers(1, &vertices_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
-
-	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
-	glEnableVertexAttribArray(v_position);
-	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-
-	// unbind buffer and vao
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-
-	// generate grid vertices
-	std::vector<glm::vec3> grid_vertices;
-	getGridVertices(-10, 10, -10, 10, &grid_vertices);
-
-	// create vao for grid
-	GLuint VAO2, vertices_buffer_2;
-	glGenVertexArrays(1, &VAO2);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	glBindVertexArray(VAO2);
-
-	glGenBuffers(1, &vertices_buffer_2);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_2);
-	glBufferData(GL_ARRAY_BUFFER, grid_vertices.size() * sizeof(glm::vec3), &grid_vertices.front(), GL_STATIC_DRAW);
-
-	auto v_position2 = (GLuint)glGetAttribLocation(shader_program, "v_position");
-	glEnableVertexAttribArray(v_position2);
-	glVertexAttribPointer(v_position2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-
-	// unbind buffer and vao
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-
-	// generate axis vertices
-	std::vector<glm::vec3> axis_vertices;
-	getAxisVertices(10, 10, 10, &axis_vertices);
-
-	// create vao for grid
-	GLuint VAO3, vertices_buffer_3;
-	glGenVertexArrays(1, &VAO3);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	glBindVertexArray(VAO3);
-
-	glGenBuffers(1, &vertices_buffer_3);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_3);
-	glBufferData(GL_ARRAY_BUFFER, axis_vertices.size() * sizeof(glm::vec3), &axis_vertices.front(), GL_STATIC_DRAW);
-
-	auto v_position3 = (GLuint)glGetAttribLocation(shader_program, "v_position");
-	glEnableVertexAttribArray(v_position3);
-	glVertexAttribPointer(v_position3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-
-	// unbind buffer and vao
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-
-	triangle_scale = glm::vec3(1.0f);
-	pacman_scale = glm::vec3(0.1f);
-	grid_scale = glm::vec3(25.0f);
+	Pacman pacman(shader_program, &grid);
+	pacman.scale(0.04f);
+	entities.push_back(&pacman);
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
+	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -201,39 +108,23 @@ int main()
 		glm::mat4 view_matrix;
 		view_matrix = glm::lookAt(eye, center, up);
 
-		glm::mat4 model_matrix;
-		model_matrix = glm::scale(model_matrix, pacman_scale);
+		for (Entity* entity : entities) {
+			// use the entity's model matrix to form a new Model View Projection matrix
+			glm::mat4 mvp_matrix = projection_matrix * view_matrix * entity->getModelMatrix();
+			// send the mvp_matrix variable content to the shader
+			glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
+			// send the color_type variable to the shader (could be null)
+			glUniform1i(color_type_loc, *entity->getColorType());
 
-		glm::mat4 mvp_matrix = projection_matrix * view_matrix * model_matrix;
-
-		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
-
-		auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
-		glUniform1i(color_type_loc, COLOR_YELLOW);
-
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, (GLuint)vertices.size());
-		glBindVertexArray(0);
-
-		model_matrix = glm::scale(model_matrix, grid_scale);
-
-		mvp_matrix = projection_matrix * view_matrix * model_matrix;
-
-		glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
-
-		auto color_type_loc2 = (GLuint)glGetUniformLocation(shader_program, "color_type");
-		glUniform1i(color_type_loc2, COLOR_WHITE);
-
-		glBindVertexArray(VAO2);
-		glDrawArrays(GL_LINES, 0, (GLuint)grid_vertices.size());
-		glBindVertexArray(0);
-
-		auto color_type_loc3 = (GLuint)glGetUniformLocation(shader_program, "color_type");
-		glUniform1i(color_type_loc3, COLOR_COORDINATE_AXES);
-
-		glBindVertexArray(VAO3);
-		glDrawArrays(GL_LINES, 0, (GLuint)axis_vertices.size());
-		glBindVertexArray(0);
+			GLuint* vao = entity->getVAO();
+			std::vector<glm::vec3>* vertices = entity->getVertices();
+			if (vao != nullptr && vertices != nullptr) {
+				// draw, if and ONLY if we have non-null VAO and vertices
+				glBindVertexArray(*vao);
+				glDrawArrays(GL_LINES, 0, (GLuint)(*vertices).size());
+				glBindVertexArray(0);
+			}
+		}
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);

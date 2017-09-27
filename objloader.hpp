@@ -1,5 +1,7 @@
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
+
+#include <glm/glm.hpp>
 #include <vector>
 
 bool loadOBJ(

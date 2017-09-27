@@ -54,6 +54,14 @@ add_executable(pacman
     glsetup.cpp
     shaderprogram.hpp
     shaderprogram.cpp
+    entity.hpp
+    entity.cpp
+    worldorigin.hpp
+    worldorigin.cpp
+    grid.hpp
+    grid.cpp
+    pacman.hpp
+    pacman.cpp
     objloader.hpp
     objloader.cpp
     utils.hpp
