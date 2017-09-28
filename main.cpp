@@ -87,82 +87,80 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	bool should_check_collisions = false;
 
-	if (!action) {
-		// for now we only handle keydown actions
-		return;
-	}
-	switch (key) {
-		case GLFW_KEY_UP:
-			origin->rotate(-0.1f, x_axis);
-			break;
-		case GLFW_KEY_DOWN:
-			origin->rotate(0.1f, x_axis);
-			break;
-		case GLFW_KEY_LEFT:
-			origin->rotate(-0.1f, y_axis);
-			break;
-		case GLFW_KEY_RIGHT:
-			origin->rotate(0.1f, y_axis);
-			break;
-		case GLFW_KEY_W:
-			if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
-				pacman->moveUp();
-				should_check_collisions = true;
+	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+		switch (key) {
+			case GLFW_KEY_UP:
+				origin->rotate(-0.1f, x_axis);
+				break;
+			case GLFW_KEY_DOWN:
+				origin->rotate(0.1f, x_axis);
+				break;
+			case GLFW_KEY_LEFT:
+				origin->rotate(-0.1f, y_axis);
+				break;
+			case GLFW_KEY_RIGHT:
+				origin->rotate(0.1f, y_axis);
+				break;
+			case GLFW_KEY_W:
+				if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
+					pacman->moveUp();
+					should_check_collisions = true;
+				}
+				break;
+			case GLFW_KEY_A:
+				if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
+					pacman->moveLeft();
+					should_check_collisions = true;
+				}
+				break;
+			case GLFW_KEY_S:
+				if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
+					pacman->moveDown();
+					should_check_collisions = true;
+				}
+				break;
+			case GLFW_KEY_D:
+				if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
+					pacman->moveRight();
+					should_check_collisions = true;
+				}
+				break;
+			case GLFW_KEY_SPACE: {
+				// find a random new spot to place pacman
+				glm::vec3 pos = pacman->getPosition();
+				int x_pos;
+				int y_pos;
+				do {
+					x_pos = randomX();
+					y_pos = randomY();
+				} while (pos.x == x_pos && pos.y == y_pos);
+				pacman->setPosition(x_pos, y_pos);
+				break;
 			}
-			break;
-		case GLFW_KEY_A:
-			if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
-				pacman->moveLeft();
-				should_check_collisions = true;
+			case GLFW_KEY_U:
+			case GLFW_KEY_J:
+				// incrementally scale each object entity
+				for (Entity *entity : entities) {
+					if (entity == origin || entity == grid) continue;
+					entity->scale(key == GLFW_KEY_U ? 1.1f : 1.0f / 1.1f);
+				}
+				break;
+			case GLFW_KEY_P:
+			case GLFW_KEY_L:
+			case GLFW_KEY_T: {
+				GLenum draw_mode = GL_POINTS;
+				if (key == GLFW_KEY_L) draw_mode = GL_LINES;
+				if (key == GLFW_KEY_T) draw_mode = GL_TRIANGLES;
+				// incrementally scale each object entity
+				for (Entity *entity : entities) {
+					if (entity == origin || entity == grid) continue;
+					entity->setDrawMode(draw_mode);
+				}
+				break;
 			}
-			break;
-		case GLFW_KEY_S:
-			if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
-				pacman->moveDown();
-				should_check_collisions = true;
-			}
-			break;
-		case GLFW_KEY_D:
-			if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
-				pacman->moveRight();
-				should_check_collisions = true;
-			}
-			break;
-		case GLFW_KEY_SPACE: {
-			// find a random new spot to place pacman
-			glm::vec3 pos = pacman->getPosition();
-			int x_pos;
-			int y_pos;
-			do {
-				x_pos = randomX();
-				y_pos = randomY();
-			} while (pos.x == x_pos && pos.y == y_pos);
-			pacman->setPosition(x_pos, y_pos);
-			break;
+			default:
+				break;
 		}
-		case GLFW_KEY_U:
-		case GLFW_KEY_J:
-			// incrementally scale each object entity
-			for (Entity* entity : entities) {
-				if (entity == origin || entity == grid) continue;
-				entity->scale(key == GLFW_KEY_U ? 1.1f : 1.0f / 1.1f);
-			}
-			break;
-		case GLFW_KEY_P:
-		case GLFW_KEY_L:
-		case GLFW_KEY_T: {
-			GLenum draw_mode = GL_POINTS;
-			if (key == GLFW_KEY_L) draw_mode = GL_LINES;
-			if (key == GLFW_KEY_T) draw_mode = GL_TRIANGLES;
-			// incrementally scale each object entity
-			for (Entity *entity : entities) {
-				if (entity == origin || entity == grid) continue;
-				entity->setDrawMode(draw_mode);
-			}
-			break;
-		}
-		default:
-			break;
 	}
 
 	if (should_check_collisions) {
