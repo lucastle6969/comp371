@@ -198,6 +198,18 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 	last_ypos = ypos;
 }
 
+void windowSizeCallback(GLFWwindow* window, int w, int h)
+{
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+
+	// Update the viewport dimensions
+	glViewport(0, 0, width, height);
+
+	// Update projection matrix to maintain aspect ratio
+	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 2.0f, 100.0f);
+}
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -207,14 +219,11 @@ int main()
 	// Set the required callback functions
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetCursorPosCallback(window, cursorPosCallback);
+	glfwSetWindowSizeCallback(window, windowSizeCallback);
 
-	// Define the viewport dimensions
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-
-	glViewport(0, 0, width, height);
-
-	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 2.0f, 100.0f);
+	// Set up viewport and projection matrix, which will be updated whenever the window resizes.
+	// Integer arguments don't matter since the size is queried from the framebuffer.
+	windowSizeCallback(window, 0, 0);
 
 	bool shader_program_ok;
 	GLuint shader_program = prepareShaderProgram("../vertex.glsl", "../fragment.glsl",
