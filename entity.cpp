@@ -101,6 +101,12 @@ void Entity::rotate(const float& angle, const glm::vec3& axis)
 	this->rotation_matrix = glm::rotate(this->rotation_matrix, angle, axis);
 }
 
+void Entity::resetRotation()
+{
+	static glm::mat4 identity;
+	this->rotation_matrix = identity;
+}
+
 void Entity::moveUp(const int& units)
 {
 	static glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);

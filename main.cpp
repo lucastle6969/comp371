@@ -103,6 +103,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 			case GLFW_KEY_RIGHT:
 				origin->rotate(0.1f, y_axis);
 				break;
+			case GLFW_KEY_HOME:
+				origin->resetRotation();
+				break;
 			case GLFW_KEY_W:
 				if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
 					pacman->moveUp();
