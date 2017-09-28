@@ -67,10 +67,11 @@ int randomY()
 	return rand() % (WORLD_Y_MAX - WORLD_Y_MIN + 1) + WORLD_Y_MIN;
 }
 
-time_t last_movement_tick = 0;
-const clock_t MOVE_WAITING_TIME = 2500;
 bool canMoveAgain()
 {
+	static time_t last_movement_tick = 0;
+	static const clock_t MOVE_WAITING_TIME = 2500;
+
 	clock_t t = clock();
 	if (t - last_movement_tick < MOVE_WAITING_TIME) {
 		return false;
