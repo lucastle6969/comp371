@@ -201,11 +201,8 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 	last_ypos = ypos;
 }
 
-void windowSizeCallback(GLFWwindow* window, int w, int h)
+void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 {
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-
 	// Update the viewport dimensions
 	glViewport(0, 0, width, height);
 
@@ -222,11 +219,12 @@ int main()
 	// Set the required callback functions
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetCursorPosCallback(window, cursorPosCallback);
-	glfwSetWindowSizeCallback(window, windowSizeCallback);
+	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-	// Set up viewport and projection matrix, which will be updated whenever the window resizes.
-	// Integer arguments don't matter since the size is queried from the framebuffer.
-	windowSizeCallback(window, 0, 0);
+	// Set up viewport and projection matrix, which will be updated whenever the framebuffer resizes.
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	framebufferSizeCallback(window, width, height);
 
 	bool shader_program_ok;
 	GLuint shader_program = prepareShaderProgram("../vertex.glsl", "../fragment.glsl",
