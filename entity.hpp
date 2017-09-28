@@ -35,7 +35,7 @@ public:
 	GLuint* getVAO();
 	virtual const int* getColorType();
 	const GLenum getDrawMode();
-	glm::mat4& getModelMatrix();
+	glm::mat4 getModelMatrix();
 	glm::vec3 getPosition();
 	bool isHidden();
 	void scale(const float& scalar);

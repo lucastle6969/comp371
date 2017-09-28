@@ -63,7 +63,7 @@ const GLenum Entity::getDrawMode()
 	return this->draw_mode;
 }
 
-glm::mat4& Entity::getModelMatrix()
+glm::mat4 Entity::getModelMatrix()
 {
 	static glm::mat4 identity;
 
