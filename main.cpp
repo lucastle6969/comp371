@@ -55,7 +55,7 @@ std::vector<Dot*> dots;
 // Constant vectors
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
-const glm::vec3 eye(0.0f, 0.0f, 20.0f);
+glm::vec3 eye(0.0f, 0.0f, 20.0f);
 
 int randomX()
 {
@@ -81,7 +81,7 @@ bool canMoveAgain()
 }
 
 // Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
@@ -180,6 +180,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
+void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	static double last_xpos = xpos;
+	static double last_ypos = ypos;
+
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		// if the left mouse button is held down, dolly the camera in or out
+		// according to the mouse movement
+		// (drag up = dolly in, drag down = dolly out)
+		eye.z += 0.1f * (ypos - last_ypos);
+	}
+
+	last_xpos = xpos;
+	last_ypos = ypos;
+}
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -187,7 +203,8 @@ int main()
 	setupGlContext(WIDTH, HEIGHT, "Pacman", &window);
 
 	// Set the required callback functions
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetKeyCallback(window, keyCallback);
+	glfwSetCursorPosCallback(window, cursorPosCallback);
 
 	// Define the viewport dimensions
 	int width, height;
