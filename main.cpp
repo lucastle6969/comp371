@@ -141,19 +141,26 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			break;
 		}
 		case GLFW_KEY_U:
-			// incrementally scale up each entity
-			for (Entity* entity : entities) {
-				if (entity == origin || entity == grid) continue;
-				entity->scale(1.1f);
-			}
-			break;
 		case GLFW_KEY_J:
-			// incrementally scale down each entity
+			// incrementally scale each object entity
 			for (Entity* entity : entities) {
 				if (entity == origin || entity == grid) continue;
-				entity->scale(1.0f / 1.1f);
+				entity->scale(key == GLFW_KEY_U ? 1.1f : 1.0f / 1.1f);
 			}
 			break;
+		case GLFW_KEY_P:
+		case GLFW_KEY_L:
+		case GLFW_KEY_T: {
+			GLenum draw_mode = GL_POINTS;
+			if (key == GLFW_KEY_L) draw_mode = GL_LINES;
+			if (key == GLFW_KEY_T) draw_mode = GL_TRIANGLES;
+			// incrementally scale each object entity
+			for (Entity *entity : entities) {
+				if (entity == origin || entity == grid) continue;
+				entity->setDrawMode(draw_mode);
+			}
+			break;
+		}
 		default:
 			break;
 	}
@@ -254,8 +261,6 @@ int main()
 			if (vao == nullptr) continue;
 			std::vector<glm::vec3>* vertices = entity->getVertices();
 			if (vertices == nullptr) continue;
-			const GLenum* draw_mode = entity->getDrawMode();
-			if (draw_mode == nullptr) continue;
 
 			// use the entity's model matrix to form a new Model View Projection matrix
 			glm::mat4 mvp_matrix = projection_matrix * view_matrix * entity->getModelMatrix();
@@ -266,7 +271,7 @@ int main()
 
 			// Draw
 			glBindVertexArray(*vao);
-			glDrawArrays(*draw_mode, 0, (GLuint)(*vertices).size());
+			glDrawArrays(entity->getDrawMode(), 0, (GLuint)(*vertices).size());
 			glBindVertexArray(0);
 		}
 

@@ -29,6 +29,9 @@ Entity::Entity(Entity* parent)
 
 	// can be toggled with this->hide(), this->unhide().
 	this->hidden = false;
+
+	// the default draw mode will be overridden by derived classes
+	this->draw_mode = GL_LINES;
 }
 
 Entity::~Entity()
@@ -55,9 +58,9 @@ const int* Entity::getColorType()
 	return nullptr;
 }
 
-const GLenum* Entity::getDrawMode()
+const GLenum Entity::getDrawMode()
 {
-	return nullptr;
+	return this->draw_mode;
 }
 
 glm::mat4& Entity::getModelMatrix()
@@ -130,11 +133,16 @@ void Entity::moveRight(const int& units)
 	this->orient(0.0f);
 }
 
-void Entity::setPosition(const float &x, const float &y, const float &z)
+void Entity::setPosition(const float& x, const float& y, const float& z)
 {
 	static glm::mat4 identity;
 
 	this->translation_matrix = glm::translate(identity, glm::vec3(x, y, z));
+}
+
+void Entity::setDrawMode(const GLenum& draw_mode)
+{
+	this->draw_mode = draw_mode;
 }
 
 void Entity::hide()

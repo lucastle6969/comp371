@@ -24,6 +24,7 @@ private:
 
 protected:
 	std::vector<glm::vec3>* vertices;
+	GLenum draw_mode;
 	void initVertexArray(const GLuint& shader_program);
 
 public:
@@ -33,7 +34,7 @@ public:
 	std::vector<glm::vec3>* getVertices();
 	GLuint* getVAO();
 	virtual const int* getColorType();
-	virtual const GLenum* getDrawMode();
+	const GLenum getDrawMode();
 	glm::mat4& getModelMatrix();
 	glm::vec3 getPosition();
 	bool isHidden();
@@ -44,6 +45,7 @@ public:
 	void moveLeft(const int& units = 1);
 	void moveRight(const int& units = 1);
 	void setPosition(const float& x, const float& y, const float&z = 0.0f);
+	void setDrawMode(const GLenum& draw_mode);
 	void hide();
 	void unhide();
 };

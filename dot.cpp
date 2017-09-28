@@ -15,6 +15,8 @@
 
 Dot::Dot(const GLuint& shader_program, Entity* parent) : Entity(parent)
 {
+	this->draw_mode = GL_TRIANGLES;
+
 	// for now we can read but then ignore the normals and UVs
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
@@ -29,10 +31,4 @@ Dot::Dot(const GLuint& shader_program, Entity* parent) : Entity(parent)
 const int* Dot::getColorType()
 {
 	return &COLOR_TURQUOISE;
-}
-
-const GLenum* Dot::getDrawMode()
-{
-	static const GLenum draw_mode = GL_TRIANGLES;
-	return &draw_mode;
 }

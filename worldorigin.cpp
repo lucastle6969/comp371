@@ -20,6 +20,8 @@ WorldOrigin::WorldOrigin(
 	Entity* parent
 ) : Entity(parent)
 {
+	this->draw_mode = GL_LINES;
+
 	this->vertices = new std::vector<glm::vec3>();
 	// x-axis
 	this->vertices->emplace_back(0.0f, 0.0f, 0.0f);
@@ -39,8 +41,3 @@ const int* WorldOrigin::getColorType()
 	return &COLOR_COORDINATE_AXES;
 }
 
-const GLenum* WorldOrigin::getDrawMode()
-{
-	static const GLenum draw_mode = GL_LINES;
-	return &draw_mode;
-}

@@ -15,6 +15,8 @@
 
 Pacman::Pacman(const GLuint& shader_program, Entity* parent) : Entity(parent)
 {
+	this->draw_mode = GL_TRIANGLES;
+
 	// for now we can read but then ignore the normals and UVs
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
@@ -29,10 +31,4 @@ Pacman::Pacman(const GLuint& shader_program, Entity* parent) : Entity(parent)
 const int* Pacman::getColorType()
 {
 	return &COLOR_YELLOW;
-}
-
-const GLenum* Pacman::getDrawMode()
-{
-	static const GLenum draw_mode = GL_TRIANGLES;
-	return &draw_mode;
 }

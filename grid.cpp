@@ -21,6 +21,8 @@ Grid::Grid(
 	Entity* parent
 ) : Entity(parent)
 {
+	this->draw_mode = GL_LINES;
+
 	this->vertices = new std::vector<glm::vec3>();
 	// vertical lines
 	for (int x = x_min; x <= x_max; x++) {
@@ -39,10 +41,4 @@ Grid::Grid(
 const int* Grid::getColorType()
 {
 	return &COLOR_WHITE;
-}
-
-const GLenum* Grid::getDrawMode()
-{
-	static const GLenum draw_mode = GL_LINES;
-	return &draw_mode;
 }
