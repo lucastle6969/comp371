@@ -88,6 +88,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 	bool should_check_collisions = false;
 
+	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
 			case GLFW_KEY_UP:
@@ -152,7 +153,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				GLenum draw_mode = GL_POINTS;
 				if (key == GLFW_KEY_L) draw_mode = GL_LINES;
 				if (key == GLFW_KEY_T) draw_mode = GL_TRIANGLES;
-				// incrementally scale each object entity
+				// set each object's draw mode to match the key that was pressed:
+				// P = points, L = lines, T = triangles
 				for (Entity *entity : entities) {
 					if (entity == origin || entity == grid) continue;
 					entity->setDrawMode(draw_mode);
