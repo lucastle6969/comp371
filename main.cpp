@@ -28,6 +28,7 @@
 #include "grid.hpp"
 #include "pacman.hpp"
 #include "dot.hpp"
+#include "utils.hpp"
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
@@ -56,6 +57,9 @@ std::vector<Dot*> dots;
 const glm::vec3 center(0.0f, 0.0f, 0.0f);
 const glm::vec3 up(0.0f, 1.0f, 0.0f);
 glm::vec3 eye(0.0f, 0.0f, 20.0f);
+
+float pan_angle = 0.0f;
+float tilt_angle = 0.0f;
 
 int randomX()
 {
@@ -196,6 +200,16 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 		// (drag up = dolly in, drag down = dolly out)
 		eye.z += 0.1f * (ypos - last_ypos);
 	}
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+		// if the right mouse button is held down, pan the camera left and
+		// right according to the mouse movement
+		pan_angle += 0.001f * (xpos - last_xpos);
+	}
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
+		// if the middle mouse button is held down, tilt the camera up and
+		// down according to the mouse movement
+		tilt_angle += 0.001f * (ypos - last_ypos);
+	}
 
 	last_xpos = xpos;
 	last_ypos = ypos;
@@ -272,6 +286,9 @@ int main()
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
+		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
+		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
 
@@ -280,7 +297,17 @@ int main()
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Get initial version of view matrix
 		view_matrix = glm::lookAt(eye, center, up);
+		// Begin applying pan and tilt rotation: temporarily translate camera to origin
+		glm::vec3 camera_translation = utils::getTranslationVector(view_matrix);
+		view_matrix = glm::translate(view_matrix, -1.0f * camera_translation);
+		// Apply pan rotation
+		view_matrix = glm::rotate(view_matrix, pan_angle, y_axis);
+		// Apply tilt rotation
+		view_matrix = glm::rotate(view_matrix, tilt_angle, x_axis);
+		// Finally: translate camera back to previous position
+		view_matrix = glm::translate(view_matrix, camera_translation);
 
 		for (Entity* entity : entities) {
 			// Check we're actually prepared to draw. If not, skip to next entity.

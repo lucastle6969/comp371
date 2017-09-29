@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "entity.hpp"
+#include "utils.hpp"
 
 Entity::Entity(Entity* parent)
 {
@@ -81,8 +82,7 @@ glm::mat4 Entity::getModelMatrix()
 
 glm::vec3 Entity::getPosition()
 {
-	float* t = glm::value_ptr(this->translation_matrix);
-	return glm::vec3(t[12], t[13], t[14]);
+	return utils::getTranslationVector(this->translation_matrix);
 }
 
 bool Entity::isHidden()
