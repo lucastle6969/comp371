@@ -2,9 +2,26 @@
 
 3D PacMan game made with OpenGL. Works for macOS, Linux, Windows.
 
+*Review Note: I'm not the most experienced with C++. General C++ style comments are welcome!*
+
 **You may get the best results if you use CLion as your IDE - but other IDEs should work.**
 
-Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunter).
+## Acknowledgements
+
+### Dependencies
+
+Beyond the C++ standard library this application relies on:
+* OpenGL
+* GLFW
+* GLEW
+* GLM
+
+### Other help
+
+* Starter skeleton code adapted from [LearnOpenGL.com](https://learnopengl.com/) and COMP 371 at Concordia University
+* Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunter)
+* `ignoreResult` utility adapted from [StackOverflow](https://stackoverflow.com/a/30099727)
+* Thanks to my friend Eric Lathrop for helping me think about camera rotation for the tilting effect
 
 ## Features
 
