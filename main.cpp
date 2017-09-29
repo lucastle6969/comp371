@@ -54,11 +54,10 @@ Pacman* pacman;
 std::vector<Dot*> dots;
 
 // Constant vectors
-const glm::vec3 center(0.0f, 0.0f, 0.0f);
-const glm::vec3 up(0.0f, 1.0f, 0.0f);
 glm::vec3 eye(0.0f, 0.0f, 20.0f);
+glm::vec3 center(0.0f, 0.0f, 0.0f);
+const glm::vec3 up(0.0f, 1.0f, 0.0f);
 
-float pan_angle = 0.0f;
 float tilt_angle = 0.0f;
 
 int randomX()
@@ -203,7 +202,9 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 		// if the right mouse button is held down, pan the camera left and
 		// right according to the mouse movement
-		pan_angle += 0.001f * (xpos - last_xpos);
+		double diff = 0.01 * (xpos - last_xpos);
+		eye.x += diff;
+		center.x += diff;
 	}
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
 		// if the middle mouse button is held down, tilt the camera up and
@@ -299,11 +300,9 @@ int main()
 
 		// Get initial version of view matrix
 		view_matrix = glm::lookAt(eye, center, up);
-		// Begin applying pan and tilt rotation: temporarily translate camera to origin
+		// Begin applying tilt rotation: temporarily translate camera to origin
 		glm::vec3 camera_translation = utils::getTranslationVector(view_matrix);
 		view_matrix = glm::translate(view_matrix, -1.0f * camera_translation);
-		// Apply pan rotation
-		view_matrix = glm::rotate(view_matrix, pan_angle, y_axis);
 		// Apply tilt rotation
 		view_matrix = glm::rotate(view_matrix, tilt_angle, x_axis);
 		// Finally: translate camera back to previous position
