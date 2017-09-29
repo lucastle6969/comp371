@@ -42,25 +42,25 @@ bool loadOBJ(
 
 		if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;
-			utils::ignore_result(fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z));
+			utils::ignoreResult(fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z));
 			temp_vertices.push_back(vertex);
 		}
 		else if (strcmp(lineHeader, "vt") == 0) {
 			glm::vec2 uv;
-			utils::ignore_result(fscanf(file, "%f %f\n", &uv.x, &uv.y));
+			utils::ignoreResult(fscanf(file, "%f %f\n", &uv.x, &uv.y));
 			uv.y = -uv.y; // Invert V coordinate since we will only use DDS texture, which are inverted. Remove if you want to use TGA or BMP loaders.
 			temp_uvs.push_back(uv);
 		}
 		else if (strcmp(lineHeader, "vn") == 0) {
 			glm::vec3 normal;
-			utils::ignore_result(fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z));
+			utils::ignoreResult(fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z));
 			temp_normals.push_back(normal);
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			char line[1000];
-			utils::ignore_result(fgets(line, 1000, file));
+			utils::ignoreResult(fgets(line, 1000, file));
 			bool hasUV = true;
 			int matches = sscanf(line, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 			if (matches != 9) {
@@ -86,7 +86,7 @@ bool loadOBJ(
 		else {
 			// Probably a comment, eat up the rest of the line
 			char stupidBuffer[1000];
-			utils::ignore_result(fgets(stupidBuffer, 1000, file));
+			utils::ignoreResult(fgets(stupidBuffer, 1000, file));
 		}
 
 	}

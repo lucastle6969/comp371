@@ -11,10 +11,10 @@
 namespace utils {
 
     // https://stackoverflow.com/a/30099727
-    // use ignore_result(some_function_call()) to explicitly ignore
+    // use ignoreResult(some_function_call()) to explicitly ignore
     // return values we don't need, and suppress compiler warnings
     template<typename T>
-    inline void ignore_result(const T&) {}
+    inline void ignoreResult(const T &) {}
 
     inline glm::vec3 getTranslationVector(const glm::mat4& transform_matrix)
     {
