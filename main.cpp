@@ -95,16 +95,16 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
 			case GLFW_KEY_UP:
-				origin->rotate(-0.1f, x_axis);
+				origin->rotate(-0.02f, x_axis);
 				break;
 			case GLFW_KEY_DOWN:
-				origin->rotate(0.1f, x_axis);
+				origin->rotate(0.02f, x_axis);
 				break;
 			case GLFW_KEY_LEFT:
-				origin->rotate(-0.1f, y_axis);
+				origin->rotate(-0.02f, y_axis);
 				break;
 			case GLFW_KEY_RIGHT:
-				origin->rotate(0.1f, y_axis);
+				origin->rotate(0.02f, y_axis);
 				break;
 			case GLFW_KEY_HOME:
 				origin->resetRotation();
