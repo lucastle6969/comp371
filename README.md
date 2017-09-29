@@ -18,7 +18,7 @@ Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunte
 * Use 'U' to scale Pacman and the dots up, and 'J' to scale them down
 * Move Pacman with WASD
 * Rotate the game grid around its X axis using the up and down arrows
-* Rotate the game grid around its Y axis using the left and right arrows
+* Rotate the game grid around its Z axis using the left and right arrows
 * Has the game spun out of control? Re-orient the game grid to its starting position with the 'Home' button (on some keyboards this is fn+left arrow).
 * Tired of solidly painted characters? Switch to line meshes with 'L'. Switch to point clouds with 'P'. Switch back to solid triangles with 'T'.
 * Dolly in and out of the scene by holding the left mouse button and moving the mouse up and down.

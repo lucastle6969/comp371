@@ -87,7 +87,7 @@ bool canMoveAgain()
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
-	static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
 
 	bool should_check_collisions = false;
 
@@ -101,10 +101,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				origin->rotate(0.02f, x_axis);
 				break;
 			case GLFW_KEY_LEFT:
-				origin->rotate(-0.02f, y_axis);
+				origin->rotate(-0.02f, z_axis);
 				break;
 			case GLFW_KEY_RIGHT:
-				origin->rotate(0.02f, y_axis);
+				origin->rotate(0.02f, z_axis);
 				break;
 			case GLFW_KEY_HOME:
 				origin->resetRotation();
