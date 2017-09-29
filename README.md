@@ -2,13 +2,30 @@
 
 3D PacMan game made with OpenGL. Works for macOS, Linux, Windows.
 
-**You will get the best results if you use CLion as your IDE.**
-
-Original files provided by COMP 371 at Concordia.
+**You may get the best results if you use CLion as your IDE - but other IDEs should work.**
 
 Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunter).
 
-## Basic Requirements
+## Features
+
+* Pacman navigates the game grid to eat dots - try to eat them all!
+* Use various controls to adjust the viewing angle in three dimensions
+* Use the X, Y and Z axes (red, green and blue) to keep track of things
+
+### Controls
+
+* Press the spacebar to move Pacman to a random new position
+* Use 'U' to scale Pacman and the dots up, and 'J' to scale them down
+* Move Pacman with WASD
+* Rotate the game grid around its X axis using the up and down arrows
+* Rotate the game grid around its Y axis using the left and right arrows
+* Has the game spun out of control? Re-orient the game grid to its starting position with the 'Home' button (on some keyboards this is fn+left arrow).
+* Tired of solidly painted characters? Switch to line meshes with 'L'. Switch to point clouds with 'P'. Switch back to solid triangles with 'T'.
+* Dolly in and out of the scene by holding the left mouse button and moving the mouse up and down.
+* Tilt the camera up and down by holding the middle mouse button and moving the mouse up and down.
+* Pan, or strafe, the camera left and right by holding the right mouse button and moving the mouse left and right.
+
+## Basic Build Requirements
 
 * [CMake](https://cmake.org) version 3.8 or higher
       * On Windows: Make sure to check option for "add CMake to system path".
@@ -23,19 +40,13 @@ See [Windows MinGW Setup](#markdown-header-windows-mingw-setup) below to see spe
 
 See [CLion Setup](#markdown-header-clion-setup) below for help importing the project into CLion.
 
-## Usage
+## Running Project in an IDE
 
 Using Clion, you should be able to open the project and press the green play button to run the program.
 
 *Note, dependencies will be downloaded and built from source the first time, so you will need to wait several minutes.*
 
 For more details see [CLion Setup](#markdown-header-clion-project-setup).
-
-## Expected Output
-
-If the starter program runs as expected you should see something like:
-
-![OpenGL Program Screenshot](triangle_program.jpg)
 
 ## Windows MinGW Setup
 
