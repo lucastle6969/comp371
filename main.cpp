@@ -101,10 +101,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				origin->rotate(0.02f, x_axis);
 				break;
 			case GLFW_KEY_LEFT:
-				origin->rotate(-0.02f, z_axis);
+				// we're rotating around NEGATIVE z axis, so increment sign is counterintuitive!
+				origin->rotate(0.02f, z_axis);
 				break;
 			case GLFW_KEY_RIGHT:
-				origin->rotate(0.02f, z_axis);
+				// see above re: increment sign
+				origin->rotate(-0.02f, z_axis);
 				break;
 			case GLFW_KEY_HOME:
 				origin->resetRotation();
