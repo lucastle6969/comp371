@@ -143,6 +143,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 					y_pos = randomY();
 				} while (pos.x == x_pos && pos.y == y_pos);
 				pacman->setPosition(x_pos, y_pos);
+				should_check_collisions = true;
 				break;
 			}
 			case GLFW_KEY_U:
