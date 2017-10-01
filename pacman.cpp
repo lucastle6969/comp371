@@ -6,6 +6,7 @@
 #endif
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
 #include "entity.hpp"
@@ -50,14 +51,22 @@ const int Pacman::getColorType()
 // returns new using_teapot bool
 bool Pacman::toggleTeapot()
 {
-	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
-
 	// Toggle using_teapot
 	this->using_teapot = !this->using_teapot;
 
-	// Adjust model scale and ratio to better display the Teapot in similar manner to Pacman
+	// Adjust model scale to match new model
 	this->scale(this->using_teapot ? Pacman::teapot_scale_ratio : 1.0f / Pacman::teapot_scale_ratio);
-	this->rotate((this->using_teapot ? 1.0f : -1.0f) * Pacman::teapot_rotation_angle, x_axis);
 
 	return this->using_teapot;
+}
+
+const glm::mat4& Pacman::getBaseRotation()
+{
+	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
+	static glm::mat4 identity;
+	static glm::mat4 pacman = identity;
+	static glm::mat4 teapot = glm::rotate(identity, Pacman::teapot_rotation_angle, x_axis);
+
+	// Return appropriate rotation offset depending on which model we're using
+	return this->using_teapot ? teapot : pacman;
 }

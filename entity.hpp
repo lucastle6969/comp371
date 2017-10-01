@@ -24,8 +24,9 @@ private:
 	void orient(const float& angle);
 
 protected:
-	static GLuint initVertexArray(const GLuint& shader_program, const std::vector<glm::vec3>& vertices);
 	GLenum draw_mode;
+	static GLuint initVertexArray(const GLuint& shader_program, const std::vector<glm::vec3>& vertices);
+	virtual const glm::mat4& getBaseRotation();
 
 public:
 	Entity() : Entity(nullptr) {}

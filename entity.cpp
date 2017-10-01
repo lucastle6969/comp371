@@ -43,7 +43,7 @@ const glm::mat4& Entity::getModelMatrix()
 	this->model_matrix =
 			parent_model_matrix *
 			this->translation_matrix *
-			this->rotation_matrix *
+			this->rotation_matrix * this->getBaseRotation() *
 			this->scale_matrix;
 	return this->model_matrix;
 }
@@ -171,4 +171,12 @@ GLuint Entity::initVertexArray(
 	glBindVertexArray(0);
 
 	return vao;
+}
+
+// derived classes should override this if the model
+// needs a fundamental rotation offset
+const glm::mat4& Entity::getBaseRotation()
+{
+	static glm::mat4 identity;
+	return identity;
 }
