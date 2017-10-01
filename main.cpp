@@ -66,7 +66,7 @@ float tilt_angle = 0.0f;
 
 const glm::vec3& randomValidPathVertex()
 {
-	return valid_path[rand() % 41];
+	return valid_path[rand() % valid_path.size()];
 }
 
 bool positionIsValid(const glm::vec3 pos)
