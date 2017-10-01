@@ -30,6 +30,7 @@ protected:
 
 public:
 	Entity() : Entity(nullptr) {}
+	virtual ~Entity() = default;
 	explicit Entity(Entity* parent);
 	// pure virtual methods must be overridden by derived classes
 	virtual const std::vector<glm::vec3>& getVertices() = 0;
