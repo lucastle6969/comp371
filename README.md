@@ -1,6 +1,6 @@
 # 3d-pacman
 
-3D PacMan game made with OpenGL. Works for macOS, Linux, Windows.
+3D PacMan game made with OpenGL. Works on macOS and Linux. Should work for Windows, but not recently tested.
 
 *Review Note: I'm not the most experienced with C++. General C++ style comments are welcome!*
 
