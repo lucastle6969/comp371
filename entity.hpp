@@ -47,7 +47,7 @@ public:
 	void moveDown(const int& units = 1);
 	void moveLeft(const int& units = 1);
 	void moveRight(const int& units = 1);
-	void setPosition(const float& x, const float& y, const float&z = 0.0f);
+	void setPosition(const float& x, const float& y, const float& z = 0.0f);
 	void setDrawMode(const GLenum& draw_mode);
 	void hide();
 	void unhide();

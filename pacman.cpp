@@ -28,7 +28,7 @@ Pacman::Pacman(const GLuint& shader_program, Entity* parent) : Entity(parent)
 
 	// get the vertices from the teapot.obj file (ignore the rest)
 	loadOBJ("../teapot.obj", &this->teapot_vertices, &normals, &UVs);
-	this-> teapot_vao = Entity::initVertexArray(shader_program, this->teapot_vertices);
+	this->teapot_vao = Entity::initVertexArray(shader_program, this->teapot_vertices);
 
 	this->using_teapot = false;
 }
