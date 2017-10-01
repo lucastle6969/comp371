@@ -21,6 +21,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
 #include "entity.hpp"
@@ -28,6 +29,7 @@
 #include "grid.hpp"
 #include "pacman.hpp"
 #include "dot.hpp"
+#include "pathloader.hpp"
 #include "utils.hpp"
 
 // Window dimensions
@@ -53,6 +55,8 @@ Pacman* pacman;
 
 std::vector<Dot*> dots;
 
+std::vector<glm::vec3> valid_path;
+
 // Constant vectors
 glm::vec3 eye(0.0f, 0.0f, 20.0f);
 glm::vec3 center(0.0f, 0.0f, 0.0f);
@@ -60,14 +64,20 @@ const glm::vec3 up(0.0f, 1.0f, 0.0f);
 
 float tilt_angle = 0.0f;
 
-int randomX()
+const glm::vec3& randomValidPathVertex()
 {
-	return rand() % (WORLD_X_MAX - WORLD_X_MIN + 1) + WORLD_X_MIN;
+	return valid_path[rand() % 41];
 }
 
-int randomY()
+bool positionIsValid(const glm::vec3 pos)
 {
-	return rand() % (WORLD_Y_MAX - WORLD_Y_MIN + 1) + WORLD_Y_MIN;
+	for (const glm::vec3& v : valid_path)
+	{
+		if (pos.x == v.x && pos.y == v.y && pos.z == v.z) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool canMoveAgain()
@@ -91,6 +101,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 	bool should_check_collisions = false;
 
+	const glm::vec3 old_pacman_pos = pacman->getPosition();
+
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
@@ -112,25 +124,37 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				origin->resetRotation();
 				break;
 			case GLFW_KEY_W:
-				if (canMoveAgain() && pacman->getPosition().y < WORLD_Y_MAX) {
+				if (canMoveAgain() && old_pacman_pos.y < WORLD_Y_MAX &&
+						positionIsValid(
+								glm::vec3(old_pacman_pos.x, old_pacman_pos.y + 1, old_pacman_pos.z)
+						)) {
 					pacman->moveUp();
 					should_check_collisions = true;
 				}
 				break;
 			case GLFW_KEY_A:
-				if (canMoveAgain() && pacman->getPosition().x > WORLD_X_MIN) {
+				if (canMoveAgain() && old_pacman_pos.x > WORLD_X_MIN &&
+						positionIsValid(
+						      glm::vec3(old_pacman_pos.x - 1, old_pacman_pos.y, old_pacman_pos.z)
+						)) {
 					pacman->moveLeft();
 					should_check_collisions = true;
 				}
 				break;
 			case GLFW_KEY_S:
-				if (canMoveAgain() && pacman->getPosition().y > WORLD_Y_MIN) {
+				if (canMoveAgain() && old_pacman_pos.y > WORLD_Y_MIN &&
+						positionIsValid(
+						      glm::vec3(old_pacman_pos.x, old_pacman_pos.y - 1, old_pacman_pos.z)
+						)) {
 					pacman->moveDown();
 					should_check_collisions = true;
 				}
 				break;
 			case GLFW_KEY_D:
-				if (canMoveAgain() && pacman->getPosition().x < WORLD_X_MAX) {
+				if (canMoveAgain() && old_pacman_pos.x < WORLD_X_MAX &&
+						positionIsValid(
+						      glm::vec3(old_pacman_pos.x + 1, old_pacman_pos.y, old_pacman_pos.z)
+						)) {
 					pacman->moveRight();
 					should_check_collisions = true;
 				}
@@ -138,13 +162,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 			case GLFW_KEY_SPACE: {
 				// find a random new spot to place pacman
 				glm::vec3 pos = pacman->getPosition();
-				int x_pos;
-				int y_pos;
+				glm::vec3 new_pos;
 				do {
-					x_pos = randomX();
-					y_pos = randomY();
-				} while (pos.x == x_pos && pos.y == y_pos);
-				pacman->setPosition(x_pos, y_pos);
+					new_pos = randomValidPathVertex();
+				} while (pos.x == new_pos.x && pos.y == new_pos.y);
+				pacman->setPosition(new_pos.x, new_pos.y);
 				should_check_collisions = true;
 				break;
 			}
@@ -255,6 +277,9 @@ int main()
 	}
 	glUseProgram(shader_program);
 
+	// read valid path vertices
+	loadPath("../valid_path.txt", &valid_path);
+
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
 	entities.push_back(&*origin);
@@ -274,12 +299,11 @@ int main()
 		auto dot = new Dot(shader_program, grid);
 		dot->scale(0.2f);
 		// place the dot randomly on the grid
-		int x_pos, y_pos;
+		glm::vec3 pos;
 		do {
-			x_pos = randomX();
-			y_pos = randomY();
-		} while (x_pos == 0 && y_pos == 0);
-		dot->setPosition(x_pos, y_pos);
+			pos = randomValidPathVertex();
+		} while (pos.x == 0 && pos.y == 0);
+		dot->setPosition(pos.x, pos.y);
 		// copy the dot's pointer and include it in our entity list and dot list
 		entities.push_back(&*dot);
 		dots.push_back(dot);

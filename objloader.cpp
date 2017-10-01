@@ -11,6 +11,7 @@
 
 #pragma warning(disable:4996)
 
+// returns true if load is successful
 bool loadOBJ(
 	const char* path,
 	std::vector<glm::vec3>* out_vertices,

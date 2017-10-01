@@ -66,6 +66,8 @@ add_executable(pacman
     dot.cpp
     objloader.hpp
     objloader.cpp
+    pathloader.hpp
+    pathloader.cpp
     utils.hpp
     constants.hpp
 )
