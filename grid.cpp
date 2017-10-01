@@ -23,22 +23,31 @@ Grid::Grid(
 {
 	this->draw_mode = GL_LINES;
 
-	this->vertices = new std::vector<glm::vec3>();
 	// vertical lines
 	for (int x = x_min; x <= x_max; x++) {
-		this->vertices->emplace_back(x, y_min, 0.0f);
-		this->vertices->emplace_back(x, x == 0 ? 0.0f : y_max, 0.0f); // leave room for y-axis
+		this->vertices.emplace_back(x, y_min, 0.0f);
+		this->vertices.emplace_back(x, x == 0 ? 0.0f : y_max, 0.0f); // leave room for y-axis
 	}
 	// horizontal lines
 	for (int y = y_min; y <= y_max; y++) {
-		this->vertices->emplace_back(x_min, y, 0.0f);
-		this->vertices->emplace_back(y == 0 ? 0.0f : x_max, y, 0.0f); // leave room for x-axis
+		this->vertices.emplace_back(x_min, y, 0.0f);
+		this->vertices.emplace_back(y == 0 ? 0.0f : x_max, y, 0.0f); // leave room for x-axis
 	}
 
-	this->initVertexArray(shader_program);
+	this->vao = Entity::initVertexArray(shader_program, this->vertices);
 }
 
-const int* Grid::getColorType()
+const std::vector<glm::vec3>& Grid::getVertices()
 {
-	return &COLOR_WHITE;
+	return this->vertices;
+}
+
+GLuint Grid::getVAO()
+{
+	return this->vao;
+}
+
+const int Grid::getColorType()
+{
+	return COLOR_WHITE;
 }

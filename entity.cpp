@@ -20,14 +20,6 @@ Entity::Entity(Entity* parent)
 	// If no parent is passed, then we'll ignore that field.
 	this->parent = parent;
 
-	// this->vertices may optionally be defined by derived class constructor
-	this->vertices = nullptr;
-
-	// this->vao will be defined when the initVertexArray() method is called,
-	// but only if this->vertices has already been defined.
-	// DERIVING CLASSES SHOULD CALL initVertexArray()!
-	this->vao = nullptr;
-
 	// can be toggled with this->hide(), this->unhide().
 	this->hidden = false;
 
@@ -35,36 +27,12 @@ Entity::Entity(Entity* parent)
 	this->draw_mode = GL_LINES;
 }
 
-Entity::~Entity()
-{
-	// since parent was initialized externally, we don't need
-	// to deal with its de-allocation.
-
-	delete this->vertices;
-	delete this->vao;
-}
-
-std::vector<glm::vec3>* Entity::getVertices()
-{
-	return this->vertices;
-}
-
-GLuint* Entity::getVAO()
-{
-	return this->vao;
-}
-
-const int* Entity::getColorType()
-{
-	return nullptr;
-}
-
-const GLenum Entity::getDrawMode()
+GLenum Entity::getDrawMode()
 {
 	return this->draw_mode;
 }
 
-glm::mat4 Entity::getModelMatrix()
+const glm::mat4& Entity::getModelMatrix()
 {
 	static glm::mat4 identity;
 
@@ -171,38 +139,36 @@ void Entity::orient(const float& angle)
 	this->rotation_matrix = glm::rotate(identity, angle, z_axis);
 }
 
-void Entity::initVertexArray(const GLuint& shader_program)
-{
-	// this->vertices is never defined by the Entity class,
-	// but it may be defined by a derived class.
-	if (this->vertices == nullptr || this->vao != nullptr) {
-		return;
-	}
+GLuint Entity::initVertexArray(
+	const GLuint& shader_program,
+	const std::vector<glm::vec3>& vertices
+) {
+	// Set VAO (Vertex Array Object) id
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
 
-	// set VAO (Vertex Array Object) id
-	this->vao = new GLuint;
-	glGenVertexArrays(1, this->vao);
+	// Bind the VAO
+	glBindVertexArray(vao);
 
-	// Bind the VAO first
-	glBindVertexArray(*this->vao);
-
-	// create vertices buffer
+	// Create vertices buffer
 	GLuint vertices_buffer;
 	glGenBuffers(1, &vertices_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
 	glBufferData(
 			GL_ARRAY_BUFFER,
-			this->vertices->size() * sizeof(glm::vec3),
-			&this->vertices->front(),
+			vertices.size() * sizeof(glm::vec3),
+			&vertices.front(),
 			GL_STATIC_DRAW
 	);
 
-	// bind attribute pointers
+	// Bind attribute pointers
 	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
 	glEnableVertexAttribArray(v_position);
 	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
-	// unbind buffer and VAO
+	// Unbind buffer and VAO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	return vao;
 }

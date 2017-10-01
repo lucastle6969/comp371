@@ -170,6 +170,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				}
 				break;
 			}
+			case GLFW_KEY_LEFT_SHIFT:
+				pacman->toggleTeapot();
+				break;
 			default:
 				break;
 		}
@@ -312,23 +315,19 @@ int main()
 		view_matrix = glm::translate(view_matrix, camera_translation);
 
 		for (Entity* entity : entities) {
-			// Check we're actually prepared to draw. If not, skip to next entity.
+			// Skip to the next entity if the current entity is hidden
 			if (entity->isHidden()) continue;
-			GLuint* vao = entity->getVAO();
-			if (vao == nullptr) continue;
-			std::vector<glm::vec3>* vertices = entity->getVertices();
-			if (vertices == nullptr) continue;
 
 			// use the entity's model matrix to form a new Model View Projection matrix
 			glm::mat4 mvp_matrix = projection_matrix * view_matrix * entity->getModelMatrix();
 			// send the mvp_matrix variable content to the shader
 			glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
 			// send the color_type variable to the shader (could be null)
-			glUniform1i(color_type_loc, *entity->getColorType());
+			glUniform1i(color_type_loc, entity->getColorType());
 
 			// Draw
-			glBindVertexArray(*vao);
-			glDrawArrays(entity->getDrawMode(), 0, (GLuint)(*vertices).size());
+			glBindVertexArray(entity->getVAO());
+			glDrawArrays(entity->getDrawMode(), 0, (GLuint)entity->getVertices().size());
 			glBindVertexArray(0);
 		}
 

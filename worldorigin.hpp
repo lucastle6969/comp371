@@ -8,10 +8,15 @@
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
+#include <glm/glm.hpp>
+#include <vector>
+
 #include "entity.hpp"
 
 class WorldOrigin: public Entity {
-
+private:
+	std::vector<glm::vec3> vertices;
+	GLuint vao;
 public:
 	explicit WorldOrigin(const GLuint& shader_program) : WorldOrigin(shader_program, nullptr) {}
 	WorldOrigin(const GLuint& shader_program, Entity* parent)
@@ -29,7 +34,9 @@ public:
 		const int& z_max,
 		Entity* parent
 	);
-	const int* getColorType() override;
+	const std::vector<glm::vec3>& getVertices() override;
+	GLuint getVAO() override;
+	const int getColorType() override;
 };
 
 #endif //PACMAN3D_WORLDORIGIN_H

@@ -22,13 +22,21 @@ Dot::Dot(const GLuint& shader_program, Entity* parent) : Entity(parent)
 	std::vector<glm::vec2> UVs;
 
 	// get the vertices from the sphere.obj file (ignore the rest)
-	this->vertices = new std::vector<glm::vec3>();
-	loadOBJ("../sphere.obj", this->vertices, &normals, &UVs);
-
-	this->initVertexArray(shader_program);
+	loadOBJ("../sphere.obj", &this->vertices, &normals, &UVs);
+	this->vao = Entity::initVertexArray(shader_program, this->vertices);
 }
 
-const int* Dot::getColorType()
+const std::vector<glm::vec3>& Dot::getVertices()
 {
-	return &COLOR_TURQUOISE;
+	return this->vertices;
+}
+
+GLuint Dot::getVAO()
+{
+	return this->vao;
+}
+
+const int Dot::getColorType()
+{
+	return COLOR_TURQUOISE;
 }

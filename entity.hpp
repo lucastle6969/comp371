@@ -11,10 +11,11 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+// Abstract class
+
 class Entity {
 private:
 	Entity* parent;
-	GLuint* vao;
 	glm::mat4 scale_matrix;
 	glm::mat4 rotation_matrix;
 	glm::mat4 translation_matrix;
@@ -23,19 +24,19 @@ private:
 	void orient(const float& angle);
 
 protected:
-	std::vector<glm::vec3>* vertices;
+	static GLuint initVertexArray(const GLuint& shader_program, const std::vector<glm::vec3>& vertices);
 	GLenum draw_mode;
-	void initVertexArray(const GLuint& shader_program);
 
 public:
 	Entity() : Entity(nullptr) {}
 	explicit Entity(Entity* parent);
-	~Entity();
-	std::vector<glm::vec3>* getVertices();
-	GLuint* getVAO();
-	virtual const int* getColorType();
-	const GLenum getDrawMode();
-	glm::mat4 getModelMatrix();
+	// pure virtual methods must be overridden by derived classes
+	virtual const std::vector<glm::vec3>& getVertices() = 0;
+	virtual GLuint getVAO() = 0;
+	virtual const int getColorType() = 0;
+	// end pure virtual functions
+	GLenum getDrawMode();
+	const glm::mat4& getModelMatrix();
 	glm::vec3 getPosition();
 	bool isHidden();
 	void scale(const float& scalar);

@@ -21,23 +21,31 @@ WorldOrigin::WorldOrigin(
 ) : Entity(parent)
 {
 	this->draw_mode = GL_LINES;
-
-	this->vertices = new std::vector<glm::vec3>();
+	
 	// x-axis
-	this->vertices->emplace_back(0.0f, 0.0f, 0.0f);
-	this->vertices->emplace_back(x_max, 0.0f, 0.0f);
+	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
+	this->vertices.emplace_back(x_max, 0.0f, 0.0f);
 	// y-axis
-	this->vertices->emplace_back(0.0f, 0.0f, 0.0f);
-	this->vertices->emplace_back(0.0f, y_max, 0.0f);
+	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
+	this->vertices.emplace_back(0.0f, y_max, 0.0f);
 	// z-axis
-	this->vertices->emplace_back(0.0f, 0.0f, 0.0f);
-	this->vertices->emplace_back(0.0f, 0.0f, z_max);
+	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
+	this->vertices.emplace_back(0.0f, 0.0f, z_max);
 
-	this->initVertexArray(shader_program);
+	this->vao = Entity::initVertexArray(shader_program, this->vertices);
 }
 
-const int* WorldOrigin::getColorType()
+const std::vector<glm::vec3>& WorldOrigin::getVertices()
 {
-	return &COLOR_COORDINATE_AXES;
+	return this->vertices;
 }
 
+GLuint WorldOrigin::getVAO()
+{
+	return this->vao;
+}
+
+const int WorldOrigin::getColorType()
+{
+	return COLOR_COORDINATE_AXES;
+}
