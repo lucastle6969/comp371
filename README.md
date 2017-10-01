@@ -41,7 +41,7 @@ Beyond the C++ standard library this application relies on:
 * Dolly in and out of the scene by holding the left mouse button and moving the mouse up and down.
 * Tilt the camera up and down by holding the middle mouse button and moving the mouse up and down.
 * Pan, or strafe, the camera left and right by holding the right mouse button and moving the mouse left and right.
-* Press left shift to turn Pacman into a Teapot, and press left shift again to get Pacman back
+* **Press left shift to turn Pacman into a Teapot, and press left shift again to get Pacman back**
 
 ## Basic Build Requirements
 
