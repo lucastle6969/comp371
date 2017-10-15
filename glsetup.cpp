@@ -26,6 +26,9 @@ void setupGlContext(
 	glfwWindowHint(GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, 24);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	// lock update interval to refresh rate
+	glfwSwapInterval(1);
+
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	GLFWwindow* w = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (w == nullptr)
