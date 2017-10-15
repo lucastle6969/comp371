@@ -22,6 +22,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "vendor/stb_image.h"
+
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
 #include "entity.hpp"
@@ -278,6 +281,21 @@ int main()
 		return -1;
 	}
 	glUseProgram(shader_program);
+
+	int map_width, map_height, channels;
+	// Read image data using 4 channels (red, green, blue, alpha)
+	std::string map_path = "../depth.bmp";
+	float* data = stbi_loadf(map_path.c_str(), &map_width, &map_height, &channels, 4);
+
+	if (!data) {
+		std::cout << "Failed to load image " << map_path << ": " << stbi_failure_reason() << std::endl;
+		return -1;
+	} else {
+		std::cout << "Image load success!\n";
+	}
+
+	// Free memory for loaded height map
+	stbi_image_free(data);
 
 	// read valid path vertices
 	loadPath("../valid_path.txt", &valid_path);
