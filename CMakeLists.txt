@@ -17,7 +17,7 @@ HunterGate(
     SHA1 "34a6ae7bc9d6a6599d21c239a60ebc05abe8abb4"
 )
 
-project(PacMan3D)
+project(HeightMapper)
 
 add_definitions(-Wno-deprecated-declarations -DCMAKE_BUILD_TYPE=Release -DGLM_FORCE_RADIANS)
 
@@ -48,7 +48,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm REQUIRED)
 
 # Add executables
-add_executable(pacman
+add_executable(heightmapper
     main.cpp
     glsetup.hpp
     glsetup.cpp
@@ -74,9 +74,9 @@ add_executable(pacman
 
 # Link libraries
 if(APPLE)
-    target_link_libraries(pacman ${OPEN_GL})
+    target_link_libraries(heightmapper ${OPEN_GL})
 else()
-    target_link_libraries(pacman glew::glew)
+    target_link_libraries(heightmapper glew::glew)
 endif()
-target_link_libraries(pacman glfw)
-target_link_libraries(pacman glm)
+target_link_libraries(heightmapper glfw)
+target_link_libraries(heightmapper glm)

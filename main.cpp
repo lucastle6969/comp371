@@ -32,6 +32,8 @@
 #include "pathloader.hpp"
 #include "utils.hpp"
 
+const char* APP_NAME = "Height Mapper";
+
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
 
@@ -257,7 +259,7 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 int main()
 {
 	GLFWwindow* window = nullptr;
-	setupGlContext(WIDTH, HEIGHT, "Pacman", &window);
+	setupGlContext(WIDTH, HEIGHT, APP_NAME, &window);
 
 	// Set the required callback functions
 	glfwSetKeyCallback(window, keyCallback);

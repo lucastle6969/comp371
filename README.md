@@ -1,8 +1,8 @@
-# 3d-pacman
+# height-mapper
 
-3D PacMan game made with OpenGL. Works on macOS and Linux. Should work for Windows, but not recently tested.
+Loads a raster image and renders a 3D surface by mapping brightness at a given location to surface height at the corresponding location.
 
-*Review Note: I'm not the most experienced with C++. General C++ style comments are welcome!*
+Works on macOS and Linux. Should work for Windows, but not recently tested.
 
 **You may get the best results if you use CLion as your IDE - but other IDEs should work.**
 
@@ -84,7 +84,7 @@ For more details see [CLion Setup](#markdown-header-clion-project-setup).
 4. Fill out other details as you like - you may want the Markdown support plugin for looking at readme files.
 
 ### CLion Project setup
-1. On startup select "Open Project", and select the `3d-pacman` directory.
+1. On startup select "Open Project", and select the `height-mapper` directory.
 2. Once the project is opened, it should automatically build.
 4. *Possible Windows error:* if you see a message similar to, `For MinGW to work correctly C:\Program Files\OpenSSH\bin\sh.exe must NOT be in your PATH` go to `File -> Settings -> Appearance & Behavior -> Path Variables` and add `PATH` to the Ignored Variables, hit OK, and try again.
 5. Press the green play button to build and run the application.
