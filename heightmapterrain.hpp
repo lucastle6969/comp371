@@ -16,12 +16,14 @@
 
 class HeightMapTerrain: public Entity {
 private:
+	static constexpr float rotation_angle = (float)(M_PI / 2);
 	std::vector<glm::vec3> vertices;
 	GLuint vao;
 	int map_width;
 	int map_height;
 	glm::mat4 base_scale;
 	const glm::mat4& getBaseScale() override;
+	const glm::mat4& getBaseRotation() override;
 public:
 	HeightMapTerrain(const GLuint& shader_program, const std::string& map_path)
 		: HeightMapTerrain(shader_program, map_path, nullptr) {}
