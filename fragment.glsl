@@ -7,13 +7,9 @@ out vec4 color;
 
 const int COLOR_WHITE = 0;
 const int COLOR_COORDINATE_AXES = 1;
-const int COLOR_YELLOW = 2;
-const int COLOR_TURQUOISE = 3;
+const int COLOR_HEIGHT = 2;
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-const vec4 YELLOW = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-const vec4 ORANGE = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-const vec4 TURQUOISE = vec4(0.89f, 0.98f, 0.98f, 1.0f);
 
 void main()
 {
@@ -24,14 +20,11 @@ void main()
         case COLOR_COORDINATE_AXES:
             color = vec4(pos, 1.0f);
             break;
-        case COLOR_YELLOW:
-            color = YELLOW;
-            break;
-        case COLOR_TURQUOISE:
-            color = TURQUOISE;
+        case COLOR_HEIGHT:
+            color = vec4(vec3(pos.y), 1.0f);
             break;
         default:
-            color = ORANGE;
+            color = WHITE;
             break;
     }
 }
