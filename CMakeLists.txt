@@ -56,6 +56,8 @@ add_executable(heightmapper
     shaderprogram.cpp
     entity.hpp
     entity.cpp
+    heightmapterrain.hpp
+    heightmapterrain.cpp
     worldorigin.hpp
     worldorigin.cpp
     grid.hpp

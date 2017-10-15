@@ -42,9 +42,9 @@ const glm::mat4& Entity::getModelMatrix()
 
 	this->model_matrix =
 			parent_model_matrix *
-			this->translation_matrix *
+			this->translation_matrix * this->getBaseTranslation() *
 			this->rotation_matrix * this->getBaseRotation() *
-			this->scale_matrix;
+			this->scale_matrix * this->getBaseScale();
 	return this->model_matrix;
 }
 
@@ -174,8 +174,24 @@ GLuint Entity::initVertexArray(
 }
 
 // derived classes should override this if the model
+// needs a fundamental scale offset
+const glm::mat4& Entity::getBaseScale()
+{
+	static glm::mat4 identity;
+	return identity;
+}
+
+// derived classes should override this if the model
 // needs a fundamental rotation offset
 const glm::mat4& Entity::getBaseRotation()
+{
+	static glm::mat4 identity;
+	return identity;
+}
+
+// derived classes should override this if the model
+// needs a fundamental translation offset
+const glm::mat4& Entity::getBaseTranslation()
 {
 	static glm::mat4 identity;
 	return identity;

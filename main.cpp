@@ -22,12 +22,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "vendor/stb_image.h"
-
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
 #include "entity.hpp"
+#include "heightmapterrain.hpp"
 #include "worldorigin.hpp"
 #include "grid.hpp"
 #include "pacman.hpp"
@@ -55,6 +53,7 @@ glm::mat4 projection_matrix;
 std::vector<Entity*> entities;
 
 WorldOrigin* origin;
+HeightMapTerrain* height_map_terrain;
 Grid* grid;
 Pacman* pacman;
 
@@ -282,27 +281,17 @@ int main()
 	}
 	glUseProgram(shader_program);
 
-	int map_width, map_height, channels;
-	// Read image data using 4 channels (red, green, blue, alpha)
-	std::string map_path = "../depth.bmp";
-	float* data = stbi_loadf(map_path.c_str(), &map_width, &map_height, &channels, 4);
-
-	if (!data) {
-		std::cout << "Failed to load image " << map_path << ": " << stbi_failure_reason() << std::endl;
-		return -1;
-	} else {
-		std::cout << "Image load success!\n";
-	}
-
-	// Free memory for loaded height map
-	stbi_image_free(data);
-
 	// read valid path vertices
 	loadPath("../valid_path.txt", &valid_path);
 
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
 	entities.push_back(&*origin);
+
+	height_map_terrain = new HeightMapTerrain(shader_program, "../depth.bmp", origin);
+	height_map_terrain->scale(0.02f);
+	// copy pointer to entity list
+	entities.push_back(&*height_map_terrain);
 
 	grid = new Grid(shader_program, WORLD_X_MIN, WORLD_X_MAX, WORLD_Y_MIN, WORLD_Y_MAX, origin);
 	// copy pointer to entity list
