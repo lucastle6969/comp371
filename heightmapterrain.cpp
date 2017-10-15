@@ -61,8 +61,8 @@ HeightMapTerrain::HeightMapTerrain(
 
 	// since the model y coordinates are in a range between 0 and 1,
 	// we should scale them to look more pronounced.
-	// arbitrarily choosing average of width and height divided by 3
-	float y_scale = (map_width + map_height) / 6.0f;
+	// arbitrarily choosing average of width and height divided by 4
+	float y_scale = (map_width + map_height) / 8.0f;
 	this->base_scale = glm::scale(this->base_scale, glm::vec3(1.0f, y_scale, 1.0f));
 
 	this->draw_mode = GL_POINTS;
