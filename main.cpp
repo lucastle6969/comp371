@@ -27,10 +27,6 @@
 #include "entity.hpp"
 #include "heightmapterrain.hpp"
 #include "worldorigin.hpp"
-#include "grid.hpp"
-#include "pacman.hpp"
-#include "dot.hpp"
-#include "pathloader.hpp"
 #include "utils.hpp"
 
 const char* APP_NAME = "Height Mapper";
@@ -54,12 +50,6 @@ std::vector<Entity*> entities;
 
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
-Grid* grid;
-Pacman* pacman;
-
-std::vector<Dot*> dots;
-
-std::vector<glm::vec3> valid_path;
 
 // Constant vectors
 glm::vec3 eye(0.0f, 0.0f, 20.0f);
@@ -68,44 +58,11 @@ const glm::vec3 up(0.0f, 1.0f, 0.0f);
 
 float tilt_angle = 0.0f;
 
-const glm::vec3& randomValidPathVertex()
-{
-	return valid_path[rand() % valid_path.size()];
-}
-
-bool positionIsValid(const glm::vec3 pos)
-{
-	for (const glm::vec3& v : valid_path)
-	{
-		if (pos.x == v.x && pos.y == v.y && pos.z == v.z) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool canMoveAgain()
-{
-	static time_t last_movement_tick = 0;
-	static const clock_t MOVE_WAITING_TIME = 2500;
-
-	clock_t t = clock();
-	if (t - last_movement_tick < MOVE_WAITING_TIME) {
-		return false;
-	}
-	last_movement_tick = t;
-	return true;
-}
-
 // Is called whenever a key is pressed/released via GLFW
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
-
-	bool should_check_collisions = false;
-
-	const glm::vec3 old_pacman_pos = pacman->getPosition();
 
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
@@ -127,61 +84,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 			case GLFW_KEY_HOME:
 				origin->resetRotation();
 				break;
-			case GLFW_KEY_W:
-				if (canMoveAgain() && old_pacman_pos.y < WORLD_Y_MAX &&
-						positionIsValid(
-								glm::vec3(old_pacman_pos.x, old_pacman_pos.y + 1, old_pacman_pos.z)
-						)) {
-					pacman->moveUp();
-					should_check_collisions = true;
-				}
-				break;
-			case GLFW_KEY_A:
-				if (canMoveAgain() && old_pacman_pos.x > WORLD_X_MIN &&
-						positionIsValid(
-						      glm::vec3(old_pacman_pos.x - 1, old_pacman_pos.y, old_pacman_pos.z)
-						)) {
-					pacman->moveLeft();
-					should_check_collisions = true;
-				}
-				break;
-			case GLFW_KEY_S:
-				if (canMoveAgain() && old_pacman_pos.y > WORLD_Y_MIN &&
-						positionIsValid(
-						      glm::vec3(old_pacman_pos.x, old_pacman_pos.y - 1, old_pacman_pos.z)
-						)) {
-					pacman->moveDown();
-					should_check_collisions = true;
-				}
-				break;
-			case GLFW_KEY_D:
-				if (canMoveAgain() && old_pacman_pos.x < WORLD_X_MAX &&
-						positionIsValid(
-						      glm::vec3(old_pacman_pos.x + 1, old_pacman_pos.y, old_pacman_pos.z)
-						)) {
-					pacman->moveRight();
-					should_check_collisions = true;
-				}
-				break;
-			case GLFW_KEY_SPACE: {
-				// find a random new spot to place pacman
-				glm::vec3 pos = pacman->getPosition();
-				glm::vec3 new_pos;
-				do {
-					new_pos = randomValidPathVertex();
-				} while (pos.x == new_pos.x && pos.y == new_pos.y);
-				pacman->setPosition(new_pos.x, new_pos.y);
-				should_check_collisions = true;
-				break;
-			}
-			case GLFW_KEY_U:
-			case GLFW_KEY_J:
-				// incrementally scale each object entity
-				for (Entity *entity : entities) {
-					if (entity == origin || entity == grid) continue;
-					entity->scale(key == GLFW_KEY_U ? 1.1f : 1.0f / 1.1f);
-				}
-				break;
 			case GLFW_KEY_P:
 			case GLFW_KEY_L:
 			case GLFW_KEY_T: {
@@ -191,31 +93,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				// set each object's draw mode to match the key that was pressed:
 				// P = points, L = lines, T = triangles
 				for (Entity *entity : entities) {
-					if (entity == origin || entity == grid) continue;
+					if (entity == origin) continue;
 					entity->setDrawMode(draw_mode);
 				}
 				break;
 			}
-			case GLFW_KEY_LEFT_SHIFT:
-				pacman->toggleTeapot();
-				break;
 			default:
 				break;
-		}
-	}
-
-	if (should_check_collisions) {
-		glm::vec3 pos = pacman->getPosition();
-		glm::vec3 dot_pos;
-		// Check if any of the dots overlap with pacman, and if so, remove them
-		for (auto i = (int)dots.size(); i--; ) {
-			dot_pos = dots[i]->getPosition();
-			if (pos.x == dot_pos.x && pos.y == dot_pos.y) {
-				// hide the dot from rendering
-				dots[i]->hide();
-				// remove the dot from our dots list (stays in entity list for de-allocation later)
-				dots.erase(dots.begin() + i);
-			}
 		}
 	}
 }
@@ -281,42 +165,14 @@ int main()
 	}
 	glUseProgram(shader_program);
 
-	// read valid path vertices
-	loadPath("../valid_path.txt", &valid_path);
-
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
 	height_map_terrain = new HeightMapTerrain(shader_program, "../depth.bmp", origin);
-	height_map_terrain->scale(0.02f);
+	height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
 	entities.push_back(&*height_map_terrain);
-
-	grid = new Grid(shader_program, WORLD_X_MIN, WORLD_X_MAX, WORLD_Y_MIN, WORLD_Y_MAX, origin);
-	// copy pointer to entity list
-	entities.push_back(&*grid);
-
-	pacman = new Pacman(shader_program, grid);
-	pacman->scale(0.04f);
-	// copy pointer to entity list
-	entities.push_back(&*pacman);
-
-	// add several dot pickups to the grid
-	for (int i = 0; i < NUM_DOTS; i++) {
-		// create a new dot
-		auto dot = new Dot(shader_program, grid);
-		dot->scale(0.2f);
-		// place the dot randomly on the grid
-		glm::vec3 pos;
-		do {
-			pos = randomValidPathVertex();
-		} while (pos.x == 0 && pos.y == 0);
-		dot->setPosition(pos.x, pos.y);
-		// copy the dot's pointer and include it in our entity list and dot list
-		entities.push_back(&*dot);
-		dots.push_back(dot);
-	}
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
