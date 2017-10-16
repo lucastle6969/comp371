@@ -34,7 +34,7 @@ HeightMapTerrain::HeightMapTerrain(
 		throw std::runtime_error("Failed to load image " + map_path + ": " + stbi_failure_reason());
 	}
 
-	// BEGIN STEP 1
+	// BEGIN STEP 1: Points taken directly from pixel color values
 
 	for (int i = 0, limit = map_width * map_height * requested_channels; i < limit; i += requested_channels) {
 		// average of color values becomes y value (height); values are between 0 and 1.
@@ -50,7 +50,7 @@ HeightMapTerrain::HeightMapTerrain(
 		float x = (pixel_number % map_width) - (map_width / 2.0f);
 		float z = (pixel_number / map_width) - (map_height / 2.0f);
 
-		this->vertices.emplace_back(x, height, z);
+		this->vertices_step_1.emplace_back(x, height, z);
 	}
 
 	// Free image data memory since we're not using it anymore
@@ -58,24 +58,23 @@ HeightMapTerrain::HeightMapTerrain(
 
 	std::vector<GLuint> elements;
 	HeightMapTerrain::createElements(map_width, map_height, &elements);
-	this->vao = Entity::initVertexArray(shader_program, this->vertices, elements);
+	this->vao_step_1 = Entity::initVertexArray(shader_program, this->vertices_step_1, elements);
 
 	// END STEP 1
 
-	// BEGIN STEP 2
+	// BEGIN STEP 2: Points reduced via skip interval
 
 	// TODO: get skip size as input from user
 	int skip_size = 20;
 
-	std::vector<glm::vec3> reduced_vertices;
 	for (int y = 0; y < map_height; y += skip_size) {
 		int offset = y * map_width;
 		for (int x = 0; x < map_width; x += skip_size) {
-			reduced_vertices.push_back(this->vertices[offset + x]);
+			this->vertices_step_2.push_back(this->vertices_step_1[offset + x]);
 
 			int x_remaining = map_width - x;
 			if (x_remaining > 1 && x_remaining <= skip_size) {
-				reduced_vertices.push_back(this->vertices[offset + map_width - 1]);
+				this->vertices_step_2.push_back(this->vertices_step_1[offset + map_width - 1]);
 			}
 		}
 
@@ -83,16 +82,15 @@ HeightMapTerrain::HeightMapTerrain(
 		if (y_remaining > 1 && y_remaining <= skip_size) {
 			offset = (map_height - 1) * map_width;
 			for (int x = 0; x < map_width; x += skip_size) {
-				reduced_vertices.push_back(this->vertices[offset + x]);
+				this->vertices_step_2.push_back(this->vertices_step_1[offset + x]);
 
 				int x_remaining = map_width - x;
 				if (x_remaining > 1 && x_remaining <= skip_size) {
-					reduced_vertices.push_back(this->vertices[offset + map_width - 1]);
+					this->vertices_step_2.push_back(this->vertices_step_1[offset + map_width - 1]);
 				}
 			}
 		}
 	}
-	this->vertices = reduced_vertices;
 
 	// sampled vertices should contain first and last vertex in each row/column,
 	// regardless of skip interval
@@ -101,9 +99,21 @@ HeightMapTerrain::HeightMapTerrain(
 
 	std::vector<GLuint> elements2;
 	HeightMapTerrain::createElements(reduced_width, reduced_height, &elements2);
-	this->vao = Entity::initVertexArray(shader_program, reduced_vertices, elements2);
+	this->vao_step_2 = Entity::initVertexArray(shader_program, this->vertices_step_2, elements2);
 
 	// END STEP 2
+
+	// BEGIN STEP 3: Missing points from step 2 spline-interpolated along x-axis
+
+
+
+	// END STEP 3
+
+	// BEGIN STEP 4: Remaining missing points from step 3 spline-interpolated along z-axis
+
+
+
+	// END STEP 4
 
 	// since the model y coordinates are in a range between 0 and 1,
 	// we should scale them to look more pronounced.
@@ -116,12 +126,12 @@ HeightMapTerrain::HeightMapTerrain(
 
 const std::vector<glm::vec3>& HeightMapTerrain::getVertices()
 {
-	return this->vertices;
+	return this->vertices_step_1;
 }
 
 GLuint HeightMapTerrain::getVAO()
 {
-	return this->vao;
+	return this->vao_step_1;
 }
 
 const int HeightMapTerrain::getColorType()
