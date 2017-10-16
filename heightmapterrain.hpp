@@ -19,8 +19,6 @@ private:
 	static constexpr float rotation_angle = (float)(M_PI / 2);
 	std::vector<glm::vec3> vertices;
 	GLuint vao;
-	int map_width;
-	int map_height;
 	glm::mat4 base_scale;
 	static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 	const glm::mat4& getBaseScale() override;
