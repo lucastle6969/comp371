@@ -151,7 +151,7 @@ GLuint Entity::initVertexArray(
 		elements.emplace_back(i);
 	}
 
-	Entity::initVertexArray(shader_program, vertices, elements);
+	return Entity::initVertexArray(shader_program, vertices, elements);
 }
 
 GLuint Entity::initVertexArray(
