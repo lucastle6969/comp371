@@ -22,6 +22,7 @@ private:
 	int map_width;
 	int map_height;
 	glm::mat4 base_scale;
+	static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 	const glm::mat4& getBaseScale() override;
 	const glm::mat4& getBaseRotation() override;
 public:

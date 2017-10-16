@@ -26,6 +26,11 @@ private:
 protected:
 	GLenum draw_mode;
 	static GLuint initVertexArray(const GLuint& shader_program, const std::vector<glm::vec3>& vertices);
+	static GLuint initVertexArray(
+		const GLuint& shader_program,
+		const std::vector<glm::vec3>& vertices,
+		const std::vector<GLuint>& elements
+	);
 	virtual const glm::mat4& getBaseScale();
 	virtual const glm::mat4& getBaseRotation();
 	virtual const glm::mat4& getBaseTranslation();

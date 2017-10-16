@@ -216,7 +216,20 @@ int main()
 
 			// Draw
 			glBindVertexArray(entity->getVAO());
-			glDrawArrays(entity->getDrawMode(), 0, (GLuint)entity->getVertices().size());
+			GLenum draw_mode = entity->getDrawMode();
+			if (draw_mode == GL_POINTS) {
+				// it's inefficient and useless to use glDrawElements for a point cloud
+				glDrawArrays(draw_mode, 0, (GLuint)entity->getVertices().size());
+			} else {
+				int elementBufferArraySize;
+				glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &elementBufferArraySize);
+				glDrawElements(
+						draw_mode,
+						elementBufferArraySize / sizeof(GLuint),
+						GL_UNSIGNED_INT,
+						nullptr
+				);
+			}
 			glBindVertexArray(0);
 		}
 

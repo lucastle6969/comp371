@@ -54,16 +54,18 @@ HeightMapTerrain::HeightMapTerrain(
 	// Free image data memory since we're not using it anymore
 	stbi_image_free(image_data);
 
-	this->vao = Entity::initVertexArray(shader_program, this->vertices);
-	this->map_width = map_width;
-	this->map_height = map_height;
-
+	std::vector<GLuint> elements;
+	HeightMapTerrain::createElements(map_width, map_height, &elements);
+	this->vao = Entity::initVertexArray(shader_program, this->vertices, elements);
 
 	// since the model y coordinates are in a range between 0 and 1,
 	// we should scale them to look more pronounced.
 	// arbitrarily choosing average of width and height divided by 4
 	float y_scale = (map_width + map_height) / 8.0f;
 	this->base_scale = glm::scale(this->base_scale, glm::vec3(1.0f, y_scale, 1.0f));
+
+	this->map_width = map_width;
+	this->map_height = map_height;
 
 	this->draw_mode = GL_POINTS;
 }
@@ -95,4 +97,32 @@ const glm::mat4& HeightMapTerrain::getBaseRotation()
 	static glm::mat4 rotation = glm::rotate(identity, HeightMapTerrain::rotation_angle, x_axis);
 
 	return rotation;
+}
+
+void HeightMapTerrain::createElements(
+	const int& width,
+	const int& height,
+	std::vector<GLuint>* const elements
+) {
+	if (elements == nullptr) {
+		throw std::runtime_error("Elements vector must not be null.");
+	}
+
+	// since we know our terrain comes from an image, i.e. a fully-filled 2d array,
+	// we can create an element array using an uncomplicated algorithm which creates
+	// two triangles to connect each arrangement of 4 adjacent vertices.
+	for (int y = height - 1; y--; ) {
+		int offset = y * width;
+		for (int x = width - 1; x--; ) {
+			// first triangle
+			elements->emplace_back(offset + x); // top-left
+			elements->emplace_back(offset + x + 1); // top-right
+			elements->emplace_back(offset + width + x); // bottom-left
+
+			// second triangle
+			elements->emplace_back(offset + width + x); // bottom-left
+			elements->emplace_back(offset + x + 1); // top-right
+			elements->emplace_back(offset + width + x + 1); // bottom-right
+		}
+	}
 }

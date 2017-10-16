@@ -140,8 +140,24 @@ void Entity::orient(const float& angle)
 }
 
 GLuint Entity::initVertexArray(
+	const GLuint &shader_program,
+	const std::vector<glm::vec3> &vertices
+) {
+	// if no elements vector is provided, we'll create a default
+
+	std::vector<GLuint> elements;
+	// naive default approach - traverse vertices in original order
+	for (int i = 0, limit = (int)vertices.size(); i < limit; i++) {
+		elements.emplace_back(i);
+	}
+
+	Entity::initVertexArray(shader_program, vertices, elements);
+}
+
+GLuint Entity::initVertexArray(
 	const GLuint& shader_program,
-	const std::vector<glm::vec3>& vertices
+	const std::vector<glm::vec3>& vertices,
+	const std::vector<GLuint>& elements
 ) {
 	// Set VAO (Vertex Array Object) id
 	GLuint vao;
@@ -161,13 +177,26 @@ GLuint Entity::initVertexArray(
 			GL_STATIC_DRAW
 	);
 
+	// Create element buffer
+	GLuint element_buffer;
+	glGenBuffers(1, &element_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer);
+	glBufferData(
+			GL_ELEMENT_ARRAY_BUFFER,
+			elements.size() * sizeof(GLuint),
+			&elements.front(),
+			GL_STATIC_DRAW
+	);
+
 	// Bind attribute pointers
 	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
 	glEnableVertexAttribArray(v_position);
 	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
-	// Unbind buffer and VAO
+	// Unbind buffers and VAO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// TODO!!! Unbind element array buffer here, it should be automatically re-bound!
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
 	return vao;
