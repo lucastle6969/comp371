@@ -193,11 +193,11 @@ GLuint Entity::initVertexArray(
 	glEnableVertexAttribArray(v_position);
 	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
-	// Unbind buffers and VAO
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// TODO!!! Unbind element array buffer here, it should be automatically re-bound!
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	// Unbind buffers and VAO. VAO should be unbound BEFORE element array buffer so VAO remembers
+	// the last bound element array buffer!
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	return vao;
 }
