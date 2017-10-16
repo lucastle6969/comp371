@@ -177,6 +177,11 @@ GLuint Entity::initVertexArray(
 			GL_STATIC_DRAW
 	);
 
+	// Bind attribute pointer for the vertices buffer
+	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
+	glEnableVertexAttribArray(v_position);
+	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+
 	// Create element buffer
 	GLuint element_buffer;
 	glGenBuffers(1, &element_buffer);
@@ -188,12 +193,8 @@ GLuint Entity::initVertexArray(
 			GL_STATIC_DRAW
 	);
 
-	// Bind attribute pointers
-	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
-	glEnableVertexAttribArray(v_position);
-	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-
-	// Unbind buffers and VAO. VAO should be unbound BEFORE element array buffer so VAO remembers
+	// Unbind VAO, then the corresponding buffers.
+	// VAO should be unbound BEFORE element array buffer so VAO remembers
 	// the last bound element array buffer!
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
