@@ -281,9 +281,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
     {
         for (int i = 0; i < interpolated_width; i++) {
             int limit = interpolated_width * (reduced_height - 1);
-            std::cout << "i" << i << std::endl;
             for (int j = i; j < limit; j += interpolated_width) {
-                std::cout<<"j"<<j<<std::endl;
                 glm::vec3 p1 = this->vertices_step_3[j];
                 glm::vec3 p2 = this->vertices_step_3[j + interpolated_width];
                 glm::vec3 p0 = j >= i + interpolated_width
