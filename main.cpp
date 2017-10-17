@@ -120,8 +120,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				eye -= 0.3f * glm::normalize(left_direction);
 				break;
 			case GLFW_KEY_SPACE:
-				// move up or down
-				eye += (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? -0.3f : 0.3f) * up;
+				// move up
+				eye += 0.3f * up;
+				break;
+			case GLFW_KEY_TAB:
+				// move down
+				eye -= 0.3f * up;
 				break;
 			case GLFW_KEY_BACKSPACE:
 				// Reset terrain
