@@ -35,6 +35,7 @@ const char* APP_NAME = "Height Mapper";
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
 
+const std::string DEFAULT_IMAGE_FILE = "../depth.png";
 const int DEFAULT_SKIP_SIZE = 20;
 const float DEFAULT_INTERPOLATION_SIZE = 0.1;
 
@@ -270,6 +271,13 @@ void promptForUserInputs()
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
+    std::cout << "Choose an image to load [" << DEFAULT_IMAGE_FILE << "]: ";
+    std::string image_file;
+    std::getline(std::cin, image_file);
+    if (image_file.empty()) {
+        image_file = DEFAULT_IMAGE_FILE;
+    }
+
 	GLFWwindow* window = nullptr;
 	setupGlContext(WIDTH, HEIGHT, APP_NAME, &window);
 
@@ -297,7 +305,7 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	height_map_terrain = new HeightMapTerrain(shader_program, "../depth.png", origin);
+	height_map_terrain = new HeightMapTerrain(shader_program, image_file, origin);
 	height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
 	entities.push_back(&*height_map_terrain);
