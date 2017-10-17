@@ -47,6 +47,13 @@ private:
 	glm::mat4 base_scale;
 
 	static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
+	static glm::vec3 catmullRomInterpolation(
+			const glm::vec3& p0,
+			const glm::vec3& p1,
+			const glm::vec3& p2,
+			const glm::vec3& p3,
+			const float& u
+	);
 	const glm::mat4& getBaseScale() override;
 	void generateDerivedVertices(const int& skip_size, const float& interpolation_size);
 	void deleteDerivedBuffers();

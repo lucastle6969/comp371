@@ -19,14 +19,6 @@
 #include "constants.hpp"
 #include "heightmapterrain.hpp"
 
-// column-major
-glm::mat4 catmull_rom_basis = glm::mat4(
-		-0.5f, 1.0f, -0.5f, 0.0f,
-		1.5f, -2.5f, 0.0f, 1.0f,
-		-1.5f, 2.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f, 0.0f
-);
-
 HeightMapTerrain::HeightMapTerrain(
 	const GLuint &shader_program,
 	const std::string& map_path,
@@ -243,18 +235,9 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
 				this->vertices_step_3.push_back(p1);
 
 				// Catmull-Rom spline curve
-				glm::mat4x3 controls = glm::mat4x3(
-						p0.x, p1.x, p2.x, p3.x,
-						p0.y, p1.y, p2.y, p3.y,
-						p0.z, p1.z, p2.z, p3.z
-				);
                 // increment u from 0 to 1 along interval from p1 to p2
 				for (float u = interpolation_size; u < 1; u += interpolation_size) {
-					this->vertices_step_3.emplace_back(
-							glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
-							catmull_rom_basis *
-							controls
-					);
+					this->vertices_step_3.push_back(HeightMapTerrain::catmullRomInterpolation(p0, p1, p2, p3, u));
 				}
 
 				if (j + 1 == limit) {
@@ -280,7 +263,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
 	// BEGIN STEP 4: Remaining missing points from step 3 spline-interpolated along z-axis
     {
         for (int i = 0; i < interpolated_width; i++) {
-            int limit = interpolated_width * (reduced_height - 1);
+            int limit = i + interpolated_width * (reduced_height - 2) + 1;
             for (int j = i; j < limit; j += interpolated_width) {
                 glm::vec3 p1 = this->vertices_step_3[j];
                 glm::vec3 p2 = this->vertices_step_3[j + interpolated_width];
@@ -295,21 +278,12 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
                 this->vertices_step_4.push_back(p1);
 
                 // Catmull-Rom spline curve
-                glm::mat4x3 controls = glm::mat4x3(
-                        p0.x, p1.x, p2.x, p3.x,
-                        p0.y, p1.y, p2.y, p3.y,
-                        p0.z, p1.z, p2.z, p3.z
-                );
-                // increment u from 0 to 1 along interval from p1 to p2
-                for (float u = interpolation_size; u < 1; u += interpolation_size) {
-                    this->vertices_step_4.emplace_back(
-                            glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
-                            catmull_rom_basis *
-                            controls
-                    );
-                }
+	            // increment u from 0 to 1 along interval from p1 to p2
+	            for (float u = interpolation_size; u < 1; u += interpolation_size) {
+		            this->vertices_step_4.push_back(HeightMapTerrain::catmullRomInterpolation(p0, p1, p2, p3, u));
+	            }
 
-                if (j + interpolated_width == limit) {
+                if (j + 1 == limit) {
                     this->vertices_step_4.push_back(p2);
                 }
             }
@@ -373,4 +347,33 @@ void HeightMapTerrain::createElements(
 			elements->emplace_back(offset + width + x + 1); // bottom-right
 		}
 	}
+}
+
+glm::vec3 HeightMapTerrain::catmullRomInterpolation(
+	const glm::vec3& p0,
+	const glm::vec3& p1,
+	const glm::vec3& p2,
+	const glm::vec3& p3,
+	const float& u
+) {
+	// Catmull-Rom spline curve interpolation
+
+	// column-major
+	static glm::mat4 catmull_rom_basis = glm::mat4(
+			-0.5f, 1.0f, -0.5f, 0.0f,
+			1.5f, -2.5f, 0.0f, 1.0f,
+			-1.5f, 2.0f, 0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f, 0.0f
+	);
+
+	glm::mat4x3 controls = glm::mat4x3(
+			p0.x, p1.x, p2.x, p3.x,
+			p0.y, p1.y, p2.y, p3.y,
+			p0.z, p1.z, p2.z, p3.z
+	);
+	return glm::vec3(
+			glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
+			catmull_rom_basis *
+			controls
+	);
 }
