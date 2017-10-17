@@ -366,14 +366,12 @@ glm::vec3 HeightMapTerrain::catmullRomInterpolation(
 			0.5f, -0.5f, 0.0f, 0.0f
 	);
 
-	glm::mat4x3 controls = glm::mat4x3(
+	glm::mat3x4 controls(
 			p0.x, p1.x, p2.x, p3.x,
 			p0.y, p1.y, p2.y, p3.y,
 			p0.z, p1.z, p2.z, p3.z
 	);
-	return glm::vec3(
-			glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
+	return glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
 			catmull_rom_basis *
-			controls
-	);
+			controls;
 }
