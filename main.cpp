@@ -276,7 +276,7 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	height_map_terrain = new HeightMapTerrain(shader_program, "../depth.bmp", origin);
+	height_map_terrain = new HeightMapTerrain(shader_program, "../depth.png", origin);
 	height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
 	entities.push_back(&*height_map_terrain);
