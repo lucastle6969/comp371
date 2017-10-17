@@ -19,6 +19,14 @@
 #include "constants.hpp"
 #include "heightmapterrain.hpp"
 
+// column-major
+glm::mat4 catmull_rom_basis = glm::mat4(
+		-0.5f, 1.0f, -0.5f, 0.0f,
+		1.5f, -2.5f, 0.0f, 1.0f,
+		-1.5f, 2.0f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f, 0.0f
+);
+
 HeightMapTerrain::HeightMapTerrain(
 	const GLuint &shader_program,
 	const std::string& map_path,
@@ -170,22 +178,12 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 	this->vertices_step_3.clear();
 	this->vertices_step_4.clear();
 
+	int reduced_width, reduced_height;
+
 	// BEGIN STEP 2: Points reduced via skip interval
-
-	for (int y = 0; y < this->map_height; y += skip_size) {
-		int offset = y * this->map_width;
-		for (int x = 0; x < this->map_width; x += skip_size) {
-			this->vertices_step_2.push_back(this->vertices_step_1[offset + x]);
-
-			int x_remaining = this->map_width - x;
-			if (x_remaining > 1 && x_remaining <= skip_size) {
-				this->vertices_step_2.push_back(this->vertices_step_1[offset + this->map_width - 1]);
-			}
-		}
-
-		int y_remaining = this->map_height - y;
-		if (y_remaining > 1 && y_remaining <= skip_size) {
-			offset = (this->map_height - 1) * this->map_width;
+	{
+		for (int y = 0; y < this->map_height; y += skip_size) {
+			int offset = y * this->map_width;
 			for (int x = 0; x < this->map_width; x += skip_size) {
 				this->vertices_step_2.push_back(this->vertices_step_1[offset + x]);
 
@@ -194,30 +192,86 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 					this->vertices_step_2.push_back(this->vertices_step_1[offset + this->map_width - 1]);
 				}
 			}
+
+			int y_remaining = this->map_height - y;
+			if (y_remaining > 1 && y_remaining <= skip_size) {
+				offset = (this->map_height - 1) * this->map_width;
+				for (int x = 0; x < this->map_width; x += skip_size) {
+					this->vertices_step_2.push_back(this->vertices_step_1[offset + x]);
+
+					int x_remaining = this->map_width - x;
+					if (x_remaining > 1 && x_remaining <= skip_size) {
+						this->vertices_step_2.push_back(this->vertices_step_1[offset + this->map_width - 1]);
+					}
+				}
+			}
 		}
+
+		// sampled vertices should contain first and last vertex in each row/column,
+		// regardless of skip interval
+		reduced_width = map_width / skip_size + (map_width % skip_size == 0 ? 1 : 2);
+		reduced_height = map_height / skip_size + (map_height % skip_size == 0 ? 1 : 2);
+
+		std::vector<GLuint> elements_step_2;
+		HeightMapTerrain::createElements(reduced_width, reduced_height, &elements_step_2);
+		this->vao_step_2 = Entity::initVertexArray(
+				this->shader_program,
+				this->vertices_step_2,
+				elements_step_2,
+				&this->vertices_buffer_step_2,
+				&this->element_buffer_step_2
+		);
 	}
-
-	// sampled vertices should contain first and last vertex in each row/column,
-	// regardless of skip interval
-	int reduced_width = map_width / skip_size + (map_width % skip_size == 0 ? 1 : 2);
-	int reduced_height = map_height / skip_size + (map_height % skip_size == 0 ? 1 : 2);
-
-	std::vector<GLuint> elements_step_2;
-	HeightMapTerrain::createElements(reduced_width, reduced_height, &elements_step_2);
-	this->vao_step_2 = Entity::initVertexArray(
-			this->shader_program,
-			this->vertices_step_2,
-			elements_step_2,
-			&this->vertices_buffer_step_2,
-			&this->element_buffer_step_2
-	);
-
 	// END STEP 2
 
 	// BEGIN STEP 3: Missing points from step 2 spline-interpolated along x-axis
+	{
+		for (int i = reduced_height; i--;) {
+			int offset = reduced_width * i;
+			for (int j = offset, limit = offset + reduced_width - 1; j < limit; j++) {
+				glm::vec3 p1 = this->vertices_step_2[j];
+				glm::vec3 p2 = this->vertices_step_2[j + 1];
+				glm::vec3 p0 = j - 1 >= offset
+				               ? this->vertices_step_2[j - 1]
+				               // if we don't have a leading control point, make one up
+				               : glm::vec3(2 * p1.x - p2.x, p1.y, p1.z);
+				glm::vec3 p3 = j + 1 < limit
+				               ? this->vertices_step_2[j + 1]
+				               // if we don't have a trailing control point, make one up
+				               : glm::vec3(2 * p2.x - p1.x, p1.y, p1.z);
 
+				this->vertices_step_3.push_back(p1);
 
+				// Catmull-Rom spline curve
+				glm::mat4x3 controls = glm::mat4x3(
+						p0.x, p1.x, p2.x, p3.x,
+						p0.y, p1.y, p2.y, p3.y,
+						p0.z, p1.z, p2.z, p3.z
+				);
+				for (float incr = 1 / (p2.x - p1.x), u = incr; u < 1; u += incr) {
+					this->vertices_step_3.emplace_back(
+							glm::vec4(u * u * u, u * u, u, 1) * // [u^3, u^2, u, 1]
+							catmull_rom_basis *
+							controls
+					);
+				}
 
+				if (j + 1 == limit) {
+					this->vertices_step_3.push_back(p2);
+				}
+			}
+		}
+
+		std::vector<GLuint> elements_step_3;
+		HeightMapTerrain::createElements(map_width, reduced_height, &elements_step_3);
+		this->vao_step_3 = Entity::initVertexArray(
+				this->shader_program,
+				this->vertices_step_3,
+				elements_step_3,
+				&this->vertices_buffer_step_3,
+				&this->element_buffer_step_3
+		);
+	}
 	// END STEP 3
 
 	// BEGIN STEP 4: Remaining missing points from step 3 spline-interpolated along z-axis
