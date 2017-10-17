@@ -129,6 +129,11 @@ void Entity::unhide()
 	this->hidden = false;
 }
 
+void Entity::toggle_hide()
+{
+	this->hidden = !this->hidden;
+}
+
 void Entity::orient(const float& angle)
 {
 	static glm::mat4 identity;

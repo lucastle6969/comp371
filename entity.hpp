@@ -66,6 +66,7 @@ public:
 	void setDrawMode(const GLenum& draw_mode);
 	void hide();
 	void unhide();
+	void toggle_hide();
 };
 
 #endif //PACMAN3D_ENTITY_H

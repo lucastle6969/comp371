@@ -127,6 +127,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				// move down
 				eye -= 0.3f * up;
 				break;
+			case GLFW_KEY_GRAVE_ACCENT:
+				origin->toggle_hide();
+				break;
 			case GLFW_KEY_BACKSPACE:
 				// Reset terrain
 				height_map_terrain->selectStep(1);
@@ -272,6 +275,7 @@ int main()
 	glUseProgram(shader_program);
 
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
+	origin->hide();
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
