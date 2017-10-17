@@ -21,6 +21,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
@@ -53,8 +54,12 @@ HeightMapTerrain* height_map_terrain;
 
 // Camera
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
-glm::vec3 eye(0.0f, 20.0f, 3.0f);
-glm::vec3 view_direction(0.0f, -1.0f, -0.1f);
+glm::vec3 eye(0.0f, 2.0f, 2.0f);
+// view_direction initialized in main() by calling setViewDirection()
+glm::vec3 view_direction;
+
+float pitch = -0.3f;
+float yaw = 180.0f;
 
 bool awaiting_skip_size_prompt = false;
 
@@ -64,8 +69,14 @@ glm::vec3 getCameraCenter()
 	return eye + view_direction;
 }
 
+void setViewDirection() {
+	view_direction.x = (float)(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	view_direction.y = (float)sin(glm::radians(pitch));
+	view_direction.z = (float)(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+}
+
 // Is called whenever a key is pressed/released via GLFW
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
@@ -133,41 +144,62 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				}
 				break;
 			}
+			case GLFW_KEY_ESCAPE:
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				break;
 			default:
 				break;
 		}
 	}
 }
 
-void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	// TODO: rotate view_direction
-	/*
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+}
+
+void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+	// Thanks to https://learnopengl.com/#!Getting-started/Camera for helping
+	// me think about camera movement!
+
+	static bool was_mouse_captured = glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+
 	static double last_xpos = xpos;
 	static double last_ypos = ypos;
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		// if the left mouse button is held down, dolly the camera in or out
-		// according to the mouse movement
-		// (drag up = dolly in, drag down = dolly out)
-		eye.z += 0.1f * (ypos - last_ypos);
-	}
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-		// if the right mouse button is held down, pan the camera left and
-		// right according to the mouse movement
-		double diff = 0.01 * (xpos - last_xpos);
-		eye.x += diff;
-		center.x += diff;
-	}
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
-		// if the middle mouse button is held down, tilt the camera up and
-		// down according to the mouse movement
-		tilt_angle += 0.001f * (ypos - last_ypos);
-	}
+	static float sensitivity = 0.2f;
 
+	bool is_mouse_captured = glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+	if (!is_mouse_captured) {
+		was_mouse_captured = false;
+		// we don't want to handle camera movement if the mouse isn't captured
+		return;
+	}
+	if (!was_mouse_captured) {
+		// don't jerk the camera around if we're recapturing the mouse
+		last_xpos = xpos;
+		last_ypos = ypos;
+	}
+	was_mouse_captured = true;
+
+	auto x_diff = sensitivity * (float)(xpos - last_xpos);
+	auto y_diff = sensitivity * (float)(last_ypos - ypos);
 	last_xpos = xpos;
 	last_ypos = ypos;
-	 */
+
+	yaw += x_diff;
+	pitch += y_diff;
+
+	// set some vertical limits to avoid weird behavior
+	if (pitch > 89.0f) {
+		pitch = 89.0f;
+	} else if (pitch < -89.0f) {
+		pitch = -89.0f;
+	}
+
+	setViewDirection();
 }
 
 void framebufferSizeCallback(GLFWwindow *window, int width, int height)
@@ -212,6 +244,7 @@ int main()
 
 	// Set the required callback functions
 	glfwSetKeyCallback(window, keyCallback);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 	glfwSetCursorPosCallback(window, cursorPosCallback);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
@@ -227,6 +260,8 @@ int main()
 		return -1;
 	}
 	glUseProgram(shader_program);
+
+	setViewDirection();
 
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
