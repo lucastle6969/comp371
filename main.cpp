@@ -51,20 +51,28 @@ std::vector<Entity*> entities;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
 
-// Constant vectors
-glm::vec3 eye(0.0f, 0.0f, 20.0f);
-glm::vec3 center(0.0f, 0.0f, 0.0f);
-const glm::vec3 up(0.0f, 1.0f, 0.0f);
-
-float tilt_angle = 0.0f;
+// Camera
+const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
+glm::vec3 eye(0.0f, 20.0f, 3.0f);
+glm::vec3 view_direction(0.0f, -1.0f, -0.1f);
 
 bool awaiting_skip_size_prompt = false;
+
+glm::vec3 getCameraCenter()
+{
+	// the center position should move at a fixed displacement ahead of the viewing position
+	return eye + view_direction;
+}
 
 // Is called whenever a key is pressed/released via GLFW
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
+
+	glm::vec3 camera_center = getCameraCenter();
+	glm::vec3 left_direction = glm::cross(up, view_direction);
+	glm::vec3 forward_direction = glm::cross(left_direction, up);
 
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
@@ -81,19 +89,29 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 			case GLFW_KEY_4:
 				height_map_terrain->selectStep(4);
 				break;
+			case GLFW_KEY_W:
 			case GLFW_KEY_UP:
-				origin->rotate(-0.02f, x_axis);
+				// move forward
+				eye += 0.3f * glm::normalize(forward_direction);
 				break;
+			case GLFW_KEY_S:
 			case GLFW_KEY_DOWN:
-				origin->rotate(0.02f, x_axis);
+				// move backward
+				eye -= 0.3f * glm::normalize(forward_direction);
 				break;
+			case GLFW_KEY_A:
 			case GLFW_KEY_LEFT:
-				// we're rotating around NEGATIVE z axis, so increment sign is counterintuitive!
-				origin->rotate(0.02f, z_axis);
+				// move left
+				eye += 0.3f * glm::normalize(left_direction);
 				break;
+			case GLFW_KEY_D:
 			case GLFW_KEY_RIGHT:
-				// see above re: increment sign
-				origin->rotate(-0.02f, z_axis);
+				// move right
+				eye -= 0.3f * glm::normalize(left_direction);
+				break;
+			case GLFW_KEY_SPACE:
+				// move up or down
+				eye += (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? -0.3f : 0.3f) * up;
 				break;
 			case GLFW_KEY_BACKSPACE:
 				// Reset program
@@ -123,6 +141,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
+	// TODO: rotate view_direction
+	/*
 	static double last_xpos = xpos;
 	static double last_ypos = ypos;
 
@@ -147,6 +167,7 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 
 	last_xpos = xpos;
 	last_ypos = ypos;
+	 */
 }
 
 void framebufferSizeCallback(GLFWwindow *window, int width, int height)
@@ -219,8 +240,6 @@ int main()
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
 
-	glm::mat4 view_matrix;
-
 	// Game loop
 	bool rendered_at_least_once = false;
 	while (!glfwWindowShouldClose(window))
@@ -242,15 +261,7 @@ int main()
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Get initial version of view matrix
-		view_matrix = glm::lookAt(eye, center, up);
-		// Begin applying tilt rotation: temporarily translate camera to origin
-		glm::vec3 camera_translation = utils::getTranslationVector(view_matrix);
-		view_matrix = glm::translate(view_matrix, -1.0f * camera_translation);
-		// Apply tilt rotation
-		view_matrix = glm::rotate(view_matrix, tilt_angle, x_axis);
-		// Finally: translate camera back to previous position
-		view_matrix = glm::translate(view_matrix, camera_translation);
+		glm::mat4 view_matrix = glm::lookAt(eye, getCameraCenter(), up);
 
 		for (Entity* entity : entities) {
 			// Skip to the next entity if the current entity is hidden

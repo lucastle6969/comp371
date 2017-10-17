@@ -140,15 +140,6 @@ const glm::mat4& HeightMapTerrain::getBaseScale()
 	return this->base_scale;
 }
 
-const glm::mat4& HeightMapTerrain::getBaseRotation()
-{
-	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
-	static glm::mat4 identity;
-	static glm::mat4 rotation = glm::rotate(identity, HeightMapTerrain::rotation_angle, x_axis);
-
-	return rotation;
-}
-
 void HeightMapTerrain::setSkipSize(const int& skip_size)
 {
 	this->generateDerivedVertices(skip_size);

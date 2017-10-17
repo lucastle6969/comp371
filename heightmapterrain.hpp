@@ -48,7 +48,6 @@ private:
 
 	static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 	const glm::mat4& getBaseScale() override;
-	const glm::mat4& getBaseRotation() override;
 	void generateDerivedVertices(const int& skip_size);
 	void deleteDerivedBuffers();
 public:
