@@ -52,27 +52,25 @@ std::vector<Entity*> entities;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
 
-// Camera
+// Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
-glm::vec3 eye(0.0f, 2.0f, 2.0f);
-// view_direction initialized in main() by calling setViewDirection()
-glm::vec3 view_direction;
+const float initial_pitch = -65.0f;
+const float initial_yaw = -90.0f;
+const glm::vec3 initial_eye(0.0f, 20.0f, 10.0f);
 
-float pitch = -0.3f;
-float yaw = 180.0f;
+// Camera variables
+float pitch = initial_pitch;
+float yaw = initial_yaw;
+glm::vec3 eye = initial_eye;
 
 bool awaiting_skip_size_prompt = false;
 
-glm::vec3 getCameraCenter()
-{
-	// the center position should move at a fixed displacement ahead of the viewing position
-	return eye + view_direction;
-}
-
-void setViewDirection() {
-	view_direction.x = (float)(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	view_direction.y = (float)sin(glm::radians(pitch));
-	view_direction.z = (float)(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+glm::vec3 getViewDirection() {
+	return glm::vec3(
+			(float)(cos(glm::radians(yaw)) * cos(glm::radians(pitch))),
+			(float)sin(glm::radians(pitch)),
+			(float)(sin(glm::radians(yaw)) * cos(glm::radians(pitch)))
+	);
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -81,7 +79,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
 
-	glm::vec3 camera_center = getCameraCenter();
+	glm::vec3 view_direction = getViewDirection();
+	glm::vec3 camera_center = eye + view_direction;
 	glm::vec3 left_direction = glm::cross(up, view_direction);
 	glm::vec3 forward_direction = glm::cross(left_direction, up);
 
@@ -125,9 +124,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				eye += (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? -0.3f : 0.3f) * up;
 				break;
 			case GLFW_KEY_BACKSPACE:
-				// Reset program
+				// Reset terrain
 				height_map_terrain->selectStep(1);
-				// TODO: reset camera, whatever that will mean
+				// Reset camera
+				pitch = initial_pitch;
+				yaw = initial_yaw;
+				eye = initial_eye;
+				// Request skip size from user console
 				awaiting_skip_size_prompt = true;
 				break;
 			case GLFW_KEY_P:
@@ -146,6 +149,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			}
 			case GLFW_KEY_ESCAPE:
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				break;
+			case GLFW_KEY_H:
+				std::cout << eye.x << " " << eye.y << " " << eye.z << std::endl;
+				std::cout << view_direction.x << " " << view_direction.y << " " << view_direction.z << std::endl;
+				std::cout << pitch << " " << yaw << std::endl;
 				break;
 			default:
 				break;
@@ -198,8 +206,6 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	} else if (pitch < -89.0f) {
 		pitch = -89.0f;
 	}
-
-	setViewDirection();
 }
 
 void framebufferSizeCallback(GLFWwindow *window, int width, int height)
@@ -261,8 +267,6 @@ int main()
 	}
 	glUseProgram(shader_program);
 
-	setViewDirection();
-
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	// copy pointer to entity list
 	entities.push_back(&*origin);
@@ -296,7 +300,7 @@ int main()
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 view_matrix = glm::lookAt(eye, getCameraCenter(), up);
+		glm::mat4 view_matrix = glm::lookAt(eye, eye + getViewDirection(), up);
 
 		for (Entity* entity : entities) {
 			// Skip to the next entity if the current entity is hidden
