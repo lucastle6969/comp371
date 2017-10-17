@@ -86,7 +86,7 @@ HeightMapTerrain::HeightMapTerrain(
 	float y_scale = (map_width + map_height) / 8.0f;
 	this->base_scale = glm::scale(this->base_scale, glm::vec3(1.0f, y_scale, 1.0f));
 
-	this->draw_mode = GL_POINTS;
+	this->draw_mode = GL_TRIANGLES;
 }
 
 HeightMapTerrain::~HeightMapTerrain()
