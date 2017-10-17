@@ -237,7 +237,7 @@ void promptForSkipSize()
 		} else {
 			try {
 				skip_size = std::stoi(input);
-			} catch(std::invalid_argument e) {
+			} catch(std::invalid_argument& e) {
 				// try again
 			}
 		}
