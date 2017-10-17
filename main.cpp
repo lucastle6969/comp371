@@ -157,11 +157,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_ESCAPE:
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				break;
-			case GLFW_KEY_H:
-				std::cout << eye.x << " " << eye.y << " " << eye.z << std::endl;
-				std::cout << view_direction.x << " " << view_direction.y << " " << view_direction.z << std::endl;
-				std::cout << pitch << " " << yaw << std::endl;
-				break;
 			default:
 				break;
 		}
