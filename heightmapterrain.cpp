@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "vendor/stb_image.h"
@@ -156,6 +157,7 @@ void HeightMapTerrain::selectStep(const int &step_number)
 	}
 
 	this->selected_step = step_number;
+	std::cout << "Now displaying step " << step_number << "!\n";
 }
 
 void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
