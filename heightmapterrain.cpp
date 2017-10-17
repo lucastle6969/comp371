@@ -231,15 +231,14 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 			for (int j = offset, limit = offset + reduced_width - 1; j < limit; j++) {
 				glm::vec3 p1 = this->vertices_step_2[j];
 				glm::vec3 p2 = this->vertices_step_2[j + 1];
-				glm::vec3 p0 = j - 1 >= offset
+				glm::vec3 p0 = j > offset
 				               ? this->vertices_step_2[j - 1]
 				               // if we don't have a leading control point, make one up
 				               : glm::vec3(2 * p1.x - p2.x, p1.y, p1.z);
 				glm::vec3 p3 = j + 1 < limit
-				               ? this->vertices_step_2[j + 1]
+				               ? this->vertices_step_2[j + 2]
 				               // if we don't have a trailing control point, make one up
-				               : glm::vec3(2 * p2.x - p1.x, p1.y, p1.z);
-
+				               : glm::vec3(2 * p2.x - p1.x, p2.y, p2.z);
 				this->vertices_step_3.push_back(p1);
 
 				// Catmull-Rom spline curve
