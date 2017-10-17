@@ -250,7 +250,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 				);
 				for (float incr = 1 / (p2.x - p1.x), u = incr; u < 1; u += incr) {
 					this->vertices_step_3.emplace_back(
-							glm::vec4(u * u * u, u * u, u, 1) * // [u^3, u^2, u, 1]
+							glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
 							catmull_rom_basis *
 							controls
 					);
