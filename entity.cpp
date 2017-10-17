@@ -141,7 +141,9 @@ void Entity::orient(const float& angle)
 
 GLuint Entity::initVertexArray(
 	const GLuint &shader_program,
-	const std::vector<glm::vec3> &vertices
+	const std::vector<glm::vec3> &vertices,
+	GLuint* vertices_buffer,
+	GLuint* element_buffer
 ) {
 	// if no elements vector is provided, we'll create a default
 
@@ -151,13 +153,15 @@ GLuint Entity::initVertexArray(
 		elements.emplace_back(i);
 	}
 
-	return Entity::initVertexArray(shader_program, vertices, elements);
+	return Entity::initVertexArray(shader_program, vertices, elements, vertices_buffer, element_buffer);
 }
 
 GLuint Entity::initVertexArray(
 	const GLuint& shader_program,
 	const std::vector<glm::vec3>& vertices,
-	const std::vector<GLuint>& elements
+	const std::vector<GLuint>& elements,
+	GLuint* vertices_buffer,
+	GLuint* element_buffer
 ) {
 	// Set VAO (Vertex Array Object) id
 	GLuint vao;
@@ -167,9 +171,12 @@ GLuint Entity::initVertexArray(
 	glBindVertexArray(vao);
 
 	// Create vertices buffer
-	GLuint vertices_buffer;
-	glGenBuffers(1, &vertices_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer);
+	GLuint v_buff_temp;
+	if (!vertices_buffer) {
+		vertices_buffer = &v_buff_temp;
+	}
+	glGenBuffers(1, vertices_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *vertices_buffer);
 	glBufferData(
 			GL_ARRAY_BUFFER,
 			vertices.size() * sizeof(glm::vec3),
@@ -183,9 +190,12 @@ GLuint Entity::initVertexArray(
 	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
 
 	// Create element buffer
-	GLuint element_buffer;
-	glGenBuffers(1, &element_buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer);
+	GLuint e_buff_temp;
+	if (!element_buffer) {
+		element_buffer = &e_buff_temp;
+	}
+	glGenBuffers(1, element_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *element_buffer);
 	glBufferData(
 			GL_ELEMENT_ARRAY_BUFFER,
 			elements.size() * sizeof(GLuint),

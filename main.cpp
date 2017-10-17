@@ -34,7 +34,7 @@ const char* APP_NAME = "Height Mapper";
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
 
-const GLuint NUM_DOTS = 25;
+const int DEFAULT_SKIP_SIZE = 20;
 
 // bounds for placing grid, axes and objects
 const int WORLD_X_MIN = -10;
@@ -58,6 +58,8 @@ const glm::vec3 up(0.0f, 1.0f, 0.0f);
 
 float tilt_angle = 0.0f;
 
+bool awaiting_skip_size_prompt = false;
+
 // Is called whenever a key is pressed/released via GLFW
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -67,6 +69,18 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
+			case GLFW_KEY_1:
+				height_map_terrain->selectStep(1);
+				break;
+			case GLFW_KEY_2:
+				height_map_terrain->selectStep(2);
+				break;
+			case GLFW_KEY_3:
+				height_map_terrain->selectStep(3);
+				break;
+			case GLFW_KEY_4:
+				height_map_terrain->selectStep(4);
+				break;
 			case GLFW_KEY_UP:
 				origin->rotate(-0.02f, x_axis);
 				break;
@@ -81,8 +95,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 				// see above re: increment sign
 				origin->rotate(-0.02f, z_axis);
 				break;
-			case GLFW_KEY_HOME:
-				origin->resetRotation();
+			case GLFW_KEY_BACKSPACE:
+				// Reset program
+				height_map_terrain->selectStep(1);
+				// TODO: reset camera, whatever that will mean
+				awaiting_skip_size_prompt = true;
 				break;
 			case GLFW_KEY_P:
 			case GLFW_KEY_L:
@@ -141,6 +158,31 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
+void promptForSkipSize()
+{
+	std::string input;
+	int skip_size = 0;
+	do {
+		std::cout << "Choose a skip size greater than 0 [" << DEFAULT_SKIP_SIZE << "]: ";
+		std::getline(std::cin, input);
+		if (input.empty()) {
+			skip_size = DEFAULT_SKIP_SIZE;
+			break;
+		} else {
+			try {
+				skip_size = std::stoi(input);
+			} catch(std::invalid_argument e) {
+				// try again
+			}
+		}
+	} while (skip_size <= 0);
+
+	height_map_terrain->setSkipSize(skip_size);
+	height_map_terrain->selectStep(2);
+	awaiting_skip_size_prompt = false;
+	std::cout << "Vertices loaded!\n";
+}
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -180,10 +222,17 @@ int main()
 	glm::mat4 view_matrix;
 
 	// Game loop
+	bool rendered_at_least_once = false;
 	while (!glfwWindowShouldClose(window))
 	{
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+
+		if (awaiting_skip_size_prompt) {
+			// since it happens _before_ glfwPollEvents() is called, this code
+			// won't be reached until at least one render since the program was reset
+			promptForSkipSize();
+		}
 
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
@@ -235,6 +284,12 @@ int main()
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
+
+		if (!rendered_at_least_once) {
+			rendered_at_least_once = true;
+			// now that we're rendering something we'll request a skip size prompt
+			awaiting_skip_size_prompt = true;
+		}
 	}
 
 	// De-allocate the memory for all our entities
