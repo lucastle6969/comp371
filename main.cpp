@@ -54,6 +54,8 @@ HeightMapTerrain* height_map_terrain;
 
 // Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
+// pitch and yaw stored in degrees for clarity, but must be converted
+// to radians to work well with glm
 const float initial_pitch = -65.0f;
 const float initial_yaw = -90.0f;
 const glm::vec3 initial_eye(0.0f, 20.0f, 10.0f);
