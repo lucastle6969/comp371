@@ -36,6 +36,7 @@ const char* APP_NAME = "Height Mapper";
 const GLuint WIDTH = 800, HEIGHT = 800;
 
 const int DEFAULT_SKIP_SIZE = 20;
+const float DEFAULT_INTERPOLATION_SIZE = 0.1;
 
 // bounds for placing grid, axes and objects
 const int WORLD_X_MIN = -10;
@@ -65,7 +66,7 @@ float pitch = initial_pitch;
 float yaw = initial_yaw;
 glm::vec3 eye = initial_eye;
 
-bool awaiting_skip_size_prompt = false;
+bool awaiting_user_input = false;
 
 glm::vec3 getViewDirection() {
 	return glm::vec3(
@@ -139,8 +140,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				pitch = initial_pitch;
 				yaw = initial_yaw;
 				eye = initial_eye;
-				// Request skip size from user console
-				awaiting_skip_size_prompt = true;
+				// Request user input
+				awaiting_user_input = true;
 				break;
 			case GLFW_KEY_P:
 			case GLFW_KEY_L:
@@ -221,9 +222,10 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
-void promptForSkipSize()
+void promptForUserInputs()
 {
 	std::string input;
+
 	int skip_size = 0;
 	do {
 		std::cout << "Choose a skip size greater than 0 [" << DEFAULT_SKIP_SIZE << "]: ";
@@ -240,9 +242,28 @@ void promptForSkipSize()
 		}
 	} while (skip_size <= 0);
 
-	height_map_terrain->setSkipSize(skip_size);
+    float interpolation_size = 0;
+    // Enforce a reasonable limit
+    float interpolation_size_limit = 0.5f;
+    do {
+        std::cout << "Choose a step size greater than 0 and less than or equal to ";
+        std::cout << interpolation_size_limit << " [" << DEFAULT_INTERPOLATION_SIZE << "]: ";
+        std::getline(std::cin, input);
+        if (input.empty()) {
+            interpolation_size = DEFAULT_INTERPOLATION_SIZE;
+            break;
+        } else {
+            try {
+                interpolation_size = std::stof(input);
+            } catch(std::invalid_argument& e) {
+                // try again
+            }
+        }
+    } while (interpolation_size <= 0 || interpolation_size > interpolation_size_limit);
+
+	height_map_terrain->setUserInputs(skip_size, interpolation_size);
 	height_map_terrain->selectStep(2);
-	awaiting_skip_size_prompt = false;
+	awaiting_user_input = false;
 	std::cout << "Vertices loaded!\n";
 }
 
@@ -291,10 +312,10 @@ int main()
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 
-		if (awaiting_skip_size_prompt) {
+		if (awaiting_user_input) {
 			// since it happens _before_ glfwPollEvents() is called, this code
 			// won't be reached until at least one render since the program was reset
-			promptForSkipSize();
+			promptForUserInputs();
 		}
 
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
@@ -343,7 +364,7 @@ int main()
 		if (!rendered_at_least_once) {
 			rendered_at_least_once = true;
 			// now that we're rendering something we'll request a skip size prompt
-			awaiting_skip_size_prompt = true;
+			awaiting_user_input = true;
 		}
 	}
 

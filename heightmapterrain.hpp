@@ -48,7 +48,7 @@ private:
 
 	static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 	const glm::mat4& getBaseScale() override;
-	void generateDerivedVertices(const int& skip_size);
+	void generateDerivedVertices(const int& skip_size, const float& interpolation_size);
 	void deleteDerivedBuffers();
 public:
 	HeightMapTerrain(const GLuint& shader_program, const std::string& map_path)
@@ -62,7 +62,7 @@ public:
 	const std::vector<glm::vec3>& getVertices() override;
 	GLuint getVAO() override;
 	const int getColorType() override;
-	void setSkipSize(const int& skip_size);
+	void setUserInputs(const int& skip_size, const float& interpolation_size);
 	void selectStep(const int& step_number);
 };
 

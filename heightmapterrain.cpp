@@ -44,7 +44,7 @@ HeightMapTerrain::HeightMapTerrain(
 	}
 
 	// BEGIN STEP 1: Points taken directly from pixel color values.
-	// This is independent of user-provided skip_size so it only happens
+	// This is independent of user-provided inputs so it only happens
 	// once for a given image.
 
 	for (int i = 0, limit = map_width * map_height * requested_channels; i < limit; i += requested_channels) {
@@ -79,7 +79,7 @@ HeightMapTerrain::HeightMapTerrain(
 
 	// END STEP 1
 
-	// defer generation of vertices for steps 2-4 until setSkipSize is called
+	// defer generation of vertices for steps 2-4 until setUserInputs is called
 	this->awaiting_derived_vertices_initialization = true;
 
 	// These are necessary before we call the generateDerivedVertices method
@@ -149,9 +149,9 @@ const glm::mat4& HeightMapTerrain::getBaseScale()
 	return this->base_scale;
 }
 
-void HeightMapTerrain::setSkipSize(const int& skip_size)
+void HeightMapTerrain::setUserInputs(const int& skip_size, const float& interpolation_size)
 {
-	this->generateDerivedVertices(skip_size);
+	this->generateDerivedVertices(skip_size, interpolation_size);
 }
 
 void HeightMapTerrain::selectStep(const int &step_number)
@@ -168,7 +168,7 @@ void HeightMapTerrain::selectStep(const int &step_number)
 	std::cout << "Now displaying step " << step_number << "!\n";
 }
 
-void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
+void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float& interpolation_size)
 {
 	// Tell the GPU to get rid of any memory we've already allocated for this data
 	this->deleteDerivedBuffers();
@@ -178,7 +178,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 	this->vertices_step_3.clear();
 	this->vertices_step_4.clear();
 
-	int reduced_width, reduced_height;
+	int reduced_width, reduced_height, interpolated_width, interpolated_height;
 
 	// BEGIN STEP 2: Points reduced via skip interval
 	{
@@ -226,9 +226,10 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 
 	// BEGIN STEP 3: Missing points from step 2 spline-interpolated along x-axis
 	{
-		for (int i = reduced_height; i--;) {
+		for (int i = 0; i < reduced_height; i++) {
 			int offset = reduced_width * i;
-			for (int j = offset, limit = offset + reduced_width - 1; j < limit; j++) {
+            int limit = offset + reduced_width - 1;
+			for (int j = offset; j < limit; j++) {
 				glm::vec3 p1 = this->vertices_step_2[j];
 				glm::vec3 p2 = this->vertices_step_2[j + 1];
 				glm::vec3 p0 = j > offset
@@ -247,7 +248,8 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 						p0.y, p1.y, p2.y, p3.y,
 						p0.z, p1.z, p2.z, p3.z
 				);
-				for (float incr = 1 / (p2.x - p1.x), u = incr; u < 1; u += incr) {
+                // increment u from 0 to 1 along interval from p1 to p2
+				for (float u = interpolation_size; u < 1; u += interpolation_size) {
 					this->vertices_step_3.emplace_back(
 							glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
 							catmull_rom_basis *
@@ -261,8 +263,10 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 			}
 		}
 
+        interpolated_width = (int)(this->vertices_step_3.size() / reduced_height);
+
 		std::vector<GLuint> elements_step_3;
-		HeightMapTerrain::createElements(map_width, reduced_height, &elements_step_3);
+		HeightMapTerrain::createElements(interpolated_width, reduced_height, &elements_step_3);
 		this->vao_step_3 = Entity::initVertexArray(
 				this->shader_program,
 				this->vertices_step_3,
@@ -274,9 +278,57 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size)
 	// END STEP 3
 
 	// BEGIN STEP 4: Remaining missing points from step 3 spline-interpolated along z-axis
+    {
+        for (int i = 0; i < interpolated_width; i++) {
+            int limit = interpolated_width * (reduced_height - 1);
+            std::cout << "i" << i << std::endl;
+            for (int j = i; j < limit; j += interpolated_width) {
+                std::cout<<"j"<<j<<std::endl;
+                glm::vec3 p1 = this->vertices_step_3[j];
+                glm::vec3 p2 = this->vertices_step_3[j + interpolated_width];
+                glm::vec3 p0 = j >= i + interpolated_width
+                               ? this->vertices_step_3[j - interpolated_width]
+                               // if we don't have a leading control point, make one up
+                               : glm::vec3(p1.x, p1.y, 2 * p1.z - p2.z);
+                glm::vec3 p3 = j + interpolated_width < limit
+                               ? this->vertices_step_3[j + 2 * interpolated_width]
+                               // if we don't have a trailing control point, make one up
+                               : glm::vec3(p2.x, p2.y, 2 * p2.z - p1.z);
+                this->vertices_step_4.push_back(p1);
 
+                // Catmull-Rom spline curve
+                glm::mat4x3 controls = glm::mat4x3(
+                        p0.x, p1.x, p2.x, p3.x,
+                        p0.y, p1.y, p2.y, p3.y,
+                        p0.z, p1.z, p2.z, p3.z
+                );
+                // increment u from 0 to 1 along interval from p1 to p2
+                for (float u = interpolation_size; u < 1; u += interpolation_size) {
+                    this->vertices_step_4.emplace_back(
+                            glm::vec4(u * u * u, u * u, u, 1.0f) * // [u^3, u^2, u, 1]
+                            catmull_rom_basis *
+                            controls
+                    );
+                }
 
+                if (j + interpolated_width == limit) {
+                    this->vertices_step_4.push_back(p2);
+                }
+            }
+        }
 
+        interpolated_height = (int)(this->vertices_step_4.size() / interpolated_width);
+
+        std::vector<GLuint> elements_step_4;
+        HeightMapTerrain::createElements(interpolated_width, interpolated_height, &elements_step_4);
+        this->vao_step_4 = Entity::initVertexArray(
+                this->shader_program,
+                this->vertices_step_4,
+                elements_step_4,
+                &this->vertices_buffer_step_4,
+                &this->element_buffer_step_4
+        );
+    }
 	// END STEP 4
 
 	this->awaiting_derived_vertices_initialization = false;
