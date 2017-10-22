@@ -230,7 +230,7 @@ void promptForUserInputs()
 	int skip_size = 0;
 	do {
 		std::cout << "Choose a skip size greater than 0 [" << DEFAULT_SKIP_SIZE << "]: ";
-		std::getline(std::cin, input);
+		// skip for now: // std::getline(std::cin, input);
 		if (input.empty()) {
 			skip_size = DEFAULT_SKIP_SIZE;
 			break;
@@ -249,7 +249,7 @@ void promptForUserInputs()
     do {
         std::cout << "Choose a step size greater than 0 and less than or equal to ";
         std::cout << interpolation_size_limit << " [" << DEFAULT_INTERPOLATION_SIZE << "]: ";
-        std::getline(std::cin, input);
+	    // skip for now: // std::getline(std::cin, input);
         if (input.empty()) {
             interpolation_size = DEFAULT_INTERPOLATION_SIZE;
             break;
@@ -273,7 +273,7 @@ int main()
 {
     std::cout << "Choose an image to load [" << DEFAULT_IMAGE_FILE << "]: ";
     std::string image_file;
-    std::getline(std::cin, image_file);
+    // skip for now: // std::getline(std::cin, image_file);
     if (image_file.empty()) {
         image_file = DEFAULT_IMAGE_FILE;
     }
