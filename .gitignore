@@ -12,6 +12,7 @@ _install/*
 .idea/
 .vs/
 cmake-build-debug/
+EmileAounsStuff
 
 # Executables
 bin/
