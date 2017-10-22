@@ -1,4 +1,4 @@
-# height-mapper
+# comp-371-procedural-generation-project
 
 Loads a raster image and renders a 3D surface by mapping brightness at a given location to surface height at the corresponding location.
 
