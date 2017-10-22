@@ -338,13 +338,13 @@ void HeightMapTerrain::createElements(
 		for (int x = width - 1; x--; ) {
 			// first triangle
 			elements->emplace_back(offset + x); // top-left
-			elements->emplace_back(offset + x + 1); // top-right
 			elements->emplace_back(offset + width + x); // bottom-left
+			elements->emplace_back(offset + x + 1); // top-right
 
 			// second triangle
 			elements->emplace_back(offset + width + x); // bottom-left
-			elements->emplace_back(offset + x + 1); // top-right
 			elements->emplace_back(offset + width + x + 1); // bottom-right
+			elements->emplace_back(offset + x + 1); // top-right
 		}
 	}
 }

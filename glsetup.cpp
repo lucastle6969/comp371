@@ -44,6 +44,9 @@ void setupGlContext(
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+	// Enable backface culling (only draw polygons on one side)
+	glEnable(GL_CULL_FACE);
+
 	#ifndef __APPLE__
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
