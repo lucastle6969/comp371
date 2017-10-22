@@ -3,6 +3,7 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 install_manifest.txt
+*.swp
 
 # Temp build/install dirs
 _builds/*
@@ -12,6 +13,9 @@ _install/*
 .idea/
 .vs/
 cmake-build-debug/
+CMakeScripts
+_3rdParty
+HeightMapper*
 
 # Executables
 bin/
