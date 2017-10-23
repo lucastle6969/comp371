@@ -60,6 +60,10 @@ add_executable(heightmapper
     heightmapterrain.cpp
     worldorigin.hpp
     worldorigin.cpp
+    pacman.hpp
+    pacman.cpp
+    objloader.hpp
+    objloader.cpp
     utils.hpp
     constants.hpp
 )
