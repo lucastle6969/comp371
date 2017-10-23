@@ -94,13 +94,6 @@ glm::vec3 getFollowVector() {
 // Is called whenever a key is pressed/released via GLFW
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
-	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
-
-	glm::vec3 view_direction = getViewDirection();
-	glm::vec3 left_direction = glm::cross(up, view_direction);
-	glm::vec3 forward_direction = glm::cross(left_direction, up);
-
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
@@ -119,22 +112,22 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_W:
 			case GLFW_KEY_UP:
 				// move forward
-				player->moveForward(PLAYER_MOVEMENT_SPEED);
+				player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_S:
 			case GLFW_KEY_DOWN:
 				// move backward
-				player->moveBack(PLAYER_MOVEMENT_SPEED);
+				player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_A:
 			case GLFW_KEY_LEFT:
 				// move left
-				player->moveLeft(PLAYER_MOVEMENT_SPEED);
+				player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_D:
 			case GLFW_KEY_RIGHT:
 				// move right
-				player->moveRight(PLAYER_MOVEMENT_SPEED);
+				player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_GRAVE_ACCENT:
 				origin->toggle_hide();

@@ -58,10 +58,10 @@ public:
 	void scale(const float& scalar);
 	void rotate(const float& angle, const glm::vec3& axis);
 	void resetRotation();
-	void moveForward(const float& units = 1.0f);
-	void moveBack(const float& units = 1.0f);
-	void moveLeft(const float& units = 1.0f);
-	void moveRight(const float& units = 1.0f);
+	void moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
 	void setPosition(const glm::vec3& position);
 	void setDrawMode(const GLenum& draw_mode);
 	void hide();
