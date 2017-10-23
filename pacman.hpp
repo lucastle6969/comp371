@@ -18,6 +18,7 @@ private:
 	static constexpr float teapot_rotation_angle = (float)(M_PI / 2);
 	static constexpr float teapot_scale_ratio = 13.0f;
 	const glm::mat4& getBaseRotation() override;
+	const glm::vec3& getDefaultFaceVector() override;
 	std::vector<glm::vec3> pacman_vertices;
 	std::vector<glm::vec3> teapot_vertices;
 	GLuint pacman_vao;

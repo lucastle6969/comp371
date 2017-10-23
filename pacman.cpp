@@ -70,3 +70,11 @@ const glm::mat4& Pacman::getBaseRotation()
 	// Return appropriate rotation offset depending on which model we're using
 	return this->using_teapot ? teapot : pacman;
 }
+
+// the vector indicating the direction the model faces by default (with no rotation)
+const glm::vec3& Pacman::getDefaultFaceVector()
+{
+	static glm::vec3 new_face_vec(1.0f, 0.0f, 0.0f);
+
+	return new_face_vec;
+}

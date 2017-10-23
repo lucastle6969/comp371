@@ -21,7 +21,7 @@ private:
 	glm::mat4 translation_matrix;
 	glm::mat4 model_matrix;
 	bool hidden;
-	void orient(const float& angle);
+	void orient(const glm::vec3& forward_vec);
 
 protected:
 	GLenum draw_mode;
@@ -41,6 +41,7 @@ protected:
 	virtual const glm::mat4& getBaseScale();
 	virtual const glm::mat4& getBaseRotation();
 	virtual const glm::mat4& getBaseTranslation();
+	virtual const glm::vec3& getDefaultFaceVector();
 
 public:
 	Entity() : Entity(nullptr) {}
