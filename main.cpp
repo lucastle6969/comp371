@@ -86,7 +86,7 @@ glm::vec3 getFollowVector() {
 	return glm::normalize(getViewDirection()) *
 			max_follow_distance *
 			// The lower the viewing angle, the shorter the follow distance -
-			// to accomodate for less space near terrain. At our lowest viewing
+			// to accommodate for less space near terrain. At our lowest viewing
 			// angle, the third-person camera becomes first-person.
 			(1 - (pitch - min_pitch) / (max_pitch - min_pitch));
 }
