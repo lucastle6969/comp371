@@ -75,23 +75,23 @@ void Entity::resetRotation()
 	this->rotation_matrix = identity;
 }
 
-void Entity::moveUp(const int& units)
+void Entity::moveForward(const float& units)
 {
-	static glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
+	static glm::vec3 forward_vec = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * up_vec);
+	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * forward_vec);
 	this->orient((float)(M_PI / 2));
 }
 
-void Entity::moveDown(const int& units)
+void Entity::moveBack(const float& units)
 {
-	static glm::vec3 down_vec = glm::vec3(0.0f, -1.0f, 0.0f);
+	static glm::vec3 back_vec = glm::vec3(0.0f, 0.0f, 1.0f);
 
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * down_vec);
+	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * back_vec);
 	this->orient((float)(3 * M_PI / 2));
 }
 
-void Entity::moveLeft(const int& units)
+void Entity::moveLeft(const float& units)
 {
 	static glm::vec3 left_vec = glm::vec3(-1.0f, 0.0f, 0.0f);
 
@@ -99,7 +99,7 @@ void Entity::moveLeft(const int& units)
 	this->orient((float)M_PI);
 }
 
-void Entity::moveRight(const int& units)
+void Entity::moveRight(const float& units)
 {
 	static glm::vec3 right_vec = glm::vec3(1.0f, 0.0f, 0.0f);
 
@@ -107,11 +107,11 @@ void Entity::moveRight(const int& units)
 	this->orient(0.0f);
 }
 
-void Entity::setPosition(const float& x, const float& y, const float& z)
+void Entity::setPosition(const glm::vec3& position)
 {
 	static glm::mat4 identity;
 
-	this->translation_matrix = glm::translate(identity, glm::vec3(x, y, z));
+	this->translation_matrix = glm::translate(identity, position);
 }
 
 void Entity::setDrawMode(const GLenum& draw_mode)
@@ -137,11 +137,11 @@ void Entity::toggle_hide()
 void Entity::orient(const float& angle)
 {
 	static glm::mat4 identity;
-	static glm::vec3 z_axis = glm::vec3(0.0f, 0.0f, 1.0f);
+	static glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	// re-write our rotation matrix to orient our model at the given
-	// angle in respect to the z axis.
-	this->rotation_matrix = glm::rotate(identity, angle, z_axis);
+	// angle in respect to the y axis.
+	this->rotation_matrix = glm::rotate(identity, angle, y_axis);
 }
 
 GLuint Entity::initVertexArray(

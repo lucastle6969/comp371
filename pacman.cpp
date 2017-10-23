@@ -64,8 +64,8 @@ const glm::mat4& Pacman::getBaseRotation()
 {
 	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
 	static glm::mat4 identity;
-	static glm::mat4 pacman = identity;
-	static glm::mat4 teapot = glm::rotate(identity, Pacman::teapot_rotation_angle, x_axis);
+	static glm::mat4 pacman = glm::rotate(identity, 0.0f - Pacman::teapot_rotation_angle, x_axis);
+	static glm::mat4 teapot = identity;
 
 	// Return appropriate rotation offset depending on which model we're using
 	return this->using_teapot ? teapot : pacman;

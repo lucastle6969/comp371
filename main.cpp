@@ -47,6 +47,8 @@ const int WORLD_Y_MAX = 10;
 // this one is only used for the z-axis
 const int WORLD_Z_MAX = 10;
 
+const float PLAYER_MOVEMENT_SPEED = 0.2;
+
 glm::mat4 projection_matrix;
 
 std::vector<Entity*> entities;
@@ -56,7 +58,7 @@ HeightMapTerrain* height_map_terrain;
 Pacman* player;
 
 // Player constants
-const glm::vec3 initial_player_position(0.0f, 2.0f, 0.0f);
+const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
 
 // Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -117,22 +119,22 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_W:
 			case GLFW_KEY_UP:
 				// move forward
-				player->moveUp();
+				player->moveForward(PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_S:
 			case GLFW_KEY_DOWN:
 				// move backward
-				player->moveDown();
+				player->moveBack(PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_A:
 			case GLFW_KEY_LEFT:
 				// move left
-				player->moveLeft();
+				player->moveLeft(PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_D:
 			case GLFW_KEY_RIGHT:
 				// move right
-				player->moveRight();
+				player->moveRight(PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_GRAVE_ACCENT:
 				origin->toggle_hide();
@@ -311,7 +313,7 @@ int main()
 
 	player = new Pacman(shader_program, origin);
 	player->scale(0.04f);
-	player->setPosition(initial_player_position.x, initial_player_position.y);
+	player->setPosition(initial_player_position);
 	// copy pointer to entity list
 	entities.push_back(&*player);
 
