@@ -65,9 +65,9 @@ Beyond the C++ standard library this application relies on:
     * Nothing extra to install for Linux
 * Recommended IDE for all platforms: CLion (get a free 1-year student license [here](https://www.jetbrains.com/shop/eform/students))
 
-See [Windows MinGW Setup](#markdown-header-windows-mingw-setup) below to see special instructions for installing MinGW.
+See [Windows MinGW Setup](#windows-mingw-setup) below to see special instructions for installing MinGW.
 
-See [CLion Setup](#markdown-header-clion-setup) below for help importing the project into CLion.
+See [CLion Setup](#clion-setup) below for help importing the project into CLion.
 
 ## Running Project in an IDE
 
@@ -75,7 +75,7 @@ Using Clion, you should be able to open the project and press the green play but
 
 *Note, dependencies will be downloaded and built from source the first time, so you will need to wait several minutes.*
 
-For more details see [CLion Setup](#markdown-header-clion-project-setup).
+For more details see [CLion Setup](#clion-project-setup).
 
 ## Windows MinGW Setup
 

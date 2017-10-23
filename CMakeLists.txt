@@ -17,7 +17,7 @@ HunterGate(
     SHA1 "34a6ae7bc9d6a6599d21c239a60ebc05abe8abb4"
 )
 
-project(HeightMapper)
+project(ProceduralWorld)
 
 add_definitions(-Wno-deprecated-declarations -DCMAKE_BUILD_TYPE=Release -DGLM_FORCE_RADIANS)
 
@@ -48,7 +48,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm REQUIRED)
 
 # Add executables
-add_executable(heightmapper
+add_executable(proceduralworld
     main.cpp
     glsetup.hpp
     glsetup.cpp
@@ -70,9 +70,9 @@ add_executable(heightmapper
 
 # Link libraries
 if(APPLE)
-    target_link_libraries(heightmapper ${OPEN_GL})
+    target_link_libraries(proceduralworld ${OPEN_GL})
 else()
-    target_link_libraries(heightmapper glew::glew)
+    target_link_libraries(proceduralworld glew::glew)
 endif()
-target_link_libraries(heightmapper glfw)
-target_link_libraries(heightmapper glm)
+target_link_libraries(proceduralworld glfw)
+target_link_libraries(proceduralworld glm)
