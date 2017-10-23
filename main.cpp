@@ -47,7 +47,7 @@ const int WORLD_Y_MAX = 10;
 // this one is only used for the z-axis
 const int WORLD_Z_MAX = 10;
 
-const float PLAYER_MOVEMENT_SPEED = 0.2;
+const float PLAYER_MOVEMENT_SPEED = 0.1;
 
 glm::mat4 projection_matrix;
 
@@ -91,6 +91,31 @@ glm::vec3 getFollowVector() {
 			(1 - (pitch - min_pitch) / (max_pitch - min_pitch));
 }
 
+bool isKeyPressed(GLFWwindow* const& window, const int& key) {
+	return glfwGetKey(window, key) == GLFW_PRESS;
+}
+
+// controls that should be polled at every frame and read
+// continuously / in combination
+void pollContinuousControls(GLFWwindow* window) {
+	// move forward
+	if (isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP)) {
+		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+	// move back
+	if (isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN)) {
+		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+	// move left
+	if (isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT)) {
+		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+	// move right
+	if (isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT)) {
+		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+}
+
 // Is called whenever a key is pressed/released via GLFW
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -108,26 +133,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				break;
 			case GLFW_KEY_4:
 				height_map_terrain->selectStep(4);
-				break;
-			case GLFW_KEY_W:
-			case GLFW_KEY_UP:
-				// move forward
-				player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-				break;
-			case GLFW_KEY_S:
-			case GLFW_KEY_DOWN:
-				// move backward
-				player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-				break;
-			case GLFW_KEY_A:
-			case GLFW_KEY_LEFT:
-				// move left
-				player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-				break;
-			case GLFW_KEY_D:
-			case GLFW_KEY_RIGHT:
-				// move right
-				player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 				break;
 			case GLFW_KEY_GRAVE_ACCENT:
 				origin->toggle_hide();
@@ -324,6 +329,7 @@ int main()
 
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
+		pollContinuousControls(window);
 
 		// Render
 		// Clear the colorbuffer
