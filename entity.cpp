@@ -80,7 +80,10 @@ void Entity::moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, con
 	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
 	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
 
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * forward_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(forward_vec)
+	);
 	this->orient((float)(M_PI / 2));
 }
 
@@ -88,21 +91,30 @@ void Entity::moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const 
 {
 	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
 	glm::vec3 back_vec = -1.0f * glm::cross(left_vec, up_vec);
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * back_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(back_vec)
+	);
 	this->orient((float)(3 * M_PI / 2));
 }
 
 void Entity::moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
 	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * left_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(left_vec)
+	);
 	this->orient((float)M_PI);
 }
 
 void Entity::moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
 	glm::vec3 right_vec = -1.0f * glm::cross(up_vec, view_vec);
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * right_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(right_vec)
+	);
 	this->orient(0.0f);
 }
 
