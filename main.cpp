@@ -30,7 +30,7 @@
 #include "worldorigin.hpp"
 #include "utils.hpp"
 
-const char* APP_NAME = "Height Mapper";
+const char* APP_NAME = "Procedural World";
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
