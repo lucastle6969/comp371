@@ -8,13 +8,17 @@
 * Appropriate C++ build tools for your system:
   * XCode tools on Mac
   * MinGW on Windows
-  * Nothing extra to install for Linux
+  * You might already be set on Linux, but if not you'll need to figure this one out yourself. 😃
 
 ## Getting the project running
 
-Optional first step: [define a `HUNTER_ROOT` environment variable](hunter_installs/README.md).
+Optional first step: [define a `HUNTER_ROOT` environment variable](../hunter_installs/README.md) (useful if you're running multiple Hunter projects on the same machine).
 
-The following steps will depend on your IDE/environment.
+The following steps will depend on your IDE/environment:
+* [Command line](#command-line)
+* [CLion](#clion)
+* [Xcode](#xcode)
+* [Visual Studio](#visual-studio)
 
 ### Command line
 
@@ -52,7 +56,7 @@ CLion is a recommended IDE since it's built for handling CMake projects. However
 
 ### Xcode
 
-Before you open the project in Xcode, you'll need to generate project files using Cmake (instructions here are using the GUI).
+Before you open the project in Xcode, you'll need to generate project files using CMake.
 
 #### CMake GUI
 
@@ -70,13 +74,21 @@ We're almost done, but we need to change a couple of settings first.
 
 1. Your project directory should now have a file called `ProceduralWorld.xcodeproj`. Open it in Xcode.
 2. Once the project is open, change your running target from "ALL_BUILD" to "proceduralworld".
-![](docs/img/set_target.png)
+
+![fdfd](img/set_target.png)
+
 3. In the same menu, select "Edit Scheme...".
-![](docs/img/edit_scheme.png)
+
+![fdfd](img/edit_scheme.png)
+
 4. Under the "Options" tab select "Use custom working directory" and choose the `bin/` directory under the main project directory (you may need to create this directory if this is your first time building).
-![](docs/img/set_working_directory.png)
+
+![dfdf](img/set_working_directory.png)
+
 5. Hit the play button to build and run the program.
 
-### Visual Studio: *coming soon!*
+### Visual Studio
+
+*coming soon!*
 
 We still need to document steps for getting this program running in Visual Studio, but steps similar to those for Xcode may work on Windows. If you have success with this, please submit a pull request!
