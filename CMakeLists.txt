@@ -60,8 +60,8 @@ add_executable(proceduralworld
     heightmapterrain.cpp
     worldorigin.hpp
     worldorigin.cpp
-    pacman.hpp
-    pacman.cpp
+    player.hpp
+    player.cpp
     objloader.hpp
     objloader.cpp
     utils.hpp

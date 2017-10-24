@@ -28,7 +28,7 @@
 #include "entity.hpp"
 #include "heightmapterrain.hpp"
 #include "worldorigin.hpp"
-#include "pacman.hpp"
+#include "player.hpp"
 
 const char* APP_NAME = "Procedural World";
 
@@ -55,7 +55,7 @@ std::vector<Entity*> entities;
 
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
-Pacman* player;
+Player* player;
 
 // Player constants
 const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
@@ -309,7 +309,7 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*height_map_terrain);
 
-	player = new Pacman(shader_program, origin);
+	player = new Player(shader_program, origin);
 	player->scale(0.04f);
 	player->setPosition(initial_player_position);
 	// copy pointer to entity list
