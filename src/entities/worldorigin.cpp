@@ -10,7 +10,7 @@
 
 #include "entity.hpp"
 #include "worldorigin.hpp"
-#include "constants.hpp"
+#include "../constants.hpp"
 
 WorldOrigin::WorldOrigin(
 	const GLuint& shader_program,

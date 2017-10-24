@@ -49,23 +49,23 @@ find_package(glm REQUIRED)
 
 # Add executables
 add_executable(proceduralworld
-    main.cpp
-    glsetup.hpp
-    glsetup.cpp
-    shaderprogram.hpp
-    shaderprogram.cpp
-    objloader.hpp
-    objloader.cpp
-    utils.hpp
-    constants.hpp
-    entities/entity.hpp
-    entities/entity.cpp
-    entities/heightmapterrain.hpp
-    entities/heightmapterrain.cpp
-    entities/worldorigin.hpp
-    entities/worldorigin.cpp
-    entities/player.hpp
-    entities/player.cpp
+    src/main.cpp
+    src/glsetup.hpp
+    src/glsetup.cpp
+    src/shaderprogram.hpp
+    src/shaderprogram.cpp
+    src/objloader.hpp
+    src/objloader.cpp
+    src/utils.hpp
+    src/constants.hpp
+    src/entities/entity.hpp
+    src/entities/entity.cpp
+    src/entities/heightmapterrain.hpp
+    src/entities/heightmapterrain.cpp
+    src/entities/worldorigin.hpp
+    src/entities/worldorigin.cpp
+    src/entities/player.hpp
+    src/entities/player.cpp
 )
 
 # Link libraries

@@ -11,8 +11,8 @@
 
 #include "entity.hpp"
 #include "player.hpp"
-#include "objloader.hpp"
-#include "constants.hpp"
+#include "../objloader.hpp"
+#include "../constants.hpp"
 
 Player::Player(const GLuint& shader_program, Entity* parent) : Entity(parent)
 {
