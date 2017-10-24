@@ -28,7 +28,7 @@
 #include "entity.hpp"
 #include "heightmapterrain.hpp"
 #include "worldorigin.hpp"
-#include "utils.hpp"
+#include "pacman.hpp"
 
 const char* APP_NAME = "Procedural World";
 
@@ -47,12 +47,18 @@ const int WORLD_Y_MAX = 10;
 // this one is only used for the z-axis
 const int WORLD_Z_MAX = 10;
 
+const float PLAYER_MOVEMENT_SPEED = 0.1;
+
 glm::mat4 projection_matrix;
 
 std::vector<Entity*> entities;
 
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
+Pacman* player;
+
+// Player constants
+const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
 
 // Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -60,14 +66,13 @@ const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
 // to radians to work well with glm
 const float initial_pitch = -65.0f;
 const float initial_yaw = -90.0f;
-const glm::vec3 initial_eye(0.0f, 20.0f, 10.0f);
+const float max_pitch = 89.0f;
+const float min_pitch = -89.0f;
+const float max_follow_distance = 10.0f;
 
 // Camera variables
 float pitch = initial_pitch;
 float yaw = initial_yaw;
-glm::vec3 eye = initial_eye;
-
-bool awaiting_user_input = false;
 
 glm::vec3 getViewDirection() {
 	return glm::vec3(
@@ -77,17 +82,43 @@ glm::vec3 getViewDirection() {
 	);
 }
 
+glm::vec3 getFollowVector() {
+	return glm::normalize(getViewDirection()) *
+			max_follow_distance *
+			// The lower the viewing angle, the shorter the follow distance -
+			// to accommodate for less space near terrain. At our lowest viewing
+			// angle, the third-person camera becomes first-person.
+			(1 - (pitch - min_pitch) / (max_pitch - min_pitch));
+}
+
+bool isKeyPressed(GLFWwindow* const& window, const int& key) {
+	return glfwGetKey(window, key) == GLFW_PRESS;
+}
+
+// controls that should be polled at every frame and read
+// continuously / in combination
+void pollContinuousControls(GLFWwindow* window) {
+	// move forward
+	if (isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP)) {
+		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+	// move back
+	if (isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN)) {
+		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+	// move left
+	if (isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT)) {
+		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+	// move right
+	if (isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT)) {
+		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	}
+}
+
 // Is called whenever a key is pressed/released via GLFW
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
-	static glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
-
-	glm::vec3 view_direction = getViewDirection();
-	glm::vec3 camera_center = eye + view_direction;
-	glm::vec3 left_direction = glm::cross(up, view_direction);
-	glm::vec3 forward_direction = glm::cross(left_direction, up);
-
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
@@ -103,34 +134,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_4:
 				height_map_terrain->selectStep(4);
 				break;
-			case GLFW_KEY_W:
-			case GLFW_KEY_UP:
-				// move forward
-				eye += 0.3f * glm::normalize(forward_direction);
-				break;
-			case GLFW_KEY_S:
-			case GLFW_KEY_DOWN:
-				// move backward
-				eye -= 0.3f * glm::normalize(forward_direction);
-				break;
-			case GLFW_KEY_A:
-			case GLFW_KEY_LEFT:
-				// move left
-				eye += 0.3f * glm::normalize(left_direction);
-				break;
-			case GLFW_KEY_D:
-			case GLFW_KEY_RIGHT:
-				// move right
-				eye -= 0.3f * glm::normalize(left_direction);
-				break;
-			case GLFW_KEY_SPACE:
-				// move up
-				eye += 0.3f * up;
-				break;
-			case GLFW_KEY_TAB:
-				// move down
-				eye -= 0.3f * up;
-				break;
 			case GLFW_KEY_GRAVE_ACCENT:
 				origin->toggle_hide();
 				break;
@@ -140,9 +143,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				// Reset camera
 				pitch = initial_pitch;
 				yaw = initial_yaw;
-				eye = initial_eye;
-				// Request user input
-				awaiting_user_input = true;
 				break;
 			case GLFW_KEY_P:
 			case GLFW_KEY_L:
@@ -207,10 +207,10 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	pitch += y_diff;
 
 	// set some vertical limits to avoid weird behavior
-	if (pitch > 89.0f) {
-		pitch = 89.0f;
-	} else if (pitch < -89.0f) {
-		pitch = -89.0f;
+	if (pitch > max_pitch) {
+		pitch = max_pitch;
+	} else if (pitch < min_pitch) {
+		pitch = min_pitch;
 	}
 }
 
@@ -264,7 +264,6 @@ void promptForUserInputs()
 
 	height_map_terrain->setUserInputs(skip_size, interpolation_size);
 	height_map_terrain->selectStep(2);
-	awaiting_user_input = false;
 	std::cout << "Vertices loaded!\n";
 }
 
@@ -310,31 +309,35 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*height_map_terrain);
 
+	player = new Pacman(shader_program, origin);
+	player->scale(0.04f);
+	player->setPosition(initial_player_position);
+	// copy pointer to entity list
+	entities.push_back(&*player);
+
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
 
+	// doesn't actually prompt anymore
+	promptForUserInputs();
+
 	// Game loop
-	bool rendered_at_least_once = false;
 	while (!glfwWindowShouldClose(window))
 	{
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 
-		if (awaiting_user_input) {
-			// since it happens _before_ glfwPollEvents() is called, this code
-			// won't be reached until at least one render since the program was reset
-			promptForUserInputs();
-		}
-
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
+		pollContinuousControls(window);
 
 		// Render
 		// Clear the colorbuffer
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 view_matrix = glm::lookAt(eye, eye + getViewDirection(), up);
+		glm::vec3 player_position = player->getPosition();
+		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
 
 		for (Entity* entity : entities) {
 			// Skip to the next entity if the current entity is hidden
@@ -368,12 +371,6 @@ int main()
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
-
-		if (!rendered_at_least_once) {
-			rendered_at_least_once = true;
-			// now that we're rendering something we'll request a skip size prompt
-			awaiting_user_input = true;
-		}
 	}
 
 	// De-allocate the memory for all our entities

@@ -75,43 +75,54 @@ void Entity::resetRotation()
 	this->rotation_matrix = identity;
 }
 
-void Entity::moveUp(const int& units)
+void Entity::moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	static glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
+	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
 
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * up_vec);
-	this->orient((float)(M_PI / 2));
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(forward_vec)
+	);
+	this->orient(forward_vec);
 }
 
-void Entity::moveDown(const int& units)
+void Entity::moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	static glm::vec3 down_vec = glm::vec3(0.0f, -1.0f, 0.0f);
-
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * down_vec);
-	this->orient((float)(3 * M_PI / 2));
+	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
+	glm::vec3 back_vec = -1.0f * glm::cross(left_vec, up_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(back_vec)
+	);
+	this->orient(back_vec);
 }
 
-void Entity::moveLeft(const int& units)
+void Entity::moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	static glm::vec3 left_vec = glm::vec3(-1.0f, 0.0f, 0.0f);
-
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * left_vec);
-	this->orient((float)M_PI);
+	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(left_vec)
+	);
+	this->orient(left_vec);
 }
 
-void Entity::moveRight(const int& units)
+void Entity::moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	static glm::vec3 right_vec = glm::vec3(1.0f, 0.0f, 0.0f);
-
-	this->translation_matrix = glm::translate(this->translation_matrix, (float)units * right_vec);
-	this->orient(0.0f);
+	glm::vec3 right_vec = -1.0f * glm::cross(up_vec, view_vec);
+	this->translation_matrix = glm::translate(
+			this->translation_matrix,
+			(float)units * glm::normalize(right_vec)
+	);
+	this->orient(right_vec);
 }
 
-void Entity::setPosition(const float& x, const float& y, const float& z)
+void Entity::setPosition(const glm::vec3& position)
 {
 	static glm::mat4 identity;
 
-	this->translation_matrix = glm::translate(identity, glm::vec3(x, y, z));
+	this->translation_matrix = glm::translate(identity, position);
 }
 
 void Entity::setDrawMode(const GLenum& draw_mode)
@@ -134,14 +145,18 @@ void Entity::toggle_hide()
 	this->hidden = !this->hidden;
 }
 
-void Entity::orient(const float& angle)
+void Entity::orient(const glm::vec3& new_face_vec)
 {
 	static glm::mat4 identity;
-	static glm::vec3 z_axis = glm::vec3(0.0f, 0.0f, 1.0f);
 
-	// re-write our rotation matrix to orient our model at the given
-	// angle in respect to the z axis.
-	this->rotation_matrix = glm::rotate(identity, angle, z_axis);
+	// re-write our rotation matrix to orient our model toward the given vector
+	this->rotation_matrix = glm::rotate(
+			identity,
+			// compute the angle between the default face vector and our new face vector
+			(float)acos(glm::dot(glm::normalize(this->getDefaultFaceVector()), glm::normalize(new_face_vec))),
+			// compute the cross product as the rotation axis
+			glm::cross(this->getDefaultFaceVector(), new_face_vec)
+	);
 }
 
 GLuint Entity::initVertexArray(
@@ -240,4 +255,12 @@ const glm::mat4& Entity::getBaseTranslation()
 {
 	static glm::mat4 identity;
 	return identity;
+}
+
+// the vector indicating the direction the model faces by default (with no rotation)
+const glm::vec3& Entity::getDefaultFaceVector()
+{
+	static glm::vec3 default_face_vec(1.0f, 0.0f, 0.0f);
+
+	return default_face_vec;
 }

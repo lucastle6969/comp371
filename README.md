@@ -47,10 +47,9 @@ Beyond the C++ standard library this application relies on:
     3. The reduced-point model with added interpolated points along the x axis
     4. The previous model, with full interpolation along the z axis as well
 * Press P to switch to points mode, L to switch to lines mode and T to switch to triangles mode
-* Use WASD or the arrow keys to move the position of the camera forward, back, left or right
-* Use space to move the camera position up and tab to move the camera position down.
+* Use WASD or the arrow keys to move the player forward, back, left or right
 * Click the window with the left mouse button to capture the mouse and enter camera look mode
-* Move the mouse in camera look mode to view the model from any direction
+* Move the mouse in camera look mode to rotate about the player and change the forward direction
 * Press escape to exit camera look mode, and get your mouse back
 * Press the grave/backtick button (`) to toggle the visibility of the X, Y and Z axes (hidden by default)
 * Press backspace to reset the model and camera. **You will be asked to re-enter skip size and step size information at the command line.**
