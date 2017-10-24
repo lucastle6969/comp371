@@ -13,11 +13,11 @@
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "vendor/stb_image.h"
+#include "../vendor/stb_image.h"
 
 #include "entity.hpp"
-#include "constants.hpp"
 #include "heightmapterrain.hpp"
+#include "../constants.hpp"
 
 HeightMapTerrain::HeightMapTerrain(
 	const GLuint &shader_program,

@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "entity.hpp"
-#include "utils.hpp"
+#include "../utils.hpp"
 
 Entity::Entity(Entity* parent)
 {
