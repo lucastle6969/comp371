@@ -23,7 +23,7 @@ Player::Player(const GLuint& shader_program, Entity* parent) : Entity(parent)
 	std::vector<glm::vec2> UVs;
 
 	// get the vertices from the pacman.obj file (ignore the rest)
-	loadOBJ("../pacman.obj", &this->vertices, &normals, &UVs);
+	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs);
 	this->vao = Entity::initVertexArray(shader_program, this->vertices);
 }
 

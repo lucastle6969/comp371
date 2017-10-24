@@ -54,18 +54,18 @@ add_executable(proceduralworld
     glsetup.cpp
     shaderprogram.hpp
     shaderprogram.cpp
-    entity.hpp
-    entity.cpp
-    heightmapterrain.hpp
-    heightmapterrain.cpp
-    worldorigin.hpp
-    worldorigin.cpp
-    player.hpp
-    player.cpp
     objloader.hpp
     objloader.cpp
     utils.hpp
     constants.hpp
+    entities/entity.hpp
+    entities/entity.cpp
+    entities/heightmapterrain.hpp
+    entities/heightmapterrain.cpp
+    entities/worldorigin.hpp
+    entities/worldorigin.cpp
+    entities/player.hpp
+    entities/player.cpp
 )
 
 # Link libraries

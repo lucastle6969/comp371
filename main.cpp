@@ -25,10 +25,10 @@
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
-#include "entity.hpp"
-#include "heightmapterrain.hpp"
-#include "worldorigin.hpp"
-#include "player.hpp"
+#include "entities/entity.hpp"
+#include "entities/heightmapterrain.hpp"
+#include "entities/worldorigin.hpp"
+#include "entities/player.hpp"
 
 const char* APP_NAME = "Procedural World";
 
@@ -292,7 +292,7 @@ int main()
 	framebufferSizeCallback(window, width, height);
 
 	bool shader_program_ok;
-	GLuint shader_program = prepareShaderProgram("../vertex.glsl", "../fragment.glsl",
+	GLuint shader_program = prepareShaderProgram("../shaders/vertex.glsl", "../shaders/fragment.glsl",
 	                                             &shader_program_ok);
 	if (!shader_program_ok) {
 		return -1;
