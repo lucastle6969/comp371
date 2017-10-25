@@ -25,6 +25,7 @@
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
+#include "entities/entity.hpp"
 #include "entities/drawableentity.hpp"
 #include "entities/heightmapterrain.hpp"
 #include "entities/worldorigin.hpp"
@@ -326,7 +327,7 @@ int main()
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 
-		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+		// Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
 		pollContinuousControls(window);
 
