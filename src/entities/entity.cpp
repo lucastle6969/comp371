@@ -55,7 +55,8 @@ glm::vec3 Entity::getPosition()
 
 bool Entity::isHidden()
 {
-	return this->hidden;
+	// true either if this entity is explicitly hidden or its parent is hidden
+	return this->hidden || (this->parent ? this->parent->isHidden() : false);
 }
 
 void Entity::scale(const float& scalar)
