@@ -13,8 +13,9 @@
 #include <string>
 
 #include "entity.hpp"
+#include "drawableentity.hpp"
 
-class HeightMapTerrain: public Entity {
+class HeightMapTerrain: public DrawableEntity {
 private:
 	static constexpr float rotation_angle = (float)(M_PI / 2);
 	// STEP 1: Points taken directly from pixel color values
@@ -38,7 +39,6 @@ private:
 	GLuint vertices_buffer_step_4;
 	GLuint element_buffer_step_4;
 
-	GLuint shader_program;
 	int map_height;
 	int map_width;
 

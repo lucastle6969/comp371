@@ -22,14 +22,6 @@ Entity::Entity(Entity* parent)
 
 	// can be toggled with this->hide(), this->unhide().
 	this->hidden = false;
-
-	// the default draw mode will be overridden by derived classes
-	this->draw_mode = GL_LINES;
-}
-
-GLenum Entity::getDrawMode()
-{
-	return this->draw_mode;
 }
 
 const glm::mat4& Entity::getModelMatrix()
@@ -55,7 +47,8 @@ glm::vec3 Entity::getPosition()
 
 bool Entity::isHidden()
 {
-	return this->hidden;
+	// true either if this entity is explicitly hidden or its parent is hidden
+	return this->hidden || (this->parent ? this->parent->isHidden() : false);
 }
 
 void Entity::scale(const float& scalar)
@@ -125,11 +118,6 @@ void Entity::setPosition(const glm::vec3& position)
 	this->translation_matrix = glm::translate(identity, position);
 }
 
-void Entity::setDrawMode(const GLenum& draw_mode)
-{
-	this->draw_mode = draw_mode;
-}
-
 void Entity::hide()
 {
 	this->hidden = true;
@@ -157,80 +145,6 @@ void Entity::orient(const glm::vec3& new_face_vec)
 			// compute the cross product as the rotation axis
 			glm::cross(this->getDefaultFaceVector(), new_face_vec)
 	);
-}
-
-GLuint Entity::initVertexArray(
-	const GLuint &shader_program,
-	const std::vector<glm::vec3> &vertices,
-	GLuint* vertices_buffer,
-	GLuint* element_buffer
-) {
-	// if no elements vector is provided, we'll create a default
-
-	std::vector<GLuint> elements;
-	// naive default approach - traverse vertices in original order
-	for (int i = 0, limit = (int)vertices.size(); i < limit; i++) {
-		elements.emplace_back(i);
-	}
-
-	return Entity::initVertexArray(shader_program, vertices, elements, vertices_buffer, element_buffer);
-}
-
-GLuint Entity::initVertexArray(
-	const GLuint& shader_program,
-	const std::vector<glm::vec3>& vertices,
-	const std::vector<GLuint>& elements,
-	GLuint* vertices_buffer,
-	GLuint* element_buffer
-) {
-	// Set VAO (Vertex Array Object) id
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-
-	// Bind the VAO
-	glBindVertexArray(vao);
-
-	// Create vertices buffer
-	GLuint v_buff_temp;
-	if (!vertices_buffer) {
-		vertices_buffer = &v_buff_temp;
-	}
-	glGenBuffers(1, vertices_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, *vertices_buffer);
-	glBufferData(
-			GL_ARRAY_BUFFER,
-			vertices.size() * sizeof(glm::vec3),
-			&vertices.front(),
-			GL_STATIC_DRAW
-	);
-
-	// Bind attribute pointer for the vertices buffer
-	auto v_position = (GLuint)glGetAttribLocation(shader_program, "v_position");
-	glEnableVertexAttribArray(v_position);
-	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-
-	// Create element buffer
-	GLuint e_buff_temp;
-	if (!element_buffer) {
-		element_buffer = &e_buff_temp;
-	}
-	glGenBuffers(1, element_buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *element_buffer);
-	glBufferData(
-			GL_ELEMENT_ARRAY_BUFFER,
-			elements.size() * sizeof(GLuint),
-			&elements.front(),
-			GL_STATIC_DRAW
-	);
-
-	// Unbind VAO, then the corresponding buffers.
-	// VAO should be unbound BEFORE element array buffer so VAO remembers
-	// the last bound element array buffer!
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	return vao;
 }
 
 // derived classes should override this if the model

@@ -16,6 +16,7 @@
 #include "../vendor/stb_image.h"
 
 #include "entity.hpp"
+#include "drawableentity.hpp"
 #include "heightmapterrain.hpp"
 #include "../constants.hpp"
 
@@ -23,7 +24,7 @@ HeightMapTerrain::HeightMapTerrain(
 	const GLuint &shader_program,
 	const std::string& map_path,
 	Entity* parent
-) : Entity(parent)
+) : DrawableEntity(shader_program, parent)
 {
 	static const int requested_channels = 3;
 
@@ -61,8 +62,7 @@ HeightMapTerrain::HeightMapTerrain(
 
 	std::vector<GLuint> elements_step_1;
 	HeightMapTerrain::createElements(map_width, map_height, &elements_step_1);
-	this->vao_step_1 = Entity::initVertexArray(
-			shader_program,
+	this->vao_step_1 = this->initVertexArray(
 			this->vertices_step_1,
 			elements_step_1,
 			&this->vertices_buffer_step_1,
@@ -75,7 +75,6 @@ HeightMapTerrain::HeightMapTerrain(
 	this->awaiting_derived_vertices_initialization = true;
 
 	// These are necessary before we call the generateDerivedVertices method
-	this->shader_program = shader_program;
 	this->map_width = map_width;
 	this->map_height = map_height;
 
@@ -206,8 +205,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
 
 		std::vector<GLuint> elements_step_2;
 		HeightMapTerrain::createElements(reduced_width, reduced_height, &elements_step_2);
-		this->vao_step_2 = Entity::initVertexArray(
-				this->shader_program,
+		this->vao_step_2 = this->initVertexArray(
 				this->vertices_step_2,
 				elements_step_2,
 				&this->vertices_buffer_step_2,
@@ -250,8 +248,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
 
 		std::vector<GLuint> elements_step_3;
 		HeightMapTerrain::createElements(interpolated_width, reduced_height, &elements_step_3);
-		this->vao_step_3 = Entity::initVertexArray(
-				this->shader_program,
+		this->vao_step_3 = this->initVertexArray(
 				this->vertices_step_3,
 				elements_step_3,
 				&this->vertices_buffer_step_3,
@@ -293,8 +290,7 @@ void HeightMapTerrain::generateDerivedVertices(const int& skip_size, const float
 
         std::vector<GLuint> elements_step_4;
         HeightMapTerrain::createElements(interpolated_width, interpolated_height, &elements_step_4);
-        this->vao_step_4 = Entity::initVertexArray(
-                this->shader_program,
+        this->vao_step_4 = this->initVertexArray(
                 this->vertices_step_4,
                 elements_step_4,
                 &this->vertices_buffer_step_4,
