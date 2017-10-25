@@ -20,7 +20,6 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
 #include "glsetup.hpp"       // include gl context setup function
@@ -315,9 +314,6 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*player);
 
-	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(shader_program, "mvp_matrix");
-	auto color_type_loc = (GLuint)glGetUniformLocation(shader_program, "color_type");
-
 	// doesn't actually prompt anymore
 	promptForUserInputs();
 
@@ -339,39 +335,9 @@ int main()
 		glm::vec3 player_position = player->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
 
-		glUseProgram(shader_program);
-
 		for (DrawableEntity* entity : entities) {
-			// Skip to the next entity if the current entity is hidden
-			if (entity->isHidden()) continue;
-
-			// use the entity's model matrix to form a new Model View Projection matrix
-			glm::mat4 mvp_matrix = projection_matrix * view_matrix * entity->getModelMatrix();
-			// send the mvp_matrix variable content to the shader
-			glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
-			// send the color_type variable to the shader (could be null)
-			glUniform1i(color_type_loc, entity->getColorType());
-
-			// Draw
-			glBindVertexArray(entity->getVAO());
-			GLenum draw_mode = entity->getDrawMode();
-			if (draw_mode == GL_POINTS) {
-				// it's inefficient and useless to use glDrawElements for a point cloud
-				glDrawArrays(draw_mode, 0, (GLuint)entity->getVertices().size());
-			} else {
-				int elementBufferArraySize;
-				glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &elementBufferArraySize);
-				glDrawElements(
-						draw_mode,
-						elementBufferArraySize / sizeof(GLuint),
-						GL_UNSIGNED_INT,
-						nullptr
-				);
-			}
-			glBindVertexArray(0);
+			entity->draw(view_matrix, projection_matrix);
 		}
-
-		glUseProgram(0);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);

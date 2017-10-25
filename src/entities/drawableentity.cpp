@@ -6,6 +6,7 @@
 #endif
 
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <string>
 #include <stdexcept>
@@ -54,6 +55,45 @@ GLenum DrawableEntity::getDrawMode()
 void DrawableEntity::setDrawMode(const GLenum& draw_mode)
 {
 	this->draw_mode = draw_mode;
+}
+
+void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &projection_matrix)
+{
+	if (this->isHidden()) {
+		return;
+	}
+
+	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(this->shader_program, "mvp_matrix");
+	auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
+
+	glUseProgram(this->shader_program);
+
+	// use the entity's model matrix to form a new Model View Projection matrix
+	glm::mat4 mvp_matrix = projection_matrix * view_matrix * this->getModelMatrix();
+	// send the mvp_matrix variable content to the shader
+	glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
+	// send the color_type variable to the shader (could be null)
+	glUniform1i(color_type_loc, this->getColorType());
+
+	// Draw
+	glBindVertexArray(this->getVAO());
+	GLenum draw_mode = this->getDrawMode();
+	if (draw_mode == GL_POINTS) {
+		// it's inefficient and useless to use glDrawElements for a point cloud
+		glDrawArrays(draw_mode, 0, (GLuint)this->getVertices().size());
+	} else {
+		int element_buffer_array_size;
+		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);
+		glDrawElements(
+				draw_mode,
+				element_buffer_array_size / sizeof(GLuint),
+				GL_UNSIGNED_INT,
+				nullptr
+		);
+	}
+	glBindVertexArray(0);
+
+	glUseProgram(0);
 }
 
 GLuint DrawableEntity::initVertexArray(
