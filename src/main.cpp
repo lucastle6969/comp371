@@ -25,7 +25,7 @@
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
-#include "entities/entity.hpp"
+#include "entities/drawableentity.hpp"
 #include "entities/heightmapterrain.hpp"
 #include "entities/worldorigin.hpp"
 #include "entities/player.hpp"
@@ -51,7 +51,7 @@ const float PLAYER_MOVEMENT_SPEED = 0.1;
 
 glm::mat4 projection_matrix;
 
-std::vector<Entity*> entities;
+std::vector<DrawableEntity*> entities;
 
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
@@ -152,7 +152,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				if (key == GLFW_KEY_T) draw_mode = GL_TRIANGLES;
 				// set each object's draw mode to match the key that was pressed:
 				// P = points, L = lines, T = triangles
-				for (Entity *entity : entities) {
+				for (DrawableEntity *entity : entities) {
 					if (entity == origin) continue;
 					entity->setDrawMode(draw_mode);
 				}
@@ -297,7 +297,6 @@ int main()
 	if (!shader_program_ok) {
 		return -1;
 	}
-	glUseProgram(shader_program);
 
 	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
 	origin->hide();
@@ -339,7 +338,9 @@ int main()
 		glm::vec3 player_position = player->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
 
-		for (Entity* entity : entities) {
+		glUseProgram(shader_program);
+
+		for (DrawableEntity* entity : entities) {
 			// Skip to the next entity if the current entity is hidden
 			if (entity->isHidden()) continue;
 
@@ -369,12 +370,14 @@ int main()
 			glBindVertexArray(0);
 		}
 
+		glUseProgram(0);
+
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
 
 	// De-allocate the memory for all our entities
-	for (Entity* entity : entities) {
+	for (DrawableEntity* entity : entities) {
 		delete entity;
 	}
 

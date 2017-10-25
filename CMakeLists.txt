@@ -60,6 +60,8 @@ add_executable(proceduralworld
     src/constants.hpp
     src/entities/entity.hpp
     src/entities/entity.cpp
+    src/entities/drawableentity.hpp
+    src/entities/drawableentity.cpp
     src/entities/heightmapterrain.hpp
     src/entities/heightmapterrain.cpp
     src/entities/worldorigin.hpp

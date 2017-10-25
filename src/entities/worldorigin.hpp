@@ -12,8 +12,9 @@
 #include <vector>
 
 #include "entity.hpp"
+#include "drawableentity.hpp"
 
-class WorldOrigin: public Entity {
+class WorldOrigin: public DrawableEntity {
 private:
 	std::vector<glm::vec3> vertices;
 	GLuint vao;

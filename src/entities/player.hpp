@@ -12,8 +12,9 @@
 #include <vector>
 
 #include "entity.hpp"
+#include "drawableentity.hpp"
 
-class Player: public Entity {
+class Player: public DrawableEntity {
 private:
 	static constexpr float base_rotation_angle = (float)(M_PI / 2);
 	const glm::mat4& getBaseRotation() override;

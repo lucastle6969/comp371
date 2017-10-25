@@ -10,11 +10,12 @@
 #include <vector>
 
 #include "entity.hpp"
+#include "drawableentity.hpp"
 #include "player.hpp"
 #include "../objloader.hpp"
 #include "../constants.hpp"
 
-Player::Player(const GLuint& shader_program, Entity* parent) : Entity(parent)
+Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(shader_program, parent)
 {
 	this->draw_mode = GL_TRIANGLES;
 
@@ -24,7 +25,7 @@ Player::Player(const GLuint& shader_program, Entity* parent) : Entity(parent)
 
 	// get the vertices from the pacman.obj file (ignore the rest)
 	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs);
-	this->vao = Entity::initVertexArray(shader_program, this->vertices);
+	this->vao = this->initVertexArray(this->vertices);
 }
 
 const std::vector<glm::vec3>& Player::getVertices()

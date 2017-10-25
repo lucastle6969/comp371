@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "entity.hpp"
+#include "drawableentity.hpp"
 #include "worldorigin.hpp"
 #include "../constants.hpp"
 
@@ -18,7 +19,7 @@ WorldOrigin::WorldOrigin(
     const int& y_max,
     const int& z_max,
 	Entity* parent
-) : Entity(parent)
+) : DrawableEntity(shader_program, parent)
 {
 	this->draw_mode = GL_LINES;
 	
@@ -32,7 +33,7 @@ WorldOrigin::WorldOrigin(
 	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
 	this->vertices.emplace_back(0.0f, 0.0f, z_max);
 
-	this->vao = Entity::initVertexArray(shader_program, this->vertices);
+	this->vao = this->initVertexArray(this->vertices);
 }
 
 const std::vector<glm::vec3>& WorldOrigin::getVertices()
