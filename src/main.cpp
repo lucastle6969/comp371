@@ -53,6 +53,7 @@ glm::mat4 projection_matrix;
 
 std::vector<DrawableEntity*> entities;
 
+Entity* world;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
 Player* player;
@@ -298,17 +299,19 @@ int main()
 		return -1;
 	}
 
-	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX);
+	world = new Entity();
+
+	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX, world);
 	origin->hide();
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	height_map_terrain = new HeightMapTerrain(shader_program, image_file, origin);
+	height_map_terrain = new HeightMapTerrain(shader_program, image_file, world);
 	height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
 	entities.push_back(&*height_map_terrain);
 
-	player = new Player(shader_program, origin);
+	player = new Player(shader_program, world);
 	player->scale(0.04f);
 	player->setPosition(initial_player_position);
 	// copy pointer to entity list
