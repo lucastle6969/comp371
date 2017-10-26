@@ -4,5 +4,6 @@
 const int COLOR_WHITE = 0;
 const int COLOR_COORDINATE_AXES = 1;
 const int COLOR_HEIGHT = 2;
+const int COLOR_TILE = 3;
 
 #endif // HEIGHTMAPPER_CONSTANTS_H

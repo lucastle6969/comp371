@@ -29,6 +29,8 @@
 #include "entities/heightmapterrain.hpp"
 #include "entities/worldorigin.hpp"
 #include "entities/player.hpp"
+#include "entities/worldtile.hpp"
+
 
 const char* APP_NAME = "Procedural World";
 
@@ -56,10 +58,13 @@ std::vector<DrawableEntity*> entities;
 Entity* world;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
+WorldTile* world_tile;
 Player* player;
 
 // Player constants
 const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
+int player_current_x = 0;
+int player_current_z = 0;
 
 // Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -96,25 +101,47 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 	return glfwGetKey(window, key) == GLFW_PRESS;
 }
 
+void checkPosition(){
+	//testing move + worldTile cell system
+	glm::vec3 position = player->getPosition();
+	std::cout<<position.x<<", "<<position.y<< ", "<<position.z<<std::endl;
+	if((int)position.z<player_current_z){
+		player_current_z = (int)position.z;
+		std::cout<< "extendNorth()! "<<player_current_z<<std::endl;
+	}
+
+	if((int)position.x>player_current_x){
+		player_current_x = (int)position.x;
+		std::cout<< "extendEast()! "<<player_current_x<<std::endl;
+	}
+
+}
+
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
 	// move forward
 	if (isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP)) {
 		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
 	// move back
 	if (isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN)) {
 		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
 	// move left
 	if (isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT)) {
 		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
 	// move right
 	if (isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT)) {
 		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
+
+
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -306,10 +333,12 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	height_map_terrain = new HeightMapTerrain(shader_program, image_file, world);
-	height_map_terrain->scale(0.024f);
+	//height_map_terrain = new HeightMapTerrain(shader_program, image_file, world);
+	//height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
-	entities.push_back(&*height_map_terrain);
+	//entities.push_back(&*height_map_terrain);
+	world_tile = new WorldTile(shader_program, world);
+	entities.push_back(&*world_tile);
 
 	player = new Player(shader_program, world);
 	player->scale(0.04f);
@@ -318,7 +347,7 @@ int main()
 	entities.push_back(&*player);
 
 	// doesn't actually prompt anymore
-	promptForUserInputs();
+	//promptForUserInputs();
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
