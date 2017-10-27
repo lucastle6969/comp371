@@ -60,9 +60,18 @@ const int WorldTile::getColorType()
 const glm::mat4& WorldTile::getBaseTranslation()
 {
     static glm::mat4 identity;
-    static glm::mat4 translation = glm::translate(identity, this->initialTranslation);
+    glm::mat4 translation = glm::translate(identity, this->initialTranslation);
 
     return translation;
+}
+
+const glm::mat4& WorldTile::getBaseRotation()
+{
+    static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
+    static glm::mat4 identity;
+    static glm::mat4 rotation = glm::rotate(identity, WorldTile::base_rotation_angle, x_axis);
+
+    return rotation;
 }
 
 void WorldTile::createElements(
