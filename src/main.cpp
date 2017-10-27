@@ -59,6 +59,10 @@ Entity* world;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
 WorldTile* world_tile;
+WorldTile *world_tiles[9];
+
+
+
 Player* player;
 
 // Player constants
@@ -337,8 +341,50 @@ int main()
 	//height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
 	//entities.push_back(&*height_map_terrain);
-	world_tile = new WorldTile(shader_program, world);
-	entities.push_back(&*world_tile);
+
+	for(int i = 0; i<9; i++) {
+		switch(i){
+			case 0:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(0.0f, 0.0f, 0.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+
+			case 1:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(1.0f, 0.0f, 0.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 2:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(2.0f, 0.0f, 0.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 3:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(0.0f, 0.0f, -1.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 4:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(1.0f, 0.0f, -1.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 5:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(2.0f, 0.0f, -1.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 6:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(0.0f, 0.0f, -2.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 7:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(1.0f, 0.0f, -2.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+			case 8:
+				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(2.0f, 0.0f, -2.0f));
+				entities.push_back(&*world_tiles[i]);
+				break;
+
+		}
+
+	}
 
 	player = new Player(shader_program, world);
 	player->scale(0.04f);
