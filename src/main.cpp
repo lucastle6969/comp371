@@ -58,8 +58,7 @@ std::vector<DrawableEntity*> entities;
 Entity* world;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
-WorldTile* world_tile;
-WorldTile *world_tiles[9];
+WorldTile* world_tiles [9];
 
 
 
@@ -345,40 +344,40 @@ int main()
 	for(int i = 0; i<9; i++) {
 		switch(i){
 			case 0:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(0.0f, 0.0f, 0.0f));
+				world_tiles[i] =  new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 
 			case 1:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(1.0f, 0.0f, 0.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 2:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(2.0f, 0.0f, 0.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 3:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(0.0f, 0.0f, -1.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -1.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 4:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(1.0f, 0.0f, -1.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -1.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 5:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(2.0f, 0.0f, -1.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -1.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 6:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(0.0f, 0.0f, -2.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -2.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 7:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(1.0f, 0.0f, -2.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -2.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 			case 8:
-				world_tiles[i] = new WorldTile(shader_program, world, glm::vec3(2.0f, 0.0f, -2.0f));
+				world_tiles[i] = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -2.0f), world);
 				entities.push_back(&*world_tiles[i]);
 				break;
 

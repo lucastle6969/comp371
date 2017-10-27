@@ -22,16 +22,15 @@ private:
     const glm::mat4& getBaseTranslation() override;
     const glm::vec3& getDefaultFaceVector() override;
     std::vector<glm::vec3> vertices;
-    glm::vec3 initialTranslation;
+    glm::vec3 initial_translation;
     GLuint vao;
     GLuint vertices_buffer;
     GLuint element_buffer;
     static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 
 public:
-    explicit WorldTile(const GLuint& shader_program) : WorldTile(shader_program, nullptr) {}
-    WorldTile(const GLuint& shader_program, Entity* parent);
-    WorldTile(const GLuint& shader_program, Entity* parent, glm::vec3 initialTranslation);
+    WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation) : WorldTile(shader_program, initial_translation, nullptr) {}
+    WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation, Entity* parent);
     const std::vector<glm::vec3>& getVertices() override;
     GLuint getVAO() override;
     const int getColorType() override;

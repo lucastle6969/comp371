@@ -15,11 +15,11 @@
 
 #include "../constants.hpp"
 
-WorldTile::WorldTile(const GLuint& shader_program, Entity* parent, glm::vec3 initialTranslation) : DrawableEntity(shader_program, parent)
+WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initialTranslation, Entity* parent) : DrawableEntity(shader_program, parent)
 {
     this->draw_mode = GL_TRIANGLES;
 
-    this->initialTranslation = initialTranslation;
+    this->initial_translation = initialTranslation;
     int tile_width=1, tile_height = 1;
 
     //tile at the origin 1x1 in XZ plane
@@ -60,7 +60,7 @@ const int WorldTile::getColorType()
 const glm::mat4& WorldTile::getBaseTranslation()
 {
     static glm::mat4 identity;
-    glm::mat4 translation = glm::translate(identity, this->initialTranslation);
+    glm::mat4 translation = glm::translate(identity, this->initial_translation);
 
     return translation;
 }
