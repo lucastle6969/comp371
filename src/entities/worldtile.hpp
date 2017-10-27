@@ -17,7 +17,7 @@
 class WorldTile: public DrawableEntity {
 private:
 
-    static constexpr float base_rotation_angle = 0;
+    static constexpr float base_rotation_angle = (float)(0);
     const glm::mat4& getBaseRotation() override;
     const glm::mat4& getBaseTranslation() override;
     const glm::vec3& getDefaultFaceVector() override;
@@ -29,6 +29,7 @@ private:
     static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 
 public:
+
     WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation) : WorldTile(shader_program, initial_translation, nullptr) {}
     WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation, Entity* parent);
     const std::vector<glm::vec3>& getVertices() override;

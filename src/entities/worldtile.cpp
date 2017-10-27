@@ -15,6 +15,7 @@
 
 #include "../constants.hpp"
 
+
 WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initialTranslation, Entity* parent) : DrawableEntity(shader_program, parent)
 {
     this->draw_mode = GL_TRIANGLES;

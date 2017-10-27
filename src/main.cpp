@@ -58,7 +58,11 @@ std::vector<DrawableEntity*> entities;
 Entity* world;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
-WorldTile* world_tiles [9];
+WorldTile* world_tileBL;
+WorldTile* world_tileBC;
+WorldTile* world_tileBR;
+
+
 
 
 
@@ -341,49 +345,16 @@ int main()
 	// copy pointer to entity list
 	//entities.push_back(&*height_map_terrain);
 
-	for(int i = 0; i<9; i++) {
-		switch(i){
-			case 0:
-				world_tiles[i] =  new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
 
-			case 1:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 2:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 3:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -1.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 4:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -1.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 5:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -1.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 6:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -2.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 7:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -2.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
-			case 8:
-				world_tiles[i] = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -2.0f), world);
-				entities.push_back(&*world_tiles[i]);
-				break;
+    world_tileBL = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), world);
+    world_tileBC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), world);
+    world_tileBR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), world);
+    entities.push_back(&*world_tileBL);
 
-		}
+    entities.push_back(&*world_tileBC);
 
-	}
+    entities.push_back(&*world_tileBR);
+
 
 	player = new Player(shader_program, world);
 	player->scale(0.04f);
