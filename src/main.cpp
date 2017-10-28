@@ -61,12 +61,19 @@ HeightMapTerrain* height_map_terrain;
 WorldTile* world_tileBL;
 WorldTile* world_tileBC;
 WorldTile* world_tileBR;
-
-
-
-
+WorldTile* world_tileML;
+WorldTile* world_tileMC;
+WorldTile* world_tileMR;
+WorldTile* world_tileTL;
+WorldTile* world_tileTC;
+WorldTile* world_tileTR;
 
 Player* player;
+
+//cell system control vectors
+std::vector<int> tmb = {1,2,3};
+std::vector<int> lcr = {1,2,3};
+
 
 // Player constants
 const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
@@ -108,17 +115,68 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 	return glfwGetKey(window, key) == GLFW_PRESS;
 }
 
+void extendNorth(){
+    int rowToMoveUp = tmb[2];
+    tmb[2] = tmb[1];
+    tmb[1] = tmb[0];
+    tmb[0] = rowToMoveUp;
+    switch(rowToMoveUp){
+        case 3:
+            world_tileBL->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tileBC->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tileBR->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            break;
+        case 2:
+            world_tileML->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tileMC->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tileMR->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            break;
+        case 1:
+            world_tileTL->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tileTC->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tileTR->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            break;
+    }
+
+}
+
+void extendEast(){
+    int colToMoveRight = lcr[0];
+    lcr[0] = lcr[1];
+    lcr[1] = lcr[2];
+    lcr[2] = colToMoveRight;
+    switch(colToMoveRight){
+        case 1:
+            world_tileTL->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tileML->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tileBL->translate(glm::vec3(3.0f,0.0f,0.0f));
+            break;
+        case 2:
+            world_tileTC->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tileMC->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tileBC->translate(glm::vec3(3.0f,0.0f,0.0f));
+            break;
+        case 3:
+            world_tileTR->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tileMR->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tileBR->translate(glm::vec3(3.0f,0.0f,0.0f));
+            break;
+    }
+}
+
 void checkPosition(){
 	//testing move + worldTile cell system
 	glm::vec3 position = player->getPosition();
 	std::cout<<position.x<<", "<<position.y<< ", "<<position.z<<std::endl;
 	if((int)position.z<player_current_z){
 		player_current_z = (int)position.z;
+        extendNorth();
 		std::cout<< "extendNorth()! "<<player_current_z<<std::endl;
 	}
 
 	if((int)position.x>player_current_x){
 		player_current_x = (int)position.x;
+        extendEast();
 		std::cout<< "extendEast()! "<<player_current_x<<std::endl;
 	}
 
@@ -349,11 +407,22 @@ int main()
     world_tileBL = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), world);
     world_tileBC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), world);
     world_tileBR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), world);
+    world_tileML = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -1.0f), world);
+    world_tileMC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -1.0f), world);
+    world_tileMR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -1.0f), world);
+    world_tileTL = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -2.0f), world);
+    world_tileTC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -2.0f), world);
+    world_tileTR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -2.0f), world);
+
     entities.push_back(&*world_tileBL);
-
     entities.push_back(&*world_tileBC);
-
     entities.push_back(&*world_tileBR);
+    entities.push_back(&*world_tileML);
+    entities.push_back(&*world_tileMC);
+    entities.push_back(&*world_tileMR);
+    entities.push_back(&*world_tileTL);
+    entities.push_back(&*world_tileTC);
+    entities.push_back(&*world_tileTR);
 
 
 	player = new Player(shader_program, world);

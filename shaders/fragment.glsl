@@ -25,7 +25,8 @@ void main()
             color = vec4(vec3(pos.y), 1.0f);
             break;
         case COLOR_TILE:
-            color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+            color = vec4(0.5f,float((int(pos.z))%256)/256.0, float((int(pos.x))%256)/256.0, 1.0f);
             break;
 
         default:

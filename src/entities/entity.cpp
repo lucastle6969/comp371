@@ -68,6 +68,11 @@ void Entity::resetRotation()
 	this->rotation_matrix = identity;
 }
 
+void Entity::translate(const glm::vec3& translation_vec) {
+    this->translation_matrix = glm::translate(
+            this->translation_matrix, translation_vec);
+}
+
 void Entity::moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
 	glm::vec3 left_vec = glm::cross(up_vec, view_vec);

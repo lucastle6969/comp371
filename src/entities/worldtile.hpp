@@ -19,7 +19,7 @@ private:
 
     static constexpr float base_rotation_angle = (float)(0);
     const glm::mat4& getBaseRotation() override;
-    const glm::mat4& getBaseTranslation() override;
+//    const glm::mat4& getBaseTranslation() override;
     const glm::vec3& getDefaultFaceVector() override;
     std::vector<glm::vec3> vertices;
     glm::vec3 initial_translation;

@@ -38,6 +38,8 @@ WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initialTranslation,
             &this->element_buffer
     );
 
+    WorldTile::translate(initialTranslation);
+
 
 
     //this->vao = this->initVertexArray(this->vertices);
@@ -58,13 +60,12 @@ const int WorldTile::getColorType()
     return COLOR_TILE;
 }
 
-const glm::mat4& WorldTile::getBaseTranslation()
-{
-    static glm::mat4 identity;
-    glm::mat4 translation = glm::translate(identity, this->initial_translation);
+//const glm::mat4& WorldTile::getBaseTranslation()
+//{
+//    static glm::mat4 identity;
 
-    return translation;
-}
+//    return glm::translate(identity, this->initial_translation);;
+//}
 
 const glm::mat4& WorldTile::getBaseRotation()
 {
