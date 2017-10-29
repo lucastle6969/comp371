@@ -13,10 +13,6 @@ static const char* APP_NAME = "Procedural World";
 // Window dimensions
 static const GLuint WIDTH = 800, HEIGHT = 800;
 
-static const std::string DEFAULT_IMAGE_FILE = "../depth.png";
-static const int DEFAULT_SKIP_SIZE = 20;
-static const float DEFAULT_INTERPOLATION_SIZE = 0.1;
-
 // bounds for placing grid, axes and objects
 static const int WORLD_X_MIN = -10;
 static const int WORLD_X_MAX = 10;
