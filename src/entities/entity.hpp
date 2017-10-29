@@ -14,6 +14,7 @@
 class Entity {
 private:
 	Entity* parent;
+	std::vector<Entity*> children;
 	glm::mat4 scale_matrix;
 	glm::mat4 rotation_matrix;
     glm::mat4 translation_matrix;
@@ -29,8 +30,8 @@ protected:
 
 public:
 	Entity() : Entity(nullptr) {}
-	virtual ~Entity() = default;
 	explicit Entity(Entity* parent);
+	virtual ~Entity() = default;
 	const glm::mat4& getModelMatrix();
 	glm::vec3 getPosition();
 	bool isHidden();
@@ -45,7 +46,8 @@ public:
 	void setPosition(const glm::vec3& position);
 	void hide();
 	void unhide();
-	void toggle_hide();
+	void toggleHide();
+	virtual void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix);
 };
 
 #endif //PACMAN3D_ENTITY_H

@@ -62,14 +62,14 @@ add_executable(proceduralworld
     src/entities/entity.cpp
     src/entities/drawableentity.hpp
     src/entities/drawableentity.cpp
-    src/entities/heightmapterrain.hpp
-    src/entities/heightmapterrain.cpp
     src/entities/worldorigin.hpp
     src/entities/worldorigin.cpp
     src/entities/player.hpp
     src/entities/player.cpp
-        src/entities/worldtile.hpp
-        src/entities/worldtile.cpp
+    src/entities/worldtile.hpp
+    src/entities/worldtile.cpp
+    src/entities/world.hpp
+    src/entities/world.cpp
 )
 
 # Link libraries

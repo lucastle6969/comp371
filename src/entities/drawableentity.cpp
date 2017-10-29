@@ -59,6 +59,8 @@ void DrawableEntity::setDrawMode(const GLenum& draw_mode)
 
 void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &projection_matrix)
 {
+	Entity::draw(view_matrix, projection_matrix);
+
 	if (this->isHidden()) {
 		return;
 	}

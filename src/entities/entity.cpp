@@ -17,8 +17,14 @@ Entity::Entity(Entity* parent)
 {
 	// The parent entity's model matrix will be multiplied against this
 	// entity's own transformation matrix when the model matrix is requested.
+	// The parent will also call this entity's draw method each time its own
+	// draw method is called.
 	// If no parent is passed, then we'll ignore that field.
+
 	this->parent = parent;
+	if (parent) {
+		parent->children.push_back(this);
+	}
 
 	// can be toggled with this->hide(), this->unhide().
 	this->hidden = false;
@@ -133,9 +139,16 @@ void Entity::unhide()
 	this->hidden = false;
 }
 
-void Entity::toggle_hide()
+void Entity::toggleHide()
 {
 	this->hidden = !this->hidden;
+}
+
+void Entity::draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix)
+{
+	for (Entity* child : this->children) {
+		child->draw(view_matrix, projection_matrix);
+	}
 }
 
 void Entity::orient(const glm::vec3& new_face_vec)
