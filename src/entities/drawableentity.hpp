@@ -43,7 +43,7 @@ public:
 	// end pure virtual functions
 	GLenum getDrawMode();
 	void setDrawMode(const GLenum& draw_mode);
-	void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix);
+	void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix) override;
 };
 
 #endif // PROCEDURALWORLD_DRAWABLEENTITY_HPP

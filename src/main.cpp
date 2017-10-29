@@ -452,9 +452,7 @@ int main()
 		glm::vec3 player_position = player->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
 
-		for (DrawableEntity* entity : entities) {
-			entity->draw(view_matrix, projection_matrix);
-		}
+		world->draw(view_matrix, projection_matrix);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
