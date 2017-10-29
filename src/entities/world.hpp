@@ -20,17 +20,19 @@ class World: public Entity {
 private:
 	Player player;
 	WorldOrigin axes;
-	WorldTile* world_tileBL;
-	WorldTile* world_tileBC;
-	WorldTile* world_tileBR;
-	WorldTile* world_tileML;
-	WorldTile* world_tileMC;
-	WorldTile* world_tileMR;
-	WorldTile* world_tileTL;
-	WorldTile* world_tileTC;
-	WorldTile* world_tileTR;
+	WorldTile* world_tile_bl;
+	WorldTile* world_tile_bc;
+	WorldTile* world_tile_br;
+	WorldTile* world_tile_ml;
+	WorldTile* world_tile_mc;
+	WorldTile* world_tile_mr;
+	WorldTile* world_tile_tl;
+	WorldTile* world_tile_tc;
+	WorldTile* world_tile_tr;
 	// cell system control vectors
+	//t: top m: middle b: bottom
 	std::vector<int> tmb;
+	//l: left c: center r: right
 	std::vector<int> lcr;
 	// current center tile position
 	int player_current_x;
@@ -43,6 +45,8 @@ public:
 	void toggleAxes();
 	void extendNorth();
 	void extendEast();
+	void extendSouth();
+	void extendWest();
 	void checkPosition();
 };
 

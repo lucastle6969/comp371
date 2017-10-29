@@ -17,18 +17,18 @@
 #include "../constants.hpp"
 
 
-WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initialTranslation, Entity* parent) : DrawableEntity(shader_program, parent)
+WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initial_translation, Entity* parent) : DrawableEntity(shader_program, parent)
 {
     this->draw_mode = GL_TRIANGLES;
 
-    this->initial_translation = initialTranslation;
+    this->initial_translation = initial_translation;
     int tile_width=1, tile_height = 1;
 
     //tile at the origin 1x1 in XZ plane
-    this->vertices.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
-    this->vertices.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-    this->vertices.push_back(glm::vec3(1.0f, 0.0f, -1.0f));
-    this->vertices.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+    this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
+    this->vertices.emplace_back(1.0f, 0.0f, 0.0f);
+    this->vertices.emplace_back(1.0f, 0.0f, -1.0f);
+    this->vertices.emplace_back(0.0f, 0.0f, -1.0f);
 
     std::vector<GLuint> elements;
     WorldTile::createElements(tile_width, tile_height, &elements);
@@ -38,12 +38,7 @@ WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initialTranslation,
             &this->vertices_buffer,
             &this->element_buffer
     );
-
-    WorldTile::translate(initialTranslation);
-
-
-
-    //this->vao = this->initVertexArray(this->vertices);
+    WorldTile::translate(initial_translation);
 }
 
 const std::vector<glm::vec3>& WorldTile::getVertices()
@@ -60,13 +55,6 @@ const int WorldTile::getColorType()
 {
     return COLOR_TILE;
 }
-
-//const glm::mat4& WorldTile::getBaseTranslation()
-//{
-//    static glm::mat4 identity;
-
-//    return glm::translate(identity, this->initial_translation);;
-//}
 
 const glm::mat4& WorldTile::getBaseRotation()
 {
