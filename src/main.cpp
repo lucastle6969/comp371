@@ -11,13 +11,7 @@
 #define GLFW_INCLUDE_NONE // don't include deprecated gl headers on macOS
 #include <GLFW/glfw3.h>	// include GLFW helper library
 
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -25,60 +19,13 @@
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
 #include "entities/entity.hpp"
-#include "entities/drawableentity.hpp"
-#include "entities/heightmapterrain.hpp"
-#include "entities/worldorigin.hpp"
+#include "entities/world.hpp"
 #include "entities/player.hpp"
-#include "entities/worldtile.hpp"
-
-
-const char* APP_NAME = "Procedural World";
-
-// Window dimensions
-const GLuint WIDTH = 800, HEIGHT = 800;
-
-const std::string DEFAULT_IMAGE_FILE = "../depth.png";
-const int DEFAULT_SKIP_SIZE = 20;
-const float DEFAULT_INTERPOLATION_SIZE = 0.1;
-
-// bounds for placing grid, axes and objects
-const int WORLD_X_MIN = -10;
-const int WORLD_X_MAX = 10;
-const int WORLD_Y_MIN = -10;
-const int WORLD_Y_MAX = 10;
-// this one is only used for the z-axis
-const int WORLD_Z_MAX = 10;
-
-const float PLAYER_MOVEMENT_SPEED = 0.1;
+#include "constants.hpp"
 
 glm::mat4 projection_matrix;
 
-std::vector<DrawableEntity*> entities;
-
-Entity* world;
-WorldOrigin* origin;
-HeightMapTerrain* height_map_terrain;
-WorldTile* world_tileBL;
-WorldTile* world_tileBC;
-WorldTile* world_tileBR;
-WorldTile* world_tileML;
-WorldTile* world_tileMC;
-WorldTile* world_tileMR;
-WorldTile* world_tileTL;
-WorldTile* world_tileTC;
-WorldTile* world_tileTR;
-
-Player* player;
-
-//cell system control vectors
-std::vector<int> tmb = {1,2,3};
-std::vector<int> lcr = {1,2,3};
-
-
-// Player constants
-const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
-int player_current_x = 0;
-int player_current_z = 0;
+World* world;
 
 // Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -115,98 +62,30 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 	return glfwGetKey(window, key) == GLFW_PRESS;
 }
 
-void extendNorth(){
-    int rowToMoveUp = tmb[2];
-    tmb[2] = tmb[1];
-    tmb[1] = tmb[0];
-    tmb[0] = rowToMoveUp;
-    switch(rowToMoveUp){
-        case 3:
-            world_tileBL->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            world_tileBC->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            world_tileBR->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            break;
-        case 2:
-            world_tileML->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            world_tileMC->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            world_tileMR->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            break;
-        case 1:
-            world_tileTL->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            world_tileTC->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            world_tileTR->translate(glm::vec3(0.0f,0.0f,-3.0f));
-            break;
-    }
-
-}
-
-void extendEast(){
-    int colToMoveRight = lcr[0];
-    lcr[0] = lcr[1];
-    lcr[1] = lcr[2];
-    lcr[2] = colToMoveRight;
-    switch(colToMoveRight){
-        case 1:
-            world_tileTL->translate(glm::vec3(3.0f,0.0f,0.0f));
-            world_tileML->translate(glm::vec3(3.0f,0.0f,0.0f));
-            world_tileBL->translate(glm::vec3(3.0f,0.0f,0.0f));
-            break;
-        case 2:
-            world_tileTC->translate(glm::vec3(3.0f,0.0f,0.0f));
-            world_tileMC->translate(glm::vec3(3.0f,0.0f,0.0f));
-            world_tileBC->translate(glm::vec3(3.0f,0.0f,0.0f));
-            break;
-        case 3:
-            world_tileTR->translate(glm::vec3(3.0f,0.0f,0.0f));
-            world_tileMR->translate(glm::vec3(3.0f,0.0f,0.0f));
-            world_tileBR->translate(glm::vec3(3.0f,0.0f,0.0f));
-            break;
-    }
-}
-
-void checkPosition(){
-	//testing move + worldTile cell system
-	glm::vec3 position = player->getPosition();
-	std::cout<<position.x<<", "<<position.y<< ", "<<position.z<<std::endl;
-	if((int)position.z<player_current_z){
-		player_current_z = (int)position.z;
-        extendNorth();
-		std::cout<< "extendNorth()! "<<player_current_z<<std::endl;
-	}
-
-	if((int)position.x>player_current_x){
-		player_current_x = (int)position.x;
-        extendEast();
-		std::cout<< "extendEast()! "<<player_current_x<<std::endl;
-	}
-
-}
-
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
+	Player* player = world->getPlayer();
 	// move forward
 	if (isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP)) {
 		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		checkPosition();
+		world->checkPosition();
 	}
 	// move back
 	if (isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN)) {
 		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		checkPosition();
+		world->checkPosition();
 	}
 	// move left
 	if (isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT)) {
 		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		checkPosition();
+		world->checkPosition();
 	}
 	// move right
 	if (isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT)) {
 		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		checkPosition();
+		world->checkPosition();
 	}
-
-
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -215,42 +94,14 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
-			case GLFW_KEY_1:
-				height_map_terrain->selectStep(1);
-				break;
-			case GLFW_KEY_2:
-				height_map_terrain->selectStep(2);
-				break;
-			case GLFW_KEY_3:
-				height_map_terrain->selectStep(3);
-				break;
-			case GLFW_KEY_4:
-				height_map_terrain->selectStep(4);
-				break;
 			case GLFW_KEY_GRAVE_ACCENT:
-				origin->toggle_hide();
+				world->toggleAxes();
 				break;
 			case GLFW_KEY_BACKSPACE:
-				// Reset terrain
-				height_map_terrain->selectStep(1);
 				// Reset camera
 				pitch = initial_pitch;
 				yaw = initial_yaw;
 				break;
-			case GLFW_KEY_P:
-			case GLFW_KEY_L:
-			case GLFW_KEY_T: {
-				GLenum draw_mode = GL_POINTS;
-				if (key == GLFW_KEY_L) draw_mode = GL_LINES;
-				if (key == GLFW_KEY_T) draw_mode = GL_TRIANGLES;
-				// set each object's draw mode to match the key that was pressed:
-				// P = points, L = lines, T = triangles
-				for (DrawableEntity *entity : entities) {
-					if (entity == origin) continue;
-					entity->setDrawMode(draw_mode);
-				}
-				break;
-			}
 			case GLFW_KEY_ESCAPE:
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				break;
@@ -316,60 +167,9 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
-void promptForUserInputs()
-{
-	std::string input;
-
-	int skip_size = 0;
-	do {
-		std::cout << "Choose a skip size greater than 0 [" << DEFAULT_SKIP_SIZE << "]: ";
-		// skip for now: // std::getline(std::cin, input);
-		if (input.empty()) {
-			skip_size = DEFAULT_SKIP_SIZE;
-			break;
-		} else {
-			try {
-				skip_size = std::stoi(input);
-			} catch(std::invalid_argument& e) {
-				// try again
-			}
-		}
-	} while (skip_size <= 0);
-
-    float interpolation_size = 0;
-    // Enforce a reasonable limit
-    float interpolation_size_limit = 0.5f;
-    do {
-        std::cout << "Choose a step size greater than 0 and less than or equal to ";
-        std::cout << interpolation_size_limit << " [" << DEFAULT_INTERPOLATION_SIZE << "]: ";
-	    // skip for now: // std::getline(std::cin, input);
-        if (input.empty()) {
-            interpolation_size = DEFAULT_INTERPOLATION_SIZE;
-            break;
-        } else {
-            try {
-                interpolation_size = std::stof(input);
-            } catch(std::invalid_argument& e) {
-                // try again
-            }
-        }
-    } while (interpolation_size <= 0 || interpolation_size > interpolation_size_limit);
-
-	height_map_terrain->setUserInputs(skip_size, interpolation_size);
-	height_map_terrain->selectStep(2);
-	std::cout << "Vertices loaded!\n";
-}
-
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
-    std::cout << "Choose an image to load [" << DEFAULT_IMAGE_FILE << "]: ";
-    std::string image_file;
-    // skip for now: // std::getline(std::cin, image_file);
-    if (image_file.empty()) {
-        image_file = DEFAULT_IMAGE_FILE;
-    }
-
 	GLFWwindow* window = nullptr;
 	setupGlContext(WIDTH, HEIGHT, APP_NAME, &window);
 
@@ -391,48 +191,7 @@ int main()
 		return -1;
 	}
 
-	world = new Entity();
-
-	origin = new WorldOrigin(shader_program, WORLD_X_MAX, WORLD_Y_MAX, WORLD_Z_MAX, world);
-	origin->hide();
-	// copy pointer to entity list
-	entities.push_back(&*origin);
-
-	//height_map_terrain = new HeightMapTerrain(shader_program, image_file, world);
-	//height_map_terrain->scale(0.024f);
-	// copy pointer to entity list
-	//entities.push_back(&*height_map_terrain);
-
-
-    world_tileBL = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), world);
-    world_tileBC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), world);
-    world_tileBR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), world);
-    world_tileML = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -1.0f), world);
-    world_tileMC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -1.0f), world);
-    world_tileMR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -1.0f), world);
-    world_tileTL = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -2.0f), world);
-    world_tileTC = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -2.0f), world);
-    world_tileTR = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -2.0f), world);
-
-    entities.push_back(&*world_tileBL);
-    entities.push_back(&*world_tileBC);
-    entities.push_back(&*world_tileBR);
-    entities.push_back(&*world_tileML);
-    entities.push_back(&*world_tileMC);
-    entities.push_back(&*world_tileMR);
-    entities.push_back(&*world_tileTL);
-    entities.push_back(&*world_tileTC);
-    entities.push_back(&*world_tileTR);
-
-
-	player = new Player(shader_program, world);
-	player->scale(0.04f);
-	player->setPosition(initial_player_position);
-	// copy pointer to entity list
-	entities.push_back(&*player);
-
-	// doesn't actually prompt anymore
-	//promptForUserInputs();
+	world = new World(shader_program);
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -449,7 +208,7 @@ int main()
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::vec3 player_position = player->getPosition();
+		glm::vec3 player_position = world->getPlayer()->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
 
 		world->draw(view_matrix, projection_matrix);
@@ -458,10 +217,7 @@ int main()
 		glfwSwapBuffers(window);
 	}
 
-	// De-allocate the memory for all our entities
-	for (DrawableEntity* entity : entities) {
-		delete entity;
-	}
+	delete world;
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();

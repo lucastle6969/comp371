@@ -1,9 +1,30 @@
-#ifndef HEIGHTMAPPER_CONSTANTS_H
-#define HEIGHTMAPPER_CONSTANTS_H
+#ifndef PROCEDURALWORLD_CONSTANTS_H
+#define PROCEDURALWORLD_CONSTANTS_H
 
-const int COLOR_WHITE = 0;
-const int COLOR_COORDINATE_AXES = 1;
-const int COLOR_HEIGHT = 2;
-const int COLOR_TILE = 3;
+#include <string>
 
-#endif // HEIGHTMAPPER_CONSTANTS_H
+static const int COLOR_WHITE = 0;
+static const int COLOR_COORDINATE_AXES = 1;
+static const int COLOR_HEIGHT = 2;
+static const int COLOR_TILE = 3;
+
+static const char* APP_NAME = "Procedural World";
+
+// Window dimensions
+static const GLuint WIDTH = 800, HEIGHT = 800;
+
+static const std::string DEFAULT_IMAGE_FILE = "../depth.png";
+static const int DEFAULT_SKIP_SIZE = 20;
+static const float DEFAULT_INTERPOLATION_SIZE = 0.1;
+
+// bounds for placing grid, axes and objects
+static const int WORLD_X_MIN = -10;
+static const int WORLD_X_MAX = 10;
+static const int WORLD_Y_MIN = -10;
+static const int WORLD_Y_MAX = 10;
+// this one is only used for the z-axis
+static const int WORLD_Z_MAX = 10;
+
+static const float PLAYER_MOVEMENT_SPEED = 0.1;
+
+#endif // PROCEDURALWORLD_CONSTANTS_H

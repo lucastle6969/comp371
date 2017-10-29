@@ -46,7 +46,7 @@ public:
 	void setPosition(const glm::vec3& position);
 	void hide();
 	void unhide();
-	void toggle_hide();
+	void toggleHide();
 	virtual void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix);
 };
 

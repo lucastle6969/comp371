@@ -139,7 +139,7 @@ void Entity::unhide()
 	this->hidden = false;
 }
 
-void Entity::toggle_hide()
+void Entity::toggleHide()
 {
 	this->hidden = !this->hidden;
 }
