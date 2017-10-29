@@ -25,8 +25,11 @@ void main()
             color = vec4(vec3(pos.y), 1.0f);
             break;
         case COLOR_TILE:
-
-            color = vec4(0.5f,float((int(pos.z))%256)/256.0, float((int(pos.x))%256)/256.0, 1.0f);
+            //I was just trying to get the color of the tile to change according to position,
+            //so I was doing a cast: int(pos.z) , then a modulus : (int(pos.z))%256 and finaly a division by 256
+            // but even without all that , you can see that the pos is not returning expected values (color not changing)
+            //with pos.z and pos.z directly plugged in for green and blue values ...
+            color = vec4(0.5f,pos.z, pos.x, 1.0f);
             break;
 
         default:
