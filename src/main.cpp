@@ -29,6 +29,8 @@
 #include "entities/heightmapterrain.hpp"
 #include "entities/worldorigin.hpp"
 #include "entities/player.hpp"
+#include "entities/worldtile.hpp"
+
 
 const char* APP_NAME = "Procedural World";
 
@@ -56,10 +58,29 @@ std::vector<DrawableEntity*> entities;
 Entity* world;
 WorldOrigin* origin;
 HeightMapTerrain* height_map_terrain;
+WorldTile* world_tile_bl;
+WorldTile* world_tile_bc;
+WorldTile* world_tile_br;
+WorldTile* world_tile_ml;
+WorldTile* world_tile_mc;
+WorldTile* world_tile_mr;
+WorldTile* world_tile_tl;
+WorldTile* world_tile_tc;
+WorldTile* world_tile_tr;
+
 Player* player;
+
+//cell system control vectors
+//t: top m: middle b: bottom
+std::vector<int> tmb = {1,2,3};
+//l: left c: center r: right
+std::vector<int> lcr = {1,2,3};
+
 
 // Player constants
 const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
+int player_current_x = 0;
+int player_current_z = 0;
 
 // Camera constants
 const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -96,25 +117,151 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 	return glfwGetKey(window, key) == GLFW_PRESS;
 }
 
+void extendNorth(){
+    int rowToMoveUp = tmb[2];
+    tmb[2] = tmb[1];
+    tmb[1] = tmb[0];
+    tmb[0] = rowToMoveUp;
+    switch(rowToMoveUp){
+        case 3:
+            world_tile_bl->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tile_bc->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tile_br->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            break;
+        case 2:
+            world_tile_ml->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tile_mc->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tile_mr->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            break;
+        case 1:
+            world_tile_tl->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tile_tc->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            world_tile_tr->translate(glm::vec3(0.0f,0.0f,-3.0f));
+            break;
+    }
+
+}
+
+void extendEast(){
+    int colToMoveRight = lcr[0];
+    lcr[0] = lcr[1];
+    lcr[1] = lcr[2];
+    lcr[2] = colToMoveRight;
+    switch(colToMoveRight){
+        case 1:
+            world_tile_tl->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tile_ml->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tile_bl->translate(glm::vec3(3.0f,0.0f,0.0f));
+            break;
+        case 2:
+            world_tile_tc->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tile_mc->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tile_bc->translate(glm::vec3(3.0f,0.0f,0.0f));
+            break;
+        case 3:
+            world_tile_tr->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tile_mr->translate(glm::vec3(3.0f,0.0f,0.0f));
+            world_tile_br->translate(glm::vec3(3.0f,0.0f,0.0f));
+            break;
+    }
+}
+
+void extendSouth(){
+    int col_to_move_down = tmb[0];
+    tmb[0] = tmb[1];
+    tmb[1] = tmb[2];
+    tmb[2] = col_to_move_down;
+    switch(col_to_move_down){
+        case 3:
+            world_tile_bl->translate(glm::vec3(0.0f,0.0f,3.0f));
+            world_tile_bc->translate(glm::vec3(0.0f,0.0f,3.0f));
+            world_tile_br->translate(glm::vec3(0.0f,0.0f,3.0f));
+            break;
+        case 2:
+            world_tile_ml->translate(glm::vec3(0.0f,0.0f,3.0f));
+            world_tile_mc->translate(glm::vec3(0.0f,0.0f,3.0f));
+            world_tile_mr->translate(glm::vec3(0.0f,0.0f,3.0f));
+            break;
+        case 1:
+            world_tile_tl->translate(glm::vec3(0.0f,0.0f,3.0f));
+            world_tile_tc->translate(glm::vec3(0.0f,0.0f,3.0f));
+            world_tile_tr->translate(glm::vec3(0.0f,0.0f,3.0f));
+            break;
+    }
+}
+
+void extendWest(){
+    int col_to_move_left = lcr[2];
+    lcr[2] = lcr[1];
+    lcr[1] = lcr[0];
+    lcr[0] = col_to_move_left;
+    switch(col_to_move_left){
+        case 1:
+            world_tile_tl->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            world_tile_ml->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            world_tile_bl->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            break;
+        case 2:
+            world_tile_tc->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            world_tile_mc->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            world_tile_bc->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            break;
+        case 3:
+            world_tile_tr->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            world_tile_mr->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            world_tile_br->translate(glm::vec3(-3.0f,0.0f,0.0f));
+            break;
+    }
+}
+
+void checkPosition() {
+    //testing move + worldTile cell system
+    glm::vec3 position = player->getPosition();
+    std::cout << position.x << ", " << position.y << ", " << position.z << std::endl;
+    if ((int) position.z < player_current_z) {
+        player_current_z = (int)position.z;
+        extendNorth();
+    }
+	if((int)position.x>player_current_x){
+		player_current_x = (int)position.x;
+        extendEast();
+	}
+    if((int)position.z> player_current_z){
+        player_current_z = (int)position.z;
+        extendSouth();
+    }
+    if((int)position.x<player_current_x){
+        player_current_x = (int)position.x;
+        extendWest();
+    }
+
+}
+
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
 	// move forward
 	if (isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP)) {
 		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
 	// move back
 	if (isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN)) {
 		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
 	// move left
 	if (isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT)) {
 		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
 	// move right
 	if (isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT)) {
 		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		checkPosition();
 	}
+
+
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -306,10 +453,32 @@ int main()
 	// copy pointer to entity list
 	entities.push_back(&*origin);
 
-	height_map_terrain = new HeightMapTerrain(shader_program, image_file, world);
-	height_map_terrain->scale(0.024f);
+	//height_map_terrain = new HeightMapTerrain(shader_program, image_file, world);
+	//height_map_terrain->scale(0.024f);
 	// copy pointer to entity list
-	entities.push_back(&*height_map_terrain);
+	//entities.push_back(&*height_map_terrain);
+
+
+    world_tile_bl = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), world);
+    world_tile_bc = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), world);
+    world_tile_br = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), world);
+    world_tile_ml = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -1.0f), world);
+    world_tile_mc = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -1.0f), world);
+    world_tile_mr = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -1.0f), world);
+    world_tile_tl = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -2.0f), world);
+    world_tile_tc = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -2.0f), world);
+    world_tile_tr = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -2.0f), world);
+
+    entities.push_back(&*world_tile_bl);
+    entities.push_back(&*world_tile_bc);
+    entities.push_back(&*world_tile_br);
+    entities.push_back(&*world_tile_ml);
+    entities.push_back(&*world_tile_mc);
+    entities.push_back(&*world_tile_mr);
+    entities.push_back(&*world_tile_tl);
+    entities.push_back(&*world_tile_tc);
+    entities.push_back(&*world_tile_tr);
+
 
 	player = new Player(shader_program, world);
 	player->scale(0.04f);
@@ -318,7 +487,7 @@ int main()
 	entities.push_back(&*player);
 
 	// doesn't actually prompt anymore
-	promptForUserInputs();
+	//promptForUserInputs();
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))

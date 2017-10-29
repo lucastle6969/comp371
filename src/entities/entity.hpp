@@ -16,7 +16,7 @@ private:
 	Entity* parent;
 	glm::mat4 scale_matrix;
 	glm::mat4 rotation_matrix;
-	glm::mat4 translation_matrix;
+    glm::mat4 translation_matrix;
 	glm::mat4 model_matrix;
 	bool hidden;
 	void orient(const glm::vec3& forward_vec);
@@ -41,6 +41,7 @@ public:
 	void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
 	void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
 	void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+    void translate(const glm::vec3& translation_vec);
 	void setPosition(const glm::vec3& position);
 	void hide();
 	void unhide();
