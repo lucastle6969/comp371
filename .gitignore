@@ -10,7 +10,9 @@ _builds/*
 _install/*
 
 # IDE project files
-.idea/
+.idea/*
+# Leave in the jetbrains code style settings!
+!.idea/codeStyleSettings.xml
 .vs/
 cmake-build-debug/
 CMakeScripts
