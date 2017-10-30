@@ -67,11 +67,11 @@ void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &project
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(this->shader_program, "mvp_matrix");
 	auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
-    auto position_x_loc = (GLint)glGetUniformLocation(this->shader_program, "position_x");
-    auto position_z_loc = (GLint)glGetUniformLocation(this->shader_program, "position_z");
+	auto position_x_loc = (GLint)glGetUniformLocation(this->shader_program, "entity_position_x");
+	auto position_z_loc = (GLint)glGetUniformLocation(this->shader_program, "entity_position_z");
 
 
-    glUseProgram(this->shader_program);
+	glUseProgram(this->shader_program);
 
 	// use the entity's model matrix to form a new Model View Projection matrix
 	glm::mat4 mvp_matrix = projection_matrix * view_matrix * this->getModelMatrix();
@@ -79,10 +79,11 @@ void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &project
 	glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
 	// send the color_type variable to the shader (could be null)
 	glUniform1i(color_type_loc, this->getColorType());
-    glm::vec3 position=this->getPosition();
 
+    //send the position of this entity to the shader
+    glm::vec3 position = this->getPosition();
     glUniform1i(position_x_loc, (GLint)position.x);
-    glUniform1i(position_z_loc, (GLint)position.z);
+	glUniform1i(position_z_loc, (GLint)position.z);
 
 
 	// Draw

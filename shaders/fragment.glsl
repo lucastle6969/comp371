@@ -2,8 +2,8 @@
 
 in vec3 pos;
 uniform int color_type;
-uniform int position_x;
-uniform int position_z;
+uniform int entity_position_x;
+uniform int entity_position_z;
 
 out vec4 color;
 
@@ -27,7 +27,7 @@ void main()
             color = vec4(vec3(pos.y), 1.0f);
             break;
         case COLOR_TILE:
-            color = vec4(0.5f, position_z%256/256.0f, position_x%256/256.0f, 1.0f);
+            color = vec4(0.5f, entity_position_z%256/256.0f, entity_position_x%256/256.0f, 1.0f);
             break;
 
         default:
