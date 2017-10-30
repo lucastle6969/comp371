@@ -27,7 +27,7 @@ void main()
             color = vec4(vec3(pos.y), 1.0f);
             break;
         case COLOR_TILE:
-            color = vec4(0.5f, (entity_position_z - 1) % 256 / 256.0f, entity_position_x % 256 / 256.0f, 1.0f);
+            color = vec4(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f, 1.0f);
             break;
         default:
             color = WHITE;
