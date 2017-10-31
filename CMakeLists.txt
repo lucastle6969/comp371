@@ -58,18 +58,18 @@ add_executable(proceduralworld
     src/objloader.cpp
     src/utils.hpp
     src/constants.hpp
-    src/entities/entity.hpp
-    src/entities/entity.cpp
-    src/entities/drawableentity.hpp
-    src/entities/drawableentity.cpp
-    src/entities/worldorigin.hpp
-    src/entities/worldorigin.cpp
-    src/entities/player.hpp
-    src/entities/player.cpp
-    src/entities/worldtile.hpp
-    src/entities/worldtile.cpp
-    src/entities/world.hpp
-    src/entities/world.cpp
+    src/entities/Entity.hpp
+    src/entities/Entity.cpp
+    src/entities/DrawableEntity.hpp
+    src/entities/DrawableEntity.cpp
+    src/entities/WorldOrigin.hpp
+    src/entities/WorldOrigin.cpp
+    src/entities/Player.hpp
+    src/entities/Player.cpp
+    src/entities/WorldTile.hpp
+    src/entities/WorldTile.cpp
+    src/entities/World.hpp
+    src/entities/World.cpp
 )
 
 # Link libraries

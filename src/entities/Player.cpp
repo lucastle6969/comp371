@@ -9,9 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-#include "entity.hpp"
-#include "drawableentity.hpp"
-#include "player.hpp"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
+#include "Player.hpp"
 #include "../objloader.hpp"
 #include "../constants.hpp"
 

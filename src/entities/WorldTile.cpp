@@ -10,9 +10,9 @@
 #include <vector>
 #include <stdexcept>
 
-#include "entity.hpp"
-#include "drawableentity.hpp"
-#include "worldtile.hpp"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
+#include "WorldTile.hpp"
 
 #include "../constants.hpp"
 

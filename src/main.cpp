@@ -19,9 +19,9 @@
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
-#include "entities/entity.hpp"
-#include "entities/world.hpp"
-#include "entities/player.hpp"
+#include "src/entities/Entity.hpp"
+#include "src/entities/World.hpp"
+#include "src/entities/Player.hpp"
 #include "constants.hpp"
 
 World* world;

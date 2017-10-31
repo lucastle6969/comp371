@@ -10,7 +10,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "world.hpp"
+#include "World.hpp"
 #include "../constants.hpp"
 
 World::World(const GLuint& shader_program, Entity* parent)

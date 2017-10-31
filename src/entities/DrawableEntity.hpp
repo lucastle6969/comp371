@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "entity.hpp"
+#include "Entity.hpp"
 
 // Abstract class
 

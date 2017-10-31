@@ -8,9 +8,9 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "entity.hpp"
-#include "drawableentity.hpp"
-#include "worldorigin.hpp"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
+#include "WorldOrigin.hpp"
 #include "../constants.hpp"
 
 WorldOrigin::WorldOrigin(
