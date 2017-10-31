@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 #include "world.hpp"
 #include "../constants.hpp"
@@ -164,8 +165,17 @@ void World::extendWest(){
 
 void World::checkPosition()
 {
-	//testing move + worldTile cell system
+	static bool debug_position = false;
+
 	glm::vec3 position = this->player.getPosition();
+	if (debug_position) {
+		std::cout << "position";
+		std::cout << " x " << position.x;
+		std::cout << " y " << position.y;
+		std::cout << " z " << position.z;
+		std::cout << std::endl;
+	}
+
 	if (floor(position.z) < this->player_current_z) {
 		this->player_current_z = (int)floor(position.z);
 		extendNorth();
