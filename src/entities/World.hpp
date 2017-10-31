@@ -11,10 +11,10 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "entity.hpp"
-#include "player.hpp"
-#include "worldorigin.hpp"
-#include "worldtile.hpp"
+#include "Entity.hpp"
+#include "Player.hpp"
+#include "WorldOrigin.hpp"
+#include "WorldTile.hpp"
 
 class World: public Entity {
 private:

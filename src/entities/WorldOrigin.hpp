@@ -11,8 +11,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "entity.hpp"
-#include "drawableentity.hpp"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
 
 class WorldOrigin: public DrawableEntity {
 private:

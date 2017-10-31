@@ -10,7 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
-#include "entity.hpp"
+#include "Entity.hpp"
 #include "../utils.hpp"
 
 Entity::Entity(Entity* parent)
