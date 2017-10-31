@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>	// include GLFW helper library
 
 #include <iostream>
+#include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -33,6 +34,7 @@ const float initial_pitch = -65.0f;
 const float initial_yaw = -90.0f;
 const float max_pitch = 89.0f;
 const float min_pitch = -89.0f;
+const float first_person_pitch = 45.0f;
 const float max_follow_distance = 300.0f;
 
 // Camera variables
@@ -64,9 +66,12 @@ glm::vec3 getFollowVector() {
 			// takes up same proportion of screen for a given viewing angle
 			getPlayerScaleCoefficient() *
 			// The lower the viewing angle, the shorter the follow distance -
-			// to accommodate for less space near terrain. At our lowest viewing
-			// angle, the third-person camera becomes first-person.
-			(1 - (pitch - min_pitch) / (max_pitch - min_pitch));
+			// to accommodate for less space near terrain. At a specified high pitch,
+			// the third-person camera becomes first-person.
+			std::max(
+				0.0f,
+				(1 - (pitch - min_pitch) / (first_person_pitch - min_pitch))
+			);
 }
 
 bool isKeyPressed(GLFWwindow* const& window, const int& key) {
