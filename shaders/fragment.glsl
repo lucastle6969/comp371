@@ -21,7 +21,7 @@ void main()
             color = WHITE;
             break;
         case COLOR_COORDINATE_AXES:
-            color = vec4(pos, 1.0f);
+            color = vec4(ceil(pos), 1.0f);
             break;
         case COLOR_HEIGHT:
             color = vec4(vec3(pos.y), 1.0f);
