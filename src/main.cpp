@@ -23,8 +23,6 @@
 #include "entities/player.hpp"
 #include "constants.hpp"
 
-glm::mat4 projection_matrix;
-
 World* world;
 
 // Camera constants
@@ -35,11 +33,21 @@ const float initial_pitch = -65.0f;
 const float initial_yaw = -90.0f;
 const float max_pitch = 89.0f;
 const float min_pitch = -89.0f;
-const float max_follow_distance = 10.0f;
+const float max_follow_distance = 300.0f;
 
 // Camera variables
 float pitch = initial_pitch;
 float yaw = initial_yaw;
+
+// Projection variables, to be set by framebufferSizeCallback
+int framebuffer_width = 0;
+int framebuffer_height = 0;
+
+float getPlayerScaleCoefficient()
+{
+	glm::vec3 scale_vec = world->getPlayer()->getScale();
+	return (scale_vec.x + scale_vec.y + scale_vec.z) / 3.0f;
+}
 
 glm::vec3 getViewDirection() {
 	return glm::vec3(
@@ -52,6 +60,9 @@ glm::vec3 getViewDirection() {
 glm::vec3 getFollowVector() {
 	return glm::normalize(getViewDirection()) *
 			max_follow_distance *
+			// scale follow distance according to player size so player always
+			// takes up same proportion of screen for a given viewing angle
+			getPlayerScaleCoefficient() *
 			// The lower the viewing angle, the shorter the follow distance -
 			// to accommodate for less space near terrain. At our lowest viewing
 			// angle, the third-person camera becomes first-person.
@@ -163,8 +174,9 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 	// Update the viewport dimensions
 	glViewport(0, 0, width, height);
 
-	// Update projection matrix to maintain aspect ratio
-	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	// update projection matrix variables to maintain aspect ratio
+	framebuffer_width = width;
+	framebuffer_height = height;
 }
 
 // The MAIN function, from here we start the application and run the game loop
@@ -210,6 +222,14 @@ int main()
 
 		glm::vec3 player_position = world->getPlayer()->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
+
+		float player_scale = getPlayerScaleCoefficient();
+		glm::mat4 projection_matrix = glm::perspective(
+			45.0f,
+			(GLfloat)framebuffer_width / (GLfloat)framebuffer_height,
+			30.0f * player_scale,
+			1500.0f * player_scale
+		);
 
 		world->draw(view_matrix, projection_matrix);
 
