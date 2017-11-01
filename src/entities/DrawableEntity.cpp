@@ -11,8 +11,8 @@
 #include <string>
 #include <stdexcept>
 
-#include "entity.hpp"
-#include "drawableentity.hpp"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
 
 DrawableEntity::DrawableEntity(const GLuint &shader_program, Entity* parent) : Entity(parent)
 {
