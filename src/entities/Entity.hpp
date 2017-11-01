@@ -34,6 +34,7 @@ public:
 	virtual ~Entity() = default;
 	const glm::mat4& getModelMatrix();
 	glm::vec3 getPosition();
+	glm::vec3 getScale();
 	bool isHidden();
 	void scale(const float& scalar);
 	void rotate(const float& angle, const glm::vec3& axis);
