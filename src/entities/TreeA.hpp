@@ -1,7 +1,13 @@
 /*
-TODO: NORMALS AND UV FOR EACH SEGMENT
+NOTES FOR POTENTIAL LARGE ALTERATIONS: 
+	REMOVE ALL THE RECURSION. ITTERATION IS FASTER.
+	DONE BY BEFORE DUE DATE? EXPERIMENT ON MULTITHREADING
+*/
 
-DOCUMENTATION
+/*
+TODO: READ NOTATION OF TODO, CONSIDERATION AND SPLIT FOR OBJECTIVES. MASTER TODO- SPLIT ALL CLASSES FROM INLINE TO CPP HPP COMBINATION.
+
+____DOCUMENTATION_OF_TREE_GENERATION_____
 
 ONE MASTER .HPP FILE CONTROLS GENERATION OF TREE STRUCTURE. CAN BE SPLIT INTO INDIVIDUAL COMPONENTS IF NEED BE.
 MIGHT CONSIDER MULTITHREADING THE TWO MAIN BRANCH SEGMENTS IF CONTEXT SWITCHING IS NOT TOO EXPENSIVE.
@@ -70,6 +76,7 @@ class TreeA : public Entity {
 private:
 
 	bool printfTest = false;
+	bool breakbool;
 
 	class AttatchmentGroupings {
 	public:
@@ -104,29 +111,33 @@ private:
 			}
 		}
 	};
+		
+	//CONSIDERATION FOR MULTITHREADED LOADING
+	bool treeLoaded = false;
 	
-	std::vector<glm::vec3> trunkVertices; 	std::vector<GLuint> trunkIndices;	std::vector<glm::vec3> trunkColor; std::vector<std::vector<int>> trunkStartIndices;
-	std::vector<glm::vec3> leafVertices; 	std::vector<GLuint> leafIndices;		std::vector<glm::vec3> leafColor; std::vector<std::vector<int>> leafStartIndices;
-
 	std::vector<AttatchmentGroupings> branchStore;
-
 	std::vector<glm::vec3> combinedVertices; 	std::vector<GLuint> combinedIndices;		std::vector<glm::vec3> combinedColor; std::vector<glm::vec3> combinedNormals; std::vector<glm::vec2> combinedUV;
 	GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
 
 	const int branches = 1;
 
+	//MOVE TO TRUNK CLASS
+	std::vector<glm::vec3> trunkVertices; 	std::vector<GLuint> trunkIndices;	std::vector<glm::vec3> trunkColor; std::vector<std::vector<int>> trunkStartIndices;
 	const int circlePoints = 4;
+	const float jagednessFactor = 0.45;
+	glm::vec3 brown = glm::vec3(0.0 / 255, 53.0 / 255, 10.0 / 255);
+	
+	//MOVE TO LEAF CLASS
 	const int leafPoints = 5;
+	const float jagednessFactor_Leaf = 0.25;
+	std::vector<glm::vec3> leafVertices; 	std::vector<GLuint> leafIndices;		std::vector<glm::vec3> leafColor; std::vector<std::vector<int>> leafStartIndices;
+	glm::vec3 green = glm::vec3(30.0 / 255, 147.0 / 255, 45.0 / 255);
+
 
 	const int k = 250;
 	float widthCutoff;
 	float finalCutoff;
 	bool kill;
-
-	bool breakbool;
-
-	const float jagednessFactor = 0.45;
-	const float jagednessFactor_Leaf = 0.25;
 
 	const int branchMod = 10;
 	const int minYBranchAngle = 25;
@@ -134,7 +145,7 @@ private:
 	const int minYTrunkAngle = 0;
 	const int maxYTrunkAngle = 25;
 	const int yRotMod = 360;
-	int heightChunking = 10;
+	int heightChunking = 10;//INVERSE
 
 	double trunkRatio = 1.0;
 	double branchRatio = 0.850;
@@ -142,11 +153,6 @@ private:
 	int currentAttatchment = 1;
 	int depth = 0;
 	int depthMax = 0;
-
-	glm::vec3 brown = glm::vec3(0.0 / 255, 53.0 / 255, 10.0 / 255);
-	glm::vec3 green = glm::vec3(30.0 / 255, 147.0 / 255, 45.0 / 255);
-
-
 
 	int treeRandom(float trunkDiameter, float seed, float lineHeight) {
 		int randomSeedValue = ((int)(trunkDiameter * seed * (((int)lineHeight % 4 * (int)lineHeight % 10 + 1 ) * 10) * 3)) % (77 * (int)ceil(trunkDiameter));
@@ -195,12 +201,12 @@ private:
 				angleX = branchAngleFromRandom(trunkDiameter, seed* (n + 1) * 7, currentLineLength* (n + 1)); //* (((int)seed) % 2 == 0 ? -1 : 1);
 				angleY = angleY;
 				depth = 0;
+				//CONSIDERATION MULTITHREAD THE BRANCH AND MOVEMENT
 				generateTreeA(TRUNK, offShootDiameterBranch / (branches), seed, -abs(angleX), angleY, angleZ, 'R', agNew, 0);
-
 				breakbool = true;
-
 				moveSegments(-abs(angleX), angleZ, angleY, agNew);
 				agNew->selfErase();
+				//////////// REQUIREMENT: ALTER COMBINE FUNCTION
 			}
 			//1A7. On new trunk join to junction and continue
 			angleZ = trunkAngleFromRandom(trunkDiameter, seed, currentLineLength) ;
@@ -208,12 +214,13 @@ private:
 			angleY = angleY;
 			depth = 0;
 			globalRotations = 0;
+			//CONSIDERATION: MULTITHREAD THE TRUNK AND MOVEMENT
 			generateTreeA(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, angleZ, 'L', agNew, currentLineLength);
-			
 			moveSegments(abs(angleX), angleZ, angleY, agNew);
 			agNew->selfErase();
 			delete agNew;
-			break;
+			//////////// REQUIREMENT: ALTER COMBINE FUNCTION
+			break;   
 		case TRUNK:
 				depth++;
 				kill = false;
@@ -315,6 +322,8 @@ private:
 		//int off = 50;//+ bCount * 5;
 		int offL = 0;
 		int off = 0;
+		
+		//MOVE TO PROCEDURE TRUNK CLASS
 		while(loopInitialTrunk && lineHeight < lineMax){
 			//build points
 			float itterations = 360.0 / circlePoints;
@@ -379,6 +388,8 @@ private:
 		//int off = 50;//+ bCount * 5;
 		int offL = 0;
 		int off = 0;
+		
+		//MOVE PROCEEDURE TO TRUNK CLASS
 		do {
 			//build points
 			float itterations = 360.0 / circlePoints;
@@ -438,8 +449,7 @@ private:
 			return lineHeight;
 		else return -1;
 	}
-	float branch(float trunkDiameter, float seed, float lineHeight, glm::vec3 start) { return lineHeight; }
-	float branchJunction(float trunkDiameter, float seed, float lineHeight, glm::vec3 start) { return lineHeight; }
+
 	int countL = 0;
 	void leafBranch(float trunkDiameter, float seed, float lineHeight) {
 		int randomSeedValue = treeRandom(trunkDiameter, seed, lineHeight);
@@ -452,6 +462,8 @@ private:
 		int offL = 50 + countL * 40;
 		int off = 50 + bCount * 5 + offL;
 
+		//MOVE PROCEEDURE TO LEAF CLASS
+		//CONDENSE ALGORITHM SIZE
 		float f = 2;
 
 		f = 1;
@@ -666,7 +678,7 @@ private:
 				moveTo = (ag->end - circularPoints + 1) + 0;//(0 + globalRotations) % 4;
 				moveFrom = (ag->ag[m]->start + 1) + 0;// (0 + globalRotations - rotationPoint) % 4;
 			}
-			//create rotations of branches
+			//TODO: create rotations of branches
 			float r = 360.0  * (0*4);
 			rotation = glm::rotate(rotation, glm::radians((float)r), glm::vec3(0.0, -1.0, 0.0));
 			rotation = glm::rotate(rotation, glm::radians((float)ag->ag[m]->angleX), glm::vec3(1.0, 0.0, 0.0));
@@ -719,6 +731,7 @@ private:
 		
 	}
 
+	//TODO: COMPLETE CONECTORS
 	void connectSegments(AttatchmentGroupings* ag){
 		depth--;
 		//if(ag[1].type == 'B'){
@@ -761,18 +774,22 @@ private:
 		//}
 	}
 
+	//TODO
 	void computeUV() {
 
 	}
+	//TODO
 	void computeNormal() {
 
 	}
 
 	void combineVectors() {
+				//TEST: IS IT FASTER WITH WHILE LOOP OR SOMETHING ELSE?
 		combinedVertices.reserve(trunkVertices.size() + leafVertices.size());
 		combinedVertices.insert(combinedVertices.end(), trunkVertices.begin(), trunkVertices.end());
 		combinedVertices.insert(combinedVertices.end(), leafVertices.begin(), leafVertices.end());
 
+		//CONSIDER MERGING WITH FUNCTION BELOW?
 		std::vector<GLuint> ind;
 		int  size = trunkVertices.size();
 		int len = leafIndices.size();
@@ -783,22 +800,34 @@ private:
 		}
 		leafIndices = ind;
 
+				//TEST: IS IT FASTER WITH WHILE LOOP OR SOMETHING ELSE?
 		combinedIndices.reserve(trunkIndices.size() + leafIndices.size());
 		combinedIndices.insert(combinedIndices.end(), trunkIndices.begin(), trunkIndices.end());
 		combinedIndices.insert(combinedIndices.end(), leafIndices.begin(), leafIndices.end());
 
+				//TEST: IS IT FASTER WITH WHILE LOOP OR SOMETHING ELSE?
 		combinedColor.reserve(trunkColor.size() + leafColor.size());
 		combinedColor.insert(combinedColor.end(), trunkColor.begin(), trunkColor.end());
 		combinedColor.insert(combinedColor.end(), leafColor.begin(), leafColor.end());
 	}
 
+		//TODO: ADD SHADER: DARKER ON MORE Z USING TEXTURES IN SHADER
+		//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 	void bufferObject(const GLuint& shader_program) {
 		//this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
 		//int map_width, map_height, channels;
 		//unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
 		this->vao = Entity::initVertexArray(shader_program, this->combinedVertices, this->combinedIndices, &vbo, &ebo);
 		//stbi_image_free(image_data);
-	}			
+	}	
+	
+	bool treeSetup(const GLuint& shader_program, float trunkDiameter, float seed){
+		generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
+		computeNormal();
+		computeUV();
+		combineVectors();
+		bufferObject(shader_program);
+	}
 
 public:
 	const std::vector<glm::vec3>& getVertices()
@@ -834,12 +863,9 @@ public:
 
 		leafStartIndices.push_back({ -1, 0, 0, 0 });
 		trunkStartIndices.push_back({ -1, 0, 0, 0 });
-		generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
-		computeNormal();
-		computeUV();
-		combineVectors();
-
-		bufferObject(shader_program);
+		
+		//CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
+		treeLoaded = treeSetup(const GLuint& shader_program, float trunkDiameter, float seed);
 
 
 		duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
