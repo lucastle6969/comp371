@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include <cmath>
+
 #include <iostream>
 
 #include "World.hpp"
@@ -22,23 +22,23 @@ World::World(const GLuint& shader_program, Entity* parent)
 		  player_current_x(0),
 		  player_current_z(0)
 {
-	static const glm::vec3 initial_player_position(0.0f, 0.01f, 0.0f);
+	static const glm::vec3 initial_player_position(0.0f, 2.3f, 0.0f);
 
-	this->player.scale(0.0005f);
+	this->player.scale(0.04f);
 	this->player.setPosition(initial_player_position);
 
 	// hide the axes by default
 	this->axes.hide();
 
-	this->world_tile_bl = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 2.0f), this);
-	this->world_tile_bc = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 2.0f), this);
-	this->world_tile_br = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 2.0f), this);
-	this->world_tile_ml = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 1.0f), this);
-	this->world_tile_mc = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 1.0f), this);
-	this->world_tile_mr = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 1.0f), this);
-	this->world_tile_tl = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 0.0f), this);
-	this->world_tile_tc = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), this);
-	this->world_tile_tr = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), this);
+	this->world_tile_bl = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), this);
+	this->world_tile_bc = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), this);
+	this->world_tile_br = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, 0.0f), this);
+	this->world_tile_ml = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -1.0f), this);
+	this->world_tile_mc = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -1.0f), this);
+	this->world_tile_mr = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -1.0f), this);
+	this->world_tile_tl = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, -2.0f), this);
+	this->world_tile_tc = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, -2.0f), this);
+	this->world_tile_tr = new WorldTile(shader_program, glm::vec3(2.0f, 0.0f, -2.0f), this);
 }
 
 World::~World()
@@ -165,31 +165,23 @@ void World::extendWest(){
 
 void World::checkPosition()
 {
-	static bool debug_position = false;
-
+	//testing move + worldTile cell system
 	glm::vec3 position = this->player.getPosition();
-	if (debug_position) {
-		std::cout << "position";
-		std::cout << " x " << position.x;
-		std::cout << " y " << position.y;
-		std::cout << " z " << position.z;
-		std::cout << std::endl;
-	}
-
-	if (floor(position.z) < this->player_current_z) {
-		this->player_current_z = (int)floor(position.z);
+	std::cout << position.x << ", " << position.y << ", " << position.z << std::endl;
+	if ((int)position.z < this->player_current_z) {
+		this->player_current_z = (int)position.z;
 		extendNorth();
 	}
-	if(floor(position.x) > this->player_current_x){
-		this->player_current_x = (int)floor(position.x);
+	if((int)position.x > this->player_current_x){
+		this->player_current_x = (int)position.x;
 		extendEast();
 	}
-	if(floor(position.z) > this->player_current_z){
-		this->player_current_z = (int)floor(position.z);
+	if((int)position.z > this->player_current_z){
+		this->player_current_z = (int)position.z;
 		extendSouth();
 	}
-	if(floor(position.x) < player_current_x){
-		player_current_x = (int)floor(position.x);
+	if((int)position.x < player_current_x){
+		player_current_x = (int)position.x;
 		extendWest();
 	}
 }

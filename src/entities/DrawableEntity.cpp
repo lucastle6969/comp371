@@ -82,7 +82,6 @@ void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &project
 
     //send the position of this entity to the shader
     glm::vec3 position = this->getPosition();
-
     glUniform1i(position_x_loc, (GLint)position.x);
 	glUniform1i(position_z_loc, (GLint)position.z);
 
