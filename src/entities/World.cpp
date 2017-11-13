@@ -30,15 +30,15 @@ World::World(const GLuint& shader_program, Entity* parent)
 	// hide the axes by default
 	this->axes.hide();
 
-	this->world_tile_bl = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 2.0f), this);
-	this->world_tile_bc = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 2.0f), this);
-	this->world_tile_br = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 2.0f), this);
-	this->world_tile_ml = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 1.0f), this);
-	this->world_tile_mc = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 1.0f), this);
-	this->world_tile_mr = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 1.0f), this);
-	this->world_tile_tl = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 0.0f), this);
-	this->world_tile_tc = new WorldTile(shader_program, glm::vec3(0.0f, 0.0f, 0.0f), this);
-	this->world_tile_tr = new WorldTile(shader_program, glm::vec3(1.0f, 0.0f, 0.0f), this);
+	this->world_tile_bl = new WorldTile(shader_program, -1, 2, this);
+	this->world_tile_bc = new WorldTile(shader_program, 0, 2, this);
+	this->world_tile_br = new WorldTile(shader_program, 1, 2, this);
+	this->world_tile_ml = new WorldTile(shader_program, -1, 1, this);
+	this->world_tile_mc = new WorldTile(shader_program, 0, 1, this);
+	this->world_tile_mr = new WorldTile(shader_program, 1, 1, this);
+	this->world_tile_tl = new WorldTile(shader_program, -1, 0, this);
+	this->world_tile_tc = new WorldTile(shader_program, 0, 0, this);
+	this->world_tile_tr = new WorldTile(shader_program, 1, 0, this);
 }
 
 World::~World()

@@ -21,7 +21,6 @@ private:
     const glm::mat4& getBaseRotation() override;
     const glm::vec3& getDefaultFaceVector() override;
     std::vector<glm::vec3> vertices;
-    glm::vec3 initial_translation;
     GLuint vao;
     GLuint vertices_buffer;
     GLuint element_buffer;
@@ -29,8 +28,14 @@ private:
 
 public:
 
-    WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation) : WorldTile(shader_program, initial_translation, nullptr) {}
-    WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation, Entity* parent);
+    WorldTile(const GLuint& shader_program, const int& x_location, const int& z_location)
+		: WorldTile(shader_program, x_location, z_location, nullptr) {}
+    WorldTile(
+		const GLuint& shader_program,
+		const int& x_location,
+		const int& z_location,
+		Entity* parent
+    );
     const std::vector<glm::vec3>& getVertices() override;
     GLuint getVAO() override;
     const int getColorType() override;

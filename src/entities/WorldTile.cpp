@@ -17,12 +17,15 @@
 #include "../constants.hpp"
 
 
-WorldTile::WorldTile(const GLuint &shader_program, glm::vec3 initial_translation, Entity *parent)
-	: DrawableEntity(shader_program, parent)
+WorldTile::WorldTile(
+	const GLuint &shader_program,
+	const int& x_location,
+	const int& z_location,
+	Entity *parent
+) : DrawableEntity(shader_program, parent)
 {
 	this->draw_mode = GL_TRIANGLES;
 
-	this->initial_translation = initial_translation;
 	int tile_width = 1, tile_height = 1;
 
 	//tile at the origin 1x1 in XZ plane
@@ -30,6 +33,9 @@ WorldTile::WorldTile(const GLuint &shader_program, glm::vec3 initial_translation
 	this->vertices.emplace_back(1.0f, 0.0f, 0.0f);
 	this->vertices.emplace_back(1.0f, 0.0f, -1.0f);
 	this->vertices.emplace_back(0.0f, 0.0f, -1.0f);
+
+	// position tile relative to parent based on x, z inputs
+	this->translate(glm::vec3(x_location, 0.0f, z_location));
 
 	std::vector<GLuint> elements;
 	WorldTile::createElements(tile_width, tile_height, &elements);
@@ -39,7 +45,6 @@ WorldTile::WorldTile(const GLuint &shader_program, glm::vec3 initial_translation
 			&this->vertices_buffer,
 			&this->element_buffer
 	);
-	WorldTile::translate(initial_translation);
 }
 
 const std::vector<glm::vec3> &WorldTile::getVertices() {
