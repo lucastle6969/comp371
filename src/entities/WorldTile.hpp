@@ -16,18 +16,11 @@
 
 class WorldTile: public DrawableEntity {
 private:
-
     static constexpr float base_rotation_angle = (float)(0);
     const glm::mat4& getBaseRotation() override;
     const glm::vec3& getDefaultFaceVector() override;
-    std::vector<glm::vec3> vertices;
-    GLuint vao;
-    GLuint vertices_buffer;
-    GLuint element_buffer;
-    static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
 
 public:
-
     WorldTile(const GLuint& shader_program, const int& x_location, const int& z_location)
 		: WorldTile(shader_program, x_location, z_location, nullptr) {}
     WorldTile(
@@ -42,8 +35,3 @@ public:
 };
 
 #endif //PROCEDURALWORLD_WORLDTILE_H
-
-
-
-
-

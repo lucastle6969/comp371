@@ -8,7 +8,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include <stdexcept>
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
@@ -26,33 +25,43 @@ WorldTile::WorldTile(
 {
 	this->draw_mode = GL_TRIANGLES;
 
-	int tile_width = 1, tile_height = 1;
-
-	//tile at the origin 1x1 in XZ plane
-	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
-	this->vertices.emplace_back(1.0f, 0.0f, 0.0f);
-	this->vertices.emplace_back(1.0f, 0.0f, -1.0f);
-	this->vertices.emplace_back(0.0f, 0.0f, -1.0f);
-
 	// position tile relative to parent based on x, z inputs
 	this->translate(glm::vec3(x_location, 0.0f, z_location));
-
-	std::vector<GLuint> elements;
-	WorldTile::createElements(tile_width, tile_height, &elements);
-	this->vao = this->initVertexArray(
-			this->vertices,
-			elements,
-			&this->vertices_buffer,
-			&this->element_buffer
-	);
 }
 
-const std::vector<glm::vec3> &WorldTile::getVertices() {
-	return this->vertices;
+const std::vector<glm::vec3>& WorldTile::getVertices() {
+	static const std::vector<glm::vec3> vertices = {
+			glm::vec3(0.0f, 0.0f, -1.0f), // bottom-left
+			glm::vec3(1.0f, 0.0f, -1.0f), // bottom-right
+			glm::vec3(1.0f, 0.0f, 0.0f), // top-right
+			glm::vec3(0.0f, 0.0f, 0.0f)  // top-left
+	};
+
+	return vertices;
 }
 
 GLuint WorldTile::getVAO() {
-	return this->vao;
+	static const std::vector<GLuint> elements = {
+			// first triangle (ACTUALLY is counterclockwise - negative-Z axis)
+			3, // top-left
+			1, // bottom-right
+			0, // bottom-left
+			// second triangle
+			3, // top-left
+			2, // top-right
+			1  // bottom-right
+	};
+
+	static GLuint vao;
+	static bool vao_init = false;
+
+	if (!vao_init) {
+		// only initialize vao once for all instances
+		vao = this->initVertexArray(this->getVertices(), elements);
+		vao_init = true;
+	}
+
+	return vao;
 }
 
 const int WorldTile::getColorType() {
@@ -65,30 +74,6 @@ const glm::mat4 &WorldTile::getBaseRotation() {
 	static glm::mat4 rotation = glm::rotate(identity, WorldTile::base_rotation_angle, x_axis);
 
 	return rotation;
-}
-
-void WorldTile::createElements(
-	const int &width,
-	const int &height,
-	std::vector<GLuint> *const elements
-) {
-	if (elements == nullptr) {
-		throw std::runtime_error("Elements vector must not be null.");
-	}
-
-	// since we know our terrain comes from an image, i.e. a fully-filled 2d array,
-	// we can create an element array using an uncomplicated algorithm which creates
-	// two triangles to connect each arrangement of 4 adjacent vertices.
-
-	// first triangle
-	elements->emplace_back(3); // top-left
-	elements->emplace_back(0); // bottom-left
-	elements->emplace_back(2); // top-right
-
-	// second triangle
-	elements->emplace_back(0); // bottom-left
-	elements->emplace_back(1); // bottom-right
-	elements->emplace_back(2); // top-right
 }
 
 // the vector indicating the direction the model faces by default (with no rotation)
