@@ -72,7 +72,7 @@ add_executable(proceduralworld
     src/entities/World.cpp
     src/entities/Rock.cpp
     src/entities/Rock.hpp
-)
+        src/vendor/stb_image.h src/vendor/load_stb_image.hpp)
 
 # Link libraries
 if(APPLE)
