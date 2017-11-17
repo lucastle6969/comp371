@@ -13,9 +13,10 @@
 #include "World.hpp"
 #include "../constants.hpp"
 
-World::World(const GLuint& shader_program, Entity* parent)
+World::World(const GLuint& shader_program, const GLuint& shader_program_TreeA, Entity* parent)
 		: Entity(parent),
 		  player(shader_program, this),
+		  tA(shader_program_TreeA, this, 6.0, 512),
 		  axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
 		  tmb({1, 2, 3}),
 		  lcr({1, 2, 3}),
@@ -26,6 +27,9 @@ World::World(const GLuint& shader_program, Entity* parent)
 
 	this->player.scale(0.04f);
 	this->player.setPosition(initial_player_position);
+
+	this->tA.scale(0.04f);
+	this->tA.setPosition(initial_player_position);
 
 	// hide the axes by default
 	this->axes.hide();

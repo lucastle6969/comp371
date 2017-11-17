@@ -70,7 +70,6 @@ void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &project
 	auto position_x_loc = (GLint)glGetUniformLocation(this->shader_program, "entity_position_x");
 	auto position_z_loc = (GLint)glGetUniformLocation(this->shader_program, "entity_position_z");
 
-
 	glUseProgram(this->shader_program);
 
 	// use the entity's model matrix to form a new Model View Projection matrix

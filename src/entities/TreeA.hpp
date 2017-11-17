@@ -1,7 +1,12 @@
 /*
+ * todo: Space segments.        Give UV.                            Local rotation Bug(indice connectors, and bad mirrors).
+ *  Move N units with normal     partial on leaves, full on trunk   connectors not indicing properly      rotation causes disconect after certain amount. Possibly miroring?
+ *
+ *todo final: split hpp into components 
+
 NOTES FOR POTENTIAL LARGE ALTERATIONS: 
 	REMOVE ALL THE RECURSION. ITTERATION IS FASTER.
-	DONE BY BEFORE DUE DATE? EXPERIMENT ON MULTITHREADING
+	DONE BY BEFORE DUE DATE? EXPERIMENT ON MULTITHREADING?
 */
 
 /*
@@ -56,25 +61,24 @@ ANGLES COMPUTED DURING RECURSIONS
 #define GROUP_A2 1
 
 #ifdef __APPLE__
-#include <Opengl3.h>
-#include <Opengl3ext.h>
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
 #else
-#include <glew.h> // include GL Extension Wrangler
+#include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
-#include <gtc/matrix_transform.hpp>
-#include <glm.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
 
-#include "entities/entity.hpp"
-#include "constants.hpp"
-#include "vendor/stb_image.h"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
 
-class TreeA : public Entity {
+class TreeA : public DrawableEntity {
 private:
 
-	bool printfTest = false;
+	bool printTest = false;
 	bool breakbool;
 
 	class AttatchmentGroupings {
@@ -89,7 +93,7 @@ private:
 		char side;
 
 		AttatchmentGroupings* ag[2];
-		
+
 		AttatchmentGroupings(int start,	int end, int angleX, int angleY, int angleZ,char type,	char side){
 			this->start = start;
 			this->end = end;
@@ -110,10 +114,10 @@ private:
 			}
 		}
 	};
-		
+
 	//CONSIDERATION FOR MULTITHREADED LOADING
 	bool treeLoaded = false;
-	
+
 	std::vector<AttatchmentGroupings> branchStore;
 	std::vector<glm::vec3> combinedVertices; 	std::vector<GLuint> combinedIndices;		std::vector<glm::vec3> combinedColor; std::vector<glm::vec3> combinedNormals; std::vector<glm::vec2> combinedUV;
 	GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
@@ -123,12 +127,12 @@ private:
 	//MOVE TO TRUNK CLASS
 	std::vector<glm::vec3> trunkVertices; 	std::vector<GLuint> trunkIndices;	std::vector<glm::vec3> trunkColor; std::vector<std::vector<int>> trunkStartIndices;
 	const int circlePoints = 4;
-	const float jagednessFactor = 0.45;
+	const float jagednessFactor = 0.35;
 	glm::vec3 brown = glm::vec3(0.0 / 255, 53.0 / 255, 10.0 / 255);
-	
+
 	//MOVE TO LEAF CLASS
 	const int leafPoints = 5;
-	const float jagednessFactor_Leaf = 0.25;
+	const float jagednessFactor_Leaf = 0.35;
 	std::vector<glm::vec3> leafVertices; 	std::vector<GLuint> leafIndices;		std::vector<glm::vec3> leafColor; std::vector<std::vector<int>> leafStartIndices;
 	glm::vec3 green = glm::vec3(30.0 / 255, 147.0 / 255, 45.0 / 255);
 
@@ -138,7 +142,7 @@ private:
 	float finalCutoff;
 	bool kill;
 
-	const int branchMod = 10;
+	const int branchMod = 5;
 	const int minYBranchAngle = 25;
 	const int maxYBranchAngle = 45;
 	const int minYTrunkAngle = 0;
@@ -154,12 +158,12 @@ private:
 	int depthMax = 0;
 
 	int treeRandom(float trunkDiameter, float seed, float lineHeight) {
-		int randomSeedValue = ((int)(trunkDiameter * seed * (((int)lineHeight % 4 * (int)lineHeight % 10 + 1 ) * 10) * 3)) % (77 * (int)ceil(trunkDiameter));
+		int randomSeedValue = ((int)(trunkDiameter * seed * (((int)lineHeight % 4 * (int)lineHeight % 10 + 1 ) * 10) * 3)) % (k*10 * (int)ceil(trunkDiameter));
 		if (randomSeedValue % 2 == 0) randomSeedValue = -(randomSeedValue + 1);
 		return randomSeedValue;
 	}
 	int treeOddEvenRandom(float trunkDiameter, float seed, float lineHeight) {
-		int randomSeedValue = ((int)(trunkDiameter * seed * (((int)lineHeight % 4 * (int)lineHeight % 10 + 1) * 10) * 3)) % (77 * (int)ceil(trunkDiameter));
+		int randomSeedValue = ((int)(trunkDiameter * seed * (((int)lineHeight % 4 * (int)lineHeight % 10 + 1) * 10) * 3)) % (k*10 * (int)ceil(trunkDiameter));
 		return randomSeedValue;
 	}
 	int branchAngleFromRandom(float trunkDiameter, float seed, float lineHeight) {return treeRandom(trunkDiameter, seed, lineHeight) % (maxYBranchAngle - minYBranchAngle) + minYBranchAngle;}
@@ -182,7 +186,7 @@ private:
 			//1A. Standard trunk with two branches
 			//1A1. Draw circle with seed based ragedness and store in trunkV and trunkC
 			//1A2. Draw circle up one with seed based ragedness and store in trunkV and trunkC
-			//1A3. Draw circle up one with seed based ragedness and store in trunkV and trunkC and create trunkI 
+			//1A3. Draw circle up one with seed based ragedness and store in trunkV and trunkC and create trunkI
 			//1A4. Make branch check
 			currentLineLength = starterTrunk(trunkDiameter, seed, currentLineLength);
 			trunkStartIndices.push_back({ (int)trunkVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ});
@@ -201,25 +205,24 @@ private:
 				angleY = angleY;
 				depth = 0;
 				//CONSIDERATION MULTITHREAD THE BRANCH AND MOVEMENT
-				generateTreeA(TRUNK, offShootDiameterBranch / (branches), seed, -abs(angleX), angleY, angleZ, 'R', agNew, 0);
+				generateTreeA(TRUNK, offShootDiameterBranch / (branches), seed, -abs(angleX), angleY, abs(angleZ), 'R', agNew, 0);
 				breakbool = true;
-				moveSegments(-abs(angleX), angleZ, angleY, agNew);
-				agNew->selfErase();
+
 				//////////// REQUIREMENT: ALTER COMBINE FUNCTION
 			}
 			//1A7. On new trunk join to junction and continue
-			angleZ = trunkAngleFromRandom(trunkDiameter, seed, currentLineLength) ;
+			angleZ = trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength) ;
 			angleX = trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength); //* (((int)seed) % 2 == 0 ? 1 : -1);
 			angleY = angleY;
 			depth = 0;
-			globalRotations = 0;
 			//CONSIDERATION: MULTITHREAD THE TRUNK AND MOVEMENT
-			generateTreeA(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, angleZ, 'L', agNew, currentLineLength);
-			moveSegments(abs(angleX), angleZ, angleY, agNew);
+			generateTreeA(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, -abs(angleZ), 'L', agNew, currentLineLength);
+
+            initiateMove(0, agNew);
 			agNew->selfErase();
 			delete agNew;
 			//////////// REQUIREMENT: ALTER COMBINE FUNCTION
-			break;   
+			break;
 		case TRUNK:
 				depth++;
 				kill = false;
@@ -233,7 +236,7 @@ private:
 					}
 				}
 				else{
-					currentLineLength = trunk(trunkDiameter, seed, lineHeight);		
+					currentLineLength = trunk(trunkDiameter, seed, lineHeight);
 				}
 			//TODAY     ------------------------------------------------
 
@@ -241,7 +244,7 @@ private:
 				angleX += ag->angleX;
 				angleY = angleY;
 				angleZ += ag->angleZ;
-			
+
 			//add the sum of angles onto the current branch
 			trunkStartIndices.push_back({ (int)trunkVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ });
 
@@ -249,11 +252,11 @@ private:
 			agNew = new AttatchmentGroupings(trunkStartIndices.at((int)trunkStartIndices.size() - 2).at(0), (int)trunkVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
 			if (tag == 'R') ag->ag[1] = agNew;
 			else			ag->ag[0] = agNew;
-					
+
 			//1A5. Start N new recursive functions from seed based angle at a certain base position
 			angleY = treeRandom(trunkDiameter, seed * 5, lineHeight);
 			if (lineHeight == -1 || currentLineLength == -1) {
-				if(printfTest)printf("====SPLIT====\n");
+				//if(//Test)//("====SPLIT====\n");
 				offShootDiameterTrunk = offShootCalculation(trunkDiameter, trunkRatio);
 				lineHeight = 0; currentLineLength = 0;
 			}
@@ -262,10 +265,10 @@ private:
 				offShootDiameterTrunk = offShootCalculation(trunkDiameter, trunkRatio);
 				for (int n = 0; n < branches; n++) {
 					//1A6. On new branch create circle then indices flowing back once to center cirlce.
-					angleZ = -branchAngleFromRandom(trunkDiameter, seed, currentLineLength);
+					angleZ = branchAngleFromRandom(trunkDiameter, seed, currentLineLength);
 					angleX = branchAngleFromRandom(trunkDiameter, seed * 7, currentLineLength) * (((int)seed) % 2 == 0 ? -1 : 1);;
 					angleY = angleY;
-					generateTreeA(TRUNK, offShootDiameterBranch, seed, -abs(angleX), angleY, angleZ, 'R', agNew, 0);
+					generateTreeA(TRUNK, offShootDiameterBranch, seed, -abs(angleX), angleY, abs(angleZ), 'R', agNew, 0);
 				}
 			}
 
@@ -273,17 +276,17 @@ private:
 			angleZ = trunkAngleFromRandom(trunkDiameter, seed, currentLineLength);
 			angleX = trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength) * (((int)seed) % 2 == 0 ? -1 : 1);;
 			angleY = angleY;
-			generateTreeA(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, angleZ, 'L', agNew, currentLineLength);
+			generateTreeA(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, -abs(angleZ), 'L', agNew, currentLineLength);
 			depth--;
 			break;
 		case LEAF:
 			//1B. If trunk width is past a threshold then create a leaf line
-			//1B1.On circle put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC  and store in leafV and leafC and create leafI 
-			//1B2.On circle up one put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC and create trunkI  and store in leafV and leafC and create leafI 
+			//1B1.On circle put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC  and store in leafV and leafC and create leafI
+			//1B2.On circle up one put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC and create trunkI  and store in leafV and leafC and create leafI
 			//1B3. Repeat until max length
 			leafBranch(trunkDiameter, seed, lineHeight);
 
-			//rotate my combined of predesecors 
+			//rotate my combined of predesecors
 			//rotate based on the previous and current angles
 			angleX += ag->angleX;
 			angleY = angleY;
@@ -301,7 +304,7 @@ private:
 
 			generateTreeA(END_TRUNK, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, lineHeight);
 			break;
-		default: 
+		default:
 			return; break;
 		}
 		//AFTER FUNCTION INSIDE CONSTRUCTOR
@@ -321,7 +324,7 @@ private:
 		//int off = 50;//+ bCount * 5;
 		int offL = 0;
 		int off = 0;
-		
+
 		//MOVE TO PROCEDURE TRUNK CLASS
 		while(loopInitialTrunk && lineHeight < lineMax){
 			//build points
@@ -363,18 +366,18 @@ private:
 							trunkIndices.push_back(offset + n + 1 + countTemp * circlePoints); trunkIndices.push_back(offset + n + countTemp * circlePoints); trunkIndices.push_back(base + n + countTemp * circlePoints);
 						}
 					}
-				}			
+				}
 			}
-			
+
 			count += 3;
 
-			//make branch check 
+			//make branch check
 			if ((randomSeedValue * (count + 1)) % branchMod == 0) loopInitialTrunk = false;
 		}
-		if (printfTest)printf("%d\n", (randomSeedValue * (count + 1)) % branchMod);
+		//if (//Test)//("%d\n", (randomSeedValue * (count + 1)) % branchMod);
 		return lineHeight;
-	}	
-	
+	}
+
 	int bCount = 0;
 	float trunk(float trunkDiameter, float seed, float lineHeight) {
 		int randomSeedValue = treeRandom(trunkDiameter, seed, lineHeight);
@@ -387,7 +390,7 @@ private:
 		//int off = 50;//+ bCount * 5;
 		int offL = 0;
 		int off = 0;
-		
+
 		//MOVE PROCEEDURE TO TRUNK CLASS
 		do {
 			//build points
@@ -435,10 +438,10 @@ private:
 
 			count += 3;
 
-			//make branch check 
-			//printf("%d\n", (randomSeedValue * (count + 1)) % branchMod);
+			//make branch check
+			////("%d\n", (randomSeedValue * (count + 1)) % branchMod);
 			if ((randomSeedValue * (count + 1)) % branchMod == 0) {
-				if (printfTest)printf("BRANCH COUNT: %d\n", ++bCount);
+				//if (//Test)//("BRANCH COUNT: %d\n", ++bCount);
 				loopInitialTrunk = false;
 			}
 		} while (loopInitialTrunk && lineHeight < lineMax);
@@ -506,7 +509,7 @@ private:
 			}
 			lineHeight += lineSegments;
 			count++;
-		//REPEAT NX	
+		//REPEAT NX
 		}
 
 		for (float y = 0.5; y >= 0.25; y -= 0.25) {
@@ -548,7 +551,7 @@ private:
 			}
 			lineHeight += lineSegments * y * 0.8;
 			count++;
-			//REPEAT 2X	
+			//REPEAT 2X
 		}
 		int len = (float)(lineMax - 2) / lineSegments + 3;
 		for (int i = 0; i < len; i++) {
@@ -571,20 +574,20 @@ private:
 				for (int n = 0; n < leafPoints - 2; n++) {
 					int base = i * leafPoints * 3 + baseVerticesSize;
 					if (n == leafPoints - 2 - 1) {
-						leafIndices.push_back(base); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2);  leafIndices.push_back(base - n); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2);  leafIndices.push_back(base - n); leafIndices.push_back(base+0);
 					}
 					else {
-						leafIndices.push_back(base); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2);  leafIndices.push_back(base + 3); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2);  leafIndices.push_back(base + 3); leafIndices.push_back(base+0);
 					}
 					if (n == leafPoints - 2 - 1) {
-						leafIndices.push_back(base); leafIndices.push_back(base - n); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base - n); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base+0);
 					}
 					//topsegment cover
 					else {
-						leafIndices.push_back(base); leafIndices.push_back(base + 3); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base+0); leafIndices.push_back(base + 3); leafIndices.push_back(base + 2);
 					}
 				}
 			}
@@ -594,21 +597,21 @@ private:
 					int base = leafPoints * (j + 1) + i * leafPoints * 3 + baseVerticesSize + n;
 					//NORTH
 					if (n == leafPoints - 2 - 1) {
-						leafIndices.push_back(base); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2);  leafIndices.push_back(base - n); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2);  leafIndices.push_back(base - n); leafIndices.push_back(base+0);
 					}
 					else {
-						leafIndices.push_back(base); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2);  leafIndices.push_back(base + 3); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base+0 + 1); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2);  leafIndices.push_back(base + 3); leafIndices.push_back(base+0);
 					}
 					//SOUTH
 					if (n == leafPoints - 2 - 1) {
-						leafIndices.push_back(base); leafIndices.push_back(base - n); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base - n); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base+0);
 					}
 					else {
-						leafIndices.push_back(base); leafIndices.push_back(base + 3); leafIndices.push_back(base + 2);
-						leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base);
+						leafIndices.push_back(base+0); leafIndices.push_back(base + 3); leafIndices.push_back(base + 2);
+						leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base+0);
 					}
 				}
 			}
@@ -628,20 +631,20 @@ private:
 		for (int n = 0; n < leafPoints - 2; n++) {
 			int base = leafVertices.size() - leafPoints + n;
 			if (n == leafPoints - 2 - 1) {
-				leafIndices.push_back(base); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
-				leafIndices.push_back(base + 2);  leafIndices.push_back(base - n); leafIndices.push_back(base);
+				leafIndices.push_back(base+0); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
+				leafIndices.push_back(base + 2);  leafIndices.push_back(base - n); leafIndices.push_back(base+0);
 			}
 			else {
-				leafIndices.push_back(base); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
-				leafIndices.push_back(base + 2);  leafIndices.push_back(base + 3); leafIndices.push_back(base);
+				leafIndices.push_back(base+0); leafIndices.push_back(base + 1); leafIndices.push_back(base + 2);
+				leafIndices.push_back(base + 2);  leafIndices.push_back(base + 3); leafIndices.push_back(base+0);
 			}
 			if (n == leafPoints - 2 - 1) {
-				leafIndices.push_back(base); leafIndices.push_back(base - n); leafIndices.push_back(base + 2);
-				leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base);
+				leafIndices.push_back(base+0); leafIndices.push_back(base - n); leafIndices.push_back(base + 2);
+				leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base+0);
 			}
 			else {
-				leafIndices.push_back(base); leafIndices.push_back(base + 3); leafIndices.push_back(base + 2);
-				leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base);
+				leafIndices.push_back(base+0); leafIndices.push_back(base + 3); leafIndices.push_back(base + 2);
+				leafIndices.push_back(base + 2); leafIndices.push_back(base + 1); leafIndices.push_back(base+0);
 			}
 		}
 		//conect branches
@@ -651,13 +654,31 @@ private:
 		countL++;
 		offL = 50 + countL * 40;
 		off = 50 + bCount * 5 + offL;
-		if (printfTest)printf("LEAF COUNT: %d\n", countL);
+		//if (//Test)//("LEAF COUNT: %d\n", countL);
 	}
 
-	int globalRotations = 0;
-	void moveSegments(float aX, float aZ, int rotationPoint, AttatchmentGroupings* ag) {
-		glm::vec3 translation;
-		glm::mat4 rotation;
+    int limiter = 1;
+
+    void initiateMove(int pastRot, AttatchmentGroupings* ag){
+        glm::mat4 rotation;
+        int circularPoints = circlePoints;
+		int rotationPoint = abs((ag->angleY) % (circularPoints / limiter ));
+
+    //TODO: create rotations of branches
+        float r = 360.0/circularPoints  * (rotationPoint);
+        rotation = glm::rotate(rotation, glm::radians((float)ag->angleX), glm::vec3(1.0, 0.0, 0.0));
+        rotation = glm::rotate(rotation, glm::radians((float)ag->angleZ), glm::vec3(0.0, 0.0, -1.0));
+        int start = ag->start + 1;
+        int max = ag->end + 1;
+        for (int k = start; k < max; k++) {
+			trunkVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),glm::radians((float)ag->angleZ),
+						  trunkVertices.at(k));
+        }
+		int previousRotation = rotationPoint;
+        moveSegments(previousRotation, ag);
+        return;
+    }
+	void moveSegments(int previousRotation, AttatchmentGroupings* ag) {
 		for (int m = 0; m < 2; m++) {
 			if (ag->ag[m] == nullptr) continue;
 
@@ -665,36 +686,44 @@ private:
 			int moveFrom = 0;
 
 			int circularPoints = ag->ag[m]->type == 'L' ? leafPoints : circlePoints;
-			rotationPoint = abs(ag->ag[m]->angleY % (circularPoints));
-
+			int rotationPoint = abs((ag->ag[m]->angleY) % (circularPoints / limiter ));
+			printf("RP%d PR%d %d\n", rotationPoint, previousRotation,abs(rotationPoint - previousRotation));
 			if (ag->ag[m]->side == 'L') {
-				globalRotations += rotationPoint;
-				moveTo = (ag->end - circularPoints + 1) + 2;//((2 + globalRotations - rotationPoint) % circularPoints);
-				moveFrom = (ag->ag[m]->start + 1) + 2;//((2 + rotationPoint) % circularPoints);
+				moveTo = (ag->end - circularPoints + 1) + (( 0 + rotationPoint) % circularPoints);
+				moveFrom = (ag->ag[m]->start + 1)  + ((0+ previousRotation) % circularPoints);
 
 			}
 			else {
-				moveTo = (ag->end - circularPoints + 1) + 0;//(0 + globalRotations) % 4;
-				moveFrom = (ag->ag[m]->start + 1) + 0;// (0 + globalRotations - rotationPoint) % 4;
+				moveTo = (ag->end - circularPoints + 1) + (2 + rotationPoint ) % circularPoints;
+                moveFrom = (ag->ag[m]->start + 1) + (2 + previousRotation) % circularPoints;
 			}
+
 			//TODO: create rotations of branches
-			float r = 360.0  * (0*4);
-			rotation = glm::rotate(rotation, glm::radians((float)r), glm::vec3(0.0, -1.0, 0.0));
+
+			glm::mat4 rotation;
+			float r = 360.0/circularPoints  * (rotationPoint);
+            ////("%f, %f, %d\n",glm::radians((float)ag->ag[m]->angleX),(float)ag->ag[m]->angleX, m);
 			rotation = glm::rotate(rotation, glm::radians((float)ag->ag[m]->angleX), glm::vec3(1.0, 0.0, 0.0));
 			rotation = glm::rotate(rotation, glm::radians((float)ag->ag[m]->angleZ), glm::vec3(0.0, 0.0, -1.0));
+			//glm::mat4 rot2 = glm::rotateY(glm::mat4(), glm::radians((float)r));
 
+            int xMiror =  rotationPoint == 3 ? -1: 1;
+            int zMirror = rotationPoint == 2 ? -1 : 1;
 			if (ag->ag[m]->type == 'B') {
 				int start = ag->ag[m]->start + 1;
 				int max = ag->ag[m]->end + 1;
-				for (int k = start; k < max; k++) {
-					trunkVertices.at(k) = glm::vec4(trunkVertices.at(k), 1.0f) * rotation;
+                ////("%d, %d\n",start, max);
+                for (int k = start; k < max; k++) {
+					trunkVertices.at(k) = makeRotations(xMiror * glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
+                                                        zMirror * glm::radians((float)ag->ag[m]->angleZ), trunkVertices.at(k));
 				}
 			}
 			else {
 				int start = ag->ag[m]->start + 1;
 				int max = ag->ag[m]->end + 1;
 				for (int k = start; k < max; k++) {
-					leafVertices.at(k) = glm::vec4(leafVertices.at(k), 1.0f) * rotation;
+					leafVertices.at(k) = makeRotations(xMiror * glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
+                                                       zMirror * glm::radians((float)ag->ag[m]->angleZ),	  leafVertices.at(k));
 				}
 			}
 
@@ -705,7 +734,9 @@ private:
 			std::vector<glm::vec3>* vContainer1 = nullptr;
 			if (ag->type == 'B') vContainer1 = &trunkVertices;
 			else vContainer1 = &leafVertices;
-			translation = vContainer1->at(moveTo) - vContainer2->at(moveFrom);
+			////("%d %d %c\n", previousRotation, moveTo, ag->type);
+
+			glm::vec3 translation = vContainer1->at(moveTo) - vContainer2->at(moveFrom);
 
 			if (ag->ag[m]->type == 'B') {
 				int start = ag->ag[m]->start + 1;
@@ -721,57 +752,52 @@ private:
 					leafVertices.at(k) += translation;
 				}
 			}
-
-		connectSegments(ag->ag[m]);
-		moveSegments(ag->ag[m]->angleX, ag->ag[m]->angleZ, ag->ag[m]->angleY, ag->ag[m]);
-		globalRotations -= rotationPoint;
+		connectSegments(ag, m,rotationPoint, previousRotation);
+		moveSegments(rotationPoint , ag->ag[m]);
 	}
 		return;
-		
+
 	}
 
 	//TODO: COMPLETE CONECTORS
-	void connectSegments(AttatchmentGroupings* ag){
+	void connectSegments(AttatchmentGroupings* ag, int m, int rotPoint, int prevPoint){
 		depth--;
-		//if(ag[1].type == 'B'){
-		//	//go through each point on upper part of at depth circle
-		//	for (int i = 1; i < 4; i += 2) {
-		//		//connect to upper circle 1
-		//		if(ag[1].ag[0]->type == 'B'){
-		//			for (int j = 0; j < circlePoints; j++) {
-		//				if (j == circlePoints - 1) {
-		//					int A = ag[1].groupings.at(0).at(0) - circlePoints + 1 + j;
-		//					int B = ag[1].groupings.at(0).at(0) - circlePoints + 1 + (0);
-		//					int C = ag[1].ag[0].groupings.at(0).at(0) + 1 + (0);
-		//					trunkIndices.push_back(A);
-		//					trunkIndices.push_back(B);
-		//					trunkIndices.push_back(C);
-		//					int D = C;
-		//					int E = ag[1].ag[0].groupings.at(0).at(0) + 1 + (j);
-		//					int F = A;
-		//					trunkIndices.push_back(D);
-		//					trunkIndices.push_back(E);
-		//					trunkIndices.push_back(F);
-		//				}
-		//				else {
-		//					int A = ag[1].groupings.at(0).at(0) - circlePoints + 1 + j;
-		//					int B = ag[1].groupings.at(0).at(0) - circlePoints + 1 + (j + 1);
-		//					int C = ag[1].ag[0].groupings.at(0).at(0) + 1 + (j + 1);
-		//					trunkIndices.push_back(A);
-		//					trunkIndices.push_back(B);
-		//					trunkIndices.push_back(C);
-		//					int D = C;
-		//					int E = ag[1].ag[0].groupings.at(0).at(0) + 1 + (j);
-		//					int F = A;
-		//					trunkIndices.push_back(D);
-		//					trunkIndices.push_back(E);
-		//					trunkIndices.push_back(F);
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
-	}
+		if(ag->ag[m]->type == 'B'){
+			//go through each point on upper part of at depth circle
+                for (int j = 0; j < circlePoints; j++) {
+                    if (j == circlePoints - 1) {
+                        GLuint A = (ag->end - circlePoints+ 1) + j;
+                        GLuint B = (ag->end - circlePoints+ 1) + 0;
+                        GLuint C = (ag->ag[m]->start+1) + 0;
+                        trunkIndices.push_back(A);
+                        trunkIndices.push_back(B);
+                        trunkIndices.push_back(C);
+                        GLuint D = C;
+                        GLuint E = (ag->ag[m]->start+1) + j;
+                        GLuint F = A;
+                        trunkIndices.push_back(D);
+                        trunkIndices.push_back(E);
+                        trunkIndices.push_back(F);
+                    }
+                    else {
+                        //WORKS
+                        GLuint A = (ag->end - circlePoints+ 1) + j;
+                        GLuint B = (ag->end - circlePoints+ 1) + 1 + j;
+                        GLuint C = (ag->ag[m]->start+1) + 1 + j;
+                        trunkIndices.push_back(A);
+                        trunkIndices.push_back(B);
+                        trunkIndices.push_back(C);
+                        GLuint D = C;
+                        GLuint E = (ag->ag[m]->start+1) + j;
+                        GLuint F = A;
+                        trunkIndices.push_back(D);
+                        trunkIndices.push_back(E);
+                        trunkIndices.push_back(F);
+
+                    }
+                }
+            }
+        }
 
 	//TODO
 	void computeUV() {
@@ -780,6 +806,30 @@ private:
 	//TODO
 	void computeNormal() {
 
+	}
+
+	//values in radians
+	glm::vec3 makeRotations(float xRot, float yRot, float zRot, glm::vec3 vector){
+		//ROTATION ABOUT X
+		// << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
+		vector = glm::vec3(
+				vector.x
+				, vector.y * cos(xRot) - vector.z * sin(xRot)
+				,	vector.y * sin(xRot) + vector.z * cos(xRot));
+		//ROTATION ABOUT Z
+		// << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
+		vector = glm::vec3(
+				vector.x * cos(zRot) - vector.y * sin(zRot)
+				, vector.x * sin(zRot) + vector.y * cos(zRot)
+				,	vector.z );
+		//ROTATION ABOUT Y
+		// << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
+		vector = glm::vec3(
+				vector.x * cos(yRot) + vector.z * sin(yRot)
+				, vector.y
+				,	-(vector.x * sin(yRot)) + vector.z * cos(yRot));
+		// << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n-------\n";
+	return vector;
 	}
 
 	void combineVectors() {
@@ -816,16 +866,17 @@ private:
 		//this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
 		//int map_width, map_height, channels;
 		//unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-		this->vao = Entity::initVertexArray(shader_program, this->combinedVertices, this->combinedIndices, &vbo, &ebo);
+		this->vao = initVertexArray( this->combinedVertices, this->combinedIndices, &vbo, &ebo);
 		//stbi_image_free(image_data);
-	}	
-	
+	}
+
 	bool treeSetup(const GLuint& shader_program, float trunkDiameter, float seed){
 		generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
 		computeNormal();
 		computeUV();
 		combineVectors();
 		bufferObject(shader_program);
+		return true;
 	}
 
 public:
@@ -834,44 +885,45 @@ public:
 		return this->combinedVertices;
 	}
 
-	const int getColorType()
-	{
-		return COLOR_WHITE;
-	}
 
 	GLuint getVAO()
 	{
 		return this->vao;
 	}
 
+	const int getColorType(){return 0;};
+
 #include <iostream>
 #include <cstdio>
 #include <ctime>
 
-	TreeA(const GLuint& shader_program, float trunkDiameter, float seed){
+	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
+			DrawableEntity(shader_program, entity){
 		std::clock_t startTime;
 		double duration;
 
 		startTime = std::clock();
 
-		this->draw_mode = GL_TRIANGLES;
-		
+		draw_mode = GL_TRIANGLES;
+
 		if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-		widthCutoff = 0.5;//trunkDiameter / 16;
+		widthCutoff = 0.5;//trunkDiameter / 32;
 		finalCutoff = widthCutoff;
 
 		leafStartIndices.push_back({ -1, 0, 0, 0 });
 		trunkStartIndices.push_back({ -1, 0, 0, 0 });
-		
-		//CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
-		treeLoaded = treeSetup(const GLuint& shader_program, float trunkDiameter, float seed);
 
+		//CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
+		treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
+
+        float globalRotation = treeRandom(trunkDiameter,seed,widthCutoff*10);
+
+        rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
 		duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-		printf("Duration %f: %f\n", trunkDiameter, duration);
+		printf("Duration %f Units: %f ms\n", trunkDiameter, duration*1000);
 	};
 
-	TreeA() {};
 };
 //
 //glm::vec3 U = leafVertices.at(base + n+1) - leafVertices.at(base + n);
