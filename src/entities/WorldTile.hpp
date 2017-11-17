@@ -13,6 +13,7 @@
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
+#include "Rock.hpp"
 
 class WorldTile: public DrawableEntity {
 private:
@@ -26,6 +27,7 @@ private:
     GLuint vertices_buffer;
     GLuint element_buffer;
     static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
+    Rock* rock;
 
 public:
 

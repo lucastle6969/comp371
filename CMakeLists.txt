@@ -70,6 +70,8 @@ add_executable(proceduralworld
     src/entities/WorldTile.cpp
     src/entities/World.hpp
     src/entities/World.cpp
+    src/entities/Rock.cpp
+    src/entities/Rock.hpp
 )
 
 # Link libraries

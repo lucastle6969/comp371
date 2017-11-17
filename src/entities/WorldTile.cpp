@@ -12,6 +12,7 @@
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
+#include "Rock.hpp"
 #include "WorldTile.hpp"
 
 #include "../constants.hpp"
@@ -29,6 +30,8 @@ WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initial_translation
     this->vertices.emplace_back(1.0f, 0.0f, 0.0f);
     this->vertices.emplace_back(1.0f, 0.0f, -1.0f);
     this->vertices.emplace_back(0.0f, 0.0f, -1.0f);
+    this->rock = new Rock(shader_program, 0.5f, 0.5f, 0.2f, 0.5f, this);
+    this->rock->scale(0.01f);
 
     std::vector<GLuint> elements;
     WorldTile::createElements(tile_width, tile_height, &elements);
