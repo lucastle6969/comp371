@@ -1,8 +1,6 @@
 # File pacman
 # ()
 
-mtllib pacman_complete.obj.mtl
-
 # 239 vertex positions
 v  2.85813 11.5692 3.42407
 v  -0.398131 12.5207 -0.0800827
@@ -489,7 +487,6 @@ vn -0.0710343 0.900918 0.428136
 
 # Mesh '<STL_BINARY>' with 476 faces
 g <STL_BINARY>
-usemtl DefaultMaterial
 f  1//1 2//2 3//3
 f  4//4 1//1 5//5
 f  6//6 1//1 4//4
