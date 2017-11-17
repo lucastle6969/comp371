@@ -30,7 +30,7 @@ Beyond the C++ standard library this application relies on:
 * GLFW
 * GLEW
 * GLM
-* STB (particularly the stb_image.h header library)
+* tinyobjloader
 
 (Following standard setup procedure in a CMake-compatible IDE should fetch all these dependencies for you, so you shouldn't need to download them separately.)
 
