@@ -13,12 +13,14 @@
 
 #include "Entity.hpp"
 #include "Player.hpp"
+#include "TreeA.hpp"
 #include "WorldOrigin.hpp"
 #include "WorldTile.hpp"
 
 class World: public Entity {
 private:
 	Player player;
+	TreeA tA;
 	WorldOrigin axes;
 	WorldTile* world_tile_bl;
 	WorldTile* world_tile_bc;
@@ -38,10 +40,11 @@ private:
 	int player_current_x;
 	int player_current_z;
 public:
-	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
-	World(const GLuint& shader_program, Entity* parent);
+	explicit World(const GLuint& shader_program, const GLuint& shader_program_treeA) : World(shader_program, shader_program_treeA, nullptr) {}
+	World(const GLuint& shader_program, const GLuint& shader_program_treeA, Entity* parent);
 	~World() override;
 	Player* getPlayer();
+    TreeA* getTreeA() {return &tA;}
 	void toggleAxes();
 	void extendNorth();
 	void extendEast();

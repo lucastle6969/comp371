@@ -51,11 +51,6 @@ glm::vec3 Entity::getPosition()
 	return utils::getTranslationVector(this->translation_matrix);
 }
 
-glm::vec3 Entity::getScale()
-{
-	return utils::getScaleVector(this->scale_matrix);
-}
-
 bool Entity::isHidden()
 {
 	// true either if this entity is explicitly hidden or its parent is hidden

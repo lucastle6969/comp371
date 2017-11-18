@@ -24,13 +24,13 @@ WorldOrigin::WorldOrigin(
 	this->draw_mode = GL_LINES;
 	
 	// x-axis
-	this->vertices.emplace_back(0.0001f, 0.0f, 0.0f);
+	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
 	this->vertices.emplace_back(x_max, 0.0f, 0.0f);
 	// y-axis
-	this->vertices.emplace_back(0.0f, 0.0001f, 0.0f);
+	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
 	this->vertices.emplace_back(0.0f, y_max, 0.0f);
 	// z-axis
-	this->vertices.emplace_back(0.0f, 0.0f, 0.0001f);
+	this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
 	this->vertices.emplace_back(0.0f, 0.0f, z_max);
 
 	this->vao = this->initVertexArray(this->vertices);
