@@ -27,6 +27,9 @@ protected:
 	virtual const glm::mat4& getBaseRotation();
 	virtual const glm::mat4& getBaseTranslation();
 	virtual const glm::vec3& getDefaultFaceVector();
+	// this method is NOT responsible for freeing memory
+	// and does NOT remove the parent pointer from the child
+	void detachChild(Entity* const& child);
 
 public:
 	Entity() : Entity(nullptr) {}
