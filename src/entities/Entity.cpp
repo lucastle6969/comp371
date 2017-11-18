@@ -201,3 +201,13 @@ const glm::vec3& Entity::getDefaultFaceVector()
 
 	return default_face_vec;
 }
+
+void Entity::detachChild(Entity* const& child)
+{
+	for (size_t i = 0, len = this->children.size(); i < len; i++) {
+		if (this->children[i] == child) {
+			this->children.erase(this->children.begin() + i);
+			return;
+		}
+	}
+}

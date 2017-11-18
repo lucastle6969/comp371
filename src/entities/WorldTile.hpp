@@ -12,33 +12,30 @@
 #include <vector>
 
 #include "Entity.hpp"
+#include "Rock.hpp"
+#include "Tree.hpp"
 #include "DrawableEntity.hpp"
 
 class WorldTile: public DrawableEntity {
 private:
-
-    static constexpr float base_rotation_angle = (float)(0);
-    const glm::mat4& getBaseRotation() override;
-    const glm::vec3& getDefaultFaceVector() override;
-    std::vector<glm::vec3> vertices;
-    glm::vec3 initial_translation;
-    GLuint vao;
-    GLuint vertices_buffer;
-    GLuint element_buffer;
-    static void createElements(const int& width, const int& height, std::vector<GLuint>* const elements);
-
+	std::vector<Rock*> rocks;
+	std::vector<Tree*> trees;
 public:
-
-    WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation) : WorldTile(shader_program, initial_translation, nullptr) {}
-    WorldTile(const GLuint& shader_program, const glm::vec3 initial_translation, Entity* parent);
-    const std::vector<glm::vec3>& getVertices() override;
-    GLuint getVAO() override;
-    const int getColorType() override;
+	WorldTile(
+		const GLuint& shader_program,
+		const int& world_x_location,
+		const int& world_z_location
+    ) : WorldTile(shader_program, world_x_location, world_z_location, nullptr) {}
+	WorldTile(
+		const GLuint& shader_program,
+		const int& world_x_location,
+		const int& world_z_location,
+		Entity* parent
+	);
+	~WorldTile() override;
+	const std::vector<glm::vec3>& getVertices() override;
+	GLuint getVAO() override;
+	const int getColorType() override;
 };
 
 #endif //PROCEDURALWORLD_WORLDTILE_H
-
-
-
-
-

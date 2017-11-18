@@ -18,35 +18,37 @@
 
 class World: public Entity {
 private:
+	static int locationToTileIndex(const int& x, const int& z);
+	static void tileIndexToLocation(
+		const int& index,
+		const int& x_center,
+		const int& z_center,
+		int* const& x,
+		int* const& z
+	);
 	Player player;
 	WorldOrigin axes;
-	WorldTile* world_tile_bl;
-	WorldTile* world_tile_bc;
-	WorldTile* world_tile_br;
-	WorldTile* world_tile_ml;
-	WorldTile* world_tile_mc;
-	WorldTile* world_tile_mr;
-	WorldTile* world_tile_tl;
-	WorldTile* world_tile_tc;
-	WorldTile* world_tile_tr;
-	// cell system control vectors
-	//t: top m: middle b: bottom
-	std::vector<int> tmb;
-	//l: left c: center r: right
-	std::vector<int> lcr;
+	std::vector<WorldTile*> tiles;
 	// current center tile position
-	int player_current_x;
-	int player_current_z;
+	int x_center;
+	int z_center;
+	GLuint shader_program;
+	void placeWorldTile(const int& x, const int& z);
 public:
 	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
-	World(const GLuint& shader_program, Entity* parent);
+	World(const GLuint& shader_program, Entity* parent)
+		: World(shader_program, 0, 0, parent) {}
+	World(const GLuint& shader_program, const int& x_center, const int& z_center)
+		: World(shader_program, x_center, z_center, nullptr) {}
+	World(
+		const GLuint& shader_program,
+		const int& x_center,
+		const int& z_center,
+		Entity* parent
+	);
 	~World() override;
 	Player* getPlayer();
 	void toggleAxes();
-	void extendNorth();
-	void extendEast();
-	void extendSouth();
-	void extendWest();
 	void checkPosition();
 };
 
