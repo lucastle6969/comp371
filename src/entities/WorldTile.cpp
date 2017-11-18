@@ -8,25 +8,58 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <cstdlib>
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
+#include "Rock.hpp"
 #include "WorldTile.hpp"
-
+#include "../utils.hpp"
 #include "../constants.hpp"
 
 
 WorldTile::WorldTile(
 	const GLuint &shader_program,
-	const int& x_location,
-	const int& z_location,
+	const int& world_x_location,
+	const int& world_z_location,
 	Entity *parent
 ) : DrawableEntity(shader_program, parent)
 {
 	this->draw_mode = GL_TRIANGLES;
 
 	// position tile relative to parent based on x, z inputs
-	this->translate(glm::vec3(x_location, 0.0f, z_location));
+	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));
+
+	// initialize random number generator based on world location
+	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
+
+	// TODO: better rock distribution?
+	for (int i = 0; i < 20; i++) {
+		// TODO: test/remove overlaps
+		float x_span = utils::randomFloat(0.02f, 0.05f);
+		float z_span = utils::randomFloat(0.02f, 0.05f);
+		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
+		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+		// Add rock child
+		Rock* rock = new Rock(
+				shader_program,
+				world_x_location + x_position,
+				world_z_location + z_position,
+				x_span,
+				z_span,
+				this
+		);
+		rock->setPosition(glm::vec3(x_position, 0.0f, z_position));
+		// Add rock to rocks array
+		this->rocks.emplace_back(rock);
+	}
+}
+
+WorldTile::~WorldTile()
+{
+	for (Rock* const& rock : this->rocks) {
+		delete rock;
+	}
 }
 
 const std::vector<glm::vec3>& WorldTile::getVertices() {
@@ -66,19 +99,4 @@ GLuint WorldTile::getVAO() {
 
 const int WorldTile::getColorType() {
 	return COLOR_TILE;
-}
-
-const glm::mat4 &WorldTile::getBaseRotation() {
-	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
-	static glm::mat4 identity;
-	static glm::mat4 rotation = glm::rotate(identity, WorldTile::base_rotation_angle, x_axis);
-
-	return rotation;
-}
-
-// the vector indicating the direction the model faces by default (with no rotation)
-const glm::vec3 &WorldTile::getDefaultFaceVector() {
-	static glm::vec3 default_face_vec(1.0f, 0.0f, 0.0f);
-
-	return default_face_vec;
 }
