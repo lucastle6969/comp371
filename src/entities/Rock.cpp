@@ -19,8 +19,8 @@
 
 Rock::Rock(
     const GLuint &shader_program,
-    const float &x_location,
-    const float &z_location,
+    const float &world_x_location,
+    const float &world_z_location,
     const float &x_span,
     const float &z_span,
     Entity *parent
@@ -42,7 +42,6 @@ Rock::Rock(
     };
 
     this->draw_mode = GL_TRIANGLES;
-    this->setPosition(glm::vec3(x_location, 0.0f, z_location));
 
     //bottom face (5x5 between 0 - 1)
     this->vertices.emplace_back(0.00f, 0.00f, 0.00f);

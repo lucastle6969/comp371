@@ -22,10 +22,11 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 	// for now we can read but then ignore the normals and UVs
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
+	std::vector<GLuint> elements;
 
 	// get the vertices from the pacman.obj file (ignore the rest)
-	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs);
-	this->vao = this->initVertexArray(this->vertices);
+	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs, &elements);
+	this->vao = this->initVertexArray(this->vertices, elements);
 }
 
 const std::vector<glm::vec3>& Player::getVertices()
