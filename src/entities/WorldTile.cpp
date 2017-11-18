@@ -13,10 +13,10 @@
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
+#include "Tree.hpp"
 #include "WorldTile.hpp"
 #include "../utils.hpp"
 #include "../constants.hpp"
-
 
 WorldTile::WorldTile(
 	const GLuint &shader_program,
@@ -33,9 +33,11 @@ WorldTile::WorldTile(
 	// initialize random number generator based on world location
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
-	// TODO: better rock distribution?
-	for (int i = 0; i < 20; i++) {
-		// TODO: test/remove overlaps
+	// TODO: better tree/rock distribution?
+	// TODO: test/remove tree/rock overlaps
+
+	// add rocks
+	for (int i = 0; i < 10; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
 		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
@@ -53,12 +55,33 @@ WorldTile::WorldTile(
 		// Add rock to rocks array
 		this->rocks.emplace_back(rock);
 	}
+
+	// add trees
+	for (int i = 0; i < 10; i++) {
+		float base_span = utils::randomFloat(0.02f, 0.05f);
+		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
+		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
+		// Add tree child
+		Tree* tree = new Tree(
+				shader_program,
+				world_x_location + x_position,
+				world_z_location + z_position,
+				base_span,
+				this
+		);
+		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
+		// Add tree to trees array
+		this->trees.emplace_back(tree);
+	}
 }
 
 WorldTile::~WorldTile()
 {
 	for (Rock* const& rock : this->rocks) {
 		delete rock;
+	}
+	for (Tree* const& tree : this->trees) {
+		delete tree;
 	}
 }
 
