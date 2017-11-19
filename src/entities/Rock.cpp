@@ -462,7 +462,7 @@ GLuint Rock::getVAO()
 
 const int Rock::getColorType()
 {
-    return COLOR_HEIGHT;
+    return COLOR_TEXTURE;
 }
 
 GLuint Rock::getTextureId()
