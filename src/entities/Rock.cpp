@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <stdexcept>
+#include <src/vendor/load_stb_image.hpp>
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
@@ -39,6 +40,196 @@ Rock::Rock(
 
 
         45, 131, 46, 45, 121, 131, 121, 132, 131, 121, 122, 132, 122, 133, 132, 122, 123, 133, 123, 96, 133, 123, 95, 96, 46, 136, 47, 46, 131, 136, 131, 137, 136, 131, 132, 137, 132, 138, 137, 132, 133, 138, 133, 97, 138, 133, 96, 97, 47, 141, 48, 47, 136, 141, 136, 142, 141, 136, 137, 142, 137, 143, 142, 137, 138, 143, 138, 98, 143, 138, 97, 98, 48, 71, 49, 48, 141, 71, 141, 72, 71, 141, 142, 72, 142, 73, 72, 142, 143, 73, 143, 74, 73, 143, 98, 74
+    };
+
+    static const std::vector<glm::vec2> uvs = {
+            glm::vec2(0.00f, 0.00f),
+            glm::vec2(0.25f, 0.00f),
+            glm::vec2(0.50f, 0.00f),
+            glm::vec2(0.75f, 0.00f),
+            glm::vec2(1.00f, 0.00f),
+
+            glm::vec2(0.00f, 0.25f),
+            glm::vec2(0.25f, 0.25f),
+            glm::vec2(0.50f, 0.25f),
+            glm::vec2(0.75f, 0.25f),
+            glm::vec2(1.00f, 0.25f),
+
+            glm::vec2(0.00f, 0.50f),
+            glm::vec2(0.25f, 0.50f),
+            glm::vec2(0.50f, 0.50f),
+            glm::vec2(0.75f, 0.50f),
+            glm::vec2(1.00f, 0.50f),
+
+            glm::vec2(0.00f, 0.75f),
+            glm::vec2(0.25f, 0.75f),
+            glm::vec2(0.50f, 0.75f),
+            glm::vec2(0.75f, 0.75f),
+            glm::vec2(1.00f, 0.75f),
+
+            glm::vec2(0.00f, 1.00f),
+            glm::vec2(0.25f, 1.00f),
+            glm::vec2(0.50f, 1.00f),
+            glm::vec2(0.75f, 1.00f),
+            glm::vec2(1.00f, 1.00f),
+
+            //left side face
+
+            glm::vec2(0.00f, 0.00f),
+            glm::vec2(0.25f, 0.00f),
+            glm::vec2(0.50f, 0.00f),
+            glm::vec2(0.75f, 0.00f),
+            glm::vec2(1.00f, 0.00f),
+
+            glm::vec2(0.00f, 0.25f),
+            glm::vec2(0.25f, 0.25f),
+            glm::vec2(0.50f, 0.25f),
+            glm::vec2(0.75f, 0.25f),
+            glm::vec2(1.00f, 0.25f),
+
+            glm::vec2(0.00f, 0.50f),
+            glm::vec2(0.25f, 0.50f),
+            glm::vec2(0.50f, 0.50f),
+            glm::vec2(0.75f, 0.50f),
+            glm::vec2(1.00f, 0.50f),
+
+            glm::vec2(0.00f, 0.75f),
+            glm::vec2(0.25f, 0.75f),
+            glm::vec2(0.50f, 0.75f),
+            glm::vec2(0.75f, 0.75f),
+            glm::vec2(1.00f, 0.75f),
+
+            glm::vec2(0.00f, 1.00f),
+            glm::vec2(0.25f, 1.00f),
+            glm::vec2(0.50f, 1.00f),
+            glm::vec2(0.75f, 1.00f),
+            glm::vec2(1.00f, 1.00f),
+
+            //back face
+
+            glm::vec2(0.00f, 0.00f),
+            glm::vec2(0.25f, 0.00f),
+            glm::vec2(0.50f, 0.00f),
+            glm::vec2(0.75f, 0.00f),
+            glm::vec2(1.00f, 0.00f),
+
+            glm::vec2(0.00f, 0.25f),
+            glm::vec2(0.25f, 0.25f),
+            glm::vec2(0.50f, 0.25f),
+            glm::vec2(0.75f, 0.25f),
+            glm::vec2(1.00f, 0.25f),
+
+            glm::vec2(0.00f, 0.50f),
+            glm::vec2(0.25f, 0.50f),
+            glm::vec2(0.50f, 0.50f),
+            glm::vec2(0.75f, 0.50f),
+            glm::vec2(1.00f, 0.50f),
+
+            glm::vec2(0.00f, 0.75f),
+            glm::vec2(0.25f, 0.75f),
+            glm::vec2(0.50f, 0.75f),
+            glm::vec2(0.75f, 0.75f),
+            glm::vec2(1.00f, 0.75f),
+
+            glm::vec2(0.00f, 1.00f),
+            glm::vec2(0.25f, 1.00f),
+            glm::vec2(0.50f, 1.00f),
+            glm::vec2(0.75f, 1.00f),
+            glm::vec2(1.00f, 1.00f),
+
+            //right side face
+
+            glm::vec2(0.00f, 0.00f),
+            glm::vec2(0.25f, 0.00f),
+            glm::vec2(0.50f, 0.00f),
+            glm::vec2(0.75f, 0.00f),
+            glm::vec2(1.00f, 0.00f),
+
+            glm::vec2(0.00f, 0.25f),
+            glm::vec2(0.25f, 0.25f),
+            glm::vec2(0.50f, 0.25f),
+            glm::vec2(0.75f, 0.25f),
+            glm::vec2(1.00f, 0.25f),
+
+            glm::vec2(0.00f, 0.50f),
+            glm::vec2(0.25f, 0.50f),
+            glm::vec2(0.50f, 0.50f),
+            glm::vec2(0.75f, 0.50f),
+            glm::vec2(1.00f, 0.50f),
+
+            glm::vec2(0.00f, 0.75f),
+            glm::vec2(0.25f, 0.75f),
+            glm::vec2(0.50f, 0.75f),
+            glm::vec2(0.75f, 0.75f),
+            glm::vec2(1.00f, 0.75f),
+
+            glm::vec2(0.00f, 1.00f),
+            glm::vec2(0.25f, 1.00f),
+            glm::vec2(0.50f, 1.00f),
+            glm::vec2(0.75f, 1.00f),
+            glm::vec2(1.00f, 1.00f),
+
+            //front face
+            glm::vec2(0.00f, 0.00f),
+            glm::vec2(0.25f, 0.00f),
+            glm::vec2(0.50f, 0.00f),
+            glm::vec2(0.75f, 0.00f),
+            glm::vec2(1.00f, 0.00f),
+
+            glm::vec2(0.00f, 0.25f),
+            glm::vec2(0.25f, 0.25f),
+            glm::vec2(0.50f, 0.25f),
+            glm::vec2(0.75f, 0.25f),
+            glm::vec2(1.00f, 0.25f),
+
+            glm::vec2(0.00f, 0.50f),
+            glm::vec2(0.25f, 0.50f),
+            glm::vec2(0.50f, 0.50f),
+            glm::vec2(0.75f, 0.50f),
+            glm::vec2(1.00f, 0.50f),
+
+            glm::vec2(0.00f, 0.75f),
+            glm::vec2(0.25f, 0.75f),
+            glm::vec2(0.50f, 0.75f),
+            glm::vec2(0.75f, 0.75f),
+            glm::vec2(1.00f, 0.75f),
+
+            glm::vec2(0.00f, 1.00f),
+            glm::vec2(0.25f, 1.00f),
+            glm::vec2(0.50f, 1.00f),
+            glm::vec2(0.75f, 1.00f),
+            glm::vec2(1.00f, 1.00f),
+
+            //top face
+            glm::vec2(0.00f, 0.00f),
+            glm::vec2(0.25f, 0.00f),
+            glm::vec2(0.50f, 0.00f),
+            glm::vec2(0.75f, 0.00f),
+            glm::vec2(1.00f, 0.00f),
+
+            glm::vec2(0.00f, 0.25f),
+            glm::vec2(0.25f, 0.25f),
+            glm::vec2(0.50f, 0.25f),
+            glm::vec2(0.75f, 0.25f),
+            glm::vec2(1.00f, 0.25f),
+
+            glm::vec2(0.00f, 0.50f),
+            glm::vec2(0.25f, 0.50f),
+            glm::vec2(0.50f, 0.50f),
+            glm::vec2(0.75f, 0.50f),
+            glm::vec2(1.00f, 0.50f),
+
+            glm::vec2(0.00f, 0.75f),
+            glm::vec2(0.25f, 0.75f),
+            glm::vec2(0.50f, 0.75f),
+            glm::vec2(0.75f, 0.75f),
+            glm::vec2(1.00f, 0.75f),
+
+            glm::vec2(0.00f, 1.00f),
+            glm::vec2(0.25f, 1.00f),
+            glm::vec2(0.50f, 1.00f),
+            glm::vec2(0.75f, 1.00f),
+            glm::vec2(1.00f, 1.00f)
     };
 
     this->draw_mode = GL_TRIANGLES;
@@ -241,13 +432,22 @@ Rock::Rock(
         this->vertices[i] = this->vertices[i] + glm::vec3(jitterX, jitterY, jitterZ);
 
     }
-
-    this->vao = this->initVertexArray(
+    this->vao = DrawableEntity::initVertexArray(
             this->vertices,
             elements,
+            uvs,
             &this->vertices_buffer,
-            &this->element_buffer
+            &this->element_buffer,
+            &this->uv_buffer
     );
+}
+
+Rock::~Rock()
+{
+    glDeleteBuffers(1, &this->vertices_buffer);
+    glDeleteBuffers(1, &this->element_buffer);
+    glDeleteBuffers(1, &this->uv_buffer);
+    glDeleteVertexArrays(1, &this->vao);
 }
 
 const std::vector<glm::vec3>& Rock::getVertices()
@@ -263,4 +463,42 @@ GLuint Rock::getVAO()
 const int Rock::getColorType()
 {
     return COLOR_HEIGHT;
+}
+
+GLuint Rock::getTextureId()
+{
+    static GLuint rock_texture;
+    static bool tex_loaded = false;
+
+    if (tex_loaded) {
+        return rock_texture;
+    }
+
+    glGenTextures(1, &rock_texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, rock_texture);
+
+    //set wrapping params
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    //set texture filtering params
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //load image, create texture and generate mipmaps
+    int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
+
+    std::string path = "../textures/depth.bmp";
+    unsigned char* rock_tex_data = stbi_load(path.c_str(), &rock_tex_width, &rock_tex_height, &rock_tex_nrChannels, 0);
+    if (rock_tex_data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, rock_tex_width, rock_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, rock_tex_data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }else{
+        throw std::runtime_error("Failed to load image \'" + path + "\': ");
+    }
+    stbi_image_free(rock_tex_data);
+
+    tex_loaded = true;
+    return rock_texture;
 }

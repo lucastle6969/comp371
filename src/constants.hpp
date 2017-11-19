@@ -7,6 +7,7 @@ static const int COLOR_WHITE = 0;
 static const int COLOR_COORDINATE_AXES = 1;
 static const int COLOR_HEIGHT = 2;
 static const int COLOR_TILE = 3;
+static const int COLOR_TEXTURE = 4;
 
 static const char* APP_NAME = "Procedural World";
 

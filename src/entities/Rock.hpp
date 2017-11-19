@@ -14,7 +14,6 @@
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 
-
 class Rock : public DrawableEntity {
 private:
 	std::vector<glm::vec3> vertices;
@@ -45,9 +44,11 @@ public:
 		const float& z_span,
 		Entity* parent
 	);
+    ~Rock() override;
 	const std::vector<glm::vec3>& getVertices() override;
 	GLuint getVAO() override;
 	const int getColorType() override;
+    GLuint getTextureId() override;
 };
 
 
