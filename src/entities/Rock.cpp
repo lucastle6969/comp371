@@ -489,8 +489,8 @@ GLuint Rock::getTextureId()
     //load image, create texture and generate mipmaps
     int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
 
-    std::string path = "../textures/depth.bmp";
-    unsigned char* rock_tex_data = stbi_load(path.c_str(), &rock_tex_width, &rock_tex_height, &rock_tex_nrChannels, 0);
+	std::string path = "../textures/baliRockB.png";
+	unsigned char* rock_tex_data = stbi_load(path.c_str(), &rock_tex_width, &rock_tex_height, &rock_tex_nrChannels, 0);
     if (rock_tex_data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, rock_tex_width, rock_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, rock_tex_data);
         glGenerateMipmap(GL_TEXTURE_2D);
