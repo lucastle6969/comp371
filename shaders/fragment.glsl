@@ -34,6 +34,7 @@ void main()
             break;
         case COLOR_TEXTURE:
             color = texture(tex_image, tex_coord);
+            break;
         default:
             color = WHITE;
             break;
