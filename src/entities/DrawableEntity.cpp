@@ -90,7 +90,9 @@ void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &project
     glUniform1i(position_x_loc, (GLint) position.x);
     glUniform1i(position_z_loc, (GLint) position.z);
 
-    glUniform1i(tex_image_loc, GL_TEXTURE0);
+	// TODO: figure out why the commented-out code below fails on macOS
+	// glUniform1i(tex_image_loc, GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 
     // Draw
     glBindVertexArray(this->getVAO());
@@ -99,7 +101,6 @@ void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &project
         // it's inefficient and useless to use glDrawElements for a point cloud
         glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
     } else {
-        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->getTextureId());
 
         int element_buffer_array_size;
