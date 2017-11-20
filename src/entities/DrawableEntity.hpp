@@ -36,9 +36,9 @@ protected:
             const std::vector<glm::vec3> &vertices,
             const std::vector<GLuint> &elements,
             const std::vector<glm::vec2> &uvs,
-            GLuint *vertices_buffer,
-            GLuint *element_buffer,
-            GLuint *uv_buffer
+            GLuint *vertices_buffer = nullptr,
+            GLuint *element_buffer = nullptr,
+            GLuint *uv_buffer = nullptr
     );
 
 public:
