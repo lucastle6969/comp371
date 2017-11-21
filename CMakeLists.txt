@@ -74,8 +74,11 @@ add_executable(proceduralworld
     src/entities/Rock.cpp
     src/entities/Tree.hpp
     src/entities/Tree.cpp
-    src/vendor/load_stb_image.hpp
-        src/entities/RockB.hpp src/entities/RockB.cpp)
+    src/entities/RockB.hpp
+    src/entities/RockB.cpp
+    src/loadTexture.hpp
+    src/loadTexture.cpp
+)
 
 # Link libraries
 if(APPLE)
