@@ -18,6 +18,9 @@ class Rock : public DrawableEntity {
 private:
 	std::vector<glm::vec3> vertices;
 	GLuint vao;
+    GLuint vertices_buffer;
+    GLuint element_buffer;
+    GLuint uv_buffer;
 public:
 	Rock(
 		const GLuint& shader_program,
@@ -41,9 +44,11 @@ public:
 		const float& z_span,
 		Entity* parent
 	);
+    ~Rock() override;
 	const std::vector<glm::vec3>& getVertices() override;
 	GLuint getVAO() override;
 	const int getColorType() override;
+    GLuint getTextureId() override;
 };
 
 

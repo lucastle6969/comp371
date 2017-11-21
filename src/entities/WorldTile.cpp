@@ -52,6 +52,7 @@ WorldTile::WorldTile(
 				this
 		);
 		rock->setPosition(glm::vec3(x_position, 0.0f, z_position));
+        rock->scale(0.01f);
 		// Add rock to rocks array
 		this->rocks.emplace_back(rock);
 	}

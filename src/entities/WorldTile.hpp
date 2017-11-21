@@ -15,11 +15,13 @@
 #include "Rock.hpp"
 #include "Tree.hpp"
 #include "DrawableEntity.hpp"
+#include "Rock.hpp"
 
 class WorldTile: public DrawableEntity {
 private:
 	std::vector<Rock*> rocks;
 	std::vector<Tree*> trees;
+
 public:
 	WorldTile(
 		const GLuint& shader_program,

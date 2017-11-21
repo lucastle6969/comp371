@@ -74,6 +74,7 @@ add_executable(proceduralworld
     src/entities/Rock.cpp
     src/entities/Tree.hpp
     src/entities/Tree.cpp
+    src/vendor/load_stb_image.hpp
 )
 
 # Link libraries
