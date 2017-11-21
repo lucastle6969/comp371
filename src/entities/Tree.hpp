@@ -1,4 +1,5 @@
-#ifndef PROCEDURALWORLD_TREE_HPP
+/*
+ #ifndef PROCEDURALWORLD_TREE_HPP
 #define PROCEDURALWORLD_TREE_HPP
 
 #ifdef __APPLE__
@@ -45,9 +46,7 @@ public:
 
 
 #endif //PROCEDURALWORLD_TREE_HPP
-
-
-/*
+*/
 //
 // Created by Tof on 2017-11-19.
 //
@@ -68,12 +67,14 @@ public:
 #include <vector>
 //container class
 
-#include "trunkA.hpp"
+#include "TrunkA.hpp"
 #include "LeafContainerA.hpp"
-#include "entity.hpp"
+#include "Entity.hpp"
+#include "DrawableEntity.hpp"
 
-class Tree {
+class Tree: public DrawableEntity {
 private:
+    char type;
 protected:
     class AttatchmentGroupings {
     public:
@@ -123,11 +124,15 @@ protected:
     Entity* e;
 
 public:
-    Tree(int heightChunking, float boostFactor){
+    char getType(){return type;}
+
+    Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, char type)
+			: DrawableEntity(shader_program, entity){
         this->heightChunking = heightChunking;
         this->boostFactor = boostFactor;
+        this->type = type;
     }
-    Tree(const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed){};
+
     ~Tree(){
         delete combinedVertices; 	delete combinedIndices ;	delete combinedColor; delete combinedNormals;
         delete combinedUV ; delete combinedStartIndices;
@@ -142,8 +147,13 @@ public:
                          std::vector<GLuint>* indPntr);
 
     void computeElementsInitial(AttatchmentGroupings* ag);
+
+    const std::vector<glm::vec3>& getVertices();
+
+    GLuint getVAO();
+
+    const int getColorType();
 };
 
 
 #endif //PROCEDURALWORLD_TREE_H
-*/

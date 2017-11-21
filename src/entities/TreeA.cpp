@@ -287,17 +287,3 @@ bool TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, float s
     bufferObject(shader_program);
     return true;
 }
-
-
-const std::vector<glm::vec3>& TreeA::getVertices()
-{
-    return  *combinedVertices;
-}
-
-
-GLuint TreeA::getVAO()
-{
-    return this->vao;
-}
-
-const int TreeA::getColorType(){return 0;};

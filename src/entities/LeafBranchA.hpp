@@ -22,12 +22,12 @@ class LeafBranchA {
 public:
     float getLineHeight(){return lineHeight;}
 
-    explicit LeafBranchA(int randomSeedValue, float itterations, int branchPoints,
+    LeafBranchA(int randomSeedValue, float itterations, int branchPoints,
                 float lineHeight, float jagednessFactor_Leaf, 
-                std::vector<glm::vec3>* leafVertices, 
-                         std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs){
+                std::vector<glm::vec3>* leafVertices,
+                std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs){
         this->randomSeedValue = randomSeedValue;this->itterations = itterations;this->branchPoints = branchPoints;
-        this->trunkDiameter = trunkDiameter; this->lineHeight = lineHeight;this->jagednessFactor_Leaf = jagednessFactor_Leaf;
+        this->lineHeight = lineHeight;this->jagednessFactor_Leaf = jagednessFactor_Leaf;
         this->leafVertices = leafVertices; this->leafIndices = leafIndices; this->leafUVs = leafUVs;
     }
 

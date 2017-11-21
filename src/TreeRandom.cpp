@@ -18,7 +18,7 @@ int TreeRandom::trunkAngleFromRandom(float trunkDiameter, float seed, float line
 #include <iostream>
 unsigned long TreeRandom::middleSquareRange(int seed, float max, float min){
     long _max = max, _min = min, _seed = pow(seed, 2);
-    std::cout << "Rand " <<  (unsigned long)(_seed) % (int)(_max - _min) + _min << " " << _max << " "<< _min << "\n";
+//    std::cout << "Rand " <<  (unsigned long)(_seed) % (int)(_max - _min) + _min << " " << _max << " "<< _min << "\n";
     unsigned long rand  = (unsigned long)(_seed) % (int)(_max * 100 - _min * 100) + _min * 100;
     return rand / 100;
 }

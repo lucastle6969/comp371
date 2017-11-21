@@ -13,6 +13,7 @@
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
+#include "src/TreeDistributor.hpp"
 #include "Tree.hpp"
 #include "WorldTile.hpp"
 #include "../utils.hpp"
@@ -57,20 +58,21 @@ WorldTile::WorldTile(
 		this->rocks.emplace_back(rock);
 	}
 
+	//enable tree distributor function
+	TreeDistributor::setEntity(this);
 	// add trees
 	for (int i = 0; i < 10; i++) {
 		float base_span = utils::randomFloat(0.02f, 0.05f);
+		float scale_factor = 100;
+		float internal_tree_width = base_span * scale_factor;
 		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		// Add tree child
-		Tree* tree = new Tree(
-				shader_program,
-				world_x_location + x_position,
-				world_z_location + z_position,
-				base_span,
-				this
-		);
+		Tree* tree = TreeDistributor::setTreeType(
+				(world_x_location + x_position) * (world_z_location + z_position)*scale_factor,
+				internal_tree_width);
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
+		tree->scale(1.0f / (scale_factor*10));
 		// Add tree to trees array
 		this->trees.emplace_back(tree);
 	}

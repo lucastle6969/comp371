@@ -10,7 +10,7 @@
 #include "Tree.hpp"
 #include "../constants.hpp"
 
-Tree::Tree(
+/*Tree::Tree(
 		const GLuint &shader_program,
 		const float& world_x_location,
 		const float& world_z_location,
@@ -51,26 +51,28 @@ Tree::Tree(
 	this->vao = this->initVertexArray(this->vertices, elements);
 }
 
-const std::vector<glm::vec3>& Tree::getVertices() {
-	return this->vertices;
-}
 
-GLuint Tree::getVAO() {
-	return this->vao;
-}
-
-const int Tree::getColorType() {
-	return COLOR_WHITE;
-}
+*/
 
 
-
-/*
 //
 // Created by Tof on 2017-11-19.
 //
 
 #include "Tree.hpp"
+
+
+const std::vector<glm::vec3>& Tree::getVertices() {
+    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
+}
+
+GLuint Tree::getVAO() {
+    return this->vao;
+}
+
+const int Tree::getColorType() {
+    return COLOR_WHITE;
+}
 
 
 glm::vec3 Tree::boostSegment(AttatchmentGroupings* agLow, AttatchmentGroupings* agHigh, std::vector<glm::vec3>* vPntr){
@@ -124,4 +126,4 @@ void Tree::computeElementsInitial(AttatchmentGroupings* ag) {
         TrunkA::buildTrunkElements(ag->start + 1, ag->end,
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
-*/
+

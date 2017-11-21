@@ -70,20 +70,20 @@ ANGLES COMPUTED DURING RECURSIONS
 
 #include "DrawableEntity.hpp"
 #include "Tree.hpp"
-#include "TreeClusterItem.h"
+#include "TreeClusterItem.hpp"
 #include "../TreeRandom.hpp"
 
-class TreeC:public Tree{
+class TreeC: public Tree{
 private:
     std::vector<TreeClusterItem*> treeCluster;
-    int spacingConstant = 30;
-    float reductionRate = 0.05;
+    int spacingConstant = 10;
+    float reductionRate = 0.5;
     int maxWidth(float trunkDiameter){
         return pow(spacingConstant * (trunkDiameter+1), 1.0/2) + trunkDiameter;
     }
 public:
     TreeC(int numberOfTrees, const GLuint& shader_program, Entity* entity, float trunkDiameter, long seed):
-            Tree(0, 0){
+            Tree(heightChunking, boostFactor, shader_program, entity, 'C'){
 
         double duration;
             std::clock_t startTime;
@@ -99,7 +99,7 @@ public:
         float tempTrunkDiameter = trunkDiameter;
         int i = 0;
         for (; i < numberOfTrees; i++) {
-            reductionRate = TreeRandom::middleSquareRange(seed, 4, 1) / 10.0f;
+            reductionRate = 4.5f;//TreeRandom::middleSquareRange(seed, 4, 1) / 10.0f;
             seed = (unsigned long)(pow(seed, 2) * (tempTrunkDiameter+1)) % 99991;
 
             float circleAngle = TreeRandom::middleSquareRange(seed, 360.0, 0.0);
@@ -109,30 +109,31 @@ public:
             float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter;
             float zPos =  sin(glm::radians(circleAngle)) * distanceFromCenter;
 
-            std::cout << seed << " " << maxWidth(trunkDiameter) << " " << trunkDiameter << "\n";
-            std::cout << reductionRate << " " << circleAngle << " " << distanceFromCenter << "\n";
-            std::cout << xPos <<" " << zPos <<"\n";
-            std::cout <<"\n";
+//            std::cout << seed << " " << maxWidth(trunkDiameter) << " " << trunkDiameter << "\n";
+//            std::cout << reductionRate << " " << circleAngle << " " << distanceFromCenter << "\n";
+//            std::cout << xPos <<" " << zPos <<"\n";
+//            std::cout <<"\n";
 
-            bool fail = false;
-            //std::cout << i << "\n";
-            for(TreeClusterItem* tc : treeCluster){
-                if(pow(xPos - tc->xPos, 2) +  pow(zPos - tc->zPos, 2) <= pow(tc->getTrunkDiameter() + tempTrunkDiameter, 2) ||
-                        xPos == tc->xPos && zPos == tc->zPos) {
-                    fail = true;
-                    break;
-                }
-            }
-if(fail){
-    i--;
-    continue;
-}
+//            bool fail = false;
+//            //std::cout << i << "\n";
+//            for(TreeClusterItem* tc : treeCluster){
+//                if(pow(xPos - tc->xPos, 2) +  pow(zPos - tc->zPos, 2) <= pow(tc->getTrunkDiameter() + tempTrunkDiameter, 2) ||
+//                        (xPos == tc->xPos && zPos == tc->zPos)) {
+//                    fail = true;
+//                    break;
+//                }
+//            }
+//if(fail){
+//    i--;
+//    continue;
+//}
             //std::cout << "   " << tempTrunkDiameter << "\n";
             TreeClusterItem* tci = new TreeClusterItem(shader_program, entity,
                                                            tempTrunkDiameter <= 0? 0:  tempTrunkDiameter -= reductionRate,
                                                            seed);
-            std::cout << xPos << " " << zPos << "\n";
-            tci->setLocationWithPoints(xPos, zPos);
+//            std::cout << xPos << " " << zPos << "\n";
+            float distScale = 30.0f;
+            tci->setLocationWithPoints(xPos / distScale, zPos / distScale);
             treeCluster.push_back(tci);
         }
 
@@ -143,6 +144,75 @@ if(fail){
 
     std::vector<TreeClusterItem*> getTreeCluster(){
         return treeCluster;
+    }
+
+    void scale(const float& scalar)
+    {
+        for(TreeClusterItem* tci : treeCluster){
+            tci->scale(scalar);
+        }
+    }
+    void rotate(const float& angle, const glm::vec3& axis)
+    {
+        for(TreeClusterItem* tci : treeCluster){
+            tci->rotate( angle, axis);
+        }
+    }
+    void resetRotation(){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->resetRotation();
+        }
+    }
+    void moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->moveForward(view_vec, up_vec,units);
+        }
+    }
+    void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->moveBack(view_vec,up_vec, units);
+        }
+    }
+    void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->moveLeft(view_vec, up_vec,  units);
+        }
+    }
+    void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->moveRight(view_vec, up_vec, units);
+        }
+    }
+    void translate(const glm::vec3& translation_vec){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->translate(translation_vec);
+        }
+    }
+    void setPosition(const glm::vec3& position){
+        for(TreeClusterItem* tci : treeCluster){
+            glm::vec3 localSpacing(tci->xPos, 0.0f, tci->zPos);
+            tci-> setPosition(position + localSpacing);
+        }
+    }
+    void hide(){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->hide();
+        }
+    }
+    void unhide(){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->unhide();
+        }
+    }
+    void toggleHide(){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->toggleHide();
+        }
+    }
+    void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix){
+        for(TreeClusterItem* tci : treeCluster){
+            tci->draw(view_matrix, projection_matrix);
+        }
     }
     void setReductionRate(float r){
         reductionRate = r;

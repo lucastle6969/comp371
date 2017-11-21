@@ -13,7 +13,7 @@
 
 #include "../TreeRandom.hpp"
 
-#define BRANCH_MODULO 10
+#define BRANCH_MODULO 1
 #define TRUNK_POLYGON 4
 
 #include <iostream>

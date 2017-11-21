@@ -77,22 +77,22 @@ ANGLES COMPUTED DURING RECURSIONS
 #include "DrawableEntity.hpp"
 #include "Tree.hpp"
 
-class TreeB : public DrawableEntity, public Tree {
+class TreeB : public Tree {
 private:
 
     //CONSIDERATION FOR MULTITHREADED LOADING
     bool treeLoaded = false;
 
     const int branches = 1;
-    const int k = 250;
+    const int k = 1;
 
-    float boostFactor = 0.25;
-    float heightChunking = 90;//INVERSE
+    float boostFactor = 0.5;
+    float heightChunking = 12;//INVERSE
 
-    const int minYBranchAngle = 89;
-    const int maxYBranchAngle = 90;
-    const int minYTrunkAngle = 20;
-    const int maxYTrunkAngle = 21;
+    const int minYBranchAngle = 0;
+    const int maxYBranchAngle = 70;
+    const int minYTrunkAngle = 0;
+    const int maxYTrunkAngle = 70;
 
     double trunkRatio = 1.0;
     double branchRatio = 0.850;
@@ -403,7 +403,7 @@ public:
 
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
-            DrawableEntity(shader_program, entity), Tree(heightChunking, boostFactor){
+            Tree(heightChunking, boostFactor, shader_program, entity, 'B'){
         printf("%i %f\n", heightChunking, boostFactor);
         std::clock_t startTime;
         double duration;

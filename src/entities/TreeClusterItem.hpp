@@ -32,7 +32,7 @@
 #include "Tree.hpp"
 #include "../TreeRandom.hpp"
 
-class TreeClusterItem : public DrawableEntity, public Tree {
+class TreeClusterItem : public Tree {
     private:
 
         bool printTest = false;
@@ -51,12 +51,12 @@ class TreeClusterItem : public DrawableEntity, public Tree {
 
         //MOVE TO TRUNK CLASS
         std::vector<glm::vec3> trunkVertices; 	std::vector<GLuint> trunkIndices;	std::vector<glm::vec3> trunkColor; std::vector<std::vector<int>> trunkStartIndices;
-        const int circlePoints = 6;
-        const float jagednessFactor = 0.45;
+        const int circlePoints = 4;
+        const float jagednessFactor = 0.30;
         glm::vec3 brown = glm::vec3(0.0 / 255, 53.0 / 255, 10.0 / 255);
 
         //MOVE TO LEAF CLASS
-        const int leafPoints = 5;
+        const int leafPoints = 4;
         const float jagednessFactor_Leaf = 0.25;
         std::vector<glm::vec3> leafVertices; 	std::vector<GLuint> leafIndices;		std::vector<glm::vec3> leafColor; std::vector<std::vector<int>> leafStartIndices;
         glm::vec3 green = glm::vec3(30.0 / 255, 147.0 / 255, 45.0 / 255);
@@ -67,13 +67,13 @@ class TreeClusterItem : public DrawableEntity, public Tree {
         float finalCutoff;
         bool kill;
 
-        const int branchMod = 5;
+        const int branchMod = 10;
         const int minYBranchAngle = 25;
         const int maxYBranchAngle = 45;
         const int minYTrunkAngle = 0;
         const int maxYTrunkAngle = 15;
         const int yRotMod = 360;
-        float heightChunking = 10;//INVERSE
+        float heightChunking = 20;//INVERSE
 
         double trunkRatio = 1.0;
         double branchRatio = 0.850;
@@ -777,17 +777,16 @@ class TreeClusterItem : public DrawableEntity, public Tree {
             combinedColor.insert(combinedColor.end(), leafColor.begin(), leafColor.end());
         }
 
-        //TODO: ADD SHADER: DARKER ON MORE Z USING TEXTURES IN SHADER
-        //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
-        void bufferObject(const GLuint& shader_program) {
-            //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-            //int map_width, map_height, channels;
-            //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-            this->vao = initVertexArray( this->combinedVertices, this->combinedIndices, &vbo, &ebo);
-            //stbi_image_free(image_data);
-        }
+    void bufferObject(const GLuint& shader_program) {
+        //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
+        //int map_width, map_height, channels;
+        //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
+        this->vao = initVertexArray( this->combinedVertices, this->combinedIndices, &vbo, &ebo);
+        //stbi_image_free(image_data);
+    }
 
-        bool treeSetup(const GLuint& shader_program, float trunkDiameter, float seed){
+
+    bool treeSetup(const GLuint& shader_program, float trunkDiameter, float seed){
             generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
             computeNormal();
             computeUV();
@@ -798,13 +797,13 @@ class TreeClusterItem : public DrawableEntity, public Tree {
 
     public:
 
-    int xPos;
-    int zPos;
+    float xPos;
+    float zPos;
 
     void setLocationFromCenter(float circleAngle, float distanceFromCenter){
         xPos = cos(glm::radians(circleAngle)) * distanceFromCenter;
         zPos =  sin(glm::radians(circleAngle)) * distanceFromCenter;
-        printf("Pos %i %i\n", xPos, zPos);
+        //printf("Pos %i %i\n", xPos, zPos);
     }
     void setLocationWithPoints(float xPos, float zPos){
         this->xPos = xPos;
@@ -832,7 +831,7 @@ class TreeClusterItem : public DrawableEntity, public Tree {
 #include <ctime>
 
     TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
-                DrawableEntity(shader_program, entity), Tree(heightChunking, boostFactor){
+            Tree(heightChunking, boostFactor, shader_program, entity, 'G'){
             std::clock_t startTime;
             double duration;
 
@@ -857,7 +856,7 @@ class TreeClusterItem : public DrawableEntity, public Tree {
         rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
             duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-            printf("Duration %f Units: %f ms _CLUSTER__ITEM\n", trunkDiameter, duration*1000);
+            //printf("Duration %f Units: %f ms _CLUSTER__ITEM\n", trunkDiameter, duration*1000);
         };
     };
 

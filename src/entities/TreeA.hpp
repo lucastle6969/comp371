@@ -77,7 +77,7 @@ ANGLES COMPUTED DURING RECURSIONS
 #include "DrawableEntity.hpp"
 #include "Tree.hpp"
 
-class TreeA : public DrawableEntity, public Tree {
+class TreeA : public Tree {
 private:
 
 	//CONSIDERATION FOR MULTITHREADED LOADING
@@ -86,9 +86,9 @@ private:
 	const int branches = 1;
 	const int k = 250;
 	float limiter = 1;
-	int previousRotationCap = 6;
+	int previousRotationCap = 8;
 
-float boostFactor = 1;
+float boostFactor = 0.5;
 float heightChunking = 20;//INVERSE
 
 	const int minYBranchAngle = 20;
@@ -119,16 +119,9 @@ float heightChunking = 20;//INVERSE
 	bool treeSetup(const GLuint& shader_program, float trunkDiameter, float seed);
 
 public:
-	const std::vector<glm::vec3>& getVertices();
-
-	GLuint getVAO();
-
-	const int getColorType();
-
 
 	TreeA(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
-			DrawableEntity(shader_program, entity), Tree(heightChunking, boostFactor){
-		printf("%i %f\n", heightChunking, boostFactor);
+			Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
 		std::clock_t startTime;
 		double duration;
 		startTime = std::clock();
