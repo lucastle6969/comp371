@@ -18,36 +18,37 @@
 class DrawableEntity : public Entity {
 private:
 	GLuint shader_program;
+    GLenum draw_mode;
+    glm::vec3 color;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
 
 protected:
-	GLenum draw_mode;
-
-	  //\\  |\    /||\    /|
-	 //  \\ ||\  /||||\  /||
-	//----\\||\\//||||\\//||
-
-	glm::vec3 color;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-	float shininess;
-
 	GLuint initVertexArray(
-			const std::vector<glm::vec3>& vertices,
-			const std::vector<GLuint>& elements,
-			const std::vector<glm::vec2>& uvs,
-			const std::vector<glm::vec3>& normals,
-			glm::vec3 surfaceColor,
-			glm::vec3 lightDiffuse,
-			glm::vec3 lightSpecular,
-			float lightShininess
-	);
-
-	  //\\  |\    /||\    /|
-	 //  \\ ||\  /||||\  /||
-	//----\\||\\//||||\\//||
-
-	GLuint initVertexArray(const std::vector<glm::vec3>& vertices, GLuint* vertices_buffer = nullptr, GLuint* element_buffer = nullptr);
-	GLuint initVertexArray(const std::vector<glm::vec3>& vertices, const std::vector<GLuint>& elements, GLuint* vertices_buffer = nullptr, GLuint* element_buffer = nullptr);
+        const std::vector<glm::vec3>& vertices,
+        const std::vector<GLuint>& elements,
+        const std::vector<glm::vec3>& normals,
+        GLuint* vertices_buffer = nullptr,
+        GLuint* element_buffer = nullptr,
+        GLuint* normal_buffer = nullptr
+    );
+    GLuint initVertexArray(
+        const std::vector<glm::vec3>& vertices,
+        const std::vector<GLuint>& elements,
+        const std::vector<glm::vec3>& normals,
+        const std::vector<glm::vec2>& uvs,
+        GLuint* vertices_buffer = nullptr,
+        GLuint* element_buffer = nullptr,
+        GLuint* normal_buffer = nullptr,
+        GLuint* uv_buffer = nullptr
+    );
+    void setMaterial(
+        const glm::vec3& surfaceColor,
+        const glm::vec3& lightDiffuse,
+        const glm::vec3& lightSpecular,
+        const float& lightShininess
+    );
 
 public:
 	explicit DrawableEntity(const GLuint& shader_program) : DrawableEntity(shader_program, nullptr) {}
@@ -56,10 +57,11 @@ public:
 	virtual const std::vector<glm::vec3>& getVertices() = 0;
 	virtual GLuint getVAO() = 0;
 	virtual const int getColorType() = 0;
+    virtual GLuint getTextureId();
 	// end pure virtual functions
 	GLenum getDrawMode();
 	void setDrawMode(const GLenum& draw_mode);
-	void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix, Light light) override;
+	void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix, const Light& light) override;
 };
 
 #endif // PROCEDURALWORLD_DRAWABLEENTITY_HPP
