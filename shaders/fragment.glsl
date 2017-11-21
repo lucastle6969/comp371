@@ -1,6 +1,7 @@
 #version 330 core
 
 in vec3 pos;
+in vec3 nor;
 uniform int color_type;
 uniform int entity_position_x;
 uniform int entity_position_z;

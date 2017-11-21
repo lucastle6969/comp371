@@ -21,6 +21,9 @@ private:
 	const glm::vec3& getDefaultFaceVector() override;
 	std::vector<glm::vec3> vertices;
 	GLuint vao;
+
+
+
 public:
 	explicit Player(const GLuint& shader_program) : Player(shader_program, nullptr) {}
 	Player(const GLuint& shader_program, Entity* parent);

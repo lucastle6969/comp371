@@ -26,7 +26,9 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 
 	// get the vertices from the pacman.obj file (ignore the rest)
 	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs, &elements);
-	this->vao = this->initVertexArray(this->vertices, elements);
+	//this->vao = this->initVertexArray(this->vertices, elements);
+	this->vao = this->initVertexArray(this->vertices, elements, UVs, normals, glm::vec3(1,10,1), glm::vec3(.10,.10,.10), glm::vec3(.25,.25,.25), .25);
+
 }
 
 const std::vector<glm::vec3>& Player::getVertices()

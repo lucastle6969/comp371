@@ -16,6 +16,45 @@
 
 #include "../constants.hpp"
 
+  //\\  |\    /||\    /|
+ //  \\ ||\  /||||\  /||
+//----\\||\\//||||\\//||
+
+//instead of creating a new one for every plane just use these values.
+//plane verticies
+std::vector<glm::vec3> plane_verticies {
+
+    glm::vec3 (0.0f, 0.0f, 0.0f),
+    glm::vec3 (1.0f, 0.0f, 0.0f),
+    glm::vec3 (1.0f, 0.0f,-1.0f),
+    glm::vec3 (0.0f, 0.0f,-1.0f),
+
+};
+//plane elements
+std::vector<GLuint> plane_element {
+
+        3,0,2, // first triangle
+        0,1,2  // second triangle
+
+};
+//plane normals
+std::vector<glm::vec3> plane_normal{
+
+        glm::vec3 (0.0f, 1.0f, 0.0f),
+        glm::vec3 (0.0f, 1.0f, 0.0f),
+        glm::vec3 (0.0f, 1.0f, 0.0f),
+        glm::vec3 (0.0f, 1.0f, 0.0f)
+
+};
+// plane uvs
+std::vector<glm::vec2> plane_uv{
+
+        glm::vec2 (1.0f, 0.0f),
+        glm::vec2 (1.0f, 1.0f),
+        glm::vec2 (0.0f, 1.0f),
+        glm::vec2 (0.0f, 0.0f)
+};
+
 
 WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initial_translation, Entity* parent) : DrawableEntity(shader_program, parent)
 {
@@ -25,6 +64,8 @@ WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initial_translation
     int tile_width=1, tile_height = 1;
 
     //tile at the origin 1x1 in XZ plane
+    this->vertices = plane_verticies;
+    /*
     this->vertices.emplace_back(0.0f, 0.0f, 0.0f);
     this->vertices.emplace_back(1.0f, 0.0f, 0.0f);
     this->vertices.emplace_back(1.0f, 0.0f, -1.0f);
@@ -32,12 +73,25 @@ WorldTile::WorldTile(const GLuint& shader_program, glm::vec3 initial_translation
 
     std::vector<GLuint> elements;
     WorldTile::createElements(tile_width, tile_height, &elements);
+     */
+
+    //this->vao = this->initVertexArray(this->vertices, elements, &this->vertices_buffer, &this->element_buffer);
+
+      //\\  |\    /||\    /|
+     //  \\ ||\  /||||\  /||
+    //----\\||\\//||||\\//||
+
     this->vao = this->initVertexArray(
-            this->vertices,
-            elements,
-            &this->vertices_buffer,
-            &this->element_buffer
+            this-> vertices,
+            plane_element,
+            plane_uv,
+            plane_normal,
+            glm::vec3 (.5,.5,.5), //need to change this to some other value... maybe the height of the plane if we ever make it.
+            glm::vec3 (.5,.5,.5),
+            glm::vec3 (.25,.25,.25),
+            .25
     );
+
     WorldTile::translate(initial_translation);
 }
 

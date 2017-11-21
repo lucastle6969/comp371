@@ -10,7 +10,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-
+#include "Light.h"
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "WorldOrigin.hpp"
@@ -37,6 +37,10 @@ private:
 	// current center tile position
 	int player_current_x;
 	int player_current_z;
+	//int player_current_y; //for futur use
+	//light
+    //Light light;
+
 public:
 	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
 	World(const GLuint& shader_program, Entity* parent);

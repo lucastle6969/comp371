@@ -202,14 +202,14 @@ int main()
 	framebufferSizeCallback(window, width, height);
 
 	bool shader_program_ok;
-	GLuint shader_program = prepareShaderProgram("../shaders/vertex.glsl", "../shaders/fragment.glsl",
-	                                             &shader_program_ok);
+	GLuint shader_program = prepareShaderProgram("../shaders/vertex Light.glsl", "../shaders/fragment Light.glsl", &shader_program_ok);
 	if (!shader_program_ok) {
 		return -1;
 	}
 
 	world = new World(shader_program);
-
+    //create light
+    Light* light = new Light(glm::vec3(0,-10,0), glm::vec3(.5,.5,.5));
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -236,7 +236,7 @@ int main()
 			1500.0f * player_scale
 		);
 
-		world->draw(view_matrix, projection_matrix);
+		world->draw(view_matrix, projection_matrix, *light);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);

@@ -8,6 +8,7 @@
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
+#include "Light.h"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -48,7 +49,7 @@ public:
 	void hide();
 	void unhide();
 	void toggleHide();
-	virtual void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix);
+	virtual void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix, Light light);
 };
 
 #endif //PACMAN3D_ENTITY_H

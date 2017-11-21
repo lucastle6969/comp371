@@ -9,7 +9,6 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-
 #include "World.hpp"
 #include "../constants.hpp"
 
@@ -21,13 +20,17 @@ World::World(const GLuint& shader_program, Entity* parent)
 		  lcr({1, 2, 3}),
 		  player_current_x(0),
 		  player_current_z(0)
+          //light (Light(glm::vec3(0,-1,0), glm::vec3(1,1,1)))
 {
 	static const glm::vec3 initial_player_position(0.0f, 0.01f, 0.0f);
 
 	this->player.scale(0.0005f);
 	this->player.setPosition(initial_player_position);
 
-	// hide the axes by default
+	//light
+	//this->light = new Light(glm::vec3(0,-1,0), glm::vec3(1,1,1));
+
+    // hide the axes by default
 	this->axes.hide();
 
 	this->world_tile_bl = new WorldTile(shader_program, glm::vec3(-1.0f, 0.0f, 2.0f), this);

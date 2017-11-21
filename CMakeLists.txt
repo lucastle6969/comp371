@@ -70,7 +70,7 @@ add_executable(proceduralworld
     src/entities/WorldTile.cpp
     src/entities/World.hpp
     src/entities/World.cpp
-)
+        src/entities/Light.h)
 
 # Link libraries
 if(APPLE)
