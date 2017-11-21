@@ -134,7 +134,7 @@ public:
 
 
 		duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-		printf("Duration %f Units: %f ms\n", trunkDiameter, duration*1000);
+		printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 	};
 };
 #endif //treeA
