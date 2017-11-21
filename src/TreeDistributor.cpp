@@ -34,17 +34,18 @@ Tree* TreeDistributor::setTreeType(int seed, float width){
                 "shader_programB,GLuint&  shader_programC, Entity* entity){\" OR"
                 "\"  static void setEntity(Entity* entity){ \"";
     }
-    TreeDistributor::seed = seed;
+    TreeDistributor::seed = abs(seed);
+    std::cout << "SEED" << TreeDistributor::seed % 10  << "\n";
     if(TreeDistributor::seed % 10 < 2){
-        TreeA* tA = new TreeA(shader_programA, entity, width*3, seed);
+        TreeA* tA = new TreeA(shader_programA, entity, width*3, TreeDistributor::seed);
         return tA;
     }
     else if(TreeDistributor::seed % 10 < 7){
-        TreeB* tB = new TreeB(shader_programB, entity, width, seed);
+        TreeB* tB = new TreeB(shader_programB, entity, width, TreeDistributor::seed);
         return tB;
     }
     else{
-        TreeC* tc = new TreeC(0 + seed % 15, shader_programC, entity, width*0.5, seed);
+        TreeC* tc = new TreeC(0 + TreeDistributor::seed % 15, shader_programC, entity, width*0.5, TreeDistributor::seed);
         return tc;
     }
 }
