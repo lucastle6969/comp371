@@ -421,7 +421,13 @@ Rock::Rock(
     this->vertices.emplace_back(0.75f, 1.00f, -1.0f);
     this->vertices.emplace_back(1.00f, 1.00f, -1.0f);
 
-    for(int i=0; i<this->vertices.size(); i++){
+	// TODO: correct normals! this is a tentative (and wrong) stand-in
+	glm::vec3 center(0.5f, 0.5f, -0.5f);
+	for (const glm::vec3& vertex : this->vertices) {
+		this->normals.push_back(glm::normalize(vertex - center));
+	}
+
+    for (int i=0; i<this->vertices.size(); i++){
 
         //random number between 0-1 , multiplied by 25 (the space between vertices is 0.25, - 13 (to have it go around zero
         // divided be 100 to put it back to 0.xx
@@ -435,9 +441,11 @@ Rock::Rock(
     this->vao = DrawableEntity::initVertexArray(
             this->vertices,
             elements,
+            this->normals,
             uvs,
             &this->vertices_buffer,
             &this->element_buffer,
+            &this->normal_buffer,
             &this->uv_buffer
     );
 }

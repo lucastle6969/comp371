@@ -12,7 +12,7 @@ uniform sampler2D tex_image;
 
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
-uniform vec3 ligthSpecular;
+uniform vec3 lightSpecular;
 uniform float shininess;
 
 // uniform vec3 sunPosition; // test point light variable
@@ -73,13 +73,14 @@ void main()
             vec3 norm = normalize(worldNormal);
             vec3 viewDir = normalize(viewPos - worldPos);
 
-            vec3 lightDir = normalize(direction);
+            vec3 lightDir = normalize(sunVector);
             float diffuseShading = max(dot(norm, lightDir), 0.0);
             vec3 reflectDir = reflect(-lightDir, norm);
             float specularShading = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
             // calculate pixel color
             vec3 diffuse = lightDiffuse * diffuseShading;
             vec3 specular = lightSpecular * specularShading;
+
             color =  vec4((lightAmbient + diffuse + specular), 0.0);
             break;
         }

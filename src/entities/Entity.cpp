@@ -149,8 +149,11 @@ void Entity::toggleHide()
 	this->hidden = !this->hidden;
 }
 
-void Entity::draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix, Light light)
-{
+void Entity::draw(
+	const glm::mat4& view_matrix,
+	const glm::mat4& projection_matrix,
+	const Light& light
+) {
 	for (Entity* child : this->children) {
 		child->draw(view_matrix, projection_matrix, light);
 	}

@@ -18,13 +18,24 @@
 class DrawableEntity : public Entity {
 private:
 	GLuint shader_program;
-    GLenum draw_mode;
-    glm::vec3 color;
+    glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
     float shininess;
 
 protected:
+	GLenum draw_mode;
+	GLuint initVertexArray(
+		const std::vector<glm::vec3>& vertices,
+		GLuint* vertices_buffer = nullptr,
+		GLuint* element_buffer = nullptr
+	);
+	GLuint initVertexArray(
+		const std::vector<glm::vec3>& vertices,
+		const std::vector<GLuint>& elements,
+		GLuint* vertices_buffer = nullptr,
+		GLuint* element_buffer = nullptr
+	);
 	GLuint initVertexArray(
         const std::vector<glm::vec3>& vertices,
         const std::vector<GLuint>& elements,
@@ -44,7 +55,7 @@ protected:
         GLuint* uv_buffer = nullptr
     );
     void setMaterial(
-        const glm::vec3& surfaceColor,
+        const glm::vec3& lightAmbient,
         const glm::vec3& lightDiffuse,
         const glm::vec3& lightSpecular,
         const float& lightShininess
@@ -57,11 +68,14 @@ public:
 	virtual const std::vector<glm::vec3>& getVertices() = 0;
 	virtual GLuint getVAO() = 0;
 	virtual const int getColorType() = 0;
-    virtual GLuint getTextureId();
 	// end pure virtual functions
+	virtual GLuint getTextureId();
 	GLenum getDrawMode();
-	void setDrawMode(const GLenum& draw_mode);
-	void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix, const Light& light) override;
+	void draw(
+		const glm::mat4& view_matrix,
+		const glm::mat4& projection_matrix,
+		const Light& light
+	) override;
 };
 
 #endif // PROCEDURALWORLD_DRAWABLEENTITY_HPP

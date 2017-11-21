@@ -27,6 +27,13 @@ WorldTile::WorldTile(
 {
 	this->draw_mode = GL_TRIANGLES;
 
+	this->setMaterial(
+		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
+		glm::vec3(.5,.5,.5),
+		glm::vec3(.25,.25,.25),
+		0.25f
+	);
+
 	// position tile relative to parent based on x, z inputs
 	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));
 
@@ -124,10 +131,7 @@ GLuint WorldTile::getVAO() {
 		vao = this->initVertexArray(
 				this->getVertices(),
 				elements,
-				normals,
-				glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
-				glm::vec3(.5,.5,.5),
-				glm::vec3(.25,.25,.25)
+				normals
 		);
 		vao_init = true;
 	}

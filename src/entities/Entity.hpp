@@ -52,7 +52,11 @@ public:
 	void hide();
 	void unhide();
 	void toggleHide();
-	virtual void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix, Light light);
+	virtual void draw(
+		const glm::mat4& view_matrix,
+		const glm::mat4& projection_matrix,
+		const Light& light
+	);
 };
 
 #endif //PACMAN3D_ENTITY_H

@@ -202,7 +202,11 @@ int main()
 	framebufferSizeCallback(window, width, height);
 
 	bool shader_program_ok;
-	GLuint shader_program = prepareShaderProgram("../shaders/vertex Light.glsl", "../shaders/fragment Light.glsl", &shader_program_ok);
+	GLuint shader_program = prepareShaderProgram(
+		"../shaders/vertex.glsl",
+		"../shaders/fragment.glsl",
+		&shader_program_ok
+	);
 	if (!shader_program_ok) {
 		return -1;
 	}
