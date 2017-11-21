@@ -60,8 +60,8 @@ GLuint DrawableEntity::getTextureId()
 }
 
 void DrawableEntity::draw(
-    const glm::mat4 &view_matrix,
-    const glm::mat4 &projection_matrix,
+    const glm::mat4& view_matrix,
+    const glm::mat4& projection_matrix,
     const Light& light
 ) {
 	Entity::draw(view_matrix, projection_matrix, light);
@@ -80,7 +80,7 @@ void DrawableEntity::draw(
     auto lightDiffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightDiffuse");
     auto lightSpecular_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightSpecular");
     auto shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "shininess");
-    auto viewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "viewPos");
+    auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
     //auto sunPosition_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunPosition");
 
     glUseProgram(this->shader_program);
@@ -91,16 +91,19 @@ void DrawableEntity::draw(
 	glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model_matrix));
 	glUniform1i(color_type_loc, this->getColorType());
-	//send the position of this entity to the shader
+	// send the position of this entity to the shader
 	glm::vec3 position = this->getPosition();
 	glUniform1i(position_x_loc, (GLint)position.x);
 	glUniform1i(position_z_loc, (GLint)position.z);
-	glUniform3fv(sunVector_loc, 1, value_ptr(light.light_direction));
-	glUniform3fv(lightAmbient_loc, 1, value_ptr(this->ambient));
-    glUniform3fv(lightDiffuse_loc, 1, value_ptr(this->diffuse));
-    glUniform3fv(lightSpecular_loc, 1, value_ptr(this->specular));
-    glUniform1f(shininess_loc, this->shininess);
-	// TODO: send viewPos!!!!!
+	glUniform3fv(sunVector_loc, 1, glm::value_ptr(light.light_direction));
+	glUniform3fv(lightAmbient_loc, 1, glm::value_ptr(this->ambient));
+	glUniform3fv(lightDiffuse_loc, 1, glm::value_ptr(this->diffuse));
+	glUniform3fv(lightSpecular_loc, 1, glm::value_ptr(this->specular));
+	glUniform1f(shininess_loc, this->shininess);
+	// compute world view position from inverse view matrix
+	// thanks: https://www.opengl.org/discussion_boards/showthread.php/178484-Extracting-camera-position-from-a-ModelView-Matrix
+	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
+	glUniform3fv(worldViewPos_loc, 1, glm::value_ptr(world_view_position));
 
 	// TODO: figure out why the commented-out code below fails on macOS
 	// glUniform1i(tex_image_loc, GL_TEXTURE0);

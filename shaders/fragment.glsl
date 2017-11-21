@@ -17,7 +17,7 @@ uniform float shininess;
 
 // uniform vec3 sunPosition; // test point light variable
 uniform vec3 sunVector;
-uniform vec3 viewPos;
+uniform vec3 worldViewPos;
 
 out vec4 color;
 
@@ -71,7 +71,7 @@ void main()
 
             // properties
             vec3 norm = normalize(worldNormal);
-            vec3 viewDir = normalize(viewPos - worldPos);
+            vec3 viewDir = normalize(worldViewPos - worldPos);
 
             vec3 lightDir = normalize(sunVector);
             float diffuseShading = max(dot(norm, lightDir), 0.0);
@@ -81,7 +81,7 @@ void main()
             vec3 diffuse = lightDiffuse * diffuseShading;
             vec3 specular = lightSpecular * specularShading;
 
-            color =  vec4((lightAmbient + diffuse + specular), 0.0);
+            color = vec4((lightAmbient + diffuse + specular), 0.0);
             break;
         }
         default:
