@@ -27,6 +27,10 @@
 #include "Tree.hpp"
 #include "../TreeRandom.hpp"
 
+#include <iostream>
+#include <cstdio>
+#include <ctime>
+
 class TreeClusterItem : public Tree {
     private:
 
@@ -815,9 +819,6 @@ class TreeClusterItem : public Tree {
     float getTrunkDiameter(){
         return trunkDiameter;
     }
-#include <iostream>
-#include <cstdio>
-#include <ctime>
 
     TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
             Tree(heightChunking, boostFactor, shader_program, entity, 'G'){
