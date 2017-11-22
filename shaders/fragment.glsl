@@ -10,11 +10,12 @@ uniform int entity_position_x;
 uniform int entity_position_z;
 uniform sampler2D tex_image;
 
-uniform vec3 lightAmbient;
-uniform vec3 lightDiffuse;
-uniform vec3 lightSpecular;
-uniform float shininess;
+uniform vec3 object_ambient;
+uniform vec3 object_diffuse;
+uniform vec3 object_specular;
+uniform float object_shininess;
 
+uniform vec3 light_color;
 // uniform vec3 sunPosition; // test point light variable
 uniform vec3 sunVector;
 uniform vec3 worldViewPos;
@@ -44,7 +45,7 @@ struct Material {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
-    float shininess;
+    float object_shininess;
     sampler2D image;
 };
 
@@ -78,14 +79,15 @@ void main()
 
             // compute diffuse and specular shading
             float diffuseShading = max(dot(norm, lightDir), 0.0);
-            float specularShading = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+            float specularShading = pow(max(dot(viewDir, reflectDir), 0.0), object_shininess);
 
-            // calculate diffuse and specular color
-            vec3 diffuse = lightDiffuse * diffuseShading;
-            vec3 specular = lightSpecular * specularShading;
+            // calculate ambient, diffuse and specular color
+            vec3 ambient = object_ambient * light_color;
+            vec3 diffuse = object_diffuse * diffuseShading * light_color;
+            vec3 specular = object_specular * specularShading * light_color;
 
-            // add up components (ambient was ready to go already)
-            color = vec4((lightAmbient + diffuse + specular), 0.0);
+            // add up components
+            color = vec4((ambient + diffuse + specular), 0.0);
             break;
         }
         default:

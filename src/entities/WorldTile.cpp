@@ -27,11 +27,12 @@ WorldTile::WorldTile(
 {
 	this->draw_mode = GL_TRIANGLES;
 
+	// grass
 	this->setMaterial(
-		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
-		glm::vec3(.5,.5,.5),
-		glm::vec3(.25,.25,.25),
-		0.25f
+		glm::vec3(0.34f, 0.49f, 0.27f),
+		glm::vec3(0.34f, 0.49f, 0.27f),
+		glm::vec3(0.0f),
+		0.01f
 	);
 
 	// position tile relative to parent based on x, z inputs
@@ -140,5 +141,5 @@ GLuint WorldTile::getVAO() {
 }
 
 const int WorldTile::getColorType() {
-	return COLOR_TILE;
+	return COLOR_LIGHTING;
 }

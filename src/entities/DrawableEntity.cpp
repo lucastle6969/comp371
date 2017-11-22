@@ -75,11 +75,12 @@ void DrawableEntity::draw(
     auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
 	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
 	auto position_z_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_z");
-    auto sunVector_loc =(GLuint)glGetUniformLocation(this->shader_program, "sunVector");
-    auto lightAmbient_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightAmbient");
-    auto lightDiffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightDiffuse");
-    auto lightSpecular_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightSpecular");
-    auto shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "shininess");
+    auto sunVector_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunVector");
+	auto light_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "light_color");
+    auto object_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "object_ambient");
+    auto object_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "object_diffuse");
+    auto object_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "object_specular");
+    auto object_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "object_shininess");
     auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
     //auto sunPosition_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunPosition");
 
@@ -96,10 +97,11 @@ void DrawableEntity::draw(
 	glUniform1i(position_x_loc, (GLint)position.x);
 	glUniform1i(position_z_loc, (GLint)position.z);
 	glUniform3fv(sunVector_loc, 1, glm::value_ptr(light.light_direction));
-	glUniform3fv(lightAmbient_loc, 1, glm::value_ptr(this->ambient));
-	glUniform3fv(lightDiffuse_loc, 1, glm::value_ptr(this->diffuse));
-	glUniform3fv(lightSpecular_loc, 1, glm::value_ptr(this->specular));
-	glUniform1f(shininess_loc, this->shininess);
+	glUniform3fv(light_color_loc, 1, glm::value_ptr(light.color));
+	glUniform3fv(object_ambient_loc, 1, glm::value_ptr(this->ambient));
+	glUniform3fv(object_diffuse_loc, 1, glm::value_ptr(this->diffuse));
+	glUniform3fv(object_specular_loc, 1, glm::value_ptr(this->specular));
+	glUniform1f(object_shininess_loc, this->shininess);
 	// compute world view position from inverse view matrix
 	// thanks: https://www.opengl.org/discussion_boards/showthread.php/178484-Extracting-camera-position-from-a-ModelView-Matrix
 	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
@@ -308,13 +310,13 @@ GLuint DrawableEntity::initVertexArray(
 }
 
 void DrawableEntity::setMaterial(
-	const glm::vec3& lightAmbient,
-	const glm::vec3& lightDiffuse,
-	const glm::vec3& lightSpecular,
-	const float& lightShininess
+	const glm::vec3& ambient,
+	const glm::vec3& diffuse,
+	const glm::vec3& specular,
+	const float& shininess
 ) {
-	this->ambient = lightAmbient;
-	this->diffuse = lightDiffuse;
-	this->specular = lightSpecular;
-	this->shininess = lightShininess;
+	this->ambient = ambient;
+	this->diffuse = diffuse;
+	this->specular = specular;
+	this->shininess = shininess;
 }

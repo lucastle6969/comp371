@@ -12,6 +12,10 @@
 #include <GLFW/glfw3.h>	// include GLFW helper library
 
 #include <iostream>
+#include <chrono>
+#include <ratio>
+#include <ctime>
+#include <cmath>
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -72,6 +76,20 @@ glm::vec3 getFollowVector() {
 				0.0f,
 				(1 - (pitch - min_pitch) / (first_person_pitch - min_pitch))
 			);
+}
+
+// returns [0, 1) float representing progress through day/night cycle,
+// based on actual current system time (but with shortened day length)
+float getDayProgress() {
+	// our "day" is actually 10 minutes long
+	static const double day_seconds = 10 * 10;
+
+	double now = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now().time_since_epoch()
+	).count();
+	double progress = now / day_seconds;
+	// wrap into [0, 1) range
+	return float((long)progress % (long)day_seconds / day_seconds);
 }
 
 bool isKeyPressed(GLFWwindow* const& window, const int& key) {
@@ -212,8 +230,12 @@ int main()
 	}
 
 	world = new World(shader_program);
-    //create light
-    Light light(glm::vec3(0,0,0.5), glm::vec3(.5,.5,.5));
+
+	// default sun ray points down (noon)
+    const glm::vec3 default_sun_direction(0.0f, -1.0f, 0.0f);
+	const glm::vec3 sunlight(0.9f, 0.87f, 0.8f);
+	const glm::vec3 moonlight(0.4f, 0.4f, 0.4f);
+
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -224,9 +246,17 @@ int main()
 		glfwPollEvents();
 		pollContinuousControls(window);
 
+		float day_progress = getDayProgress();
+
 		// Render
-		// Clear the colorbuffer
-		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
+		// Clear the colorbuffer (sky color)
+		float sky_coefficient = 2.0f + std::abs(std::fmod(day_progress * 2.0f, 2.0f) - 1.0f) * 4.0f;
+		glClearColor(
+			sky_coefficient * 0.12f,
+			sky_coefficient * 0.19f,
+			sky_coefficient * 0.23f,
+			1.0f
+		);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 player_position = world->getPlayer()->getPosition();
@@ -240,7 +270,17 @@ int main()
 			1500.0f * player_scale
 		);
 
-		world->draw(view_matrix, projection_matrix, light);
+		bool show_moon = day_progress > 0.25 && day_progress <= 0.75;
+		Light current_celestial_ray(
+			// rotate sun (or moon) toward the west
+			glm::rotateZ(
+				default_sun_direction,
+				float(M_PI * 2 * day_progress + (show_moon ? M_PI : 0))
+			),
+			show_moon ? moonlight : sunlight
+		);
+
+		world->draw(view_matrix, projection_matrix, current_celestial_ray);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
