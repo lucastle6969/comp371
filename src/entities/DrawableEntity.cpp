@@ -83,7 +83,9 @@ void DrawableEntity::draw(
     auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
 
 	auto sun_direction_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.direction");
-    auto point_light_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
+	auto sun_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.color");
+	auto point_light_pos_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
+	auto point_light_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.color");
 
 	auto use_texture_loc = (GLuint)glGetUniformLocation(this->shader_program, "use_texture");
 
@@ -106,8 +108,11 @@ void DrawableEntity::draw(
 	glUniform3fv(worldViewPos_loc, 1, glm::value_ptr(world_view_position));
 
     glUniform3fv(sun_direction_loc, 1, glm::value_ptr(light.light_direction));
+	glUniform3fv(sun_color_loc, 1, glm::value_ptr(light.color));
 	// TODO: make the point light follow the player? or remove it?
-	glUniform3fv(point_light_loc, 1, glm::value_ptr(glm::vec3(0)));
+	glUniform3fv(point_light_pos_loc, 1, glm::value_ptr(glm::vec3(0)));
+	// TODO: define the point light color somewhere else or remove it
+	glUniform3fv(point_light_color_loc, 1, glm::value_ptr(glm::vec3(0.3)));
     glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
     glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
     glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));
@@ -319,13 +324,13 @@ GLuint DrawableEntity::initVertexArray(
 }
 
 void DrawableEntity::setMaterial(
-	const glm::vec3& lightAmbient,
-	const glm::vec3& lightDiffuse,
-	const glm::vec3& lightSpecular,
-	const float& lightShininess
+	const glm::vec3& ambient,
+	const glm::vec3& diffuse,
+	const glm::vec3& specular,
+	const float& shininess
 ) {
-	this->ambient = lightAmbient;
-	this->diffuse = lightDiffuse;
-	this->specular = lightSpecular;
-	this->shininess = lightShininess;
+	this->ambient = ambient;
+	this->diffuse = diffuse;
+	this->specular = specular;
+	this->shininess = shininess;
 }

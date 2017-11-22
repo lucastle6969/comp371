@@ -7,10 +7,12 @@ in vec2 tex_coord;
 
 struct SunLight {
     vec3 direction;
+    vec3 color;
 };
 
 struct PointLight {
     vec3 position;
+    vec3 color;
 };
 
 struct Material {
@@ -30,6 +32,7 @@ uniform int entity_position_z;
 uniform sampler2D tex_image;
 
 uniform bool use_texture;
+
 uniform vec3 worldViewPos;
 
 out vec4 color;
@@ -54,7 +57,12 @@ struct ColorComponents {
     vec3 specular;
 };
 
-ColorComponents calculateColor(const vec3 light_dir, const vec3 normal, const vec3 view_dir);
+ColorComponents calculateColor(
+    const vec3 light_dir,
+    const vec3 light_color,
+    const vec3 normal,
+    const vec3 view_dir
+);
 
 void main()
 {
@@ -91,11 +99,13 @@ void main()
             // of sunlight and point light
             ColorComponents sunlight_components = calculateColor(
                 sun_dir,
+                sunLight.color,
                 normal,
                 view_dir
             );
             ColorComponents pointlight_components = calculateColor(
                 pointlight_dir,
+                pointLight.color,
                 normal,
                 view_dir
             );
@@ -129,8 +139,12 @@ void main()
 }
 
 // compute the basic color without considering attenuation or texture multiplication
-ColorComponents calculateColor(const vec3 light_dir, const vec3 normal, const vec3 view_dir)
-{
+ColorComponents calculateColor(
+    const vec3 light_dir,
+    const vec3 light_color,
+    const vec3 normal,
+    const vec3 view_dir
+) {
     vec3 reflect_dir = reflect(-light_dir, normal);
 
     // compute diffuse and specular shading
@@ -138,8 +152,8 @@ ColorComponents calculateColor(const vec3 light_dir, const vec3 normal, const ve
     float specular_shading = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
 
     return ColorComponents(
-        material.ambient,
-        material.diffuse * diffuse_shading,
-        material.specular * specular_shading
+        material.ambient * light_color,
+        material.diffuse * diffuse_shading * light_color,
+        material.specular * specular_shading * light_color
     );
 }
