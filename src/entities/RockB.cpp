@@ -56,7 +56,14 @@ RockB::~RockB()
     glDeleteVertexArrays(1, &this->vao);
 }
 
-void RockB::generateSphere(std::vector<glm::vec3>* vertices, std::vector<GLuint>* ebo, std::vector<glm::vec3>* normals, std::vector<glm::vec2>* uvs, const int num_arc_segments, const int num_longitude_lines){
+void RockB::generateSphere(
+        std::vector<glm::vec3>* vertices,
+        std::vector<GLuint>* ebo,
+        std::vector<glm::vec3>* normals,
+        std::vector<glm::vec2>* uvs,
+        const int num_arc_segments,
+        const int num_longitude_lines)
+{
 
     //generate one arc with num_arc_segments
     for(float x=-1; x<=1; ){
@@ -121,8 +128,12 @@ void RockB::generateSphere(std::vector<glm::vec3>* vertices, std::vector<GLuint>
 
     //normals and uvs (is emplace or push_back better here ?)
     for(int i = 0; i<vertices->size(); i++){
-        //(   ( (atan2((*vertices)[i].x,(*vertices)[i].z)) / (2*M_PI)) + 0.5   ) //testing out uvs
-        uvs->emplace_back(glm::vec2( (((*vertices)[i].y+(*vertices)[i].z)/2.0f)*0.5f + 0.5f , ((*vertices)[i].x *0.5f + 0.5f) )  );
+        uvs->emplace_back(
+                //u coordinate determined by averaging out y and z (then bring the range between 0 - 1)
+                ( ( (*vertices)[i].y + (*vertices)[i].z ) / 2.0f ) * 0.5f + 0.5f ,
+                //v coordinate is basically the x component
+                (*vertices)[i].x * 0.5f + 0.5f);
+
         normals->emplace_back((*vertices)[i]); //the normals are simply the vertices since this is a sphere around the origin
     }
 
