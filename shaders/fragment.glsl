@@ -69,18 +69,22 @@ void main()
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
 
-            // properties
             vec3 norm = normalize(worldNormal);
             vec3 viewDir = normalize(worldViewPos - worldPos);
-
-            vec3 lightDir = normalize(sunVector);
-            float diffuseShading = max(dot(norm, lightDir), 0.0);
+            // we're passing in the direction of the sun but we want the vector
+            // pointing TOWARD the sun!
+            vec3 lightDir = -1.0f * normalize(sunVector);
             vec3 reflectDir = reflect(-lightDir, norm);
+
+            // compute diffuse and specular shading
+            float diffuseShading = max(dot(norm, lightDir), 0.0);
             float specularShading = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-            // calculate pixel color
+
+            // calculate diffuse and specular color
             vec3 diffuse = lightDiffuse * diffuseShading;
             vec3 specular = lightSpecular * specularShading;
 
+            // add up components (ambient was ready to go already)
             color = vec4((lightAmbient + diffuse + specular), 0.0);
             break;
         }
