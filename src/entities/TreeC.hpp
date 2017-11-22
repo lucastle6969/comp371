@@ -102,24 +102,6 @@ public:
             float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter;
             float zPos =  sin(glm::radians(circleAngle)) * distanceFromCenter;
 
-//            std::cout << seed << " " << maxWidth(trunkDiameter) << " " << trunkDiameter << "\n";
-//            std::cout << reductionRate << " " << circleAngle << " " << distanceFromCenter << "\n";
-//            std::cout << xPos <<" " << zPos <<"\n";
-//            std::cout <<"\n";
-
-//            bool fail = false;
-//            //std::cout << i << "\n";
-//            for(TreeClusterItem* tc : treeCluster){
-//                if(pow(xPos - tc->xPos, 2) +  pow(zPos - tc->zPos, 2) <= pow(tc->getTrunkDiameter() + tempTrunkDiameter, 2) ||
-//                        (xPos == tc->xPos && zPos == tc->zPos)) {
-//                    fail = true;
-//                    break;
-//                }
-//            }
-//if(fail){
-//    i--;
-//    continue;
-//}
             //std::cout << "   " << tempTrunkDiameter << "\n";
             TreeClusterItem* tci = new TreeClusterItem(shader_program, entity,
                                                            tempTrunkDiameter <= 0? 0:  tempTrunkDiameter -= reductionRate,

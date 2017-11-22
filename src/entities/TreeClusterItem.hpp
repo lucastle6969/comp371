@@ -816,6 +816,7 @@ class TreeClusterItem : public Tree {
             return this->vao;
         }
 
+
     float getTrunkDiameter(){
         return trunkDiameter;
     }

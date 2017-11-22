@@ -36,24 +36,21 @@ glm::vec3 Tree::boostSegment(AttatchmentGroupings* agLow, AttatchmentGroupings* 
 //values in radians
 glm::vec3 Tree::makeRotations(float xRot, float yRot, float zRot, glm::vec3 vector){
     //ROTATION ABOUT X
-    // std::cout<< xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
     vector = glm::vec3(
             vector.x
             , vector.y * cos(xRot) - vector.z * sin(xRot)
             ,	vector.y * sin(xRot) + vector.z * cos(xRot));
     //ROTATION ABOUT Z
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
     vector = glm::vec3(
             vector.x * cos(zRot) - vector.y * sin(zRot)
             , vector.x * sin(zRot) + vector.y * cos(zRot)
             ,	vector.z );
     //ROTATION ABOUT Y
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
     vector = glm::vec3(
             vector.x * cos(yRot) + vector.z * sin(yRot)
             , vector.y
             ,	-(vector.x * sin(yRot)) + vector.z * cos(yRot));
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n-------\n";
+
     return vector;
 }
 

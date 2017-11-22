@@ -241,9 +241,6 @@ void TreeA::moveSegments(int previousRotation, AttatchmentGroupings* ag) {
         int toPnt = (circularPoints-rotationPoint + (previousRotation));
         int fromPnt = (previousRotation);
 
-//            std::cout <<  ag->ag[m]->angleZ << "Z ''' ";
-//            std::cout <<  fromPnt % 4 << ", "<< ag->ag[m]->side <<" "<< (toPnt + 2) % 4 <<" ''' ";
-//            std::cout <<  ag->ag[m]->angleX << "X ====";
 
         if (ag->ag[m]->side == 'L') {
             moveTo = (ag->end - circularPoints + 1) + (( 0 + toPnt) % circularPoints);
@@ -256,18 +253,6 @@ void TreeA::moveSegments(int previousRotation, AttatchmentGroupings* ag) {
         }
 
         float r = 360.0/circularPoints  * (toPnt);
-
-//            ag->ag[m]->angleX = (rotationPoint + previousRotation) % circularPoints == 4 ?
-//                    (ag->ag[m]->angleX < 0 ? ag->ag[m]->angleX += 90:
-//                     (ag->ag[m]->angleX > 0? ag->ag[m]->angleX -= 90:ag->ag[m]->angleX)):
-//                        ag->ag[m]->angleX;
-//            ag->ag[m]->angleZ = (rotationPoint + previousRotation) % circularPoints == 2 ?
-//                                (ag->ag[m]->angleZ < 0 ? ag->ag[m]->angleZ += 90:
-//                                 (ag->ag[m]->angleZ > 0? ag->ag[m]->angleZ -= 90:ag->ag[m]->angleZ += 90)):
-//                                    ag->ag[m]->angleZ;
-
-//            std::cout <<  ag->ag[m]->angleX << "\n";
-
 
         int start = ag->ag[m]->start + 1;
         int max = ag->ag[m]->end + 1;
