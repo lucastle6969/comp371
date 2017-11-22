@@ -1,14 +1,4 @@
 /*
- * TODO:    ||  merge  || 			Textures               Tree Variations(no rotation double, regular, shrub patch[0 alpha lines])        Texture Variations(Oak, Birch, pine)
- *			6:00	`````````									00:00										Morning
- *			S		U		N		D	A		Y			---			            M				O					N				D				A					Y
-
-NOTES FOR POTENTIAL LARGE ALTERATIONS: 
-	REMOVE ALL THE RECURSION. ITTERATION IS FASTER.
-	DONE BY BEFORE DUE DATE? EXPERIMENT ON MULTITHREADING?
-*/
-
-/*
 ____DOCUMENTATION_OF_TREE_GENERATION_____
 
 ONE CENTRAL .CPP FILE CONTROLS GENERATION OF TREE STRUCTURE. IS BROKEN DOWN INTO A LOG COMPONENT AND A LEAF BRANCH COMPONENT THAT
@@ -120,21 +110,6 @@ float heightChunking = 20;//INVERSE
 
 public:
 
-	TreeA(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
-			Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
-		std::clock_t startTime;
-		double duration;
-		startTime = std::clock();
-
-		//CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
-		treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
-
-		float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
-		rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
-
-
-		duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-		printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
-	};
+	TreeA(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
 };
 #endif //treeA

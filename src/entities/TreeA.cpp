@@ -1,5 +1,22 @@
 #include "TreeA.hpp"
 
+TreeA::TreeA(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
+        Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
+    std::clock_t startTime;
+    double duration;
+    startTime = std::clock();
+
+    //CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
+    treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
+
+    float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
+    rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
+
+
+    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
+    printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
+};
+
 void TreeA::generateTreeA(int _case, float trunkDiameter, float seed, float angleX, float angleY, float angleZ, char tag, AttatchmentGroupings* ag, float lineHeight) {
     int currentLineLength = lineHeight;
     float ShootDiameterBranch = 0;
@@ -168,6 +185,8 @@ void TreeA::leafBranch(float trunkDiameter, float seed, float lineHeight) {
                       combinedStartIndices,
                       combinedUV,
                       seed);
+    //What does this do you might be asking?
+    //a leaf container is an object that holds a set of leaves and a branch that they're held on
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
 }
 

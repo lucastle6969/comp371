@@ -19,15 +19,23 @@ void LeafBranchA::buildBranchElements(int baseVerticesSize, int i, int len){
     int nSolution = 0;
     for (int n = 0; n < branchPoints; n++) {
         if (n == branchPoints- 1) {
-            leafIndices->push_back(base + n); leafIndices->push_back(base + 0); leafIndices->push_back(set + 0);
-            leafIndices->push_back(set + 0);  leafIndices->push_back(set + n); leafIndices->push_back(base + n);
+            leafIndices->push_back(base + n);
+            leafIndices->push_back(base + 0);
+            leafIndices->push_back(set + 0);
+            leafIndices->push_back(set + 0);
+            leafIndices->push_back(set + n);
+            leafIndices->push_back(base + n);
             ////printf("%f %f\n", (float)(n + nSolution) / branchPoints, (float)i / (len) );
-            leafUVs->push_back(glm::vec2((float)(n + nSolution) / branchPoints, (float)i / (len)));
+            leafUVs->push_back(glm::vec2((float) (n + nSolution) / branchPoints, (float) i / (len)));
             nSolution++;
         }
         else {
-            leafIndices->push_back(base + n); leafIndices->push_back(base + n + 1); leafIndices->push_back(set + n + 1);
-            leafIndices->push_back(set + n + 1);  leafIndices->push_back(set + n); leafIndices->push_back(base + n);
+            leafIndices->push_back(base + n);
+            leafIndices->push_back(base + n + 1);
+            leafIndices->push_back(set + n + 1);
+            leafIndices->push_back(set + n + 1);
+            leafIndices->push_back(set + n);
+            leafIndices->push_back(base + n);
         }
         ////printf("%f %f\n", (float)(n + nSolution) / branchPoints, (float)i / (len) );
         leafUVs->push_back(glm::vec2((float)(n + nSolution) / branchPoints, (float)i / (len)));

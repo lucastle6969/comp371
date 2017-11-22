@@ -13,17 +13,14 @@
 
 #include "../TreeRandom.hpp"
 
-#define BRANCH_MODULO 1
-#define TRUNK_POLYGON 4
-
 #include <iostream>
 #include <cstdio>
 #include <ctime>
 
 class TrunkA{
 public:
-    const int branchMod = BRANCH_MODULO;
-    static constexpr int trunkPoints = TRUNK_POLYGON;
+    const int branchMod = 1;
+    static constexpr int trunkPoints = 4;
 
     const glm::vec3 brown = glm::vec3(0.0 / 255, 53.0 / 255, 10.0 / 255);
     const float itterations = 360.0 / trunkPoints;

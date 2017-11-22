@@ -208,13 +208,9 @@ int main()
     if (!shader_program_ok) {
         return -1;
     }
-    GLuint shader_program_t = prepareShaderProgram("../shaders/vertexTree.glsl", "../shaders/fragmentTree.glsl",
-                                                 &shader_program_ok);
-	if (!shader_program_ok) {
-		return -1;
-	}
-    //enable tree distributor functions shaders, must have entity declared in world tile
-    TreeDistributor::init(shader_program_t, shader_program_t, shader_program_t, nullptr);
+
+ /*   //enable tree distributor functions shaders, must have entity declared in world tile
+    TreeDistributor::init(shader_program, shader_program, shader_program, nullptr);*/
 
 	world = new World(shader_program);
 

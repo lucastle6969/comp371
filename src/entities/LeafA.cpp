@@ -1,28 +1,46 @@
 #include "LeafA.hpp"
 
 //builds 2
-void LeafA::buildLeaf(float r1, float r2, float leafDiameter){
+void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiameter, int count){
     //place leaves parralel following angle
     //place approproate leaves parralel following angle
     for (int n = 0; n < leafPoints; n++) {
         int sign = -1;
-        int jagednessRandom = randomSeedValue * (((int)(n * 13.4) % 17) + 1);
+        int jagednessRandom = this->randomSeedValue * (((int)(n * 13.4) % 17) + 1);
         if (jagednessRandom % 2 == 0) sign *= -1;
         float templeafDiameter = r1 + sign * (jagednessRandom) % ((int)(ceil(r1))) * jagednessFactor_Leaf / leafDiameter;
+        //if even create a leaf with constant Z
         if (count % 2 == 0)
-            leafVertices->push_back(glm::vec3(r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2 , lineHeight + r1 *  sin(glm::radians(itterations  * n)) , 0.0f));
+            leafVertices->push_back(
+                    glm::vec3(
+                            r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2 ,
+                            lineHeight + r1 *  sin(glm::radians(itterations  * n)) ,
+                            0.0f));
+        //else constant X
         else
-            leafVertices->push_back(glm::vec3(0, lineHeight + r1 *  sin(glm::radians(itterations  * n)) + 0, r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2));
+            leafVertices->push_back(
+                    glm::vec3(
+                    0.0f,
+                    lineHeight + r1 *  sin(glm::radians(itterations  * n)) + 0,
+                    r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2));
     }
     for (int n = 0; n < leafPoints; n++) {
         int sign = -1;
-        int jagednessRandom = randomSeedValue * (((int)(n * 13.4) % 17) + 1);
+        int jagednessRandom = this->randomSeedValue * (((int)(n * 13.4) % 17) + 1);
         if (jagednessRandom % 2 == 0) sign *= -1;
         float templeafDiameter = r1 + sign * (jagednessRandom) % ((int)(ceil(r1))) * jagednessFactor_Leaf / leafDiameter;
         if (count % 2 == 0)
-            leafVertices->push_back(glm::vec3(-r2 * cos(glm::radians(itterations  * n)) - templeafDiameter / 2.0 - r2 , lineHeight + r1 *  sin(glm::radians(itterations  * n)) , 0.0f));
+            leafVertices->push_back(
+                    glm::vec3(
+                            -r2 * cos(glm::radians(itterations  * n)) - templeafDiameter / 2.0 - r2 ,
+                            lineHeight + r1 *  sin(glm::radians(itterations  * n)) ,
+                            0.0f));
         else
-            leafVertices->push_back(glm::vec3(0, lineHeight + r1 *  sin(glm::radians(itterations  * n)) + 0, -r2 * cos(glm::radians(itterations  * n)) - templeafDiameter / 2.0 - r2));
+            leafVertices->push_back(
+                    glm::vec3(
+                            0.0f,
+                              lineHeight + r1 *  sin(glm::radians(itterations  * n)) + 0,
+                              -r2 * cos(glm::radians(itterations  * n)) - templeafDiameter / 2.0 - r2));
 
     }
 }
@@ -60,12 +78,13 @@ int LeafA::buildElements(int i, int start,  glm::vec3 leafNormal, int leafPoints
 void LeafA::buildLeafSingle(float r1, float r2, float trunkDiameter) {
     for (int n = 0; n < leafPoints ; n++) {
         int sign = -1;
-        int jagednessRandom = randomSeedValue * (((int) (n * 13.4) % 17) + 1);
+        int jagednessRandom = this->randomSeedValue * (((int) (n * 13.4) % 17) + 1);
         if (jagednessRandom % 2 == 0) sign *= -1;
         float tempTrunkDiameter = trunkDiameter +
                                   sign * (jagednessRandom) % ((int) (ceil(trunkDiameter))) * jagednessFactor_Leaf /
                                   (trunkDiameter);
         leafVertices->push_back(glm::vec3(r1 * sin(glm::radians(itterations * n)),
-                                          r2 * cos(glm::radians(itterations * n)) + lineHeight + r2, 0.0f));
+                                          r2 * cos(glm::radians(itterations * n)) + lineHeight + r2,
+                                          0.0f));
     }
 }

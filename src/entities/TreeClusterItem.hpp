@@ -582,7 +582,6 @@ class TreeClusterItem : public Tree {
             int circularPoints = circlePoints;
             rotationPoint = abs((ag->angleY) % (circularPoints));
 
-            //TODO: create rotations of branches
             float r = 360.0/circularPoints  * (rotationPoint);
             rotation = glm::rotate(rotation, glm::radians((float)ag->angleX), glm::vec3(1.0, 0.0, 0.0));
             rotation = glm::rotate(rotation, glm::radians((float)ag->angleZ), glm::vec3(0.0, 0.0, -1.0));
@@ -616,8 +615,6 @@ class TreeClusterItem : public Tree {
                     moveTo = (ag->end - circularPoints + 1) + abs(( 0 ) % circularPoints);
                     moveFrom = (ag->ag[m]->start + 1)  + ((0+ rotationPoint) % circularPoints);
                 }
-
-                //TODO: create rotations of branches
 
                 glm::mat4 rotation;
                 float r = 360.0/circularPoints  * (0);
@@ -678,7 +675,6 @@ class TreeClusterItem : public Tree {
 
         }
 
-        //TODO: COMPLETE CONECTORS
         void connectSegments(AttatchmentGroupings* ag, int m){
             depth--;
             if(ag->ag[m]->type == 'B'){
@@ -717,7 +713,6 @@ class TreeClusterItem : public Tree {
                 }
             }
         }
-
         //TODO
         void computeUV() {
         }
@@ -820,8 +815,6 @@ class TreeClusterItem : public Tree {
         {
             return this->vao;
         }
-
-        const int getColorType(){return 0;};
 
     float getTrunkDiameter(){
         return trunkDiameter;

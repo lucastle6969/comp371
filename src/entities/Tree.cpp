@@ -10,58 +10,6 @@
 #include "Tree.hpp"
 #include "../constants.hpp"
 
-/*Tree::Tree(
-		const GLuint &shader_program,
-		const float& world_x_location,
-		const float& world_z_location,
-		const float& base_span,
-		Entity *parent
-) : DrawableEntity(shader_program, parent) {
-	// rectangular prism
-	static const std::vector<GLuint> elements = {
-			0, 1,
-			1, 2,
-			2, 3,
-			3, 0,
-			4, 5,
-			5, 6,
-			6, 7,
-			7, 4,
-			0, 4,
-			1, 5,
-			2, 6,
-			3, 7
-	};
-
-	this->draw_mode = GL_LINES;
-
-	float height = 0.1f; // arbitrary height
-
-	this->vertices = {
-			glm::vec3(0.0f,      0.0f,   0.0f),      // 0: bottom-front-left
-			glm::vec3(base_span, 0.0f,   0.0f),      // 1: bottom-front-right
-			glm::vec3(base_span, 0.0f,   base_span), // 2: bottom-back-right
-			glm::vec3(0.0f,      0.0f,   base_span), // 3: bottom-back-left
-			glm::vec3(0.0f,      height, 0.0f),      // 4: top-front-left
-			glm::vec3(base_span, height, 0.0f),      // 5: top-front-right
-			glm::vec3(base_span, height, base_span), // 6: top-back-right
-			glm::vec3(0.0f,      height, base_span)  // 7: top-back-left
-	};
-
-	this->vao = this->initVertexArray(this->vertices, elements);
-}
-
-
-*/
-
-
-//
-// Created by Tof on 2017-11-19.
-//
-
-#include "Tree.hpp"
-
-
 const std::vector<glm::vec3>& Tree::getVertices() {
     return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
 }
@@ -71,7 +19,7 @@ GLuint Tree::getVAO() {
 }
 
 const int Tree::getColorType() {
-    return COLOR_WHITE;
+    return COLOR_TREE;
 }
 
 
@@ -109,7 +57,6 @@ glm::vec3 Tree::makeRotations(float xRot, float yRot, float zRot, glm::vec3 vect
     return vector;
 }
 
-//TODO: COMPLETE CONECTORS
 void Tree::connectSegments(AttatchmentGroupings* ag, int m, int rotPoint, int prevPoint, int circularPoints,
                      std::vector<GLuint>* indPntr){
     int set = abs((circularPoints - rotPoint) + prevPoint);

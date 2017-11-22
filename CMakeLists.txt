@@ -56,6 +56,7 @@ add_executable(proceduralworld
     src/shaderprogram.cpp
     src/objloader.hpp
     src/objloader.cpp
+    src/vendor/load_stb_image.hpp
     src/utils.hpp
     src/constants.hpp
     src/entities/Entity.hpp
@@ -75,30 +76,29 @@ add_executable(proceduralworld
 
     src/entities/Tree.hpp
     src/entities/Tree.cpp
-        src/entities/TreeA.hpp
-        src/entities/TreeA.cpp
-            src/entities/TrunkA.hpp
-            src/entities/TrunkA.cpp
-            src/entities/LeafA.hpp
-            src/entities/LeafA.cpp
-            src/entities/LeafBranchA.hpp
-            src/entities/LeafBranchA.cpp
-            src/entities/LeafContainerA.hpp
-            src/entities/LeafContainerA.cpp
-        src/entities/TreeB.hpp
-        src/entities/TreeB.cpp
-        src/entities/TreeC.hpp
-        src/entities/TreeC.cpp
-            src/entities/TreeClusterItem.hpp
-            src/entities/TreeClusterItem.cpp
-        src/TreeDistributor.hpp
-        src/TreeRandom.cpp
-        src/TreeRandom.hpp
+    src/entities/TreeA.hpp
+    src/entities/TreeA.cpp
+    src/entities/TrunkA.hpp
+    src/entities/TrunkA.cpp
+    src/entities/LeafA.hpp
+    src/entities/LeafA.cpp
+    src/entities/LeafBranchA.hpp
+    src/entities/LeafBranchA.cpp
+    src/entities/LeafContainerA.hpp
+    src/entities/LeafContainerA.cpp
+    src/entities/TreeB.hpp
+    src/entities/TreeB.cpp
+    src/entities/TreeC.hpp
+    src/entities/TreeC.cpp
+    src/entities/TreeClusterItem.hpp
+    src/entities/TreeClusterItem.cpp
+    src/TreeDistributor.hpp
+    src/TreeDistributor.cpp
+    src/TreeRandom.cpp
+    src/TreeRandom.hpp
+    )
 
-    src/vendor/load_stb_image.hpp
-        src/TreeDistributor.cpp)
-
-# Link libraries
+# Link librarssies
 if(APPLE)
     target_link_libraries(proceduralworld ${OPEN_GL})
 else()

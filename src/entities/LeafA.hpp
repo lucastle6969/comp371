@@ -28,7 +28,7 @@ public:
     };
 
     //builds 2
-    void buildLeaf(float r1, float r2, float leafDiameter);
+    void buildLeaf(const float& r1, const float& r2, const float& leafDiameter, int count);
 
     static int buildElements(int i, int start,  glm::vec3 leafNormal, int leafPoints ,  std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,
                              std::vector<glm::vec2>* leafUVs, std::vector<glm::vec3>* leafNorms);

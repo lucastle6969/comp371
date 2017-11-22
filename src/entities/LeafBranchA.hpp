@@ -26,13 +26,18 @@ public:
                 float lineHeight, float jagednessFactor_Leaf, 
                 std::vector<glm::vec3>* leafVertices,
                 std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs){
-        this->randomSeedValue = randomSeedValue;this->itterations = itterations;this->branchPoints = branchPoints;
-        this->lineHeight = lineHeight;this->jagednessFactor_Leaf = jagednessFactor_Leaf;
-        this->leafVertices = leafVertices; this->leafIndices = leafIndices; this->leafUVs = leafUVs;
+        this->randomSeedValue = randomSeedValue;
+        this->itterations = itterations;
+        this->branchPoints = branchPoints;
+        this->lineHeight = lineHeight;
+        this->jagednessFactor_Leaf = jagednessFactor_Leaf;
+        this->leafVertices = leafVertices;
+        this->leafIndices = leafIndices;
+        this->leafUVs = leafUVs;
     }
 
     void buildLeafBranch(float trunkDiameter);
-    
+
     void buildBranchElements(int baseVerticesSize, int i, int len);
 };
 #endif //leafBranch

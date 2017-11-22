@@ -1,14 +1,4 @@
 /*
- * TODO:    Branching angle Bug   	Create Classes			||  merge  || 			Textures               Tree Variations(no rotation double, regular, shrub patch[0 alpha lines])        Texture Variations(Oak, Birch, pine)
- *			6:00	`````````									00:00										Morning
- *			S		U		N		D	A		Y			---			            M				O					N				D				A					Y
-
-NOTES FOR POTENTIAL LARGE ALTERATIONS:
-	REMOVE ALL THE RECURSION. ITTERATION IS FASTER.
-	DONE BY BEFORE DUE DATE? EXPERIMENT ON MULTITHREADING?
-*/
-
-/*
 ____DOCUMENTATION_OF_TREE_GENERATION_____
 
 ONE CENTRAL .CPP FILE CONTROLS GENERATION OF TREE STRUCTURE. IS BROKEN DOWN INTO A LOG COMPONENT AND A LEAF BRANCH COMPONENT THAT
@@ -272,7 +262,6 @@ private:
         lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
     }
 
-    //TODO: ADD SHADER: DARKER ON MORE Z USING TEXTURES IN SHADER
     //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
     void bufferObject(const GLuint& shader_program) {
         //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
@@ -393,14 +382,10 @@ public:
         return  *combinedVertices;
     }
 
-
     GLuint getVAO()
     {
         return this->vao;
     }
-
-    const int getColorType(){return 0;};
-
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
             Tree(heightChunking, boostFactor, shader_program, entity, 'B'){

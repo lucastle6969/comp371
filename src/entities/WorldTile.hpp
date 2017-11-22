@@ -21,7 +21,6 @@ class WorldTile: public DrawableEntity {
 private:
 	std::vector<Rock*> rocks;
 	std::vector<Tree*> trees;
-
 public:
 	WorldTile(
 		const GLuint& shader_program,
