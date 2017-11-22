@@ -12,7 +12,6 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, double trunkDiameter,
     float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
     rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
-
     duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
     printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 };

@@ -71,3 +71,10 @@ void Tree::computeElementsInitial(AttatchmentGroupings* ag) {
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
 
+Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, char type)
+        : DrawableEntity(shader_program, entity){
+    draw_mode = GL_TRIANGLES;
+    this->heightChunking = heightChunking;
+    this->boostFactor = boostFactor;
+    this->type = type;
+}

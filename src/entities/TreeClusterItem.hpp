@@ -392,6 +392,7 @@ class TreeClusterItem : public Tree {
 
             float r2 = 0.000176135 * sqrt(abs(-88063572 + 50843527 * trunkDiameter * lineSegments)) * f;
             float r1 = sqrt(3) * sqrt(abs(2 - r2 * r2)) * f;
+            r1 = floor(r1) == 0 ? 1:r1;
 
             while (lineHeight < lineMax - 2){
                 for (int n = 0; n < leafPoints ; n++) {

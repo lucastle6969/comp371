@@ -75,12 +75,7 @@ protected:
 public:
     char getType(){return type;}
 
-    Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, char type)
-			: DrawableEntity(shader_program, entity){
-        this->heightChunking = heightChunking;
-        this->boostFactor = boostFactor;
-        this->type = type;
-    }
+    Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, char type);
 
     ~Tree(){
         delete combinedVertices; 	delete combinedIndices ;	delete combinedColor; delete combinedNormals;
