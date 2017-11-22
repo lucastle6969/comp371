@@ -92,7 +92,7 @@ public:
             seed = (unsigned long)(pow(seed, 2) * (tempTrunkDiameter+1)) % 99991;
 
             float circleAngle = TreeRandom::middleSquareRange(seed, 360.0, 0.0);
-            float distanceFromCenter = TreeRandom::middleSquareRange(seed, maxWidth(trunkDiameter), trunkDiameter);
+            float distanceFromCenter = TreeRandom::middleSquareRange(seed, maxWidth(trunkDiameter)*0, trunkDiameter*0);
 
             //std::cout << "DfC" << distanceFromCenter << "\n";
             float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter;
