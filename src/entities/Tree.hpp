@@ -38,7 +38,9 @@ protected:
 
         AttatchmentGroupings* ag[2];
 
-    AttatchmentGroupings(int start,	int end, int angleX, int angleY, int angleZ, char type,	char side){
+    AttatchmentGroupings(const int& start,	const int& end,
+                         const int& angleX, const int& angleY, const int& angleZ,
+                         const char& type,	const char& side){
         this->start = start;
         this->end = end;
         this->angleX = angleX;
@@ -59,9 +61,15 @@ protected:
     }
 };
 
+    float shootCalculation(const float& trunkDiameter, const double& ratio,const int& branches);
+    int lineMAX(const float& trunkDiameter, int k);
+
     std::vector<AttatchmentGroupings> branchStore;
-    std::vector<glm::vec3>* combinedVertices = new std::vector<glm::vec3>; 	std::vector<GLuint>* combinedIndices = new std::vector<GLuint>;		std::vector<glm::vec3>* combinedColor = new std::vector<glm::vec3>; std::vector<glm::vec3>* combinedNormals= new std::vector<glm::vec3>;
-    std::vector<glm::vec2>* combinedUV = new std::vector<glm::vec2>; std::vector<std::vector<int>> *combinedStartIndices = new std::vector<std::vector<int>> ;
+    std::vector<glm::vec3>* combinedVertices = new std::vector<glm::vec3>;
+    std::vector<GLuint>* combinedIndices = new std::vector<GLuint>;
+    std::vector<glm::vec3>* combinedNormals= new std::vector<glm::vec3>;
+    std::vector<glm::vec2>* combinedUV = new std::vector<glm::vec2>;
+    std::vector<std::vector<int>> *combinedStartIndices = new std::vector<std::vector<int>> ;
     GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
 
     float heightChunking;
@@ -73,30 +81,30 @@ protected:
     Entity* e;
 
 public:
+
     char getType(){return type;}
 
-    Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, char type);
-
-    ~Tree(){
-        delete combinedVertices; 	delete combinedIndices ;	delete combinedColor; delete combinedNormals;
-        delete combinedUV ; delete combinedStartIndices;
-    }
-
-    glm::vec3 boostSegment(AttatchmentGroupings* agLow, AttatchmentGroupings* agHigh, std::vector<glm::vec3>* vPntr);
+    glm::vec3 boostSegment(const AttatchmentGroupings* agLow, const AttatchmentGroupings* agHigh,
+                           const std::vector<glm::vec3>* vPntr);
 
     //values in radians
-    glm::vec3 makeRotations(float xRot, float yRot, float zRot, glm::vec3 vector);
+    glm::vec3 makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3 vector);
 
-    void connectSegments(AttatchmentGroupings* ag, int m, int rotPoint, int prevPoint, int circularPoints,
+    void connectSegments(const AttatchmentGroupings* ag, const int& m,
+                         const int& rotPoint, const int& prevPoint, const int& circularPoints,
                          std::vector<GLuint>* indPntr);
 
-    void computeElementsInitial(AttatchmentGroupings* ag);
+    void computeElementsInitial(const AttatchmentGroupings* ag);
 
     const std::vector<glm::vec3>& getVertices();
 
     GLuint getVAO();
 
     const int getColorType();
+
+    Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type);
+
+    ~Tree();
 };
 
 

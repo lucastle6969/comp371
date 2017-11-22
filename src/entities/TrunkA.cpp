@@ -93,7 +93,6 @@ int TrunkA::buildVertices(float trunkDiameter, float lineSegments){
             float tempTrunkDiameter = trunkDiameter + sign * (jagednessRandom) % ((int)(ceil(trunkDiameter))) * jagednessFactor / (trunkDiameter);
             glm::vec3 circleEdge(tempTrunkDiameter * sin(glm::radians(itterations  * n)), lineHeight + 0, tempTrunkDiameter *  cos(glm::radians(itterations  * n)) );
             trunkVertices->push_back(circleEdge);
-            trunkColor->push_back(brown);
         }
         lineHeight += lineSegments;
     }

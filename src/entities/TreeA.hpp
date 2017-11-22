@@ -58,6 +58,8 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <iostream>
 #include <cstdio>
 #include <ctime>
+//https://computing.llnl.gov/tutorials/pthreads/
+#include <pthread.h>
 
 #include "../TreeRandom.hpp"
 #include "TrunkA.hpp"
@@ -72,44 +74,43 @@ private:
 
 	//CONSIDERATION FOR MULTITHREADED LOADING
 	bool treeLoaded = false;
+	bool treeInit = false;
 
-	const int branches = 1;
-	const int k = 250;
+    const int branches = 1;
+    static constexpr int k = 250;
 	float limiter = 1;
 	int previousRotationCap = 8;
 
-float boostFactor = 0.5;
-float heightChunking = 20;//INVERSE
+    static constexpr float boostFactor = 0.5;
+    static constexpr int heightChunking = 20;//INVERSE
 
-	const int minYBranchAngle = 20;
-	const int maxYBranchAngle = 45;
-	const int minYTrunkAngle = 0;
-	const int maxYTrunkAngle = 20;
+    static constexpr int minYBranchAngle = 20;
+	static constexpr int maxYBranchAngle = 45;
+	static constexpr int minYTrunkAngle = 0;
+	static constexpr int maxYTrunkAngle = 20;
 
-	double trunkRatio = 1.0;
-	double branchRatio = 0.850;
+	const double trunkRatio = 1.0;
+	const double branchRatio = 0.850;
 
-	inline float ShootCalculation(float trunkDiameter, double ratio){	return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;	}
-	inline int lineMAX(float trunkDiameter) { return ceil(pow(pow(trunkDiameter, 2) * k, 1.0 / 2.0)); }
+	float trunk(float trunkDiameter, const float& seed, float lineHeight);
+	void leafBranch(float trunkDiameter, const float& seed, float lineHeight);
 
-	void generateTreeA(int _case, float trunkDiameter, float seed, float angleX, float angleY, float angleZ,
-                       char tag, AttatchmentGroupings* ag, float lineHeight);
+	void initiateMove(AttatchmentGroupings* ag);
 
-	float trunk(float trunkDiameter, float seed, float lineHeight);
-	void leafBranch(float trunkDiameter, float seed, float lineHeight);
+	void moveSegments(const int& previousRotation, AttatchmentGroupings* ag);
 
-	//TODO: ADD SHADER: DARKER ON MORE Z USING TEXTURES IN SHADER
+	void treeSetup(const GLuint& shader_program, float trunkDiameter, const int&);
+
+	void generateTreeA(const int& _case, float trunkDiameter, const float& seed,
+					   float angleX, float angleY, float angleZ,
+					   char tag, AttatchmentGroupings* ag, float lineHeight);
+
 	//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 	void bufferObject(const GLuint& shader_program);
-
-	void initiateMove(int pastRot, AttatchmentGroupings* ag);
-
-	void moveSegments(int previousRotation, AttatchmentGroupings* ag);
-
-	bool treeSetup(const GLuint& shader_program, float trunkDiameter, float seed);
-
 public:
+	void setTreeLoaded(bool state);
+	void setTreeInit(bool state);
 
-	TreeA(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
+	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
 };
 #endif //treeA

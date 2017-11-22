@@ -87,7 +87,7 @@ private:
     double trunkRatio = 1.0;
     double branchRatio = 0.850;
 
-    float ShootCalculation(float trunkDiameter, double ratio){	return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;	}
+    float shootCalculation(float trunkDiameter, double ratio){	return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;	}
     int lineMAX(float trunkDiameter) { return ceil(pow(pow(trunkDiameter, 2) * k, 1.0 / 2.0)); }
 
     void generateTreeB(int _case, float trunkDiameter, float seed, float angleX, float angleY, float angleZ, char tag, AttatchmentGroupings* ag, float lineHeight) {
@@ -114,8 +114,8 @@ private:
                                                  (int)angleX, (int)angleY, (int)angleZ, 'B', 'C');
 
                 //1A5. Start N new recursive functions from seed based angle at a certain base position
-                ShootDiameterBranch = ShootCalculation(trunkDiameter, branchRatio);
-                ShootDiameterTrunk = ShootCalculation(trunkDiameter, trunkRatio);
+                ShootDiameterBranch = shootCalculation(trunkDiameter, branchRatio);
+                ShootDiameterTrunk = shootCalculation(trunkDiameter, trunkRatio);
 
                 //1A6. On new branch create junction and new shoot
                 angleY = TreeRandom::treeOddEvenRandom(trunkDiameter, seed* ( 1) * 3, (lineHeight+1)* ( 1));
@@ -171,12 +171,12 @@ private:
                 angleY = TreeRandom::treeOddEvenRandom(trunkDiameter, seed * 5, lineHeight);
                 if (lineHeight == -1 || currentLineLength == -1) {
                     //if(//Test)//("====SPLIT====\n");
-                    ShootDiameterTrunk = ShootCalculation(trunkDiameter, trunkRatio);
+                    ShootDiameterTrunk = shootCalculation(trunkDiameter, trunkRatio);
                     currentLineLength = 0;
                 }
                 else{
-                    ShootDiameterBranch = ShootCalculation(trunkDiameter, branchRatio);
-                    ShootDiameterTrunk = ShootCalculation(trunkDiameter, trunkRatio);
+                    ShootDiameterBranch = shootCalculation(trunkDiameter, branchRatio);
+                    ShootDiameterTrunk = shootCalculation(trunkDiameter, trunkRatio);
                     for (int n = 0; n < branches; n++) {
                         //1A6. On new branch create circle then indices flowing back once to center cirlce.
                         angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed, currentLineLength, maxYBranchAngle, minYBranchAngle);
@@ -234,7 +234,6 @@ private:
         float lineSegments = ((float)lineMax) / heightChunking;
         TrunkA trunk(combinedVertices,
                      combinedIndices,
-                     combinedColor,
                      combinedStartIndices,
                      combinedUV,
                      seed
@@ -255,7 +254,6 @@ private:
         int lineMax = lineMAX(trunkDiameter);
         LeafContainerA lc(combinedVertices,
                           combinedIndices,
-                          combinedColor,
                           combinedStartIndices,
                           combinedUV,
                           seed);

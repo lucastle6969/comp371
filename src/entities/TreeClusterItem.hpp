@@ -43,7 +43,7 @@ class TreeClusterItem : public Tree {
         bool treeLoaded = false;
 
         std::vector<AttatchmentGroupings> branchStore;
-        std::vector<glm::vec3> combinedVertices; 	std::vector<GLuint> combinedIndices;		std::vector<glm::vec3> combinedColor; std::vector<glm::vec3> combinedNormals; std::vector<glm::vec2> combinedUV;
+        std::vector<glm::vec3> combinedVertices; 	std::vector<GLuint> combinedIndices; std::vector<glm::vec3> combinedNormals; std::vector<glm::vec2> combinedUV;
         GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
 
         const int branches = 1;
@@ -767,9 +767,6 @@ class TreeClusterItem : public Tree {
             combinedIndices.insert(combinedIndices.end(), leafIndices.begin(), leafIndices.end());
 
             //TEST: IS IT FASTER WITH WHILE LOOP OR SOMETHING ELSE?
-            combinedColor.reserve(trunkColor.size() + leafColor.size());
-            combinedColor.insert(combinedColor.end(), trunkColor.begin(), trunkColor.end());
-            combinedColor.insert(combinedColor.end(), leafColor.begin(), leafColor.end());
         }
 
     void bufferObject(const GLuint& shader_program) {

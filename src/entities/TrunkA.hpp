@@ -50,14 +50,12 @@ public:
 
     TrunkA(std::vector<glm::vec3>* trunkVertices,
           std::vector<GLuint>* trunkIndices,
-          std::vector<glm::vec3>* trunkColor,
           std::vector<std::vector<int>>* trunkStartIndices,
           std::vector<glm::vec2>* trunkUVs,
            int seed
     ){
         this->trunkVertices = trunkVertices;
         this->trunkIndices = trunkIndices;
-        this->trunkColor = trunkColor;
         this->trunkStartIndices = trunkStartIndices;
         this->trunkUVs = trunkUVs;
         baseVerticesSize = trunkVertices->size();

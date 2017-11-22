@@ -67,7 +67,7 @@ WorldTile::WorldTile(
 		float internal_tree_width = base_span * scale_factor;
 		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		int seed = (world_x_location + x_position) * (world_z_location + z_position)*scale_factor;
+		int seed = abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
 		// Add tree child
 		Tree* tree;
 		if(seed % 10 < 2){
@@ -78,7 +78,7 @@ WorldTile::WorldTile(
 
 		}
 		else{
-			tree = new TreeC(0 + seed % 15, shader_program, this, internal_tree_width*0.5, seed);
+			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width*0.5, seed);
 		}
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));

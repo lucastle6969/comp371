@@ -37,7 +37,7 @@ public:
     static constexpr float textureLeafEnd = 1.0f;
 private:
     std::vector<glm::vec3>* leafVertices; 	std::vector<GLuint>* leafIndices;
-    std::vector<glm::vec3>* leafColor; std::vector<std::vector<int>>* leafStartIndices;
+    std::vector<std::vector<int>>* leafStartIndices;
     std::vector<glm::vec2>* leafUVs;
 
     float lineHeight = 0;
@@ -47,14 +47,12 @@ private:
 public:
     LeafContainerA(std::vector<glm::vec3>* leafVertices,
     std::vector<GLuint>* leafIndices,
-            std::vector<glm::vec3>* leafColor,
     std::vector<std::vector<int>>* leafStartIndices,
             std::vector<glm::vec2>* leafUVs,
     int seed
     ){
         this->leafVertices = leafVertices;
         this->leafIndices = leafIndices;
-        this->leafColor = leafColor;
         this->leafStartIndices = leafStartIndices;
         this->leafUVs = leafUVs;
         baseVerticesSize = leafVertices->size();
