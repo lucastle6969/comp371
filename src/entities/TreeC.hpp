@@ -79,8 +79,9 @@ public:
         startTime = std::clock();
 
         //center piece
-        TreeClusterItem* tci = new TreeClusterItem(shader_program, entity, trunkDiameter, seed);
-        tci->setLocationFromCenter(0, 0);
+        TreeClusterItem* tci = new TreeClusterItem(shader_program, this, trunkDiameter, seed);
+        tci->setLocationWithPoints(0, 0);
+        tci->setPosition(glm::vec3(tci->xPos, 0, tci->zPos));
         treeCluster.push_back(tci);
         numberOfTrees--;
 
@@ -95,16 +96,18 @@ public:
             float distanceFromCenter = TreeRandom::middleSquareRange(seed, maxWidth(trunkDiameter)*0, trunkDiameter*0);
 
             //std::cout << "DfC" << distanceFromCenter << "\n";
-            float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter;
-            float zPos =  sin(glm::radians(circleAngle)) * distanceFromCenter;
+            float distScale = 30.0f;
+            float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter * distScale;
+            float zPos =  sin(glm::radians(circleAngle)) * distanceFromCenter * distScale;
 
             //std::cout << "   " << tempTrunkDiameter << "\n";
-            TreeClusterItem* tci = new TreeClusterItem(shader_program, entity,
+            TreeClusterItem* tci = new TreeClusterItem(shader_program, this,
                                                            tempTrunkDiameter <= 0? 0:  tempTrunkDiameter -= reductionRate,
                                                            seed);
 //            std::cout << xPos << " " << zPos << "\n";
-            float distScale = 30.0f;
-            tci->setLocationWithPoints(xPos / distScale, zPos / distScale);
+            tci->setLocationWithPoints(xPos , zPos);
+            tci->setPosition(glm::vec3(tci->xPos, 0, tci->zPos));
+            //translate(glm::vec3(xPos, 0, zPos));
             treeCluster.push_back(tci);
         }
 
@@ -117,74 +120,6 @@ public:
         return treeCluster;
     }
 
-    void scale(const float& scalar)
-    {
-        for(TreeClusterItem* tci : treeCluster){
-            tci->scale(scalar);
-        }
-    }
-    void rotate(const float& angle, const glm::vec3& axis)
-    {
-        for(TreeClusterItem* tci : treeCluster){
-            tci->rotate( angle, axis);
-        }
-    }
-    void resetRotation(){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->resetRotation();
-        }
-    }
-    void moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->moveForward(view_vec, up_vec,units);
-        }
-    }
-    void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->moveBack(view_vec,up_vec, units);
-        }
-    }
-    void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->moveLeft(view_vec, up_vec,  units);
-        }
-    }
-    void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->moveRight(view_vec, up_vec, units);
-        }
-    }
-    void translate(const glm::vec3& translation_vec){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->translate(translation_vec);
-        }
-    }
-    void setPosition(const glm::vec3& position){
-        for(TreeClusterItem* tci : treeCluster){
-            glm::vec3 localSpacing(tci->xPos, 0.0f, tci->zPos);
-            tci-> setPosition(position + localSpacing);
-        }
-    }
-    void hide(){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->hide();
-        }
-    }
-    void unhide(){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->unhide();
-        }
-    }
-    void toggleHide(){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->toggleHide();
-        }
-    }
-    void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix){
-        for(TreeClusterItem* tci : treeCluster){
-            tci->draw(view_matrix, projection_matrix);
-        }
-    }
     void setReductionRate(float r){
         reductionRate = r;
     }

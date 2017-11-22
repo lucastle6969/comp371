@@ -310,9 +310,6 @@ private:
             int fromPnt = (circularPoints-rotationPoint + (previousRotation));
             int toPnt = (previousRotation);
 
-//            std::cout <<  ag->ag[m]->angleZ << " ''' ";
-//            std::cout <<  fromPnt % 4 << ", " << (toPnt + 2) % 4 <<" ''' ";
-//            std::cout <<  ag->ag[m]->angleX << "X ==== ";
 
             if (ag->ag[m]->side == 'L') {
                 moveTo = (ag->end - circularPoints + 1) + (( 2 + toPnt) % circularPoints);
@@ -326,15 +323,6 @@ private:
 
             float r = 360.0/circularPoints  * (fromPnt);
 
-//            ag->ag[m]->angleX = (rotationPoint + previousRotation) % circularPoints == 4 ?
-//                    (ag->ag[m]->angleX < 0 ? ag->ag[m]->angleX += 90:
-//                     (ag->ag[m]->angleX > 0? ag->ag[m]->angleX -= 90:ag->ag[m]->angleX)):
-//                        ag->ag[m]->angleX;
-//            ag->ag[m]->angleZ = (rotationPoint + previousRotation) % circularPoints == 2 ?
-//                                (ag->ag[m]->angleZ < 0 ? ag->ag[m]->angleZ += 90:
-//                                 (ag->ag[m]->angleZ > 0? ag->ag[m]->angleZ -= 90:ag->ag[m]->angleZ += 90)):
-//                                    ag->ag[m]->angleZ;
-//            std::cout <<  ag->ag[m]->angleX << "\n";
             int start = ag->ag[m]->start + 1;
             int max = ag->ag[m]->end + 1;
             ////("%d, %d\n",start, max);
@@ -398,7 +386,6 @@ public:
 
         float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
         rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
-
 
         duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
         printf("Duration of B %f Units: %f ms\n", trunkDiameter, duration*1000);
