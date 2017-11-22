@@ -35,14 +35,9 @@ ANGLES COMPUTED DURING RECURSIONS
 #define COMP371_TREE_C_HPP
 
 #define START_TRUNK 0
-#define BRANCH 1
 #define TRUNK 2
 #define LEAF 3
-#define TOP_SEGMENT 4
 #define END_TRUNK -1
-
-#define GROUP_A1 0
-#define GROUP_A2 1
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -71,13 +66,14 @@ private:
     std::vector<TreeClusterItem*> treeCluster;
     int spacingConstant = 10;
     float reductionRate = 0.5;
+    static constexpr int heightChunking = 0;
+    static constexpr int boostFactor = 0;
     int maxWidth(float trunkDiameter){
-        return pow(spacingConstant * (trunkDiameter+1), 1.0/2) + trunkDiameter;
+        return (int)(pow(spacingConstant * (trunkDiameter+1), 1.0/2) + trunkDiameter);
     }
 public:
     TreeC(int numberOfTrees, const GLuint& shader_program, Entity* entity, float trunkDiameter, long seed):
             Tree(heightChunking, boostFactor, shader_program, entity, 'C'){
-
         double duration;
             std::clock_t startTime;
         startTime = std::clock();

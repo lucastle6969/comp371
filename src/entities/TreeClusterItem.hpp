@@ -7,14 +7,9 @@
 
 
 #define START_TRUNK 0
-#define BRANCH 1
 #define TRUNK 2
 #define LEAF 3
-#define TOP_SEGMENT 4
 #define END_TRUNK -1
-
-#define GROUP_A1 0
-#define GROUP_A2 1
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -38,9 +33,9 @@ class TreeClusterItem : public Tree {
         bool printTest = false;
         bool breakbool;
 
-        float bostFactor = 1.0;
+        static constexpr float boostFactor = 1.0;
 
-        //CONSIDERATION FOR MULTITHREADED LOADING
+    //CONSIDERATION FOR MULTITHREADED LOADING
         bool treeLoaded = false;
 
         std::vector<AttatchmentGroupings> branchStore;
@@ -73,7 +68,7 @@ class TreeClusterItem : public Tree {
         const int minYTrunkAngle = 0;
         const int maxYTrunkAngle = 15;
         const int yRotMod = 360;
-        float heightChunking = 20;//INVERSE
+        static constexpr int heightChunking = 20;//INVERSE
 
         double trunkRatio = 1.0;
         double branchRatio = 0.850;

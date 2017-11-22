@@ -76,8 +76,8 @@ private:
     const int branches = 1;
     const int k = 1;
 
-    float boostFactor = 0.5;
-    float heightChunking = 12;//INVERSE
+    static constexpr float boostFactor = 0.5;
+    static constexpr int heightChunking = 12;//INVERSE
 
     const int minYBranchAngle = 0;
     const int maxYBranchAngle = 70;
@@ -389,7 +389,6 @@ public:
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
             Tree(heightChunking, boostFactor, shader_program, entity, 'B'){
-        printf("%i %f\n", heightChunking, boostFactor);
         std::clock_t startTime;
         double duration;
         startTime = std::clock();
