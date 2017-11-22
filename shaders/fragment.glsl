@@ -15,7 +15,7 @@ uniform vec3 lightDiffuse;
 uniform vec3 lightSpecular;
 uniform float shininess;
 
-// uniform vec3 sunPosition; // test point light variable
+uniform vec3 sunPosition; // test point light variable
 uniform vec3 sunVector;
 uniform vec3 worldViewPos;
 
@@ -29,15 +29,17 @@ const int COLOR_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//some values for point light
+float quadratic = 0.032;
+float linear = 0.1;
+float constant = 1;
 
 struct DirLight{
     vec3 direction;
-    vec3 color;
 };
 
 struct PointLight {
     vec3 position;
-    vec3 color;
 };
 
 struct Material {
@@ -45,8 +47,14 @@ struct Material {
     vec3 diffuse;
     vec3 specular;
     float shininess;
-    sampler2D image;
 };
+
+uniform Material material;
+uniform DirLight dirLight;
+uniform PointLight pointLight;
+
+vec3 calculateColor(PointLight light, vec3 normal, vec3 fragpos, vec3 viewDirection);
+vec3 calculateColor (DirLight light, vec3 normal, vec3 viewDirection);
 
 void main()
 {
@@ -68,24 +76,64 @@ void main()
             break;
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
-
             // properties
             vec3 norm = normalize(worldNormal);
             vec3 viewDir = normalize(worldViewPos - worldPos);
+            vec3 pixelColor = calculateColor(pointLight, norm, worldPos, viewDir); // add second color for sun
 
-            vec3 lightDir = normalize(sunVector);
-            float diffuseShading = max(dot(norm, lightDir), 0.0);
-            vec3 reflectDir = reflect(-lightDir, norm);
-            float specularShading = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-            // calculate pixel color
-            vec3 diffuse = lightDiffuse * diffuseShading;
-            vec3 specular = lightSpecular * specularShading;
 
-            color = vec4((lightAmbient + diffuse + specular), 0.0);
+            color = vec4(pixelColor,1.0);
+
             break;
         }
         default:
             color = WHITE;
             break;
     }
+}
+
+vec3 calculateColor(PointLight light, vec3 normal, vec3 fragpos, vec3 viewDirection)
+{
+    vec3 lighDirection = normalize(light.position - fragpos);
+    float diffuse = max(dot(normal, lighDirection),0.0);
+    vec3 reflecDirection = reflect(-lighDirection, normal);
+    float specular = pow(max(dot(viewDirection, reflecDirection), 0.0), material.shininess);
+    float distance = length(light.position - fragpos);
+    float attenuation = 1.0 / (constant + linear * distance + quadratic *(distance * distance));
+    vec3 ambientValue;
+    vec3 diffuseValue;
+    vec3 specularValue;
+
+    if ( textureSize(tex_image,0).x > 0){
+        ambientValue = material.ambient * attenuation;
+        diffuseValue = material.diffuse * diffuse * attenuation;
+        specularValue = material.specular * specular * attenuation;
+    } else {
+        ambientValue = material.ambient * vec3(texture(tex_image, tex_coord)) * attenuation;
+        diffuseValue = material.diffuse * diffuse * vec3(texture(tex_image, tex_coord)) * attenuation;
+        specularValue = material.specular * specular * vec3(texture(tex_image, tex_coord)) * attenuation;
+    }
+    return (ambientValue + diffuseValue + specularValue);
+}
+
+vec3 calculateColor (DirLight light, vec3 normal, vec3 viewDirection)
+{
+    vec3 lightDirection = normalize(-light.direction);
+    float diffuse = max(dot(normal, lightDirection),0.0);
+    vec3  reflecDirection = reflect(-lightDirection, normal);
+    float specular = pow(max(dot(viewDirection, reflecDirection),0.0), material.shininess);
+    vec3 ambientValue;
+    vec3 diffuseValue;
+    vec3 specularValue;
+
+    if ( textureSize(tex_image,0).x > 0){
+        ambientValue = material.ambient;
+        diffuseValue = material.diffuse * diffuse;
+        specularValue = material.specular * specular;
+    } else {
+        ambientValue = material.ambient * vec3(texture(tex_image, tex_coord));
+        diffuseValue = material.diffuse * diffuse * vec3(texture(tex_image, tex_coord));
+        specularValue = material.specular * specular * vec3(texture(tex_image, tex_coord));
+    }
+    return (ambientValue + diffuseValue + specularValue);
 }

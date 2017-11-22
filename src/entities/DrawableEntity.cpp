@@ -81,7 +81,17 @@ void DrawableEntity::draw(
     auto lightSpecular_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightSpecular");
     auto shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "shininess");
     auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
-    //auto sunPosition_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunPosition");
+    auto sunPosition_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunPosition");
+
+    //new input value starts here
+    auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
+    auto material_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.diffuse");
+    auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
+    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
+    //texture delte with
+    auto pointLight_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
+
+
 
     glUseProgram(this->shader_program);
 
@@ -105,7 +115,19 @@ void DrawableEntity::draw(
 	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
 	glUniform3fv(worldViewPos_loc, 1, glm::value_ptr(world_view_position));
 
-	// TODO: figure out why the commented-out code below fails on macOS
+    //new values implemented
+    glUniform3fv(sunPosition_loc, 1, glm::value_ptr(light.light_direction));
+    glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
+    glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
+    glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));
+    glUniform1f(material_shininess_loc, this->shininess);
+
+
+
+
+
+
+    // TODO: figure out why the commented-out code below fails on macOS
 	// glUniform1i(tex_image_loc, GL_TEXTURE0);
 	// glActiveTexture(GL_TEXTURE0);
 
