@@ -55,7 +55,7 @@ GLenum DrawableEntity::getDrawMode() {
 
 GLuint DrawableEntity::getTextureId()
 {
-    static GLuint texture_id;
+    static GLuint texture_id = 0; // default value
     return texture_id;
 }
 
@@ -75,22 +75,17 @@ void DrawableEntity::draw(
     auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
 	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
 	auto position_z_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_z");
-    auto sunVector_loc =(GLuint)glGetUniformLocation(this->shader_program, "sunVector");
-    auto lightAmbient_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightAmbient");
-    auto lightDiffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightDiffuse");
-    auto lightSpecular_loc = (GLuint)glGetUniformLocation(this->shader_program, "lightSpecular");
-    auto shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "shininess");
     auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
-    auto sunPosition_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunPosition");
 
-    //new input value starts here
     auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
     auto material_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.diffuse");
     auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
     auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
-    //texture delte with
-    auto pointLight_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
 
+	auto sun_direction_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.direction");
+    auto point_light_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
+
+	auto use_texture_loc = (GLuint)glGetUniformLocation(this->shader_program, "use_texture");
 
 
     glUseProgram(this->shader_program);
@@ -105,29 +100,23 @@ void DrawableEntity::draw(
 	glm::vec3 position = this->getPosition();
 	glUniform1i(position_x_loc, (GLint)position.x);
 	glUniform1i(position_z_loc, (GLint)position.z);
-	glUniform3fv(sunVector_loc, 1, glm::value_ptr(light.light_direction));
-	glUniform3fv(lightAmbient_loc, 1, glm::value_ptr(this->ambient));
-	glUniform3fv(lightDiffuse_loc, 1, glm::value_ptr(this->diffuse));
-	glUniform3fv(lightSpecular_loc, 1, glm::value_ptr(this->specular));
-	glUniform1f(shininess_loc, this->shininess);
 	// compute world view position from inverse view matrix
 	// thanks: https://www.opengl.org/discussion_boards/showthread.php/178484-Extracting-camera-position-from-a-ModelView-Matrix
 	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
 	glUniform3fv(worldViewPos_loc, 1, glm::value_ptr(world_view_position));
 
-    //new values implemented
-    glUniform3fv(sunPosition_loc, 1, glm::value_ptr(light.light_direction));
+    glUniform3fv(sun_direction_loc, 1, glm::value_ptr(light.light_direction));
+	// TODO: make the point light follow the player? or remove it?
+	glUniform3fv(point_light_loc, 1, glm::value_ptr(glm::vec3(0)));
     glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
     glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
     glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));
     glUniform1f(material_shininess_loc, this->shininess);
 
+	GLuint texture_id = this->getTextureId();
+	glUniform1i(use_texture_loc, texture_id != 0);
 
-
-
-
-
-    // TODO: figure out why the commented-out code below fails on macOS
+	// TODO: figure out why the commented-out code below fails on macOS
 	// glUniform1i(tex_image_loc, GL_TEXTURE0);
 	// glActiveTexture(GL_TEXTURE0);
 
@@ -138,7 +127,7 @@ void DrawableEntity::draw(
 		// it's inefficient and useless to use glDrawElements for a point cloud
 		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
 	} else {
-		glBindTexture(GL_TEXTURE_2D, this->getTextureId());
+		glBindTexture(GL_TEXTURE_2D, texture_id);
 
 		int element_buffer_array_size;
 		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);

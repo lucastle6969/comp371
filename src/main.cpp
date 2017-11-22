@@ -213,7 +213,7 @@ int main()
 
 	world = new World(shader_program);
     //create light
-    Light* light = new Light(glm::vec3(0,-10,0), glm::vec3(.5,.5,.5));
+    Light light(glm::vec3(0,0,0.5), glm::vec3(.5,.5,.5));
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -240,7 +240,7 @@ int main()
 			1500.0f * player_scale
 		);
 
-		world->draw(view_matrix, projection_matrix, *light);
+		world->draw(view_matrix, projection_matrix, light);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
