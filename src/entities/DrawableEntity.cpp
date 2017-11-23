@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <climits>
 
 #include "Light.h"
 #include "Entity.hpp"
@@ -55,7 +56,7 @@ GLenum DrawableEntity::getDrawMode() {
 
 GLuint DrawableEntity::getTextureId()
 {
-    static GLuint texture_id = 0; // default value
+    static GLuint texture_id = UINT_MAX; // default value
     return texture_id;
 }
 
@@ -119,7 +120,7 @@ void DrawableEntity::draw(
     glUniform1f(material_shininess_loc, this->shininess);
 
 	GLuint texture_id = this->getTextureId();
-	glUniform1i(use_texture_loc, texture_id != 0);
+	glUniform1i(use_texture_loc, texture_id != UINT_MAX);
 
 	// TODO: figure out why the commented-out code below fails on macOS
 	// glUniform1i(tex_image_loc, GL_TEXTURE0);
