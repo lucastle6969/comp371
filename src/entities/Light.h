@@ -10,11 +10,11 @@
     class Light{
     public:
         glm::vec3 light_direction;
-        glm::vec3 light_position;
+        glm::vec3 color;
 
-        Light(glm::vec3 direction, glm::vec3 position){
+        Light(glm::vec3 direction, glm::vec3 color){
             this->light_direction = direction;
-            this->light_position = position;
+            this->color = color;
         }
     };
 

@@ -55,10 +55,10 @@ protected:
         GLuint* uv_buffer = nullptr
     );
     void setMaterial(
-        const glm::vec3& lightAmbient,
-        const glm::vec3& lightDiffuse,
-        const glm::vec3& lightSpecular,
-        const float& lightShininess
+        const glm::vec3& ambient,
+        const glm::vec3& diffuse,
+        const glm::vec3& specular,
+        const float& shininess
     );
 
 public:
