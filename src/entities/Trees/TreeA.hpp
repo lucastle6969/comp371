@@ -58,7 +58,6 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <iostream>
 #include <cstdio>
 #include <ctime>
-#include <pthread.h>
 
 #include "src/TreeRandom.hpp"
 #include "TrunkA.hpp"
