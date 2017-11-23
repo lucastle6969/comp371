@@ -89,9 +89,6 @@ void DrawableEntity::draw(
     auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
     auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
     //texture delte with
-    auto pointLight_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
-
-
 
     glUseProgram(this->shader_program);
 
@@ -116,7 +113,8 @@ void DrawableEntity::draw(
 	glUniform3fv(worldViewPos_loc, 1, glm::value_ptr(world_view_position));
 
     //new values implemented
-    glUniform3fv(sunPosition_loc, 1, glm::value_ptr(light.light_direction));
+    glUniform3fv(sunVector_loc, 1, glm::value_ptr(light.light_direction));
+    glUniform3fv(sunPosition_loc, 1, glm::value_ptr(light.light_position));
     glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
     glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
     glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));

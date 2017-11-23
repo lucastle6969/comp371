@@ -79,8 +79,9 @@ void main()
             // properties
             vec3 norm = normalize(worldNormal);
             vec3 viewDir = normalize(worldViewPos - worldPos);
-            vec3 pixelColor = calculateColor(pointLight, norm, worldPos, viewDir); // add second color for sun
 
+            vec3 pixelColor = calculateColor(pointLight, norm, worldPos, viewDir);
+            //vec3 pixelColor = calculateColor(dirLight, norm, viewDir); // add second color for sun
 
             color = vec4(pixelColor,1.0);
 
@@ -94,7 +95,7 @@ void main()
 
 vec3 calculateColor(PointLight light, vec3 normal, vec3 fragpos, vec3 viewDirection)
 {
-    vec3 lighDirection = normalize(light.position - fragpos);
+    vec3 lighDirection = normalize(fragpos - light.position);
     float diffuse = max(dot(normal, lighDirection),0.0);
     vec3 reflecDirection = reflect(-lighDirection, normal);
     float specular = pow(max(dot(viewDirection, reflecDirection), 0.0), material.shininess);
@@ -114,6 +115,7 @@ vec3 calculateColor(PointLight light, vec3 normal, vec3 fragpos, vec3 viewDirect
         specularValue = material.specular * specular * vec3(texture(tex_image, tex_coord)) * attenuation;
     }
     return (ambientValue + diffuseValue + specularValue);
+    //return (ambientValue + diffuseValue);
 }
 
 vec3 calculateColor (DirLight light, vec3 normal, vec3 viewDirection)
