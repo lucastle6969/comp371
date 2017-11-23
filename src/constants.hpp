@@ -9,6 +9,7 @@ static const int COLOR_HEIGHT = 2;
 static const int COLOR_TILE = 3;
 static const int COLOR_TEXTURE = 4;
 static const int COLOR_LIGHTING = 5;
+static const int COLOR_TREE = 6;
 
 static const char* APP_NAME = "Procedural World";
 

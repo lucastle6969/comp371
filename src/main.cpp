@@ -23,6 +23,7 @@
 #include "src/entities/World.hpp"
 #include "src/entities/Player.hpp"
 #include "constants.hpp"
+#include "TreeDistributor.hpp"
 
 World* world;
 
@@ -202,6 +203,7 @@ int main()
 	framebufferSizeCallback(window, width, height);
 
 	bool shader_program_ok;
+
 	GLuint shader_program = prepareShaderProgram(
 		"../shaders/vertex.glsl",
 		"../shaders/fragment.glsl",
@@ -215,6 +217,7 @@ int main()
     //create light
 
     Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
+
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))

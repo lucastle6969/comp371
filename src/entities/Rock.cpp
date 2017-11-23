@@ -9,14 +9,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <stdexcept>
-#include <src/vendor/load_stb_image.hpp>
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 
 #include "../constants.hpp"
-
+#include "../loadTexture.hpp"
 
 Rock::Rock(
     const GLuint &shader_program,
@@ -475,38 +474,10 @@ const int Rock::getColorType()
 
 GLuint Rock::getTextureId()
 {
-    static GLuint rock_texture;
-    static bool tex_loaded = false;
-
-    if (tex_loaded) {
-        return rock_texture;
-    }
-
-    glGenTextures(1, &rock_texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, rock_texture);
-
-    //set wrapping params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-    //set texture filtering params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //load image, create texture and generate mipmaps
-    int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
-
-	std::string path = "../textures/baliRockB.jpg";
-	unsigned char* rock_tex_data = stbi_load(path.c_str(), &rock_tex_width, &rock_tex_height, &rock_tex_nrChannels, 0);
-    if (rock_tex_data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, rock_tex_width, rock_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, rock_tex_data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }else{
-        throw std::runtime_error("Failed to load image \'" + path + "\': ");
-    }
-    stbi_image_free(rock_tex_data);
-
-    tex_loaded = true;
-    return rock_texture;
+	static GLuint rock_texture = loadTexture(
+			"../textures/baliRockB.jpg",
+			GL_NEAREST,
+			GL_NEAREST
+	);
+	return rock_texture;
 }
