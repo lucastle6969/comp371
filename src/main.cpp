@@ -23,6 +23,7 @@
 #include "src/entities/World.hpp"
 #include "src/entities/Player.hpp"
 #include "constants.hpp"
+#include "TreeDistributor.hpp"
 
 World* world;
 
@@ -204,11 +205,15 @@ int main()
 	bool shader_program_ok;
 	GLuint shader_program = prepareShaderProgram("../shaders/vertex.glsl", "../shaders/fragment.glsl",
 	                                             &shader_program_ok);
-	if (!shader_program_ok) {
-		return -1;
-	}
+    if (!shader_program_ok) {
+        return -1;
+    }
+
+ /*   //enable tree distributor functions shaders, must have entity declared in world tile
+    TreeDistributor::init(shader_program, shader_program, shader_program, nullptr);*/
 
 	world = new World(shader_program);
+
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
