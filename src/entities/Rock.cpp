@@ -240,7 +240,7 @@ Rock::Rock(
 	// http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
 	this->setMaterial(
 		glm::vec3(0.53, 0.05, 0.07),
-		glm::vec3(0.7, 0.75, 0.8),
+		glm::vec3(0.53, 0.5, 0.07),
 		glm::vec3(0.332741, 0.328634, 0.346435),
 		38.4f
 	);

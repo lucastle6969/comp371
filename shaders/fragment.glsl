@@ -48,8 +48,8 @@ const int COLOR_TREE = 6;
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 //some values for point light
-float quadratic = 0.032;
-float linear = 0.1;
+float quadratic = 0.32;
+float linear = 0.5;
 float constant = 1;
 
 struct ColorComponents {
@@ -65,8 +65,16 @@ ColorComponents calculateColor(
     const vec3 view_dir
 );
 
+vec3 colorValue;
+vec3 difValue;
+vec3 specValue;
+float shiValue;
+
 void main()
 {
+
+    colorValue = material.ambient;
+
     switch (color_type) {
         case COLOR_WHITE:
             color = WHITE;
@@ -78,11 +86,12 @@ void main()
             color = vec4(vec3(pos.y), 1.0f);
             break;
         case COLOR_TILE:
-            color = vec4(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f, 1.0f);
+            colorValue = vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f);            //break;
+            color = vec4(colorValue, 1.0f);
             break;
         case COLOR_TEXTURE:
-            color = texture(tex_image, tex_coord);
-            break;
+            //color = texture(tex_image, tex_coord);
+            //break;
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
 
@@ -112,13 +121,13 @@ void main()
             );
 
             vec3 ambientValue =
-                max(sunlight_components.ambient, 0) +
+               // max(sunlight_components.ambient, 0) +
                 max(pointlight_components.ambient * attenuation, 0);
             vec3 diffuseValue =
-                max(sunlight_components.diffuse, 0) +
+                //max(sunlight_components.diffuse, 0) +
                 max(pointlight_components.diffuse * attenuation, 0);
             vec3 specularValue =
-                max(sunlight_components.specular, 0) +
+                //max(sunlight_components.specular, 0) +
                 max(pointlight_components.specular * attenuation, 0);
 
             if (use_texture) {
@@ -127,10 +136,10 @@ void main()
                 vec3 tex3 = vec3(texture(tex_image, tex_coord));
                 ambientValue *= tex3;
                 diffuseValue *= tex3;
-                specularValue *= tex3;
+                //specularValue *= tex3;
             }
 
-            color = vec4((ambientValue + diffuseValue + specularValue), 0.0);
+            color += vec4((ambientValue + diffuseValue + specularValue), 0.0);
             break;
         }
         case COLOR_TREE:
@@ -207,7 +216,7 @@ ColorComponents calculateColor(
     float specular_shading = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
 
     return ColorComponents(
-        material.ambient * light_color,
+        colorValue * light_color,
         material.diffuse * diffuse_shading * light_color,
         material.specular * specular_shading * light_color
     );

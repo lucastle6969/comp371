@@ -81,7 +81,7 @@ void DrawableEntity::draw(
     auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
     auto material_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.diffuse");
     auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
-    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
+    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.shininess");
 
 
 	auto sun_direction_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.direction");
