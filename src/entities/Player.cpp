@@ -30,8 +30,7 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 	this->vao = this->initVertexArray(
 		this->vertices,
 		elements,
-		normals//,
-		//UVs
+		normals
 	);
 	this->setMaterial(
 		glm::vec3(0.8f, 0.7f, 0.0f),
