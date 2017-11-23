@@ -237,7 +237,7 @@ int main()
 		glm::mat4 projection_matrix = glm::perspective(
 			45.0f,
 			(GLfloat)framebuffer_width / (GLfloat)framebuffer_height,
-			30.0f * player_scale,
+			15.0f * player_scale,
 			1500.0f * player_scale
 		);
 
