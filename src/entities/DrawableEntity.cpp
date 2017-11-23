@@ -112,9 +112,9 @@ void DrawableEntity::draw(
     glUniform3fv(sun_direction_loc, 1, glm::value_ptr(light.light_direction));
 	glUniform3fv(sun_color_loc, 1, glm::value_ptr(light.color));
 	// TODO: make the point light follow the player? or remove it?
-	glUniform3fv(point_light_pos_loc, 1, glm::value_ptr(glm::vec3(0)));
+	glUniform3fv(point_light_pos_loc, 1, glm::value_ptr(light.light_position));
 	// TODO: define the point light color somewhere else or remove it
-	glUniform3fv(point_light_color_loc, 1, glm::value_ptr(glm::vec3(0.2, 0.3, 0.3)));
+	glUniform3fv(point_light_color_loc, 1, glm::value_ptr(light.position_light_color));
     glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
     glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
     glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));
