@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cstdio>
 #include <ctime>
+#include <cmath>
 
 constexpr float TreeClusterItem::boostFactor;
 constexpr int TreeClusterItem::branches;
@@ -92,7 +93,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
                                                            maxYBranchAngle, minYBranchAngle); //* (((int)seed) % 2 == 0 ? -1 : 1);
                 angleY = angleY;
                 depth = 0;
-                generateTreeCI(TRUNK, offShootDiameterBranch / (branches), seed, -abs(angleX), angleY, abs(angleZ), 'R', agNew, 0);
+                generateTreeCI(TRUNK, offShootDiameterBranch / (branches), seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
             }
             //1A7. On new trunk join to junction and continue
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle); ;
@@ -101,7 +102,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             depth = 0;
             previousRotation = 0;
             //CONSIDERATION: MULTITHREAD THE TRUNK AND MOVEMENT
-            generateTreeCI(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, -abs(angleZ), 'L', agNew, currentLineLength);
+            generateTreeCI(TRUNK, offShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
 
             initiateMove(agNew);
             agNew->selfErase();
@@ -155,7 +156,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
                     angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed, currentLineLength,
                                                                maxYBranchAngle, minYBranchAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
                     angleY = angleY;
-                    generateTreeCI(TRUNK, offShootDiameterBranch, seed, -abs(angleX), angleY, abs(angleZ), 'R', agNew, 0);
+                    generateTreeCI(TRUNK, offShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
                 }
             }
 
@@ -163,7 +164,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed, currentLineLength, maxYTrunkAngle, minYTrunkAngle);;
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYTrunkAngle, minYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
-            generateTreeCI(TRUNK, offShootDiameterTrunk, seed, abs(angleX), angleY, -abs(angleZ), 'L', agNew, currentLineLength);
+            generateTreeCI(TRUNK, offShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
             depth--;
             k += 5;
             break;
@@ -215,7 +216,7 @@ void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, 
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
     int circularPoints = trunkPoints;
-    int rotationPoint = abs((ag->angleY) % (circularPoints));
+    int rotationPoint = std::abs((ag->angleY) % (circularPoints));
 
     const float r = 360.0f/circularPoints  * (rotationPoint);
     rotation = glm::rotate(rotation, glm::radians((float)ag->angleX), glm::vec3(1.0, 0.0, 0.0));
@@ -240,14 +241,14 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
         int moveFrom = 0;
 
         const int circularPoints = ag->ag[m]->type == 'L' ? leafPoints : trunkPoints;
-        rotationPoint = abs((ag->ag[m]->angleY) % (circularPoints));
+        rotationPoint = std::abs((ag->ag[m]->angleY) % (circularPoints));
         rotationPoint = 0;
        if (ag->ag[m]->side == 'L') {
-            moveTo = (ag->end - circularPoints + 1) +abs(2 ) % circularPoints;
+            moveTo = (ag->end - circularPoints + 1) +std::abs(2 ) % circularPoints;
             moveFrom = (ag->ag[m]->start + 1) + (2 + rotationPoint) % circularPoints;
         }
         else {
-            moveTo = (ag->end - circularPoints + 1) + abs(( 0 ) % circularPoints);
+            moveTo = (ag->end - circularPoints + 1) + std::abs(( 0 ) % circularPoints);
             moveFrom = (ag->ag[m]->start + 1)  + ((0+ rotationPoint) % circularPoints);
         }
 

@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Tree.hpp"
 #include "TreeA.hpp"
 #include "TrunkA.hpp"
@@ -70,14 +72,14 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
                 angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed* (n + 1) * 7, currentLineLength* (n + 1), maxYBranchAngle, minYBranchAngle); //* (((int)seed) % 2 == 0 ? -1 : 1);
                 //angleY = angleY;
 
-                generateTreeA(TRUNK, ShootDiameterBranch / (branches), seed, -abs(angleX), angleY, abs(angleZ), 'R', agNew, 0);
+                generateTreeA(TRUNK, ShootDiameterBranch / (branches), seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
             }
             //1A7. On new trunk join to junction and continue
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle) ;
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             ///angleY = angleY;
 
-            generateTreeA(TRUNK, ShootDiameterTrunk, seed, abs(angleX), angleY, -abs(angleZ), 'L', agNew, currentLineLength);
+            generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
 
             initiateMove(agNew);
             agNew->selfErase();
@@ -122,7 +124,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
                     angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed, currentLineLength, maxYBranchAngle, minYBranchAngle);
                     angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYBranchAngle, minYBranchAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
                     ///angleY = angleY;
-                    generateTreeA(TRUNK, ShootDiameterBranch, seed, -abs(angleX), angleY, abs(angleZ), 'R', agNew, 0);
+                    generateTreeA(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
                 }
             }
 
@@ -130,7 +132,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed, currentLineLength, minYTrunkAngle, maxYTrunkAngle);
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, minYTrunkAngle, maxYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
-            generateTreeA(TRUNK, ShootDiameterTrunk, seed, abs(angleX), angleY, -abs(angleZ), 'L', agNew, currentLineLength);
+            generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
             break;
         case LEAF:
             //1B. If trunk width is past a threshold then create a leaf line
@@ -197,7 +199,7 @@ void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 void TreeA::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
     const int circularPoints = TrunkA::trunkPoints;
-    int rotationPoint = abs((ag->angleY) % (int)(circularPoints / limiter ));
+    int rotationPoint = std::abs((ag->angleY) % (int)(circularPoints / limiter ));
 
     rotationPoint = rotationPoint == 0 ? 0 : 1;
 
@@ -224,7 +226,7 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         else if(previousRotation >= previousRotationCap) limiter = 0.01;
 
         int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerA::leafBranchPoints : TrunkA::trunkPoints;
-        int rotationPoint = abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
+        int rotationPoint = std::abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
 
         rotationPoint = rotationPoint < 1 ? 1 : 0;
 

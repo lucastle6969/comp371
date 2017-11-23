@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <cmath>
 #include <cstdlib>
 
 #include "Entity.hpp"
@@ -74,7 +75,7 @@ WorldTile::WorldTile(
 		float internal_tree_width = base_span * scale_factor;
 		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		int seed = abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
+		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
 		// Add tree child
 		Tree* tree;
 		if(seed % 10 < 2){

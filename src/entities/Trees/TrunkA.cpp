@@ -1,3 +1,4 @@
+#include <cmath>
 #include "TrunkA.hpp"
 
 TrunkA::TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed){
@@ -58,7 +59,7 @@ void TrunkA::buildTrunkElements(const int& start, const int& end,
     const float increments = ((end - start) / trunkPoints) / 2.0;
     const float jumps = textureTrunkHeight / increments;
     for (GLuint i = start; i < end; i ++){
-        float v = abs(-textureTrunkHeight + jumps*i/trunkPoints);
+        float v = std::abs(-textureTrunkHeight + jumps*i/trunkPoints);
         trunkUVs->push_back(glm::vec2(((float)i) / trunkPoints, v));
     }
 }

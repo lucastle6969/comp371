@@ -5,6 +5,8 @@
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
+#include <cmath>
+
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
 #include "Tree.hpp"
@@ -82,7 +84,7 @@ glm::vec3 Tree::makeRotations(const float& xRot, const float& yRot, const float&
 void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
                            const int& rotPoint, const int& prevPoint, const int& circularPoints,
                      std::vector<GLuint>* indPntr){
-    int set = abs((circularPoints - rotPoint) + prevPoint);
+    int set = std::abs((circularPoints - rotPoint) + prevPoint);
     TrunkA::buildConnectorElements(ag->end - TrunkA::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
