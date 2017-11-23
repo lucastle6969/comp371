@@ -35,8 +35,9 @@ const float initial_pitch = -65.0f;
 const float initial_yaw = -90.0f;
 const float max_pitch = 89.0f;
 const float min_pitch = -89.0f;
-const float first_person_pitch = 45.0f;
+const float first_person_pitch = 20.0f;
 const float max_follow_distance = 300.0f;
+const float first_person_follow_distance = 0.001f;
 
 // Camera variables
 float pitch = initial_pitch;
@@ -79,7 +80,7 @@ glm::vec3 getFollowVector() {
 			// to accommodate for less space near terrain. At a specified high pitch,
 			// the third-person camera becomes first-person.
 			std::max(
-				0.0001f,
+				first_person_follow_distance,
 				(1 - (pitch - min_pitch) / (first_person_pitch - min_pitch))
 			);
 }
