@@ -3,8 +3,8 @@
 #define PROCEDURALWORLD_TREE_H
 
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/OpenGL.h>
 #else
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
@@ -14,11 +14,11 @@
 
 #include <vector>
 
-#include "../constants.hpp"
+#include "src/constants.hpp"
 #include "TrunkA.hpp"
-#include "LeafContainerA.hpp"
-#include "Entity.hpp"
-#include "DrawableEntity.hpp"
+#include "LeafContainerAB.hpp"
+#include "src/entities/Entity.hpp"
+#include "src/entities/DrawableEntity.hpp"
 
 //wrapper class
 class Tree: public DrawableEntity {

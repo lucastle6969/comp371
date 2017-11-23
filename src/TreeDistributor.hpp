@@ -13,10 +13,10 @@
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
-#include "entities/Tree.hpp"
-#include "entities/TreeA.hpp"
-#include "src/entities/TreeB.hpp"
-#include "src/entities/TreeC.hpp"
+#include "src/entities/Trees/Tree.hpp"
+#include "src/entities/Trees/TreeA.hpp"
+#include "src/entities/Trees/TreeB.hpp"
+#include "src/entities/Trees/TreeC.hpp"
 #include<exception>
 
 

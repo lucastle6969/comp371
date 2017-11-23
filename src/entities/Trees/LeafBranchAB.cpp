@@ -1,6 +1,6 @@
-#include "LeafBranchA.hpp"
+#include "LeafBranchAB.hpp"
 
-void LeafBranchA::buildLeafBranch(float trunkDiameter){
+void LeafBranchA::buildLeafBranch(const float& trunkDiameter){
     for (int n = 0; n < branchPoints ; n++) {
         int sign = -1;
         int jagednessRandom = randomSeedValue * (((int)(n * 13.4) % 17) + 1);
@@ -14,8 +14,8 @@ void LeafBranchA::buildLeafBranch(float trunkDiameter){
 }
 
 void LeafBranchA::buildBranchElements(int baseVerticesSize, int i, int len){
-    int base = i * branchPoints* 3 + baseVerticesSize;
-    int set = (i + 1)*branchPoints* 3 + baseVerticesSize;
+    const int base = i * branchPoints* 3 + baseVerticesSize;
+    const int set = (i + 1)*branchPoints* 3 + baseVerticesSize;
     int nSolution = 0;
     for (int n = 0; n < branchPoints; n++) {
         if (n == branchPoints- 1) {
@@ -25,7 +25,6 @@ void LeafBranchA::buildBranchElements(int baseVerticesSize, int i, int len){
             leafIndices->push_back(set + 0);
             leafIndices->push_back(set + n);
             leafIndices->push_back(base + n);
-            ////printf("%f %f\n", (float)(n + nSolution) / branchPoints, (float)i / (len) );
             leafUVs->push_back(glm::vec2((float) (n + nSolution) / branchPoints, (float) i / (len)));
             nSolution++;
         }
@@ -37,11 +36,27 @@ void LeafBranchA::buildBranchElements(int baseVerticesSize, int i, int len){
             leafIndices->push_back(set + n);
             leafIndices->push_back(base + n);
         }
-        ////printf("%f %f\n", (float)(n + nSolution) / branchPoints, (float)i / (len) );
         leafUVs->push_back(glm::vec2((float)(n + nSolution) / branchPoints, (float)i / (len)));
     }
     for (int n = 0; n < branchPoints+ 1; n++) {
-        ////printf("%f %f\n", (float)(n) / branchPoints, (float)(i+1) / (len) );
         leafUVs->push_back(glm::vec2((float)(n + nSolution) / branchPoints, (float)(i+1) / (len)));
     }
+}
+
+LeafBranchA::LeafBranchA(const int& randomSeedValue, const float& itterations, const int& branchPoints,
+            const float& lineHeight, const float& jagednessFactor_Leaf,
+            std::vector<glm::vec3>* leafVertices,
+            std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs){
+    this->randomSeedValue = randomSeedValue;
+    this->itterations = itterations;
+    this->branchPoints = branchPoints;
+    this->lineHeight = lineHeight;
+    this->jagednessFactor_Leaf = jagednessFactor_Leaf;
+    this->leafVertices = leafVertices;
+    this->leafIndices = leafIndices;
+    this->leafUVs = leafUVs;
+}
+
+float LeafBranchA::getLineHeight(){
+    return lineHeight;
 }

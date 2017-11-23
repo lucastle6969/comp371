@@ -1,14 +1,14 @@
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/OpenGL.h>
 #else
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
-#include "Entity.hpp"
-#include "DrawableEntity.hpp"
+#include "src/entities/Entity.hpp"
+#include "src/entities/DrawableEntity.hpp"
 #include "Tree.hpp"
-#include "../constants.hpp"
+#include "src/constants.hpp"
 
 float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){
     return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;
@@ -30,6 +30,22 @@ const int Tree::getColorType() {
     return COLOR_TREE;
 }
 
+
+Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type)
+        : DrawableEntity(shader_program, entity){
+    draw_mode = GL_TRIANGLES;
+    this->heightChunking = heightChunking;
+    this->boostFactor = boostFactor;
+    this->type = type;
+}
+
+Tree::~Tree() {
+    delete combinedVertices;
+    delete combinedIndices;
+    delete combinedNormals;
+    delete combinedUV;
+    delete combinedStartIndices;
+}
 
 glm::vec3 Tree::boostSegment(const AttatchmentGroupings* agLow,const AttatchmentGroupings* agHigh,
                              const std::vector<glm::vec3>* vPntr){
@@ -79,20 +95,4 @@ void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
     else
         TrunkA::buildTrunkElements(ag->start + 1, ag->end,
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
-}
-
-Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type)
-        : DrawableEntity(shader_program, entity){
-    draw_mode = GL_TRIANGLES;
-    this->heightChunking = heightChunking;
-    this->boostFactor = boostFactor;
-    this->type = type;
-}
-
-Tree::~Tree() {
-    delete combinedVertices;
-    delete combinedIndices;
-    delete combinedNormals;
-    delete combinedUV;
-    delete combinedStartIndices;
 }

@@ -12,8 +12,14 @@ int TreeRandom::treeOddEvenRandom(float trunkDiameter, float seed, float lineHei
     int randomSeedValue = ((int)(trunkDiameter * seed * (((int)lineHeight % 10 * (int)(lineHeight*7) % 100 + 1 ) * 10) * 3)) % (k*10 * (int)ceil(trunkDiameter+1));
     return randomSeedValue;
 }
-int TreeRandom::branchAngleFromRandom(float trunkDiameter, float seed, float lineHeight, int maxYBranchAngle , int minYBranchAngle) {return treeRandom(trunkDiameter, seed, lineHeight) % (maxYBranchAngle - minYBranchAngle) + minYBranchAngle;}
-int TreeRandom::trunkAngleFromRandom(float trunkDiameter, float seed, float lineHeight, int maxYTrunkAngle ,int minYTrunkAngle) { return treeRandom(trunkDiameter, seed, lineHeight) % (maxYTrunkAngle - minYTrunkAngle) + minYTrunkAngle; }
+int TreeRandom::branchAngleFromRandom(float trunkDiameter, float seed, float lineHeight,
+                                      int maxYBranchAngle , int minYBranchAngle) {
+    return treeRandom(trunkDiameter, seed, lineHeight) % (maxYBranchAngle - minYBranchAngle) + minYBranchAngle;
+}
+int TreeRandom::trunkAngleFromRandom(float trunkDiameter, float seed, float lineHeight,
+                                     int maxYTrunkAngle ,int minYTrunkAngle) {
+    return treeRandom(trunkDiameter, seed, lineHeight) % (maxYTrunkAngle - minYTrunkAngle) + minYTrunkAngle;
+}
 
 #include <iostream>
 unsigned long TreeRandom::middleSquareRange(int seed, float max, float min){

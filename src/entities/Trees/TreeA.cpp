@@ -2,6 +2,38 @@
 #include "TreeA.hpp"
 #include "TrunkA.hpp"
 
+constexpr int TreeA::branches;
+constexpr int TreeA::k;
+constexpr int TreeA::previousRotationCap;
+
+constexpr double TreeA::trunkRatio;
+constexpr double TreeA::branchRatio;
+
+TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
+        Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
+
+    std::clock_t startTime;
+    double duration;
+    startTime = std::clock();
+
+    treeSetup(shader_program, trunkDiameter, seed);
+
+    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
+    printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
+};
+
+void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
+    draw_mode = GL_TRIANGLES;
+    if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
+    widthCut = 0.5;//trunkDiameter / 32;
+    finalCut = widthCut;
+
+    combinedStartIndices->push_back({-1,0,0,0});
+    generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
+    rotate(TreeRandom::treeRandom(trunkDiameter, seed,100), glm::vec3(0.0f,1.0f,0.0f));
+    bufferObject(shader_program);
+}
+
 void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& seed,
                           float angleX, float angleY, float angleZ, char tag,
                           AttatchmentGroupings* ag, float lineHeight) {
@@ -140,9 +172,6 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     bool loopInitialTrunk;
     const float lineSegments = ((float)lineMax) / heightChunking;
     TrunkA trunk(combinedVertices,
-                 combinedIndices,
-                 combinedStartIndices,
-                 combinedUV,
                  seed
     );
     do {
@@ -159,21 +188,10 @@ void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
     const int lineMax = lineMAX(trunkDiameter, k);
     LeafContainerA lc(combinedVertices,
                       combinedIndices,
-                      combinedStartIndices,
                       combinedUV,
                       seed);
-    //What does this do you might be asking?
     //a leaf container is an object that holds a set of leaves and a branch that they're held on
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
-}
-
-//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
-void TreeA::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
-    //stbi_image_free(image_data);
 }
 
 void TreeA::initiateMove(AttatchmentGroupings* ag){
@@ -195,6 +213,7 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
     computeElementsInitial(ag);
     moveSegments(previousRotation, ag);
 }
+
 void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
     for (int m = 0; m < 2; m++) {
         if (ag->ag[m] == nullptr) continue;
@@ -246,16 +265,13 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 }
 
-void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
-    draw_mode = GL_TRIANGLES;
-    if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-    widthCut = 0.5;//trunkDiameter / 32;
-    finalCut = widthCut;
-
-    combinedStartIndices->push_back({-1,0,0,0});
-    generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
-    rotate(TreeRandom::treeRandom(trunkDiameter, seed,100), glm::vec3(0.0f,1.0f,0.0f));
-    bufferObject(shader_program);
+//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
+void TreeA::bufferObject(const GLuint& shader_program) {
+    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
+    //int map_width, map_height, channels;
+    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
+    //stbi_image_free(image_data);
 }
 
 void TreeA::setTreeLoaded(bool val){
@@ -266,15 +282,3 @@ void TreeA::setTreeInit(bool val){
     treeInit = val;
 }
 
-TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
-        Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
-
-    std::clock_t startTime;
-    double duration;
-    startTime = std::clock();
-
-    treeSetup(shader_program, trunkDiameter, seed);
-
-    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-    printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
-};

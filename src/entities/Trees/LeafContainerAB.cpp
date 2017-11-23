@@ -1,22 +1,49 @@
-//
-// Created by Tof on 2017-11-19.
-//
 
-#include "LeafContainerA.hpp"
+#include "LeafContainerAB.hpp"
 
-void LeafContainerA::buildVertices(int randomSeedValue, float lineSegments, int lineMax, float trunkDiameter, float seed,
-                   float lineHeight, int* baseVerticesSize){
-    //MOVE PROCEDURE OF LEAF BRANCHES TO LEAFBRANCH CLASS AND LEAVES TO THE LEAF CLASS
-    //CONDENSE ALGORITHM SIZE
+constexpr int LeafContainerA::leafPoints;
+constexpr int LeafContainerA::leafBranchPoints;
+
+constexpr float LeafContainerA::itterationsLeaf;
+constexpr float LeafContainerA::itterationsLeafBranch;
+
+constexpr float LeafContainerA::jagednessFactor_Leaf;
+constexpr float LeafContainerA::textureLeafStart;
+constexpr float LeafContainerA::textureLeafEnd;
+
+LeafContainerA::LeafContainerA(std::vector<glm::vec3>* leafVertices,
+                               std::vector<GLuint>* leafIndices,
+                               std::vector<glm::vec2>* leafUVs,
+                               const int& seed){
+    this->leafVertices = leafVertices;
+    this->leafIndices = leafIndices;
+    this->leafUVs = leafUVs;
+    baseVerticesSize = leafVertices->size();
+    this->seed = seed;
+}
+
+void LeafContainerA::buildContainer(float trunkDiameter, const float& seed, float lineHeight, const int& lineMax){
+    int randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
+
+    const float lineSegments = trunkDiameter * 3.0;
+    int baseVerticesSize = leafVertices->size();
+
+    //leaves are in altrenating 90 degrees and stord on a branch
+    buildVertices(randomSeedValue, lineSegments, lineMax, trunkDiameter, seed, lineHeight, &baseVerticesSize);
+}
+
+void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegments,
+                                   int lineMax, float trunkDiameter, const float& seed,
+                                   float lineHeight, int* baseVerticesSize){
     float f = 2;
-    float branchItterations = 360.0f / leafBranchPoints;
-    float leafItterations = 360.0f/ leafPoints;
+    const float branchItterations = 360.0f / leafBranchPoints;
+    const float leafItterations = 360.0f/ leafPoints;
 
     //consume the lineMax if it's not a multiple of three
     while (lineMax % 3 != 0) lineMax--;
 
     //elipse radius values
-    float r2 = 0.000176135 * sqrt(abs(-88063572 + 50843527 * trunkDiameter * lineSegments)) ;
+    float r2 = 0.000176135f * sqrt(abs(-88063572 + 50843527 * trunkDiameter * lineSegments)) ;
     float r1 = sqrt(3) * sqrt(abs(2 - r2 * r2)) * f;
     r1 = floor(r1) == 0 ? 1:r1;
 
@@ -62,29 +89,19 @@ void LeafContainerA::buildVertices(int randomSeedValue, float lineSegments, int 
 }
 
 
-void LeafContainerA::buildContainer(float trunkDiameter, float seed, float lineHeight, int lineMax){
-    int randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
-
-    float lineSegments = trunkDiameter * 3.0;//((float)lineMax) / heightChunking;
-    int baseVerticesSize = leafVertices->size();
-
-    //leaves are in altrenating 90 degrees and stord on a branch
-    buildVertices(randomSeedValue, lineSegments, lineMax, trunkDiameter, seed, lineHeight, &baseVerticesSize);
-}
-
-void LeafContainerA::buildLeafContainerElements(int start, int end,
+void LeafContainerA::buildLeafContainerElements(const int& start, const int& end,
                                        std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,
                                        std::vector<glm::vec2>* leafUVs, std::vector<glm::vec3>* leafNorms){
 
-    int endVert = (end - start - leafPoints*1)/ (leafBranchPoints + leafPoints*2);
-    int itter = leafBranchPoints + leafPoints * 2;
-    int vertToNext = ((1) *(leafBranchPoints + leafPoints*2));
-    int factor = (leafBranchPoints + leafPoints*2);
+    const int endVert = (end - start - leafPoints*1)/ (leafBranchPoints + leafPoints*2);
+    const int itter = leafBranchPoints + leafPoints * 2;
+    const int vertToNext = ((1) *(leafBranchPoints + leafPoints*2));
+    const  int factor = (leafBranchPoints + leafPoints*2);
 
     GLuint i = 0;
     for(int k = 0 ; k < endVert; k++){
         for(int j = i; i < leafBranchPoints + j ; i++) {
-            int currentVertSet = ((k) *factor);
+            const int currentVertSet = ((k) *factor);
             GLuint i1 = (i + 1) % (factor) % leafBranchPoints +  currentVertSet;
 
             leafIndices->push_back(i + start);
@@ -105,9 +122,9 @@ void LeafContainerA::buildLeafContainerElements(int start, int end,
                 leafVert->at(i +2+ start) - leafVert->at(i + start)
         ));
 
-        i = LeafA::buildElements(i, start, leafNormal, leafPoints , leafIndices, leafVert,
+        i = LeafA::buildElements(i, start, leafPoints , leafNormal,leafIndices, leafVert,
                                  leafUVs, leafNorms);
-        i = LeafA::buildElements(i, start, leafNormal, leafPoints , leafIndices, leafVert,
+        i = LeafA::buildElements(i, start, leafPoints , leafNormal, leafIndices, leafVert,
                                  leafUVs, leafNorms);
     }
 
@@ -117,14 +134,15 @@ void LeafContainerA::buildLeafContainerElements(int start, int end,
             leafVert->at(i + leafPoints + start + 2) - leafVert->at(i + leafPoints + start)
     ));
 
-    i = LeafA::buildElements(i, start, leafNormal, leafPoints , leafIndices, leafVert,
+    i = LeafA::buildElements(i, start,  leafPoints, leafNormal , leafIndices, leafVert,
                              leafUVs, leafNorms);
-    i = LeafA::buildElements(i, start, leafNormal, leafPoints , leafIndices, leafVert,
-                             leafUVs, leafNorms);
-
-    i = LeafA::buildElements(i, start, leafNormal, leafPoints , leafIndices, leafVert,
+    i = LeafA::buildElements(i, start,  leafPoints, leafNormal , leafIndices, leafVert,
                              leafUVs, leafNorms);
 
-    i = LeafA::buildElements(i, start, leafNormal, leafPoints , leafIndices, leafVert,
+    i = LeafA::buildElements(i, start,  leafPoints, leafNormal , leafIndices, leafVert,
+                             leafUVs, leafNorms);
+
+    i = LeafA::buildElements(i, start,  leafPoints, leafNormal , leafIndices, leafVert,
                              leafUVs, leafNorms);
 }
+

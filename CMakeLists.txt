@@ -74,29 +74,32 @@ add_executable(proceduralworld
     src/entities/Rock.hpp
     src/entities/Rock.cpp
 
-    src/entities/Tree.hpp
-    src/entities/Tree.cpp
-    src/entities/TreeA.hpp
-    src/entities/TreeA.cpp
-    src/entities/TrunkA.hpp
-    src/entities/TrunkA.cpp
-    src/entities/LeafA.hpp
-    src/entities/LeafA.cpp
-    src/entities/LeafBranchA.hpp
-    src/entities/LeafBranchA.cpp
-    src/entities/LeafContainerA.hpp
-    src/entities/LeafContainerA.cpp
-    src/entities/TreeB.hpp
-    src/entities/TreeB.cpp
-    src/entities/TreeC.hpp
-    src/entities/TreeC.cpp
-    src/entities/TreeClusterItem.hpp
-    src/entities/TreeClusterItem.cpp
+        src/entities/Trees/Tree.hpp
+        src/entities/Trees/Tree.cpp
+        src/entities/Trees/TreeA.hpp
+        src/entities/Trees/TreeA.cpp
+        src/entities/Trees/TrunkA.hpp
+        src/entities/Trees/TrunkA.cpp
+        src/entities/Trees/LeafAB.hpp
+        src/entities/Trees/LeafAB.cpp
+        src/entities/Trees/LeafBranchAB.hpp
+        src/entities/Trees/LeafBranchAB.cpp
+        src/entities/Trees/LeafContainerAB.hpp
+        src/entities/Trees/LeafContainerAB.cpp
+        src/entities/Trees/TreeB.hpp
+        src/entities/Trees/TreeB.cpp
+        src/entities/Trees/TreeC.hpp
+        src/entities/Trees/TreeC.cpp
+        src/entities/Trees/TreeClusterItem.hpp
+        src/entities/Trees/TreeClusterItem.cpp
+        src/entities/Trees/TrunkC.cpp src/entities/Trees/TrunkC.hpp
+        src/entities/Trees/LeafContainerC.cpp
+        src/entities/Trees/LeafContainerC.hpp
     src/TreeDistributor.hpp
     src/TreeDistributor.cpp
     src/TreeRandom.cpp
     src/TreeRandom.hpp
-    )
+        )
 
 # Link librarssies
 if(APPLE)

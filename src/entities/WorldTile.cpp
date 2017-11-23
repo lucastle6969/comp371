@@ -14,7 +14,7 @@
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "src/TreeDistributor.hpp"
-#include "Tree.hpp"
+#include "src/entities/Trees/Tree.hpp"
 #include "WorldTile.hpp"
 #include "../utils.hpp"
 #include "../constants.hpp"
@@ -71,14 +71,14 @@ WorldTile::WorldTile(
 		// Add tree child
 		Tree* tree;
 		if(seed % 10 < 2){
-			tree = new TreeA(shader_program, this, internal_tree_width*3, seed);
+			tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
 		}
 		else if(seed % 10 < 7){
 			tree = new TreeB(shader_program, this, internal_tree_width, seed);
 
 		}
 		else{
-			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width*0.5, seed);
+			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width*0.25, seed);
 		}
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));

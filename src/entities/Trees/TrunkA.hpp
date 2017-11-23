@@ -1,8 +1,8 @@
 #ifndef COMP371_TRUNK_A_HPP
 #define COMP371_TRUNK_A_HPP
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/OpenGL.h>
 #else
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-#include "../TreeRandom.hpp"
+#include "src/TreeRandom.hpp"
 
 #include <iostream>
 #include <cstdio>
@@ -19,58 +19,40 @@
 
 class TrunkA{
 public:
-    const int branchMod = 1;
+    static constexpr int branchMod = 1;
     static constexpr int trunkPoints = 4;
 
-    const glm::vec3 brown = glm::vec3(0.0 / 255, 53.0 / 255, 10.0 / 255);
-    const float itterations = 360.0 / trunkPoints;
+    static constexpr float itterations = 360.0f / trunkPoints;
 
     static constexpr float jagednessFactor = 0.35;
     static constexpr float textureTrunkHeight = 0.75;
     static constexpr float textureConnectorStart = 0.75;
     static constexpr float textureConnectorEnd = 0.90;
 private:
-    //MOVE TO TRUNK CLASS
     std::vector<glm::vec3>* trunkVertices;
-    std::vector<GLuint>* trunkIndices;
-    std::vector<glm::vec3>* trunkColor;
-    std::vector<std::vector<int>>* trunkStartIndices;
-    std::vector<glm::vec2>* trunkUVs;
 
     float lineHeight = 0;
     int baseVerticesSize = 0;
     int heightCount = 0;
     int seed = 0;
 
-    int buildVertices(float trunkDiameter, float lineSegments);
+    int buildVertices(const float& trunkDiameter, const float& lineSegments);
 
 public:
 
     float getLineHeight();
 
-    TrunkA(std::vector<glm::vec3>* trunkVertices,
-          std::vector<GLuint>* trunkIndices,
-          std::vector<std::vector<int>>* trunkStartIndices,
-          std::vector<glm::vec2>* trunkUVs,
-           int seed
-    ){
-        this->trunkVertices = trunkVertices;
-        this->trunkIndices = trunkIndices;
-        this->trunkStartIndices = trunkStartIndices;
-        this->trunkUVs = trunkUVs;
-        baseVerticesSize = trunkVertices->size();
-        this->seed = seed;
-    }
+    TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed);
 
-    static void buildConnectorElements(int segmentConnectStart,int start, int set, char lr,
+    static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                        std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                        std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms);
 
     //give both start point and end as the connection end point
-    static void buildTrunkElements(int start, int end,
+    static void buildTrunkElements(const int& start, const int& end,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                    std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms);
     
-    bool buildTrunk(float trunkDiameter, float lineSegments);
+    bool buildTrunk(const float& trunkDiameter, const float& lineSegments);
 };
 #endif //COMP371_TRUNK_A_HPP

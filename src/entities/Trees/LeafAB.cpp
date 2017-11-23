@@ -1,7 +1,7 @@
-#include "LeafA.hpp"
+#include "LeafAB.hpp"
 
 //builds 2
-void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiameter, int count){
+void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiameter, const int& count){
     //place leaves parralel following angle
     //place approproate leaves parralel following angle
     for (int n = 0; n < leafPoints; n++) {
@@ -45,8 +45,13 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
     }
 }
 
-int LeafA::buildElements(int i, int start,  glm::vec3 leafNormal, int leafPoints ,  std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,
+GLuint LeafA::buildElements(int i, const int& start, const int& leafPoints,  glm::vec3 leafNormal,
+                         std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,
                          std::vector<glm::vec2>* leafUVs, std::vector<glm::vec3>* leafNorms){
+    if(leafVert->size() != leafNorms->size()){
+        leafUVs->resize(leafVert->size());
+        leafNorms->resize(leafVert->size());
+    }
     //NORTH
     leafIndices->push_back(i + 0 + start);
     leafIndices->push_back(i + 1+ start);
@@ -72,10 +77,9 @@ int LeafA::buildElements(int i, int start,  glm::vec3 leafNormal, int leafPoints
     leafUVs->push_back({1.0f, 1.0f});
     leafUVs->push_back({0.0f, 1.0f});
     return i = i + leafPoints;
-    //printf("3 %d %d %d\n", i , start, leafVert->size());
 }
 
-void LeafA::buildLeafSingle(float r1, float r2, float trunkDiameter) {
+void LeafA::buildLeafSingle(const float&  r1, const float&  r2, const float&  trunkDiameter) {
     for (int n = 0; n < leafPoints ; n++) {
         int sign = -1;
         int jagednessRandom = this->randomSeedValue * (((int) (n * 13.4) % 17) + 1);
@@ -88,3 +92,15 @@ void LeafA::buildLeafSingle(float r1, float r2, float trunkDiameter) {
                                           0.0f));
     }
 }
+
+LeafA::LeafA(const int& leafPoints, const int&  randomSeedValue, const int&  count, const float& lineHeight,
+                      const float& itterations, const float& jagednessFactor_Leaf, std::vector<glm::vec3>* leafVertices,
+                      std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs) {
+    this->leafPoints = leafPoints;
+    this->randomSeedValue = randomSeedValue;
+    this->count = count;
+    this->lineHeight = lineHeight;
+    this->itterations = itterations;
+    this->jagednessFactor_Leaf = jagednessFactor_Leaf;
+    this->leafVertices = leafVertices;
+};
