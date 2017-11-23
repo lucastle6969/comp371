@@ -17,9 +17,11 @@
 class Rock : public DrawableEntity {
 private:
 	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> normals;
 	GLuint vao;
     GLuint vertices_buffer;
     GLuint element_buffer;
+	GLuint normal_buffer;
     GLuint uv_buffer;
 public:
 	Rock(

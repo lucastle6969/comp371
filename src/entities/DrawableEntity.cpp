@@ -12,7 +12,9 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <climits>
 
+#include "Light.h"
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 
@@ -54,73 +56,104 @@ GLenum DrawableEntity::getDrawMode() {
 
 GLuint DrawableEntity::getTextureId()
 {
-    static GLuint texture_id;
+    static GLuint texture_id = UINT_MAX; // default value
     return texture_id;
 }
 
-void DrawableEntity::setDrawMode(const GLenum &draw_mode) {
-    this->draw_mode = draw_mode;
-}
+void DrawableEntity::draw(
+    const glm::mat4& view_matrix,
+    const glm::mat4& projection_matrix,
+    const Light& light
+) {
+	Entity::draw(view_matrix, projection_matrix, light);
 
-void DrawableEntity::draw(const glm::mat4 &view_matrix, const glm::mat4 &projection_matrix) {
-    Entity::draw(view_matrix, projection_matrix);
+	if (this->isHidden()) {
+		return;
+	}
 
-    if (this->isHidden()) {
-        return;
-    }
+	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(this->shader_program, "mvp_matrix");
+    auto model_loc = (GLuint)glGetUniformLocation(this->shader_program, "model");
+    auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
+	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
+	auto position_z_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_z");
+    auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
 
-    auto mvp_matrix_loc = (GLuint) glGetUniformLocation(this->shader_program, "mvp_matrix");
-    auto color_type_loc = (GLuint) glGetUniformLocation(this->shader_program, "color_type");
-    auto position_x_loc = (GLint) glGetUniformLocation(this->shader_program, "entity_position_x");
-    auto position_z_loc = (GLint) glGetUniformLocation(this->shader_program, "entity_position_z");
-    auto tex_image_loc = (GLint) glGetUniformLocation(this->shader_program, "tex_image");
+    auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
+    auto material_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.diffuse");
+    auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
+    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
+
+
+	auto sun_direction_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.direction");
+	auto sun_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.color");
+	auto point_light_pos_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
+	auto point_light_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.color");
+
+	auto use_texture_loc = (GLuint)glGetUniformLocation(this->shader_program, "use_texture");
 
     glUseProgram(this->shader_program);
 
-    // use the entity's model matrix to form a new Model View Projection matrix
-    glm::mat4 mvp_matrix = projection_matrix * view_matrix * this->getModelMatrix();
-    // send the mvp_matrix variable content to the shader
-    glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
-    // send the color_type variable to the shader (could be null)
-    glUniform1i(color_type_loc, this->getColorType());
+	const glm::mat4& model_matrix = this->getModelMatrix();
+	// use the entity's model matrix to form a new Model View Projection matrix
+	glm::mat4 mvp_matrix = projection_matrix * view_matrix * model_matrix;
+	glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
+    glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model_matrix));
+	glUniform1i(color_type_loc, this->getColorType());
+	// send the position of this entity to the shader
+	glm::vec3 position = this->getPosition();
+	glUniform1i(position_x_loc, (GLint)position.x);
+	glUniform1i(position_z_loc, (GLint)position.z);
+	// compute world view position from inverse view matrix
+	// thanks: https://www.opengl.org/discussion_boards/showthread.php/178484-Extracting-camera-position-from-a-ModelView-Matrix
+	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
+	glUniform3fv(worldViewPos_loc, 1, glm::value_ptr(world_view_position));
 
-    //send the position of this entity to the shader
-    glm::vec3 position = this->getPosition();
 
-    glUniform1i(position_x_loc, (GLint) position.x);
-    glUniform1i(position_z_loc, (GLint) position.z);
+    glUniform3fv(sun_direction_loc, 1, glm::value_ptr(light.light_direction));
+	glUniform3fv(sun_color_loc, 1, glm::value_ptr(light.color));
+	// TODO: make the point light follow the player? or remove it?
+	glUniform3fv(point_light_pos_loc, 1, glm::value_ptr(glm::vec3(0)));
+	// TODO: define the point light color somewhere else or remove it
+	glUniform3fv(point_light_color_loc, 1, glm::value_ptr(glm::vec3(0.2, 0.3, 0.3)));
+    glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
+    glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
+    glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));
+    glUniform1f(material_shininess_loc, this->shininess);
+
+	GLuint texture_id = this->getTextureId();
+	glUniform1i(use_texture_loc, texture_id != UINT_MAX);
 
 	// TODO: figure out why the commented-out code below fails on macOS
 	// glUniform1i(tex_image_loc, GL_TEXTURE0);
 	// glActiveTexture(GL_TEXTURE0);
 
-    // Draw
-    glBindVertexArray(this->getVAO());
-    GLenum draw_mode = this->getDrawMode();
-    if (draw_mode == GL_POINTS) {
-        // it's inefficient and useless to use glDrawElements for a point cloud
-        glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
-    } else {
-        glBindTexture(GL_TEXTURE_2D, this->getTextureId());
+	// Draw
+	glBindVertexArray(this->getVAO());
+	GLenum draw_mode = this->getDrawMode();
+	if (draw_mode == GL_POINTS) {
+		// it's inefficient and useless to use glDrawElements for a point cloud
+		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
+	} else {
+		glBindTexture(GL_TEXTURE_2D, texture_id);
 
-        int element_buffer_array_size;
-        glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);
-        glDrawElements(
-                draw_mode,
-                element_buffer_array_size / sizeof(GLuint),
-                GL_UNSIGNED_INT,
-                nullptr
-        );
-    }
-    glBindVertexArray(0);
+		int element_buffer_array_size;
+		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);
+		glDrawElements(
+			draw_mode,
+			element_buffer_array_size / sizeof(GLuint),
+			GL_UNSIGNED_INT,
+			nullptr
+		);
+	}
+	glBindVertexArray(0);
 
-    glUseProgram(0);
+	glUseProgram(0);
 }
 
 GLuint DrawableEntity::initVertexArray(
-        const std::vector<glm::vec3> &vertices,
-        GLuint *vertices_buffer,
-        GLuint *element_buffer
+        const std::vector<glm::vec3>& vertices,
+        GLuint* vertices_buffer,
+        GLuint* element_buffer
 ) {
     // if no elements vector is provided, we'll create a default
 
@@ -130,18 +163,27 @@ GLuint DrawableEntity::initVertexArray(
         elements.emplace_back(i);
     }
 
-    return DrawableEntity::initVertexArray(vertices, elements, vertices_buffer, element_buffer);
+    return this->initVertexArray(vertices, elements, vertices_buffer, element_buffer);
 }
 
 GLuint DrawableEntity::initVertexArray(
-        const std::vector<glm::vec3> &vertices,
-        const std::vector<GLuint> &elements,
-        const std::vector<glm::vec2> &uvs,
-        GLuint *vertices_buffer,
-        GLuint *element_buffer,
-        GLuint *uv_buffer
+        const std::vector<glm::vec3>& vertices,
+        const std::vector<GLuint>& elements,
+        const std::vector<glm::vec3>& normals,
+        const std::vector<glm::vec2>& uvs,
+        GLuint* vertices_buffer,
+        GLuint* element_buffer,
+        GLuint* normal_buffer,
+        GLuint* uv_buffer
 ) {
-    GLuint vao = DrawableEntity::initVertexArray(vertices, elements, vertices_buffer, element_buffer);
+    GLuint vao = this->initVertexArray(
+	    vertices,
+	    elements,
+	    normals,
+	    vertices_buffer,
+	    element_buffer,
+	    normal_buffer
+    );
 
     // Bind the VAO
     glBindVertexArray(vao);
@@ -179,63 +221,118 @@ GLuint DrawableEntity::initVertexArray(
 }
 
 GLuint DrawableEntity::initVertexArray(
-        const std::vector<glm::vec3> &vertices,
-        const std::vector<GLuint> &elements,
-        GLuint *vertices_buffer,
-        GLuint *element_buffer
+	const std::vector<glm::vec3>& vertices,
+	const std::vector<GLuint>& elements,
+	const std::vector<glm::vec3>& normals,
+	GLuint* vertices_buffer,
+	GLuint* element_buffer,
+	GLuint* normal_buffer
+){
+	GLuint vao = this->initVertexArray(vertices, elements, vertices_buffer, element_buffer);
+
+	// Bind the VAO
+	glBindVertexArray(vao);
+
+	// create normal buffer
+	GLuint n_buff_temp;
+	if (!normal_buffer) {
+		normal_buffer = &n_buff_temp;
+	}
+	glGenBuffers(1, normal_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *normal_buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		normals.size() * sizeof(glm::vec3),
+		&normals.front(),
+		GL_STATIC_DRAW
+	);
+
+	// Bind attribute pointer for the normal buffer
+	auto normal = (GLuint)glGetAttribLocation(this->shader_program, "normal");
+	glEnableVertexAttribArray(normal);
+	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+
+	// Unbind VAO, then the corresponding buffers.
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Unset shader program
+	glUseProgram(0);
+
+	return vao;
+}
+
+GLuint DrawableEntity::initVertexArray(
+    const std::vector<glm::vec3>& vertices,
+    const std::vector<GLuint>& elements,
+    GLuint* vertices_buffer,
+    GLuint* element_buffer
 ) {
-    // Set VAO (Vertex Array Object) id
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
+	// Set VAO (Vertex Array Object) id
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
 
-    // Bind the VAO
-    glBindVertexArray(vao);
+	// Bind the VAO
+	glBindVertexArray(vao);
 
-    // Use the shader program
-    glUseProgram(this->shader_program);
+	// Use the shader program
+	glUseProgram(this->shader_program);
 
-    // Create vertices buffer
-    GLuint v_buff_temp;
-    if (!vertices_buffer) {
-        vertices_buffer = &v_buff_temp;
-    }
-    glGenBuffers(1, vertices_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, *vertices_buffer);
-    glBufferData(
-            GL_ARRAY_BUFFER,
-            vertices.size() * sizeof(glm::vec3),
-            &vertices.front(),
-            GL_STATIC_DRAW
-    );
+	// Create vertices buffer
+	GLuint v_buff_temp;
+	if (!vertices_buffer) {
+		vertices_buffer = &v_buff_temp;
+	}
+	glGenBuffers(1, vertices_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *vertices_buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		vertices.size() * sizeof(glm::vec3),
+		&vertices.front(),
+		GL_STATIC_DRAW
+	);
 
-    // Bind attribute pointer for the vertices buffer
-    auto v_position = (GLuint) glGetAttribLocation(this->shader_program, "v_position");
-    glEnableVertexAttribArray(v_position);
-    glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+	// Bind attribute pointer for the vertices buffer
+	auto v_position = (GLuint) glGetAttribLocation(this->shader_program, "v_position");
+	glEnableVertexAttribArray(v_position);
+	glVertexAttribPointer(v_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
+	                      nullptr);
 
-    // Create element buffer
-    GLuint e_buff_temp;
-    if (!element_buffer) {
-        element_buffer = &e_buff_temp;
-    }
-    glGenBuffers(1, element_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *element_buffer);
-    glBufferData(
-            GL_ELEMENT_ARRAY_BUFFER,
-            elements.size() * sizeof(GLuint),
-            &elements.front(),
-            GL_STATIC_DRAW
-    );
+	// Create element buffer
+	GLuint e_buff_temp;
+	if (!element_buffer) {
+		element_buffer = &e_buff_temp;
+	}
+	glGenBuffers(1, element_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *element_buffer);
+	glBufferData(
+		GL_ELEMENT_ARRAY_BUFFER,
+		elements.size() * sizeof(GLuint),
+		&elements.front(),
+		GL_STATIC_DRAW
+	);
 
-    // Unbind VAO, then the corresponding buffers.
-    // VAO should be unbound BEFORE element array buffer so VAO remembers
-    // the last bound element array buffer!
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	// Unbind VAO, then the corresponding buffers.
+	// VAO should be unbound BEFORE element array buffer so VAO remembers
+	// the last bound element array buffer!
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    // Unset shader program
-    glUseProgram(0);
+	// Unset shader program
+	glUseProgram(0);
 
-    return vao;
+	return vao;
+}
+
+void DrawableEntity::setMaterial(
+	const glm::vec3& ambient,
+	const glm::vec3& diffuse,
+	const glm::vec3& specular,
+	const float& shininess
+) {
+	this->ambient = ambient;
+	this->diffuse = diffuse;
+	this->specular = specular;
+	this->shininess = shininess;
 }

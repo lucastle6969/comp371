@@ -10,7 +10,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-
+#include "Light.h"
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "WorldOrigin.hpp"

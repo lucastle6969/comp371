@@ -26,7 +26,19 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 
 	// get the vertices from the pacman.obj file (ignore the rest)
 	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs, &elements);
-	this->vao = this->initVertexArray(this->vertices, elements);
+
+	this->vao = this->initVertexArray(
+		this->vertices,
+		elements,
+		normals,
+		UVs
+	);
+	this->setMaterial(
+		glm::vec3(0.8f, 0.7f, 0.0f),
+		glm::vec3(1.0f, 0.9f, 0.0f),
+		glm::vec3(0.05f, 0.05f, 0.05f),
+		10.0f
+	);
 }
 
 const std::vector<glm::vec3>& Player::getVertices()
@@ -41,7 +53,7 @@ GLuint Player::getVAO()
 
 const int Player::getColorType()
 {
-	return COLOR_WHITE;
+	return COLOR_LIGHTING;
 }
 
 const glm::mat4& Player::getBaseRotation()

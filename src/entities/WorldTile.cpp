@@ -28,6 +28,13 @@ WorldTile::WorldTile(
 {
 	this->draw_mode = GL_TRIANGLES;
 
+	this->setMaterial(
+		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
+		glm::vec3(.5,.5,.5),
+		glm::vec3(.25,.25,.25),
+		0.25f
+	);
+
 	// position tile relative to parent based on x, z inputs
 	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));
 
@@ -109,7 +116,7 @@ const std::vector<glm::vec3>& WorldTile::getVertices() {
 }
 
 GLuint WorldTile::getVAO() {
-	static const std::vector<GLuint> elements = {
+	static const std::vector<GLuint> elements {
 			// first triangle (ACTUALLY is counterclockwise - negative-Z axis)
 			3, // top-left
 			1, // bottom-right
@@ -120,12 +127,23 @@ GLuint WorldTile::getVAO() {
 			1  // bottom-right
 	};
 
+	static const std::vector<glm::vec3> normals {
+			glm::vec3(0.0f, 1.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f)
+	};
+
 	static GLuint vao;
 	static bool vao_init = false;
 
 	if (!vao_init) {
 		// only initialize vao once for all instances
-		vao = this->initVertexArray(this->getVertices(), elements);
+		vao = this->initVertexArray(
+				this->getVertices(),
+				elements,
+				normals
+		);
 		vao_init = true;
 	}
 
