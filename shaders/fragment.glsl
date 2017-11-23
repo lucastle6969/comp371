@@ -43,6 +43,7 @@ const int COLOR_HEIGHT = 2;
 const int COLOR_TILE = 3;
 const int COLOR_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
+const int COLOR_TREE = 6;
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -132,6 +133,13 @@ void main()
             color = vec4((ambientValue + diffuseValue + specularValue), 0.0);
             break;
         }
+        case COLOR_TREE:
+            color = vec4(
+                1.0f - abs(pos.x / 10.0f) - abs(pos.y /1000.0f),
+                1.0f,
+                1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f),
+                1.0f);
+            break;
         default:
             color = WHITE;
             break;

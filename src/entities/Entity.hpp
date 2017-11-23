@@ -41,12 +41,12 @@ public:
 	glm::vec3 getScale();
 	bool isHidden();
 	void scale(const float& scalar);
-	void rotate(const float& angle, const glm::vec3& axis);
-	void resetRotation();
-	void moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+    void rotate(const float& angle, const glm::vec3& axis);
+    void resetRotation();
+    void moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+    void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+    void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+    void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
     void translate(const glm::vec3& translation_vec);
 	void setPosition(const glm::vec3& position);
 	void hide();
