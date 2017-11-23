@@ -56,7 +56,9 @@ add_executable(proceduralworld
     src/shaderprogram.cpp
     src/objloader.hpp
     src/objloader.cpp
-    src/vendor/load_stb_image.hpp
+    src/loadTexture.hpp
+    src/loadTexture.cpp
+    src/vendor/stb_image.h
     src/utils.hpp
     src/constants.hpp
     src/entities/Entity.hpp
@@ -73,7 +75,8 @@ add_executable(proceduralworld
     src/entities/World.cpp
     src/entities/Rock.hpp
     src/entities/Rock.cpp
-    
+    src/entities/RockB.hpp
+    src/entities/RockB.cpp
     src/entities/Trees/Tree.hpp
     src/entities/Trees/Tree.cpp
     src/entities/Trees/TreeA.hpp

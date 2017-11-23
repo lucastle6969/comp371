@@ -19,7 +19,7 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
     treeSetup(shader_program, trunkDiameter, seed);
 
     duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-    printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
+   // printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
 void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){

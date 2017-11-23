@@ -46,7 +46,7 @@
         }
 
         duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-        printf("Duration of C %f Units: %f ms _CLUSTER HEAD\n", trunkDiameter, duration*1000);
+        //printf("Duration of C %f Units: %f ms _CLUSTER HEAD\n", trunkDiameter, duration*1000);
     }
 
 
