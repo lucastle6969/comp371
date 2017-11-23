@@ -213,7 +213,7 @@ int main()
 
 	world = new World(shader_program);
     //create light
-    Light light(glm::vec3(0,0,0.5), glm::vec3(.5,.5,.5));
+    Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
