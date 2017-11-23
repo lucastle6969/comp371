@@ -42,9 +42,18 @@ const float max_follow_distance = 300.0f;
 float pitch = initial_pitch;
 float yaw = initial_yaw;
 
+// Projection constants
+float min_fovy = 45.0f; // degrees
+// up to 180 is "ok" but it looks really distorted and we can easily see tiles loading.
+// 120 is a pretty safe maximum that allows a good field of view but preserves the
+// "endless world" illusion reasonably well.
+float max_fovy = 120.0f;
+
 // Projection variables, to be set by framebufferSizeCallback
 int framebuffer_width = 0;
 int framebuffer_height = 0;
+// Perspective field of view y angle to be set in scrollCallback (stored here in degrees)
+float fovy = 60.0f;
 
 float getPlayerScaleCoefficient()
 {
@@ -175,6 +184,11 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	fovy = glm::clamp(float(fovy + yoffset * 5.0f), min_fovy, max_fovy);
+}
+
 void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 {
 	// Update the viewport dimensions
@@ -195,6 +209,7 @@ int main()
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 	glfwSetCursorPosCallback(window, cursorPosCallback);
+	glfwSetScrollCallback(window, scrollCallback);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
 	// Set up viewport and projection matrix, which will be updated whenever the framebuffer resizes.
@@ -239,7 +254,7 @@ int main()
 
 		float player_scale = getPlayerScaleCoefficient();
 		glm::mat4 projection_matrix = glm::perspective(
-			45.0f,
+			glm::radians(fovy),
 			(GLfloat)framebuffer_width / (GLfloat)framebuffer_height,
 			15.0f * player_scale,
 			1500.0f * player_scale
