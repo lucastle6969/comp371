@@ -234,6 +234,18 @@ Rock::Rock(
 
     this->draw_mode = GL_TRIANGLES;
 
+	// modified obsidian material from
+	// Advanced Graphics Programming Using OpenGL
+	// by Tom McReynolds and David Blythe
+	// and copied from slides from COMP371 at Concordia:
+	// http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
+	this->setMaterial(
+		glm::vec3(0.53, 0.05, 0.07),
+		glm::vec3(0.7, 0.75, 0.8),
+		glm::vec3(0.332741, 0.328634, 0.346435),
+		38.4f
+	);
+
     //bottom face (5x5 between 0 - 1)
     this->vertices.emplace_back(0.00f, 0.00f, 0.00f);
     this->vertices.emplace_back(0.25f, 0.00f, 0.00f);
@@ -470,7 +482,7 @@ GLuint Rock::getVAO()
 
 const int Rock::getColorType()
 {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }
 
 GLuint Rock::getTextureId()
