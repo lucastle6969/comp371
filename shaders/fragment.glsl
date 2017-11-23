@@ -111,14 +111,14 @@ void main()
             );
 
             vec3 ambientValue =
-                sunlight_components.ambient +
-                pointlight_components.ambient * attenuation;
+                max(sunlight_components.ambient, 0) +
+                max(pointlight_components.ambient * attenuation, 0);
             vec3 diffuseValue =
-                sunlight_components.diffuse +
-                pointlight_components.diffuse * attenuation;
+                max(sunlight_components.diffuse, 0) +
+                max(pointlight_components.diffuse * attenuation, 0);
             vec3 specularValue =
-                sunlight_components.specular +
-                pointlight_components.specular * attenuation;
+                max(sunlight_components.specular, 0) +
+                max(pointlight_components.specular * attenuation, 0);
 
             if (use_texture) {
                 // multiply components against texture value but only if we've
