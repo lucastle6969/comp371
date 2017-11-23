@@ -37,7 +37,7 @@ const float max_pitch = 89.0f;
 const float min_pitch = -89.0f;
 const float first_person_pitch = 20.0f;
 const float max_follow_distance = 300.0f;
-const float first_person_follow_distance = 0.001f;
+const float first_person_follow_distance = 0.01f;
 
 // Camera variables
 float pitch = initial_pitch;
