@@ -79,7 +79,7 @@ glm::vec3 getFollowVector() {
 			// to accommodate for less space near terrain. At a specified high pitch,
 			// the third-person camera becomes first-person.
 			std::max(
-				0.0f,
+				0.0001f,
 				(1 - (pitch - min_pitch) / (first_person_pitch - min_pitch))
 			);
 }
