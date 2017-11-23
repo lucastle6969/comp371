@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "TreeDistributor.hpp"
 
 int TreeDistributor::seed;
@@ -34,7 +36,7 @@ Tree* TreeDistributor::setTreeType(int seed, float width){
                 "shader_programB,GLuint&  shader_programC, Entity* entity){\" OR"
                 "\"  static void setEntity(Entity* entity){ \"";
     }
-    TreeDistributor::seed = abs(seed);
+    TreeDistributor::seed = std::abs(seed);
     std::cout << "SEED" << TreeDistributor::seed % 10  << "\n";
     if(TreeDistributor::seed % 10 < 2){
         TreeA* tA = new TreeA(shader_programA, entity, width*3, TreeDistributor::seed);

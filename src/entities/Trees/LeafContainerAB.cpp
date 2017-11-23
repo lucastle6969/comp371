@@ -1,3 +1,4 @@
+#include <cmath>
 
 #include "LeafContainerAB.hpp"
 
@@ -43,8 +44,8 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
     while (lineMax % 3 != 0) lineMax--;
 
     //elipse radius values
-    float r2 = 0.000176135f * sqrt(abs(-88063572 + 50843527 * trunkDiameter * lineSegments)) ;
-    float r1 = sqrt(3) * sqrt(abs(2 - r2 * r2)) * f;
+    float r2 = 0.000176135f * sqrt(std::abs(-88063572 + 50843527 * trunkDiameter * lineSegments)) ;
+    float r1 = sqrt(3) * sqrt(std::abs(2 - r2 * r2)) * f;
     r1 = floor(r1) == 0 ? 1:r1;
 
     int count = 0;

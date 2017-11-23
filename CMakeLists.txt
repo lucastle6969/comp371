@@ -58,9 +58,16 @@ add_executable(proceduralworld
     src/objloader.cpp
     src/loadTexture.hpp
     src/loadTexture.cpp
+<<<<<<< HEAD
     src/vendor/stb_image.h
+=======
+>>>>>>> f29e3cfdffed2fb1b81ce0431db9ff6338362228
     src/utils.hpp
     src/constants.hpp
+    src/TreeDistributor.hpp
+    src/TreeDistributor.cpp
+    src/TreeRandom.cpp
+    src/TreeRandom.hpp
     src/entities/Entity.hpp
     src/entities/Entity.cpp
     src/entities/DrawableEntity.hpp
@@ -73,10 +80,13 @@ add_executable(proceduralworld
     src/entities/WorldTile.cpp
     src/entities/World.hpp
     src/entities/World.cpp
+    src/entities/Light.h
     src/entities/Rock.hpp
     src/entities/Rock.cpp
+
     src/entities/RockB.hpp
     src/entities/RockB.cpp
+
     src/entities/Trees/Tree.hpp
     src/entities/Trees/Tree.cpp
     src/entities/Trees/TreeA.hpp
@@ -95,13 +105,10 @@ add_executable(proceduralworld
     src/entities/Trees/TreeC.cpp
     src/entities/Trees/TreeClusterItem.hpp
     src/entities/Trees/TreeClusterItem.cpp
-    src/entities/Trees/TrunkC.cpp src/entities/Trees/TrunkC.hpp
+    src/entities/Trees/TrunkC.hpp
+    src/entities/Trees/TrunkC.cpp
     src/entities/Trees/LeafContainerC.cpp
     src/entities/Trees/LeafContainerC.hpp
-    src/TreeDistributor.hpp
-    src/TreeDistributor.cpp
-    src/TreeRandom.cpp
-    src/TreeRandom.hpp
 )
 
 # Link librarssies
