@@ -203,16 +203,20 @@ int main()
 	framebufferSizeCallback(window, width, height);
 
 	bool shader_program_ok;
-	GLuint shader_program = prepareShaderProgram("../shaders/vertex.glsl", "../shaders/fragment.glsl",
-	                                             &shader_program_ok);
-    if (!shader_program_ok) {
-        return -1;
-    }
 
- /*   //enable tree distributor functions shaders, must have entity declared in world tile
-    TreeDistributor::init(shader_program, shader_program, shader_program, nullptr);*/
+	GLuint shader_program = prepareShaderProgram(
+		"../shaders/vertex.glsl",
+		"../shaders/fragment.glsl",
+		&shader_program_ok
+	);
+	if (!shader_program_ok) {
+		return -1;
+	}
 
 	world = new World(shader_program);
+    //create light
+
+    Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
 
 
 	// Game loop
@@ -241,7 +245,7 @@ int main()
 			1500.0f * player_scale
 		);
 
-		world->draw(view_matrix, projection_matrix);
+		world->draw(view_matrix, projection_matrix, light);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);

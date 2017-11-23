@@ -10,7 +10,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-
+#include "Light.h"
 #include "Entity.hpp"
 
 // Abstract class
@@ -18,6 +18,10 @@
 class DrawableEntity : public Entity {
 private:
 	GLuint shader_program;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
 
 protected:
 	GLenum draw_mode;
@@ -32,13 +36,29 @@ protected:
 		GLuint* vertices_buffer = nullptr,
 		GLuint* element_buffer = nullptr
 	);
+	GLuint initVertexArray(
+        const std::vector<glm::vec3>& vertices,
+        const std::vector<GLuint>& elements,
+        const std::vector<glm::vec3>& normals,
+        GLuint* vertices_buffer = nullptr,
+        GLuint* element_buffer = nullptr,
+        GLuint* normal_buffer = nullptr
+    );
     GLuint initVertexArray(
-            const std::vector<glm::vec3> &vertices,
-            const std::vector<GLuint> &elements,
-            const std::vector<glm::vec2> &uvs,
-            GLuint *vertices_buffer = nullptr,
-            GLuint *element_buffer = nullptr,
-            GLuint *uv_buffer = nullptr
+        const std::vector<glm::vec3>& vertices,
+        const std::vector<GLuint>& elements,
+        const std::vector<glm::vec3>& normals,
+        const std::vector<glm::vec2>& uvs,
+        GLuint* vertices_buffer = nullptr,
+        GLuint* element_buffer = nullptr,
+        GLuint* normal_buffer = nullptr,
+        GLuint* uv_buffer = nullptr
+    );
+    void setMaterial(
+        const glm::vec3& ambient,
+        const glm::vec3& diffuse,
+        const glm::vec3& specular,
+        const float& shininess
     );
 
 public:
@@ -48,12 +68,14 @@ public:
 	virtual const std::vector<glm::vec3>& getVertices() = 0;
 	virtual GLuint getVAO() = 0;
 	virtual const int getColorType() = 0;
-    virtual GLuint getTextureId();
 	// end pure virtual functions
+	virtual GLuint getTextureId();
 	GLenum getDrawMode();
-	void setDrawMode(const GLenum& draw_mode);
-	void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix) override;
-
+	void draw(
+		const glm::mat4& view_matrix,
+		const glm::mat4& projection_matrix,
+		const Light& light
+	) override;
 };
 
 #endif // PROCEDURALWORLD_DRAWABLEENTITY_HPP

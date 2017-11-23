@@ -233,6 +233,18 @@ Rock::Rock(
 
     this->draw_mode = GL_TRIANGLES;
 
+	// modified obsidian material from
+	// Advanced Graphics Programming Using OpenGL
+	// by Tom McReynolds and David Blythe
+	// and copied from slides from COMP371 at Concordia:
+	// http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
+	this->setMaterial(
+		glm::vec3(0.53, 0.05, 0.07),
+		glm::vec3(0.7, 0.75, 0.8),
+		glm::vec3(0.332741, 0.328634, 0.346435),
+		38.4f
+	);
+
     //bottom face (5x5 between 0 - 1)
     this->vertices.emplace_back(0.00f, 0.00f, 0.00f);
     this->vertices.emplace_back(0.25f, 0.00f, 0.00f);
@@ -420,7 +432,13 @@ Rock::Rock(
     this->vertices.emplace_back(0.75f, 1.00f, -1.0f);
     this->vertices.emplace_back(1.00f, 1.00f, -1.0f);
 
-    for(int i=0; i<this->vertices.size(); i++){
+	// TODO: correct normals! this is a tentative (and wrong) stand-in
+	glm::vec3 center(0.5f, 0.5f, -0.5f);
+	for (const glm::vec3& vertex : this->vertices) {
+		this->normals.push_back(glm::normalize(vertex - center));
+	}
+
+    for (int i=0; i<this->vertices.size(); i++){
 
         //random number between 0-1 , multiplied by 25 (the space between vertices is 0.25, - 13 (to have it go around zero
         // divided be 100 to put it back to 0.xx
@@ -434,9 +452,11 @@ Rock::Rock(
     this->vao = DrawableEntity::initVertexArray(
             this->vertices,
             elements,
+            this->normals,
             uvs,
             &this->vertices_buffer,
             &this->element_buffer,
+            &this->normal_buffer,
             &this->uv_buffer
     );
 }
@@ -461,7 +481,7 @@ GLuint Rock::getVAO()
 
 const int Rock::getColorType()
 {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }
 
 GLuint Rock::getTextureId()

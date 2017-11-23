@@ -29,7 +29,10 @@ World::World(
 	this->player.scale(0.0005f);
 	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
 
-	// hide the axes by default
+	//light
+	//this->light = new Light(glm::vec3(0,-1,0), glm::vec3(1,1,1));
+
+    // hide the axes by default
 	this->axes.hide();
 
 	// populate tiles
