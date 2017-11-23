@@ -1,3 +1,4 @@
+#include <cmath>
 
 #include "LeafContainerC.hpp"
 
@@ -20,8 +21,8 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter, const float&
 
     while (lineMax % 3 != 0) lineMax--;
 
-    float r2 = 0.000176135f * sqrt(abs(-88063572 + 50843527 * leafDiameter * lineSegments)) * f;
-    float r1 = sqrt(3) * sqrt(abs(2 - r2 * r2)) * f;
+    float r2 = 0.000176135f * sqrt(std::abs(-88063572 + 50843527 * leafDiameter * lineSegments)) * f;
+    float r1 = sqrt(3) * sqrt(std::abs(2 - r2 * r2)) * f;
     r1 = floor(r1) == 0 ? 1:r1;
 
     while (lineHeight < lineMax - 2){
@@ -165,8 +166,8 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter, const float&
     }
 
     //Cap with a leaf
-    //r2 = 0.000176135 * sqrt(abs(-88063572 + 50843527 * leafDiameter * lineSegments))* f;
-    //r1 = sqrt(3) * sqrt(abs(2 - r2 * r2)) * f;
+    //r2 = 0.000176135 * sqrt(std::abs(-88063572 + 50843527 * leafDiameter * lineSegments))* f;
+    //r1 = sqrt(3) * sqrt(std::abs(2 - r2 * r2)) * f;
     for (int n = 0; n < leafPoints ; n++) {
         int sign = -1;
         int jagednessRandom = randomSeedValue  * (((int)(n * 13.4) % 17) + 1);
