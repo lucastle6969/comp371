@@ -457,7 +457,7 @@ Rock::Rock(
 
     std::vector<glm::vec3>surfaceNormals;
 
-    for(int i=1; i<elements.size()+1; i++){
+    for(int i=3; i<elements.size()+1; i++){
         if(i%3 == 0){// then element at i-1 is the third vertex of the triangle
             // vertex A is at i-3, vertex B is i-2, vertex C is i-1
             glm::vec3 line_seg_BA = this->vertices[elements[i-2]] - this->vertices[elements[i-3]];
