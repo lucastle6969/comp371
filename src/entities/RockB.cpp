@@ -10,6 +10,7 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
