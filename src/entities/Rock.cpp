@@ -16,6 +16,8 @@
 
 #include "../constants.hpp"
 #include "../loadTexture.hpp"
+#include "../utils.hpp"
+
 
 Rock::Rock(
     const GLuint &shader_program,
@@ -233,16 +235,27 @@ Rock::Rock(
 
     this->draw_mode = GL_TRIANGLES;
 
-	// modified obsidian material from
-	// Advanced Graphics Programming Using OpenGL
-	// by Tom McReynolds and David Blythe
-	// and copied from slides from COMP371 at Concordia:
-	// http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
+    // modified obsidian material from
+    // Advanced Graphics Programming Using OpenGL
+    // by Tom McReynolds and David Blythe
+    // and copied from slides from COMP371 at Concordia:
+    // http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
+
+    float ambientR =  utils::randomFloat(0.02f, 0.7f);
+    float ambientG = utils::randomFloat(0.02f, 0.07f);
+    float ambientB = utils::randomFloat(0.05f, 0.1f);
+
+    float diffuseR = utils::randomFloat(0.65f, 0.75f);
+    float diffuseG = utils::randomFloat(0.65f, 0.75f);
+    float diffuseB = utils::randomFloat(0.7f, 0.85f);
+
+    float shininess = utils::randomFloat(38.4f, 42.8f);
+
 	this->setMaterial(
-		glm::vec3(0.53, 0.05, 0.07),
-		glm::vec3(0.53, 0.5, 0.07),
+		glm::vec3(ambientR, ambientG, ambientB),
+		glm::vec3(diffuseR, diffuseG, diffuseB),
 		glm::vec3(0.332741, 0.328634, 0.346435),
-		38.4f
+		shininess
 	);
 
     //bottom face (5x5 between 0 - 1)

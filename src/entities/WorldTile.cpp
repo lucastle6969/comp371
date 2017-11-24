@@ -87,7 +87,7 @@ WorldTile::WorldTile(
                 z_span,
                 this
         );
-        rock->setPosition(glm::vec3(x_position, 0.007f, z_position));
+        rock->setPosition(glm::vec3(x_position, 0.002f, z_position));
 
         rock->scale(glm::vec3(x_span, y_span, z_span));
         // Add rock to rocks array
