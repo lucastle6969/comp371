@@ -44,7 +44,7 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter,const float& 
                 int jagednessRandom = randomSeedValue * (((int) (n * 13.4) % 17) + 1);
                 if (jagednessRandom % 2 == 0) sign *= -1;
                 float tempTrunkDiameter = leafDiameter + sign * (jagednessRandom) % ((int) (ceil(leafDiameter))) *
-                                                         this->jagednessFactor_Leaf / (leafDiameter);
+                                                         jagednessFactor_Leaf / (leafDiameter);
                 combinedVertices->push_back(
                         glm::vec3(tempTrunkDiameter * sin(glm::radians(itterations * n)), lineHeight + 0,
                                   tempTrunkDiameter * cos(glm::radians(itterations * n))));
