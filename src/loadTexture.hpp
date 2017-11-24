@@ -16,4 +16,14 @@ GLuint loadTexture(
 	const GLint& mag_filter
 );
 
+
+
+
+// Load a .DDS file using GLFW's own loader
+GLuint loadDDS(
+               const char * imagepath
+               
+               );
+
+
 #endif //PROCEDURALWORLD_LOADTEXTURE_HPP

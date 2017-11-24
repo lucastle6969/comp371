@@ -76,6 +76,11 @@ public:
 		const glm::mat4& projection_matrix,
 		const Light& light
 	) override;
+    
+    void drawShadowMap(
+        const glm::mat4& lightview_matrix,
+        const glm::mat4& lightprojection_matrix
+    ) override;
 };
 
 #endif // PROCEDURALWORLD_DRAWABLEENTITY_HPP

@@ -4,6 +4,7 @@ in vec3 pos;
 in vec3 worldPos;
 in vec3 worldNormal;
 in vec2 tex_coord;
+in vec4 ShadowCoord;
 
 struct SunLight {
     vec3 direction;
@@ -30,6 +31,7 @@ uniform int color_type;
 uniform int entity_position_x;
 uniform int entity_position_z;
 uniform sampler2D tex_image;
+uniform sampler2D shadowMap;
 
 uniform bool use_texture;
 
@@ -51,6 +53,7 @@ const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 float quadratic = 0.032;
 float linear = 0.1;
 float constant = 1;
+float visibility = 1.0;
 
 struct ColorComponents {
     vec3 ambient;
@@ -65,8 +68,32 @@ ColorComponents calculateColor(
     const vec3 view_dir
 );
 
+
+
+float ShadowCalculation(vec4 ShadowCoord)
+{
+    // if point light
+    // vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    
+    vec3 projCoords;
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+     float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+    
+     return shadow;
+}
+
+
+
 void main()
 {
+   
+    
     switch (color_type) {
         case COLOR_WHITE:
             color = WHITE;
@@ -96,6 +123,12 @@ void main()
             float attenuation = 1.0f /
                 (constant + linear * point_distance + quadratic * (point_distance * point_distance));
 
+            
+         
+            
+            
+            
+            
             // get individual components (before texture/attenuation)
             // of sunlight and point light
             ColorComponents sunlight_components = calculateColor(
@@ -129,6 +162,8 @@ void main()
                 diffuseValue *= tex3;
                 specularValue *= tex3;
             }
+            
+        //    float Shadow= ShadowCalculation (ShadowCoord);
 
             color = vec4((ambientValue + diffuseValue + specularValue), 0.0);
             break;

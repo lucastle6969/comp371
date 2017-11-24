@@ -72,6 +72,7 @@ void DrawableEntity::draw(
 	}
 
 	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(this->shader_program, "mvp_matrix");
+    auto view_loc = (GLuint)glGetUniformLocation(this->shader_program, "view");
     auto model_loc = (GLuint)glGetUniformLocation(this->shader_program, "model");
     auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
 	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
@@ -98,6 +99,8 @@ void DrawableEntity::draw(
 	glm::mat4 mvp_matrix = projection_matrix * view_matrix * model_matrix;
 	glUniformMatrix4fv(mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(mvp_matrix));
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model_matrix));
+    glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
+    
 	glUniform1i(color_type_loc, this->getColorType());
 	// send the position of this entity to the shader
 	glm::vec3 position = this->getPosition();
@@ -149,6 +152,93 @@ void DrawableEntity::draw(
 
 	glUseProgram(0);
 }
+
+
+void DrawableEntity::drawShadowMap(const glm::mat4 &lightview_matrix, const glm::mat4 &lightprojection_matrix){
+    Entity::drawShadowMap(lightview_matrix, lightprojection_matrix);
+    
+    
+    if (this->isHidden()) {
+        return;
+    }
+    
+    auto light_mvp_matrix_loc = (GLuint) glGetUniformLocation(this->shader_program, "light_mvp_matrix");
+    auto light_bias_mvp_loc = (GLuint) glGetUniformLocation(this->shader_program, "light_bias_mvp");
+    auto isShadowMap_Loc = (GLuint) glGetUniformLocation(this->shader_program, "isShadowMapping");
+    
+    
+    glUseProgram(this->shader_program);
+    
+    // use the entity's model matrix to form a new Model View Projection matrix
+    glm::mat4 light_mvp_matrix = lightprojection_matrix * lightview_matrix * this->getModelMatrix();
+    // send the mvp_matrix variable content to the shader
+    glUniformMatrix4fv(light_mvp_matrix_loc, 1, GL_FALSE, glm::value_ptr(light_mvp_matrix));
+    
+    glUniform1i(isShadowMap_Loc, true);
+    
+    
+    
+    // TODO: figure out why the commented-out code below fails on macOS
+    // glUniform1i(tex_image_loc, GL_TEXTURE0);
+    // glActiveTexture(GL_TEXTURE0);
+    
+    // Draw
+    glBindVertexArray(this->getVAO());
+    GLenum draw_mode = this->getDrawMode();
+    if (draw_mode == GL_TRIANGLES) {
+        
+        int element_buffer_array_size;
+        glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);
+        glDrawElements(
+                       draw_mode,
+                       element_buffer_array_size / sizeof(GLuint),
+                       GL_UNSIGNED_INT,
+                       nullptr
+                       );
+    }
+    glBindVertexArray(0);
+    glUniform1i(isShadowMap_Loc, false);
+    
+    //Set our Bias
+    glm::mat4 biasMatrix(
+                         0.5, 0.0, 0.0, 0.0,
+                         0.0, 0.5, 0.0, 0.0,
+                         0.0, 0.0, 0.5, 0.0,
+                         0.5, 0.5, 0.5, 1.0
+                         );
+    
+    //Set bias to light MVP
+    glm::mat4 light_bias_mvp = light_mvp_matrix * biasMatrix;
+    //Send matrices to shader to be used in 2nd render
+    glUniformMatrix4fv(light_bias_mvp_loc, 1, GL_FALSE, glm::value_ptr(light_bias_mvp));
+    
+    
+    glUseProgram(0);
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 GLuint DrawableEntity::initVertexArray(
         const std::vector<glm::vec3>& vertices,
