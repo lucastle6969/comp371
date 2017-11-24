@@ -26,7 +26,8 @@
 class TreeC: public Tree{
 private:
     std::vector<TreeClusterItem*> treeCluster;
-    float sizeVariation = 0;
+
+    float sizeVariation = 0.0;
 
     static constexpr int spacingConstant = 10;
     static constexpr int heightChunking = 0;
@@ -34,6 +35,7 @@ private:
 
     int maxWidth(const float& trunkDiameter);
 public:
+
     TreeC(int numberOfTrees, const GLuint& shader_program,
           Entity* entity, float trunkDiameter, long seed);
 
@@ -41,7 +43,6 @@ public:
 
     void setSizeVariation(const float& r);
 
-    ~TreeC();
 };
 //
 //glm::vec3 U = leafVertices.at(base + n+1) - leafVertices.at(base + n);

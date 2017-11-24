@@ -103,7 +103,6 @@ public:
     const int getColorType();
 
     Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type);
-
     ~Tree();
 };
 

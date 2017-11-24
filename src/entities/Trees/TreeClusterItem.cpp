@@ -10,7 +10,6 @@
 #include <ctime>
 #include <cmath>
 
-constexpr float TreeClusterItem::boostFactor;
 constexpr int TreeClusterItem::branches;
 constexpr float TreeClusterItem::zeroSize;
 constexpr int TreeClusterItem::minYBranchAngle;
@@ -25,7 +24,7 @@ constexpr double TreeClusterItem::trunkRatio;
 constexpr double TreeClusterItem::branchRatio;
 
 TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
-        Tree(heightChunking, boostFactor, shader_program, entity, 'G'){
+    Tree(heightChunking, boostFactor, shader_program, entity, 'G'){
     std::clock_t startTime;
     double duration;
     startTime = std::clock();
@@ -38,7 +37,7 @@ TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, 
     //CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
     treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
 
-    float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
+    float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*100);
     rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
     duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
@@ -47,7 +46,7 @@ TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, 
 
 bool TreeClusterItem::treeSetup(const GLuint& shader_program, const float& trunkDiameter, const float& seed){
     draw_mode = GL_TRIANGLES;
-    widthCutoff = 0.1;//trunkDiameter / 32;
+    //widthCutoff
     finalCutoff = widthCutoff;
     combinedStartIndices->push_back({-1,0,0,0});
     generateTreeCI(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
@@ -110,13 +109,16 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
             break;
         case TRUNK:
-            k -= 5;
+            k -= kReduction;
             depth++;
+            boostFactor -= boostReduction;
             kill = false;
             if (trunkDiameter < widthCutoff) {
                 generateTreeCI(LEAF, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, 0);
                 if (trunkDiameter < finalCutoff) {
+                    k += kReduction;
                     depth--;
+                    boostFactor += boostReduction;
                     kill = true;
                     return;
                 }
@@ -165,8 +167,9 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYTrunkAngle, minYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
             generateTreeCI(TRUNK, offShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            k += kReduction;
             depth--;
-            k += 5;
+            boostFactor += boostReduction;
             break;
         case LEAF:
             //1B. If trunk width is past a threshold then create a leaf line
@@ -211,16 +214,13 @@ void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, 
     const float lineMax = lineMAX(trunkDiameter, k);
 
     LeafContainerC lcC(combinedVertices, combinedIndices, lineMax);
-    lcC.buildAllComponenets(trunkDiameter, seed, lineHeight);
+    lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
-    glm::mat4 rotation;
     int circularPoints = trunkPoints;
     int rotationPoint = std::abs((ag->angleY) % (circularPoints));
 
     const float r = 360.0f/circularPoints  * (rotationPoint);
-    rotation = glm::rotate(rotation, glm::radians((float)ag->angleX), glm::vec3(1.0, 0.0, 0.0));
-    rotation = glm::rotate(rotation, glm::radians((float)ag->angleZ), glm::vec3(0.0, 0.0, -1.0));
     int start = ag->start + 1;
     int max = ag->end + 1;
     for (int k = start; k < max; k++) {
@@ -243,7 +243,7 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
         const int circularPoints = ag->ag[m]->type == 'L' ? leafPoints : trunkPoints;
         rotationPoint = std::abs((ag->ag[m]->angleY) % (circularPoints));
         rotationPoint = 0;
-       if (ag->ag[m]->side == 'L') {
+        if (ag->ag[m]->side == 'L') {
             moveTo = (ag->end - circularPoints + 1) +std::abs(2 ) % circularPoints;
             moveFrom = (ag->ag[m]->start + 1) + (2 + rotationPoint) % circularPoints;
         }
@@ -252,17 +252,14 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             moveFrom = (ag->ag[m]->start + 1)  + ((0+ rotationPoint) % circularPoints);
         }
 
-        glm::mat4 rotation;
         const float r = 360.0f/circularPoints  * (0);
-        rotation = glm::rotate(rotation, glm::radians((float)ag->ag[m]->angleX), glm::vec3(1.0, 0.0, 0.0));
-        rotation = glm::rotate(rotation, glm::radians((float)ag->ag[m]->angleZ), glm::vec3(0.0, 0.0, -1.0));
         if (ag->ag[m]->type == 'B') {
             const int start = ag->ag[m]->start + 1;
             const  int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
                 combinedVertices->at(k) = makeRotations(glm::radians(
                         (float)ag->ag[m]->angleX), -glm::radians(r), glm::radians((float)ag->ag[m]->angleZ),
-                                                    combinedVertices->at(k));
+                                                        combinedVertices->at(k));
             }
         }
         else {
@@ -270,7 +267,7 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             const int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
                 combinedVertices->at(k) = makeRotations(glm::radians((float)ag->ag[m]->angleX), -glm::radians(r), glm::radians((float)ag->ag[m]->angleZ),
-                                                   combinedVertices->at(k));
+                                                        combinedVertices->at(k));
             }
         }
 
@@ -308,70 +305,43 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
         previousRotation -= rotationPoint;
     }
     return;
-
 }
 
 void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
     depth--;
-    if(ag->ag[m]->type == 'B'){
-        //go through each point on upper part of at depth circle
-        for (int j = 0; j < trunkPoints; j++) {
-            if (j == trunkPoints - 1) {
-                const GLuint A = (ag->end - trunkPoints+ 1) + j;
-                const GLuint B = (ag->end - trunkPoints+ 1) + 0;
-                const GLuint C = (ag->ag[m]->start+1) + 0;
-                combinedIndices->push_back(A);
-                combinedIndices->push_back(B);
-                combinedIndices->push_back(C);
-                const  GLuint D = C;
-                const GLuint E = (ag->ag[m]->start+1) + j;
-                const  GLuint F = A;
-                combinedIndices->push_back(D);
-                combinedIndices->push_back(E);
-                combinedIndices->push_back(F);
-            }
-            else {
-                //WORKS
-                const GLuint A = (ag->end - trunkPoints+ 1) + j;
-                const GLuint B = (ag->end - trunkPoints+ 1) + 1 + j;
-                const GLuint C = (ag->ag[m]->start+1) + 1 + j;
-                combinedIndices->push_back(A);
-                combinedIndices->push_back(B);
-                combinedIndices->push_back(C);
-                const GLuint D = C;
-                const GLuint E = (ag->ag[m]->start+1) + j;
-                const GLuint F = A;
-                combinedIndices->push_back(D);
-                combinedIndices->push_back(E);
-                combinedIndices->push_back(F);
-
-            }
+    //go through each point on upper part of at depth circle
+    for (int j = 0; j < trunkPoints; j++) {
+        if (j == trunkPoints - 1) {
+            const GLuint A = (ag->end - trunkPoints+ 1) + j;
+            const GLuint B = (ag->end - trunkPoints+ 1) + 0;
+            const GLuint C = (ag->ag[m]->start+1) + 0;
+            combinedIndices->push_back(A);
+            combinedIndices->push_back(B);
+            combinedIndices->push_back(C);
+            const  GLuint D = C;
+            const GLuint E = (ag->ag[m]->start+1) + j;
+            const  GLuint F = A;
+            combinedIndices->push_back(D);
+            combinedIndices->push_back(E);
+            combinedIndices->push_back(F);
+        }
+        else {
+            //WORKS
+            const GLuint A = (ag->end - trunkPoints+ 1) + j;
+            const GLuint B = (ag->end - trunkPoints+ 1) + 1 + j;
+            const GLuint C = (ag->ag[m]->start+1) + 1 + j;
+            combinedIndices->push_back(A);
+            combinedIndices->push_back(B);
+            combinedIndices->push_back(C);
+            const GLuint D = C;
+            const GLuint E = (ag->ag[m]->start+1) + j;
+            const GLuint F = A;
+            combinedIndices->push_back(D);
+            combinedIndices->push_back(E);
+            combinedIndices->push_back(F);
         }
     }
-}
 
-//values in radians
-glm::vec3 TreeClusterItem::makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3 vector){
-    //ROTATION ABOUT X
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
-    vector = glm::vec3(
-            vector.x
-            , vector.y * cos(xRot) - vector.z * sin(xRot)
-            ,	vector.y * sin(xRot) + vector.z * cos(xRot));
-    //ROTATION ABOUT Z
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
-    vector = glm::vec3(
-            vector.x * cos(zRot) - vector.y * sin(zRot)
-            , vector.x * sin(zRot) + vector.y * cos(zRot)
-            ,	vector.z );
-    //ROTATION ABOUT Y
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n";
-    vector = glm::vec3(
-            vector.x * cos(yRot) + vector.z * sin(yRot)
-            , vector.y
-            ,	-(vector.x * sin(yRot)) + vector.z * cos(yRot));
-    // << xRot << " "<< yRot << " " << zRot <<"\n" << vector.x <<" " << vector.y << " " << vector.z << "\n-------\n";
-    return vector;
 }
 
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
@@ -381,8 +351,6 @@ void TreeClusterItem::bufferObject(const GLuint& shader_program) {
     this->vao = initVertexArray(*combinedVertices, *combinedIndices, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
-
-
 
 void TreeClusterItem::setLocationFromCenter(const float& circleAngle, const float& distanceFromCenter){
     xPos = cos(glm::radians(circleAngle)) * distanceFromCenter;
