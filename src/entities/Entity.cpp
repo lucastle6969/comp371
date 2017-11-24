@@ -67,7 +67,7 @@ void Entity::scale(const float& scalar)
 	this->scale_matrix = glm::scale(this->scale_matrix, glm::vec3(scalar));
 }
 
-void Entity::skew(const glm::vec3& skew_vector){
+void Entity::scale(const glm::vec3& skew_vector){
     this->scale_matrix = glm::scale(this->scale_matrix, skew_vector);
 }
 

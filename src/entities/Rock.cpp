@@ -444,12 +444,55 @@ Rock::Rock(
 
     }
 
-    // TODO: correct normals! this is a tentative (and wrong) stand-in
-    glm::vec3 center(0.5f, 0.5f, -0.5f);
-    for (const glm::vec3& vertex : this->vertices) {
-        this->normals.push_back(glm::normalize(vertex - center));
+    // calculate normals
+    //------------------
+
+    //step 0: fill normals with a unit normal so the vector is the right size and hidden vertices will still have a default normal.
+
+    for(int i=0; i<this->vertices.size(); i++){
+        this->normals.emplace_back(1.0f,1.0f,1.0f);
     }
 
+    //step 1: find the surface normal for each triangle in the element buffer
+
+    std::vector<glm::vec3>surfaceNormals;
+
+    for(int i=1; i<elements.size()+1; i++){
+        if(i%3 == 0){// then element at i-1 is the third vertex of the triangle
+
+            //std::cout<<"element at "<<i<<" :"<<elements[i-1]<<std::endl;
+            // vertex A is at i-3, vertex B is i-2, vertex C is i-1
+            glm::vec3 line_seg_BA = this->vertices[elements[i-2]] - this->vertices[elements[i-3]];
+            glm::vec3 line_seg_BC = this->vertices[elements[i-2]] - this->vertices[elements[i-1]];
+            //  this is right or this cube, but if the normals look inverted in another application, just switch the order of the cross product operation: cross(line_seg_BA, line_seg_BC)
+            glm::vec3 normal = glm::cross(line_seg_BC, line_seg_BA);
+            surfaceNormals.emplace_back(normal);
+        }
+    }
+
+    //step 2: find the average of the surface normals of the surfaces this vertex is part of
+
+    std::vector<glm::vec3>connectedSurfaces;
+
+    for(int i=0; i<this->vertices.size(); i++){
+        // vector that will hold all normals of all the surfaces this vertex is part of
+        connectedSurfaces.clear();
+        for(int j=0; j<elements.size(); j++){
+            if(i==elements[j]){//the vertice is being drawn
+                //j/3 gives us the location of this surface normal
+                connectedSurfaces.emplace_back(surfaceNormals[j/3]);
+            }
+        }
+
+        if(!connectedSurfaces.empty()){
+            glm::vec3 sum = glm::vec3(0.0f);
+            for(int k=0; k<connectedSurfaces.size(); k++){
+                sum += connectedSurfaces[k];
+            }
+            //average the normal for this vertex and update the normals buffer
+            this->normals[i] = glm::normalize(glm::vec3(sum.x/connectedSurfaces.size(), sum.y/connectedSurfaces.size(), sum.z/connectedSurfaces.size()));
+        }
+    }
 
     this->vao = DrawableEntity::initVertexArray(
             this->vertices,
@@ -489,7 +532,7 @@ const int Rock::getColorType()
 GLuint Rock::getTextureId()
 {
 	static GLuint rock_texture = loadTexture(
-			"../textures/baliRockB.jpg",
+			"../textures/stoneC.jpg",
 			GL_NEAREST,
 			GL_NEAREST
 	);
