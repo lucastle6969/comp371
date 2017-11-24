@@ -68,7 +68,7 @@ void Entity::scale(const float& scalar)
 }
 
 void Entity::scale(const glm::vec3& skew_vector){
-    this->scale_matrix = glm::scale(this->scale_matrix, skew_vector);
+    this->scale_matrix = glm::scale(this->scale_matrix, scale_vector);
 }
 
 void Entity::rotate(const float& angle, const glm::vec3& axis)

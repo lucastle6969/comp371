@@ -39,8 +39,8 @@ RockB::RockB(
 
     //generate a sphere
     //this could be useful to change with  +/-  rand() % 5
-    int num_arc_points = 9 ;
-    int num_longitude_lines = 8;
+    int num_arc_points = rand()%5 + 7;
+    int num_longitude_lines = rand()%10 + 5;
 
     generateSphere(&this->vertices, &this->elements, &this->normals, &this->uvs, (num_arc_points-1), num_longitude_lines);
 
