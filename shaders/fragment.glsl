@@ -116,8 +116,8 @@ void main()
 
    }
 
-vec4 claculateColor(vec3 colorValue){
-
+vec4 claculateColor(vec3 value){
+    colorValue = value;
    // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
     vec3 normal = normalize(worldNormal);
     vec3 view_dir = normalize(worldViewPos - worldPos);
