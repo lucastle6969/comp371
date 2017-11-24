@@ -152,5 +152,5 @@ GLuint WorldTile::getVAO() {
 }
 
 const int WorldTile::getColorType() {
-	return COLOR_TILE;
+	return COLOR_LIGHTING;
 }

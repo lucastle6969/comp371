@@ -29,7 +29,7 @@ GLuint Tree::getVAO() {
 }
 
 const int Tree::getColorType() {
-    return COLOR_TREE;
+    return COLOR_LIGHTING;
 }
 
 

@@ -83,6 +83,7 @@ float ShadowCalculation(vec4 ShadowCoord)
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     // check whether current frag pos is in shadow
+    
      float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
     
      return shadow;
@@ -143,16 +144,27 @@ void main()
                 normal,
                 view_dir
             );
+            //If fragment is in shadow, shadow=1 -> diffuse and ambiant =0
+            float Shadow= ShadowCalculation(ShadowCoord);
 
             vec3 ambientValue =
                 max(sunlight_components.ambient, 0) +
                 max(pointlight_components.ambient * attenuation, 0);
+            
+            
             vec3 diffuseValue =
+        
+          (1-Shadow)*(
                 max(sunlight_components.diffuse, 0) +
-                max(pointlight_components.diffuse * attenuation, 0);
+                max(pointlight_components.diffuse * attenuation, 0)
+                        )
+            ;
             vec3 specularValue =
+             (1-Shadow)*(
                 max(sunlight_components.specular, 0) +
-                max(pointlight_components.specular * attenuation, 0);
+                max(pointlight_components.specular * attenuation, 0)
+                       )
+            ;
 
             if (use_texture) {
                 // multiply components against texture value but only if we've
@@ -163,9 +175,9 @@ void main()
                 specularValue *= tex3;
             }
             
-        //    float Shadow= ShadowCalculation (ShadowCoord);
+          
 
-            color = vec4((ambientValue + diffuseValue + specularValue), 0.0);
+            color = vec4((ambientValue  + diffuseValue + specularValue), 0.0);
             break;
         }
         case COLOR_TREE:
