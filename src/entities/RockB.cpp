@@ -18,6 +18,7 @@
 
 #include "../constants.hpp"
 #include "../loadTexture.hpp"
+#include "../utils.hpp"
 
 
 RockB::RockB(
@@ -36,11 +37,24 @@ RockB::RockB(
     // by Tom McReynolds and David Blythe
     // and copied from slides from COMP371 at Concordia:
     // http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
+
+    float ambient = utils::randomFloat(0.02f, 0.7f);
+
+    float diffuseR = utils::randomFloat(0.65f, 0.75f);
+    float diffuseG = utils::randomFloat(0.65f, 0.75f);
+    float diffuseB = utils::randomFloat(0.7f, 0.85f);
+
+    float specularR = utils::randomFloat(0.3f, 0.5f);
+    float specularG = utils::randomFloat(0.3f, 0.5f);
+    float specularB = utils::randomFloat(0.3f, 0.5f);
+
+    float shininess = utils::randomFloat(38.4f, 70.8f);
+
     this->setMaterial(
-            glm::vec3(0.53, 0.53, 0.53),
-            glm::vec3(0.7, 0.75, 0.8),
-            glm::vec3(0.332741, 0.328634, 0.346435),
-            38.4f
+            glm::vec3(ambient, ambient, ambient),
+            glm::vec3(diffuseR, diffuseG, diffuseB),
+            glm::vec3(specularR, specularG, specularB),
+            shininess
     );
 
     //generate a sphere
