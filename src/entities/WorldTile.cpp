@@ -93,7 +93,7 @@ WorldTile::WorldTile(
 	//enable tree distributor function
 	TreeDistributor::setEntity(this);
 	// add trees
-	for (int i = 0; i < 0; i++) {
+	for (int i = 0; i < 10; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
