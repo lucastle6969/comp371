@@ -58,7 +58,6 @@ add_executable(proceduralworld
     src/objloader.cpp
     src/loadTexture.hpp
     src/loadTexture.cpp
-    src/vendor/stb_image.h
     src/utils.hpp
     src/constants.hpp
     src/TreeDistributor.hpp
