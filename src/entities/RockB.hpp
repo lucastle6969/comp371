@@ -55,8 +55,7 @@ public:
             std::vector<glm::vec3>* normals,
             std::vector<glm::vec2>* uvs,
             const int num_arc_segments,
-            const int num_longitude_lines,
-            const unsigned int seed);
+            const int num_longitude_lines);
     const std::vector<glm::vec3>& getVertices() override;
     GLuint getVAO() override;
     const int getColorType() override;

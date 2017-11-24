@@ -16,10 +16,12 @@
 #include "src/entities/Trees/Tree.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
+#include "RockB.hpp"
 
 class WorldTile: public DrawableEntity {
 private:
 	std::vector<Rock*> rocks;
+    std::vector<RockB*> rocksB;
 	std::vector<Tree*> trees;
 public:
 	WorldTile(

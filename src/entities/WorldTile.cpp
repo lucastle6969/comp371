@@ -68,6 +68,28 @@ WorldTile::WorldTile(
 		this->rocks.emplace_back(rock);
 	}
 
+    for (int i = 0; i < 10; i++) {
+        float x_span = utils::randomFloat(0.02f, 0.05f);
+        float z_span = utils::randomFloat(0.02f, 0.05f);
+        float y_span = utils::randomFloat(0.005f, 0.025f);
+        float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
+        float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+        // Add rock child
+        RockB* rock = new RockB(
+                shader_program,
+                world_x_location + x_position,
+                world_z_location + z_position,
+                x_span,
+                z_span,
+                this
+        );
+        rock->setPosition(glm::vec3(x_position, 0.007f, z_position));
+
+        rock->scale(glm::vec3(x_span, y_span, z_span));
+        // Add rock to rocks array
+        this->rocksB.emplace_back(rock);
+    }
+
 	//enable tree distributor function
 	TreeDistributor::setEntity(this);
 	// add trees

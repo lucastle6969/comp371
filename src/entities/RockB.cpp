@@ -35,17 +35,16 @@ RockB::RockB(
     int num_arc_points = 9 ;
     int num_longitude_lines = 8;
 
-
     generateSphere(&this->vertices, &this->elements, &this->normals, &this->uvs, (num_arc_points-1), num_longitude_lines);
-
-
 
     this->vao = DrawableEntity::initVertexArray(
             this->vertices,
             this->elements,
+            this->normals,
             this->uvs,
             &this->vertices_buffer,
             &this->element_buffer,
+            &this->normal_buffer,
             &this->uv_buffer
     );
 }
@@ -64,8 +63,7 @@ void RockB::generateSphere(
         std::vector<glm::vec3>* normals,
         std::vector<glm::vec2>* uvs,
         const int num_arc_segments,
-        const int num_longitude_lines,
-        const unsigned int seed)
+        const int num_longitude_lines)
 {
 
     //generate one arc with num_arc_segments
@@ -82,7 +80,6 @@ void RockB::generateSphere(
         }
     }
 
-    srand(seed);
 
     for(int i=0; i<vertices->size(); i++){
         float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
@@ -95,8 +92,6 @@ void RockB::generateSphere(
         if(scale<0){
             scale = abs(scale);
         }
-
-        std::cout<<scale<<std::endl;
 
         (*vertices)[i].x = (*vertices)[i].x * scale;
         (*vertices)[i].y = (*vertices)[i].y * scale;
@@ -152,6 +147,9 @@ void RockB::generateSphere(
     ebo->emplace_back(num_arc_segments);
     ebo->emplace_back(num_arc_segments-1);
 
+    for(int i=0; i<vertices->size(); i++){
+        normals->emplace_back(1.0f,1.0f,1.0f);
+    }
     //normals and uvs (is emplace or push_back better here ?)
     for(int i = 0; i<vertices->size(); i++){
         uvs->emplace_back(
@@ -160,7 +158,50 @@ void RockB::generateSphere(
                 //v coordinate is basically the x component
                 (*vertices)[i].x * 0.5f + 0.5f);
 
-        normals->emplace_back((*vertices)[i]); //the normals are simply the vertices since this is a sphere around the origin
+        // calculate normals
+        //------------------
+
+        //step 1: find the surface normal for each triangle in the element buffer
+
+        std::vector<glm::vec3>surfaceNormals;
+
+        for(int i=1; i<ebo->size()+1; i++){
+            if(i%3 == 0){// then element at i-1 is the third vertex of the triangle
+
+                //std::cout<<"element at "<<i<<" :"<<elements[i-1]<<std::endl;
+                // vertex A is at i-3, vertex B is i-2, vertex C is i-1
+                glm::vec3 line_seg_BA = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-3]];
+                glm::vec3 line_seg_BC = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-1]];
+                //  this is right or this cube, but if the normals look inverted in another application, just switch the order of the cross product operation: cross(line_seg_BA, line_seg_BC)
+                glm::vec3 normal = glm::cross(line_seg_BC, line_seg_BA);
+                surfaceNormals.emplace_back(normal);
+            }
+        }
+
+        //step 2: find the average of the surface normals of the surfaces this vertex is part of
+
+        std::vector<glm::vec3>connectedSurfaces;
+
+        for(int i=0; i<vertices->size(); i++){
+            // vector that will hold all normals of all the surfaces this vertex is part of
+            connectedSurfaces.clear();
+            for(int j=0; j<ebo->size(); j++){
+                if(i==(*ebo)[j]){//the vertice is being drawn
+                    //j/3 gives us the location of this surface normal
+                    connectedSurfaces.emplace_back(surfaceNormals[j/3]);
+                }
+            }
+
+            if(!connectedSurfaces.empty()){
+                glm::vec3 sum = glm::vec3(0.0f);
+                for(int k=0; k<connectedSurfaces.size(); k++){
+                    sum += connectedSurfaces[k];
+                }
+                //average the normal for this vertex and update the normals buffer
+                (*normals)[i] = glm::normalize(glm::vec3(sum.x/connectedSurfaces.size(), sum.y/connectedSurfaces.size(), sum.z/connectedSurfaces.size()));
+            }
+        }
+
     }
 
 }
