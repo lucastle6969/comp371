@@ -459,8 +459,6 @@ Rock::Rock(
 
     for(int i=1; i<elements.size()+1; i++){
         if(i%3 == 0){// then element at i-1 is the third vertex of the triangle
-
-            //std::cout<<"element at "<<i<<" :"<<elements[i-1]<<std::endl;
             // vertex A is at i-3, vertex B is i-2, vertex C is i-1
             glm::vec3 line_seg_BA = this->vertices[elements[i-2]] - this->vertices[elements[i-3]];
             glm::vec3 line_seg_BC = this->vertices[elements[i-2]] - this->vertices[elements[i-1]];
@@ -490,7 +488,12 @@ Rock::Rock(
                 sum += connectedSurfaces[k];
             }
             //average the normal for this vertex and update the normals buffer
-            this->normals[i] = glm::normalize(glm::vec3(sum.x/connectedSurfaces.size(), sum.y/connectedSurfaces.size(), sum.z/connectedSurfaces.size()));
+            this->normals[i] = glm::normalize(
+                    glm::vec3(sum.x/connectedSurfaces.size(),
+                              sum.y/connectedSurfaces.size(),
+                              sum.z/connectedSurfaces.size()
+                    )
+            );
         }
     }
 

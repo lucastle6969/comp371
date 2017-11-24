@@ -165,7 +165,7 @@ void RockB::generateSphere(
                 (((*vertices)[i].y + (*vertices)[i].z) / 2.0f) * 0.5f + 0.5f,
                 //v coordinate is basically the x component
                 (*vertices)[i].x * 0.5f + 0.5f);
-        normals->emplace_back((*vertices)[i]-glm::vec3(0.0f));
+        normals->emplace_back((*vertices)[i] - glm::vec3(0.0f));
     }
 
         // calculate normals
