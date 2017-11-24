@@ -67,6 +67,10 @@ void Entity::scale(const float& scalar)
 	this->scale_matrix = glm::scale(this->scale_matrix, glm::vec3(scalar));
 }
 
+void Entity::scale(const glm::vec3& scale_vector){
+    this->scale_matrix = glm::scale(this->scale_matrix, scale_vector);
+}
+
 void Entity::rotate(const float& angle, const glm::vec3& axis)
 {
 	// rotation angle is in radians

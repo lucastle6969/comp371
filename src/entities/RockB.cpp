@@ -30,20 +30,33 @@ RockB::RockB(
 {
     this->draw_mode = GL_TRIANGLES;
 
+    // modified obsidian material from
+    // Advanced Graphics Programming Using OpenGL
+    // by Tom McReynolds and David Blythe
+    // and copied from slides from COMP371 at Concordia:
+    // http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
+    this->setMaterial(
+            glm::vec3(0.53, 0.53, 0.53),
+            glm::vec3(0.7, 0.75, 0.8),
+            glm::vec3(0.332741, 0.328634, 0.346435),
+            38.4f
+    );
+
     //generate a sphere
     //this could be useful to change with  +/-  rand() % 5
-    int num_arc_points = 9 ;
-    int num_longitude_lines = 8;
+    int num_arc_points = rand()%5 + 7;
+    int num_longitude_lines = rand()%10 + 5;
+
     generateSphere(&this->vertices, &this->elements, &this->normals, &this->uvs, (num_arc_points-1), num_longitude_lines);
-
-
 
     this->vao = DrawableEntity::initVertexArray(
             this->vertices,
             this->elements,
+            this->normals,
             this->uvs,
             &this->vertices_buffer,
             &this->element_buffer,
+            &this->normal_buffer,
             &this->uv_buffer
     );
 }
@@ -79,6 +92,26 @@ void RockB::generateSphere(
         }
     }
 
+
+    for(int i=0; i<vertices->size(); i++){
+        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
+        if(scale<0.5 && scale>-0.5){
+            scale = 0.5f;
+        }
+        if(scale>0.7){
+            scale=0.7;
+        }
+        if(scale<0){
+            scale = std::abs(scale);
+        }
+
+        (*vertices)[i].x = (*vertices)[i].x * scale;
+        (*vertices)[i].y = (*vertices)[i].y * scale;
+        (*vertices)[i].z = (*vertices)[i].z * scale;
+
+    }
+
+    //generate ebo
     for(int l=0; l<(num_longitude_lines-1); l++) {
         int arc_offset = l*(num_arc_segments+1);
         for (int k = 1; k < (num_arc_segments-1); k++) {
@@ -126,16 +159,65 @@ void RockB::generateSphere(
     ebo->emplace_back(num_arc_segments);
     ebo->emplace_back(num_arc_segments-1);
 
+    //reverse ebo
+    std::reverse(ebo->begin(), ebo->end());
+
+
     //normals and uvs (is emplace or push_back better here ?)
-    for(int i = 0; i<vertices->size(); i++){
+    for(int i = 0; i<vertices->size(); i++) {
         uvs->emplace_back(
                 //u coordinate determined by averaging out y and z (then bring the range between 0 - 1)
-                ( ( (*vertices)[i].y + (*vertices)[i].z ) / 2.0f ) * 0.5f + 0.5f ,
+                (((*vertices)[i].y + (*vertices)[i].z) / 2.0f) * 0.5f + 0.5f,
                 //v coordinate is basically the x component
                 (*vertices)[i].x * 0.5f + 0.5f);
-
-        normals->emplace_back((*vertices)[i]); //the normals are simply the vertices since this is a sphere around the origin
+        normals->emplace_back((*vertices)[i] - glm::vec3(0.0f));
     }
+
+        // calculate normals
+        //------------------
+
+        //step 1: find the surface normal for each triangle in the element buffer
+
+        std::vector<glm::vec3>surfaceNormals;
+
+        for(int i=1; i<ebo->size()+1; i++){
+            if(i%3 == 0){// then element at i-1 is the third vertex of the triangle
+
+                //std::cout<<"element at "<<i<<" :"<<elements[i-1]<<std::endl;
+                // vertex A is at i-3, vertex B is i-2, vertex C is i-1
+                glm::vec3 line_seg_BA = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-3]];
+                glm::vec3 line_seg_BC = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-1]];
+                //  this is right or this cube, but if the normals look inverted in another application, just switch the order of the cross product operation: cross(line_seg_BA, line_seg_BC)
+                glm::vec3 normal = glm::cross(line_seg_BC, line_seg_BA);
+                surfaceNormals.emplace_back(normal);
+            }
+        }
+
+        //step 2: find the average of the surface normals of the surfaces this vertex is part of
+
+        std::vector<glm::vec3>connectedSurfaces;
+
+        for(int i=0; i<vertices->size(); i++){
+            // vector that will hold all normals of all the surfaces this vertex is part of
+            connectedSurfaces.clear();
+            for(int j=0; j<ebo->size(); j++){
+                if(i==(*ebo)[j]){//the vertice is being drawn
+                    //j/3 gives us the location of this surface normal
+                    connectedSurfaces.emplace_back(surfaceNormals[j/3]);
+                }
+            }
+
+            if(!connectedSurfaces.empty()){
+                glm::vec3 sum = glm::vec3(0.0f);
+                for(int k=0; k<connectedSurfaces.size(); k++){
+                    sum += connectedSurfaces[k];
+                }
+                //average the normal for this vertex and update the normals buffer
+                (*normals)[i] = glm::normalize(glm::vec3(sum.x/connectedSurfaces.size(), sum.y/connectedSurfaces.size(), sum.z/connectedSurfaces.size()));
+            }
+        }
+
+
 
 }
 
@@ -152,7 +234,7 @@ GLuint RockB::getVAO()
 
 const int RockB::getColorType()
 {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }
 
 GLuint RockB::getTextureId()
