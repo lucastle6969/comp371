@@ -23,6 +23,7 @@
 #include "src/entities/World.hpp"
 #include "src/entities/Player.hpp"
 #include "constants.hpp"
+#include "loadTexture.hpp"
 
 World* world;
 
@@ -44,6 +45,10 @@ float yaw = initial_yaw;
 // Projection variables, to be set by framebufferSizeCallback
 int framebuffer_width = 0;
 int framebuffer_height = 0;
+
+//Shadown width and Height for ViewPort
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
 
 float getPlayerScaleCoefficient()
 {
@@ -201,7 +206,41 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	framebufferSizeCallback(window, width, height);
 
-	bool shader_program_ok;
+    
+    
+    
+    
+    
+    //Create Depth Buffer for Shadown rendering
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    
+    
+    //2D texture that we'll use as the framebuffer's depth buffer
+    
+    unsigned int depthTexture;
+    glGenTextures(1, &depthTexture);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapFBO, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT16, SHADOW_WIDTH, SHADOW_HEIGHT, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    
+    // Load the texture
+    GLuint Texture = loadDDS("../textures/uvmap.DDS");
+    
+    
+    bool shader_program_ok;
 	GLuint shader_program = prepareShaderProgram("../shaders/vertex.glsl", "../shaders/fragment.glsl",
 	                                             &shader_program_ok);
 	if (!shader_program_ok) {
@@ -209,10 +248,69 @@ int main()
 	}
 
 	world = new World(shader_program);
+    
+
+    
+    // Get a handle for our sampler2D
+    GLuint TextureID  = glGetUniformLocation(shader_program, "myTextureSampler");
+    //Get a handle for sampler2DShadow
+    GLuint ShadowMapID = glGetUniformLocation(shader_program, "shadowMap");
+    // Get a handle for our "LightPosition" uniform
+    GLuint lightInvDirID = glGetUniformLocation(shader_program, "LightInvDir");
+    
+    
+    
+    
+    
+    
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
+        
+        
+        
+        // 1. render depth of scene to texture (from light's perspective)
+    
+        // Render to our framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+        
+        
+        // We don't use bias in the shader, but instead we draw back faces,
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+        
+        //Only depth, no draw
+        glClear(GL_DEPTH_BUFFER_BIT );
+        
+     
+        
+        
+        glm::vec3 lightInvDir = glm::vec3(0.5f,2,2);
+        
+        // Compute the MVP matrix from the light's point of view
+        glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10,10,-10,10,-10,20);
+        glm::mat4 lightViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0,0,0), glm::vec3(0,1,0));
+        
+
+      
+        
+    
+        
+        //Setting isShadowMapping to 1 , and sending our lightMVP to the shaders
+        world->drawDepthtoTexture(lightViewMatrix, depthProjectionMatrix);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        
+    
+        // 2. Render scene as normal using the generated shadow map
+        
+        glViewport(0,0,width, height);
+        
+ 
+        
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 
@@ -225,6 +323,28 @@ int main()
 		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+        
+    
+        
+
+        glUniform3f(lightInvDirID, lightInvDir.x, lightInvDir.y, lightInvDir.z);
+        
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, Texture);
+        // Set our "myTextureSampler" sampler to use Texture Unit 0
+        glUniform1i(TextureID, 0);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        glUniform1i(ShadowMapID, 1);
+        
+        
+        
+        
+        
 		glm::vec3 player_position = world->getPlayer()->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
 
@@ -243,6 +363,7 @@ int main()
 	}
 
 	delete world;
+    glDeleteFramebuffers(1, &depthMapFBO);
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();

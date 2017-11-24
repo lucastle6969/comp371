@@ -52,6 +52,7 @@ public:
 	void unhide();
 	void toggleHide();
 	virtual void draw(const glm::mat4& view_matrix, const glm::mat4& projection_matrix);
+    virtual void drawDepthtoTexture(const glm::mat4& lightview_matrix, const glm::mat4& lightprojection_matrix);
 };
 
 #endif //PACMAN3D_ENTITY_H

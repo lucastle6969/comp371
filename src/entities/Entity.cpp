@@ -156,6 +156,13 @@ void Entity::draw(const glm::mat4& view_matrix, const glm::mat4& projection_matr
 	}
 }
 
+void Entity::drawDepthtoTexture(const glm::mat4& lightview_matrix, const glm::mat4& lightprojection_matrix)
+{
+    for (Entity* child : this->children) {
+        child->drawDepthtoTexture(lightview_matrix, lightprojection_matrix);
+    }
+}
+
 void Entity::orient(const glm::vec3& new_face_vec)
 {
 	static glm::mat4 identity;
