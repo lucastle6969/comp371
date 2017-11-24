@@ -30,6 +30,11 @@ RockB::RockB(
 {
     this->draw_mode = GL_TRIANGLES;
 
+    // modified obsidian material from
+    // Advanced Graphics Programming Using OpenGL
+    // by Tom McReynolds and David Blythe
+    // and copied from slides from COMP371 at Concordia:
+    // http://poullis.org/courses/2017/Fall/COMP371/resources/COMP371F17_LightingandShading.pdf
     this->setMaterial(
             glm::vec3(0.53, 0.53, 0.53),
             glm::vec3(0.7, 0.75, 0.8),
