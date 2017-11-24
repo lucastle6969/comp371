@@ -72,12 +72,24 @@ float shiValue;
 float fog;
 float fog_end = 1.5;
 float fog_start = 0;
-vec3 fog_color = vec3(.5, .5, .75);
-
+vec3 fog_color;
 void main()
 {
 
+    //for light strenght
+    vec3 daytime_value;
+    vec3 nighttime_value;
+    if (sunLight.direction.y < 0){
+        daytime_value = vec3(0.2);
+        nighttime_value = vec3(-sunLight.direction.y)*vec3(-sunLight.direction.y);
+         fog_color = vec3(.5 * -sunLight.direction.y,.5 * -sunLight.direction.y,.75 * -sunLight.direction.y);
+    } else {
+        daytime_value = vec3(sunLight.direction.y)*vec3(0.5, 0.5,0.75);
+        nighttime_value = vec3(0.0);
+        fog_color = vec3(0);
+    }
 
+    //vec3 fog_color = vec3(.5 * nighttime_value.y, .5 * nighttime_value.y, .75 * nighttime_value.y);
 
     if (color_type == COLOR_TILE){
         colorValue = vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f);
@@ -122,14 +134,14 @@ void main()
     );
 
     vec3 ambientValue =
-        //max(sunlight_components.ambient, 0) +
-        max(pointlight_components.ambient * attenuation, 0);
+        (max(sunlight_components.ambient, 0) * nighttime_value) +
+        (max(pointlight_components.ambient * attenuation, 0) * daytime_value);
     vec3 diffuseValue =
-        //max(sunlight_components.diffuse, 0) +
-        max(pointlight_components.diffuse * attenuation, 0);
+       (max(sunlight_components.diffuse, 0) * nighttime_value) +
+        (max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
     vec3 specularValue =
-        //max(sunlight_components.specular, 0) +
-        max(pointlight_components.specular * attenuation, 0);
+        (max(sunlight_components.specular, 0)*  nighttime_value) +
+        (max(pointlight_components.specular * attenuation, 0) * daytime_value);
 
     if (use_texture) {
         // multiply components against texture value but only if we've
