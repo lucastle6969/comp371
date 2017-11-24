@@ -64,6 +64,7 @@ ColorComponents calculateColor(
     const vec3 normal,
     const vec3 view_dir
 );
+vec4 claculateColor(vec3 colorValue);
 
 vec3 colorValue;
 vec3 difValue;
@@ -80,105 +81,91 @@ uniform float nighttime_value;
 void main()
 {
     switch (color_type) {
-        case COLOR_WHITE:
-            color = WHITE;
-            break;
+
         case COLOR_COORDINATE_AXES:
             color = vec4(ceil(pos), 1.0f);
             break;
+        case COLOR_WHITE:
+            color = WHITE;
+            break;
         case COLOR_HEIGHT:
-            color = vec4(vec3(pos.y), 1.0f);
+             color = claculateColor(colorValue = vec3(pos.y));
             break;
         case COLOR_TILE:
-            color = vec4(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f, 1.0f);
+            color = claculateColor( colorValue = vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f));
             break;
         case COLOR_TEXTURE:
             color = texture(tex_image, tex_coord);
             break;
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
-            //keep this
-            //in case we want to be fansy with our color
-            /*
-             if (color_type == COLOR_TILE){
-                    colorValue = vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f);
-                } else if (color_type == COLOR_TREE){
-                    colorValue = vec3(
-                                    1.0f - abs(pos.x / 10.0f) - abs(pos.y /1000.0f),
-                                    1.0f,
-                                    1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f));
-                } else if (color_type == COLOR_COORDINATE_AXES){
-                    colorValue = ceil(pos);
-                } else if (color_type == COLOR_HEIGHT){
-                            colorValue =vec3(pos.y);
-                } else {
-                     colorValue = material.ambient;
-               }
-            */
-
-            colorValue = material.ambient;
-
-            vec3 normal = normalize(worldNormal);
-            vec3 view_dir = normalize(worldViewPos - worldPos);
-            // we're passing in the direction of the sunlight but we want the vector
-            // pointing TOWARD the sun!
-            vec3 sun_dir = -1.0f * normalize(sunLight.direction);
-            vec3 pointlight_dir = normalize(pointLight.position - worldPos);
-            float point_distance = length(pointLight.position - worldPos);
-            // fog thats right we have fog
-            fog = (fog_end - length(point_distance))/(fog_end-fog_start);
-            float attenuation = 1.0f /
-               (constant + linear * point_distance + quadratic * (point_distance * point_distance));
-
-            // get individual components (before texture/attenuation)
-            // of sunlight and point light
-            ColorComponents sunlight_components = calculateColor(
-               sun_dir,
-               sunLight.color,
-               normal,
-               view_dir
-            );
-            ColorComponents pointlight_components = calculateColor(
-               pointlight_dir,
-               pointLight.color,
-               normal,
-               view_dir
-            );
-
-            vec3 ambientValue =
-               (max(sunlight_components.ambient, 0) * nighttime_value) +
-               (max(pointlight_components.ambient * attenuation, 0) * daytime_value);
-            vec3 diffuseValue =
-              (max(sunlight_components.diffuse, 0) * nighttime_value) +
-               (max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
-            vec3 specularValue =
-               (max(sunlight_components.specular, 0)*  nighttime_value) +
-               (max(pointlight_components.specular * attenuation, 0) * daytime_value);
-
-            if (use_texture) {
-               // multiply components against texture value but only if we've
-               // got a texture!
-               vec3 tex3 = vec3(texture(tex_image, tex_coord));
-               ambientValue *= tex3;
-               //diffuseValue *= tex3;
-               //specularValue *= tex3;
-            }
-
-            color = vec4(mix (fog_color,(ambientValue + diffuseValue + specularValue),fog), 0.0);
-
+            color = claculateColor (material.ambient);
             break;
         }
         case COLOR_TREE:
-            color = vec4(
+        color = claculateColor(
+            colorValue = vec3(
                 1.0f - abs(pos.x / 10.0f) - abs(pos.y /1000.0f),
                 1.0f,
-                1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f),
-                1.0f);
+                1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f)));
             break;
         default:
             color = WHITE;
             break;
     }
+
+   }
+
+vec4 claculateColor(vec3 colorValue){
+
+   // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
+    vec3 normal = normalize(worldNormal);
+    vec3 view_dir = normalize(worldViewPos - worldPos);
+    // we're passing in the direction of the sunlight but we want the vector
+    // pointing TOWARD the sun!
+    vec3 sun_dir = -1.0f * normalize(sunLight.direction);
+    vec3 pointlight_dir = normalize(pointLight.position - worldPos);
+    float point_distance = length(pointLight.position - worldPos);
+    // fog thats right we have fog
+    fog = (fog_end - length(point_distance))/(fog_end-fog_start);
+    float attenuation = 1.0f /
+       (constant + linear * point_distance + quadratic * (point_distance * point_distance));
+
+    // get individual components (before texture/attenuation)
+    // of sunlight and point light
+    ColorComponents sunlight_components = calculateColor(
+       sun_dir,
+       sunLight.color,
+       normal,
+       view_dir
+    );
+    ColorComponents pointlight_components = calculateColor(
+       pointlight_dir,
+       pointLight.color,
+       normal,
+       view_dir
+    );
+
+    vec3 ambientValue =
+       (max(sunlight_components.ambient, 0) * nighttime_value) +
+       (max(pointlight_components.ambient * attenuation, 0) * daytime_value);
+    vec3 diffuseValue =
+      (max(sunlight_components.diffuse, 0) * nighttime_value) +
+       (max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
+    vec3 specularValue =
+       (max(sunlight_components.specular, 0)*  nighttime_value) +
+       (max(pointlight_components.specular * attenuation, 0) * daytime_value);
+
+    if (use_texture) {
+       // multiply components against texture value but only if we've
+       // got a texture!
+       vec3 tex3 = vec3(texture(tex_image, tex_coord));
+       ambientValue *= tex3;
+       //diffuseValue *= tex3;
+       //specularValue *= tex3;
+    }
+
+    return vec4(mix (fog_color,(ambientValue + diffuseValue + specularValue),fog), 0.0);
 }
 
 // compute the basic color without considering attenuation or texture multiplication
