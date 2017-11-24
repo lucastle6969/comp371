@@ -70,26 +70,29 @@ vec3 difValue;
 vec3 specValue;
 float shiValue;
 float fog;
-float fog_end = 1.5;
+float fog_end = 1;
 float fog_start = 0;
-vec3 fog_color;
+
+uniform vec3 fog_color;
+uniform float daytime_value;
+uniform float nighttime_value;
+
 void main()
 {
 
     //for light strenght
-    vec3 daytime_value;
-    vec3 nighttime_value;
+    /*
     if (sunLight.direction.y < 0){
-        daytime_value = vec3(0.2);
-        nighttime_value = vec3(-sunLight.direction.y)*vec3(-sunLight.direction.y);
-         fog_color = vec3(.5 * -sunLight.direction.y,.5 * -sunLight.direction.y,.75 * -sunLight.direction.y);
+        daytime_value = 0.5;
+        nighttime_value = -sunLight.direction.y * -sunLight.direction.y;
+        fog_color = vec3(.5,.5 ,.75)* nighttime_value;
     } else {
-        daytime_value = vec3(sunLight.direction.y)*vec3(0.5, 0.5,0.75);
-        nighttime_value = vec3(0.0);
-        fog_color = vec3(0);
+        daytime_value = sunLight.direction.y * 0.5 +.2;
+        nighttime_value = 0;
+        fog_color = vec3(.5,.5 ,.75)* nighttime_value;
     }
-
-    //vec3 fog_color = vec3(.5 * nighttime_value.y, .5 * nighttime_value.y, .75 * nighttime_value.y);
+    */
+    //vec3 fog_color = vec3(.5, .5, .75) * nighttime_value.y;
 
     if (color_type == COLOR_TILE){
         colorValue = vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f);
@@ -105,8 +108,6 @@ void main()
     } else {
          colorValue = material.ambient;
     }
-    // fog thats right we have fog
-    fog = (fog_end - length(worldPos))/(fog_end-fog_start);
 
     vec3 normal = normalize(worldNormal);
     vec3 view_dir = normalize(worldViewPos - worldPos);
@@ -115,6 +116,8 @@ void main()
     vec3 sun_dir = -1.0f * normalize(sunLight.direction);
     vec3 pointlight_dir = normalize(pointLight.position - worldPos);
     float point_distance = length(pointLight.position - worldPos);
+    // fog thats right we have fog
+    fog = (fog_end - length(point_distance))/(fog_end-fog_start);
     float attenuation = 1.0f /
         (constant + linear * point_distance + quadratic * (point_distance * point_distance));
 
