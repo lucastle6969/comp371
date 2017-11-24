@@ -1,4 +1,4 @@
-#include <cmath>
+#include <math.h>
 #include "TrunkA.hpp"
 
 TrunkA::TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed){

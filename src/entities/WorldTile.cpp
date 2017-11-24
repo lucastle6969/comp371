@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include <cmath>
+#include <math.h>
 #include <cstdlib>
 
 #include "Entity.hpp"

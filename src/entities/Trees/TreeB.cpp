@@ -1,4 +1,4 @@
-#include <cmath>
+#include <math.h>
 
 #include "TreeB.hpp"
 #include "Tree.hpp"
