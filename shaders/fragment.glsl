@@ -155,7 +155,7 @@ void main()
         //specularValue *= tex3;
     }
 
-    color += vec4(mix (fog_color,(ambientValue + diffuseValue + specularValue),fog), 0.0);
+    color = vec4(mix (fog_color,(ambientValue + diffuseValue + specularValue),fog), 0.0);
 
     }
 
