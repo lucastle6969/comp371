@@ -28,13 +28,13 @@
         void setDaytime(){
 
             if (light_direction.y < 0){
-                daytime_value = (0.5);
+                daytime_value = (0.2);
                 nighttime_value = (-light_direction.y);
                 fog_color = glm::vec3(.5,.5 ,.75)* nighttime_value;
             } else {
-                daytime_value = (light_direction.y);
+                daytime_value = (light_direction.y)*.5 + .2;
                 nighttime_value = (0.0);
-                fog_color = glm::vec3(.5,.5 ,.75)* nighttime_value;
+                fog_color = glm::vec3(.5,.5 ,.75)* (nighttime_value + 0.2f);
             }
         };
 
