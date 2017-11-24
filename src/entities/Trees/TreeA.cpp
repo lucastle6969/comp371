@@ -1,4 +1,5 @@
 #include <cmath>
+#include <src/loadTexture.hpp>
 
 #include "Tree.hpp"
 #include "TreeA.hpp"
@@ -212,7 +213,7 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
                                                  combinedVertices->at(k));
     }
     const int previousRotation = rotationPoint;
-    computeElementsInitial(ag);
+    computeElements(ag);
     moveSegments(previousRotation, ag);
 }
 
@@ -259,21 +260,20 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) += translation + boost;
         }
-        computeElementsInitial(ag->ag[m]);
+        computeElements(ag->ag[m]);
         connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
         moveSegments(toPnt, ag->ag[m]);
     }
     return;
-
 }
 
-//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
-    //stbi_image_free(image_data);
+    std::cout << combinedVertices->size() <<
+              " " << combinedIndices->size() <<
+              " "  << 	combinedNormals->size() <<
+                                                   " " << combinedUV->size()  <<"\n";
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV,
+                                  &vbo, &ebo, &nbo, &UVbo);
 }
 
 void TreeA::setTreeLoaded(bool val){
@@ -284,3 +284,16 @@ void TreeA::setTreeInit(bool val){
     treeInit = val;
 }
 
+GLuint TreeA::getTextureId()
+{
+    static GLuint tA_texture = loadTexture(
+            "../textures/TreeATexture.jpg",//1000Y break // 925X break
+            GL_NEAREST,
+            GL_NEAREST
+    );
+    return tA_texture;
+}
+
+const int TreeA::getColorType() {
+    return COLOR_TEXTURE;
+}

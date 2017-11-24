@@ -47,7 +47,10 @@ Tree::~Tree() {
     delete combinedNormals;
     delete combinedUV;
     delete combinedStartIndices;
-   // glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &this->vbo);
+    glDeleteBuffers(1, &this->ebo);
+    glDeleteBuffers(1, &this->UVbo);
+    glDeleteVertexArrays(1, &this->vao);
 }
 
 glm::vec3 Tree::boostSegment(const AttatchmentGroupings* agLow,const AttatchmentGroupings* agHigh,
@@ -90,7 +93,7 @@ void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
 
-void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
+void Tree::computeElements(const AttatchmentGroupings* ag) {
     if(ag->type == 'L'){
         LeafContainerA::buildLeafContainerElements(ag->start + 1, ag->end,
                                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);

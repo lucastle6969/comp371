@@ -70,7 +70,7 @@ protected:
     std::vector<glm::vec3>* combinedNormals= new std::vector<glm::vec3>;
     std::vector<glm::vec2>* combinedUV = new std::vector<glm::vec2>;
     std::vector<std::vector<int>> *combinedStartIndices = new std::vector<std::vector<int>> ;
-    GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
+    GLuint vao, vbo, ebo, nbo, UVbo;
 
     float heightChunking;
     int boostFactor;
@@ -94,7 +94,7 @@ public:
                          const int& rotPoint, const int& prevPoint, const int& circularPoints,
                          std::vector<GLuint>* indPntr);
 
-    void computeElementsInitial(const AttatchmentGroupings* ag);
+    void computeElements(const AttatchmentGroupings* ag);
 
     const std::vector<glm::vec3>& getVertices();
 

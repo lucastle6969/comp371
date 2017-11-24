@@ -2,7 +2,7 @@
 
 #include "TreeB.hpp"
 #include "Tree.hpp"
-
+#include "../../loadTexture.hpp"
 TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
         Tree(heightChunking, boostFactor, shader_program, entity, 'B'){
     std::clock_t startTime;
@@ -215,7 +215,7 @@ void TreeB::initiateMove(AttatchmentGroupings* ag){
                                                  combinedVertices->at(k));
     }
     int previousRotation = rotationPoint;
-    computeElementsInitial(ag);
+    Tree::computeElements(ag);
     moveSegments(previousRotation, ag);
     return;
 }
@@ -266,7 +266,7 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) += translation + boost;
         }
-        computeElementsInitial(ag->ag[m]);
+        Tree::computeElements(ag->ag[m]);
         connectSegments(ag, m,fromPnt, toPnt, circularPoints, combinedIndices);
         moveSegments(fromPnt, ag->ag[m]);
     }
@@ -282,6 +282,20 @@ const std::vector<glm::vec3>& TreeB::getVertices()
 GLuint TreeB::getVAO()
 {
     return this->vao;
+}
+
+GLuint TreeB::getTextureId()
+{
+    static GLuint tA_texture = loadTexture(
+            "../textures/TreeATexture.jpg",//1000Y break // 925X break
+            GL_NEAREST,
+            GL_NEAREST
+    );
+    return tA_texture;
+}
+
+const int TreeB::getColorType() {
+    return COLOR_TEXTURE;
 }
 
 

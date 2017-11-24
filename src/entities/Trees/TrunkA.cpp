@@ -40,10 +40,12 @@ int TrunkA::buildVertices(const float& trunkDiameter, const float& lineSegments)
 void TrunkA::buildTrunkElements(const int& start, const int& end,
                                 std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                 std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
-
+    if(trunkVert->size() != trunkUVs->size()){
+        trunkUVs->resize(trunkVert->size());
+        trunkNorms->resize(trunkVert->size());
+    }
     for (GLuint i = start; i < end - trunkPoints + 1; i++) {
         GLuint i1 = (i + 1) % trunkPoints + (i / trunkPoints * trunkPoints);
-
         trunkIndices->push_back(i);
         trunkIndices->push_back(i1);
         trunkIndices->push_back(i1 + trunkPoints);
@@ -54,13 +56,17 @@ void TrunkA::buildTrunkElements(const int& start, const int& end,
         trunkNorms->push_back(glm::cross(
                 trunkVert->at(i1) - trunkVert->at(i), trunkVert->at(i + trunkPoints) - trunkVert->at(i)
         ));
-
     }
-    const float increments = ((end - start) / trunkPoints) / 2.0;
-    const float jumps = textureTrunkHeight / increments;
-    for (GLuint i = start; i < end; i ++){
-        float v = std::abs(-textureTrunkHeight + jumps*i/trunkPoints);
-        trunkUVs->push_back(glm::vec2(((float)i) / trunkPoints, v));
+
+    //Triangle function
+    int top = (end - start) / trunkPoints;
+    int circle = trunkPoints;
+    for (GLuint i = 0 ; i < circle; i++){
+        float v = std::abs((i* 100 + (int)(textureTrunkHeight* 100)) % (int)(textureTrunkHeight* 2 * 100) - textureTrunkHeight* 100) / 100;
+        for (GLuint j = 0; j < top + 1; j++){
+            float u = std::abs((j* 100 + (int)(textureTrunkHeight* 100) % (int)(textureTrunkHeight * 2 * 100) - textureTrunkHeight* 100)) / 100;
+            trunkUVs->at(start + (i) * (circle) + j) = {u , v};
+        }
     }
 }
 
@@ -68,7 +74,7 @@ void TrunkA::buildTrunkElements(const int& start, const int& end,
 
 float TrunkA::getLineHeight(){return lineHeight;}
 
-void TrunkA::buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
+void TrunkA::buildConnectorElements(const int& segmentConnectStart, const int& start, const int& set, const char& lr,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                    std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
     if(trunkVert->size() != trunkUVs->size()){
@@ -100,12 +106,13 @@ void TrunkA::buildConnectorElements(const int& segmentConnectStart,const int& st
         }
     }
     //Connector UV to top segment
-    for(GLuint i = 0; i < trunkPoints; i++) {
-        if(i % trunkPoints < trunkPoints / 2 && lr == 'R'){
-            trunkUVs->at(start + i)  = glm::vec2(((float)i) / trunkPoints, textureConnectorEnd);
-        }
-        else if (i % trunkPoints >= trunkPoints / 2 && lr == 'L'){
-            trunkUVs->at(start + i)  = glm::vec2(((float)i) / trunkPoints, textureConnectorEnd);
+    int top = 1;
+    int circle = trunkPoints;
+    for (GLuint i = 0 ; i <circle; i++){
+        float v = std::abs((i* 100 + (int)(textureTrunkHeight* 100)) % (int)(textureTrunkHeight* 2 * 100) - textureTrunkHeight* 100) / 100;
+        for (GLuint j = 0; j <  top; j++){
+            float u = std::abs((j* 100 + (int)(textureTrunkHeight* 100) % (int)(textureTrunkHeight * 2 * 100) - textureTrunkHeight* 100)) / 100;
+            trunkUVs->at(start + (i) * (circle) + j) = {u , v};
         }
     }
 }

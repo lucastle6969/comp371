@@ -9,6 +9,7 @@
 #include <stdexcept>
 #define STB_IMAGE_IMPLEMENTATION
 #include <src/vendor/stb_image.h>
+#include <iostream>
 
 GLuint loadTexture(
 	const std::string& path,

@@ -106,7 +106,8 @@ private:
 
 public:
     const std::vector<glm::vec3>& getVertices();
-
+    GLuint getTextureId();
+    const int getColorType();
     GLuint getVAO();
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);

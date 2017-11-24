@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <ctime>
 #include <cmath>
+#include "../../loadTexture.hpp"
 
 constexpr int TreeClusterItem::branches;
 constexpr float TreeClusterItem::zeroSize;
@@ -365,3 +366,16 @@ float TreeClusterItem::getTrunkDiameter(){
     return trunkDiameter;
 }
 
+GLuint TreeClusterItem::getTextureId()
+{
+    static GLuint tA_texture = loadTexture(
+            "../textures/TreeATexture.jpg",//1000Y break // 925X break
+            GL_NEAREST,
+            GL_NEAREST
+    );
+    return tA_texture;
+}
+
+const int TreeClusterItem::getColorType() {
+    return COLOR_TEXTURE;
+}

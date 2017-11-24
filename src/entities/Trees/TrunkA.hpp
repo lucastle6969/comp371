@@ -25,9 +25,10 @@ public:
     static constexpr float itterations = 360.0f / trunkPoints;
 
     static constexpr float jagednessFactor = 0.35;
-    static constexpr float textureTrunkHeight = 0.75;
-    static constexpr float textureConnectorStart = 0.75;
-    static constexpr float textureConnectorEnd = 0.90;
+    static constexpr float textureTrunkHeight = 1.0;
+    static constexpr float textureTrunkWidth = 1.0;
+    static constexpr float textureConnectorStart = 0.0;
+    static constexpr float textureConnectorEnd = 1.0;//0.5192307692307692;
 private:
     std::vector<glm::vec3>* trunkVertices;
 

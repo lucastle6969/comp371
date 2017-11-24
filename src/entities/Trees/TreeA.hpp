@@ -106,7 +106,10 @@ private:
 public:
 	void setTreeLoaded(bool state);
 	void setTreeInit(bool state);
-
+	GLuint getTextureId();
+	const int getColorType();
 	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+
+
 };
 #endif //treeA

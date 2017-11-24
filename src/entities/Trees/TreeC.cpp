@@ -51,11 +51,5 @@
         //printf("Duration of C %f Units: %f ms _CLUSTER HEAD\n", trunkDiameter, duration*1000);
     }
 
-    std::vector<TreeClusterItem*> TreeC::getTreeCluster(){
-        return treeCluster;
-    }
 
-    void TreeC::setSizeVariation(const float& r){
-        sizeVariation = r;
-    }
 #endif
