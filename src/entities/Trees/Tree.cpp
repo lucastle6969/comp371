@@ -5,7 +5,7 @@
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
-#include <cmath>
+#include <math.h>
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cstdio>
 #include <ctime>
-#include <cmath>
+#include <math.h>
 
 constexpr float TreeClusterItem::boostFactor;
 constexpr int TreeClusterItem::branches;

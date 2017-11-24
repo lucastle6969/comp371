@@ -1,5 +1,5 @@
 #include "TreeRandom.hpp"
-#include <cmath>
+#include <math.h>
 #include <cstdio>
 int TreeRandom::k = 777;
 
