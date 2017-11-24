@@ -30,6 +30,13 @@ RockB::RockB(
 {
     this->draw_mode = GL_TRIANGLES;
 
+    this->setMaterial(
+            glm::vec3(0.53, 0.53, 0.53),
+            glm::vec3(0.7, 0.75, 0.8),
+            glm::vec3(0.332741, 0.328634, 0.346435),
+            38.4f
+    );
+
     //generate a sphere
     //this could be useful to change with  +/-  rand() % 5
     int num_arc_points = 9 ;
@@ -81,23 +88,23 @@ void RockB::generateSphere(
     }
 
 
-//    for(int i=0; i<vertices->size(); i++){
-//        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
-//        if(scale<0.5 && scale>-0.5){
-//            scale = 0.5f;
-//        }
-//        if(scale>0.7){
-//            scale=0.7;
-//        }
-//        if(scale<0){
-//            scale = std::abs(scale);
-//        }
-//
-//        (*vertices)[i].x = (*vertices)[i].x * scale;
-//        (*vertices)[i].y = (*vertices)[i].y * scale;
-//        (*vertices)[i].z = (*vertices)[i].z * scale;
-//
-//    }
+    for(int i=0; i<vertices->size(); i++){
+        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
+        if(scale<0.5 && scale>-0.5){
+            scale = 0.5f;
+        }
+        if(scale>0.7){
+            scale=0.7;
+        }
+        if(scale<0){
+            scale = std::abs(scale);
+        }
+
+        (*vertices)[i].x = (*vertices)[i].x * scale;
+        (*vertices)[i].y = (*vertices)[i].y * scale;
+        (*vertices)[i].z = (*vertices)[i].z * scale;
+
+    }
 
     //generate ebo
     for(int l=0; l<(num_longitude_lines-1); l++) {
@@ -158,7 +165,7 @@ void RockB::generateSphere(
                 (((*vertices)[i].y + (*vertices)[i].z) / 2.0f) * 0.5f + 0.5f,
                 //v coordinate is basically the x component
                 (*vertices)[i].x * 0.5f + 0.5f);
-        normals->emplace_back(1.0f,1.0f,1.0f);
+        normals->emplace_back((*vertices)[i]-glm::vec3(0.0f));
     }
 
         // calculate normals
@@ -176,7 +183,7 @@ void RockB::generateSphere(
                 glm::vec3 line_seg_BA = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-3]];
                 glm::vec3 line_seg_BC = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-1]];
                 //  this is right or this cube, but if the normals look inverted in another application, just switch the order of the cross product operation: cross(line_seg_BA, line_seg_BC)
-                glm::vec3 normal = glm::cross(line_seg_BA, line_seg_BC);
+                glm::vec3 normal = glm::cross(line_seg_BC, line_seg_BA);
                 surfaceNormals.emplace_back(normal);
             }
         }
