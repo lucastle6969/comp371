@@ -14,8 +14,12 @@
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
-#include "src/TreeDistributor.hpp"
+
 #include "src/entities/Trees/Tree.hpp"
+#include "src/Entities/Trees/TreeA.hpp"
+#include "src/Entities/Trees/TreeB.hpp"
+#include "src/Entities/Trees/TreeC.hpp"
+
 #include "WorldTile.hpp"
 #include "../utils.hpp"
 #include "../constants.hpp"
@@ -67,9 +71,9 @@ WorldTile::WorldTile(
 	}
 
 	//enable tree distributor function
-	TreeDistributor::setEntity(this);
+	//TreeDistributor::setEntity(this);
 	// add trees
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 5; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
@@ -81,18 +85,20 @@ WorldTile::WorldTile(
 		if(seed % 10 < 2){
 			tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
 		}
-		else if(seed % 10 < 7){
+		else if(seed % 10 < -7){
 			tree = new TreeB(shader_program, this, internal_tree_width, seed);
-
 		}
 		else{
-			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width*0.25, seed);
+			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed);
 		}
+		tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed);
+//		std::cout << x_position << " " <<  z_position <<" " << tree->getType() << "\n";
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));
 		// Add tree to trees array
 		this->trees.emplace_back(tree);
 	}
+//	printf("=====================\n");
 }
 
 WorldTile::~WorldTile()

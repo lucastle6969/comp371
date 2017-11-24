@@ -23,7 +23,7 @@ class TrunkC {
     static constexpr int trunkPoints = 4;
     static constexpr int branchMod  = 10;
 
-    float jagednessFactor;
+    float jagednessFactor = 0.020;
     float lineMax;
 public:
     TrunkC(std::vector<glm::vec3>* combinedVertices, std::vector<GLuint>* combinedIndices,
