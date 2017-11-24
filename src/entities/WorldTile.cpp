@@ -16,9 +16,9 @@
 #include "Rock.hpp"
 
 #include "src/entities/Trees/Tree.hpp"
-#include "src/Entities/Trees/TreeA.hpp"
-#include "src/Entities/Trees/TreeB.hpp"
-#include "src/Entities/Trees/TreeC.hpp"
+#include "src/entities/Trees/TreeA.hpp"
+#include "src/entities/Trees/TreeB.hpp"
+#include "src/entities/Trees/TreeC.hpp"
 
 #include "WorldTile.hpp"
 #include "../utils.hpp"
