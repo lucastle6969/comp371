@@ -85,13 +85,12 @@ WorldTile::WorldTile(
 		if(seed % 10 < 2){
 			tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
 		}
-		else if(seed % 10 < -7){
+		else if(seed % 10 < 7){
 			tree = new TreeB(shader_program, this, internal_tree_width, seed);
 		}
 		else{
 			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed);
 		}
-		tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed);
 //		std::cout << x_position << " " <<  z_position <<" " << tree->getType() << "\n";
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));
