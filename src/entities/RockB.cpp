@@ -81,23 +81,23 @@ void RockB::generateSphere(
     }
 
 
-    for(int i=0; i<vertices->size(); i++){
-        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
-        if(scale<0.5 && scale>-0.5){
-            scale = 0.5f;
-        }
-        if(scale>0.7){
-            scale=0.7;
-        }
-        if(scale<0){
-            scale = abs(scale);
-        }
-
-        (*vertices)[i].x = (*vertices)[i].x * scale;
-        (*vertices)[i].y = (*vertices)[i].y * scale;
-        (*vertices)[i].z = (*vertices)[i].z * scale;
-
-    }
+//    for(int i=0; i<vertices->size(); i++){
+//        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
+//        if(scale<0.5 && scale>-0.5){
+//            scale = 0.5f;
+//        }
+//        if(scale>0.7){
+//            scale=0.7;
+//        }
+//        if(scale<0){
+//            scale = std::abs(scale);
+//        }
+//
+//        (*vertices)[i].x = (*vertices)[i].x * scale;
+//        (*vertices)[i].y = (*vertices)[i].y * scale;
+//        (*vertices)[i].z = (*vertices)[i].z * scale;
+//
+//    }
 
     //generate ebo
     for(int l=0; l<(num_longitude_lines-1); l++) {
@@ -147,16 +147,19 @@ void RockB::generateSphere(
     ebo->emplace_back(num_arc_segments);
     ebo->emplace_back(num_arc_segments-1);
 
-    for(int i=0; i<vertices->size(); i++){
-        normals->emplace_back(1.0f,1.0f,1.0f);
-    }
+    //reverse ebo
+    std::reverse(ebo->begin(), ebo->end());
+
+
     //normals and uvs (is emplace or push_back better here ?)
-    for(int i = 0; i<vertices->size(); i++){
+    for(int i = 0; i<vertices->size(); i++) {
         uvs->emplace_back(
                 //u coordinate determined by averaging out y and z (then bring the range between 0 - 1)
-                ( ( (*vertices)[i].y + (*vertices)[i].z ) / 2.0f ) * 0.5f + 0.5f ,
+                (((*vertices)[i].y + (*vertices)[i].z) / 2.0f) * 0.5f + 0.5f,
                 //v coordinate is basically the x component
                 (*vertices)[i].x * 0.5f + 0.5f);
+        normals->emplace_back(1.0f,1.0f,1.0f);
+    }
 
         // calculate normals
         //------------------
@@ -173,7 +176,7 @@ void RockB::generateSphere(
                 glm::vec3 line_seg_BA = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-3]];
                 glm::vec3 line_seg_BC = (*vertices)[(*ebo)[i-2]] - (*vertices)[(*ebo)[i-1]];
                 //  this is right or this cube, but if the normals look inverted in another application, just switch the order of the cross product operation: cross(line_seg_BA, line_seg_BC)
-                glm::vec3 normal = glm::cross(line_seg_BC, line_seg_BA);
+                glm::vec3 normal = glm::cross(line_seg_BA, line_seg_BC);
                 surfaceNormals.emplace_back(normal);
             }
         }
@@ -202,7 +205,7 @@ void RockB::generateSphere(
             }
         }
 
-    }
+
 
 }
 
@@ -219,7 +222,7 @@ GLuint RockB::getVAO()
 
 const int RockB::getColorType()
 {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }
 
 GLuint RockB::getTextureId()
