@@ -34,6 +34,8 @@ RockB::RockB(
     //this could be useful to change with  +/-  rand() % 5
     int num_arc_points = 9 ;
     int num_longitude_lines = 8;
+
+
     generateSphere(&this->vertices, &this->elements, &this->normals, &this->uvs, (num_arc_points-1), num_longitude_lines);
 
 
@@ -62,7 +64,8 @@ void RockB::generateSphere(
         std::vector<glm::vec3>* normals,
         std::vector<glm::vec2>* uvs,
         const int num_arc_segments,
-        const int num_longitude_lines)
+        const int num_longitude_lines,
+        const unsigned int seed)
 {
 
     //generate one arc with num_arc_segments
@@ -79,6 +82,29 @@ void RockB::generateSphere(
         }
     }
 
+    srand(seed);
+
+    for(int i=0; i<vertices->size(); i++){
+        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
+        if(scale<0.5 && scale>-0.5){
+            scale = 0.5f;
+        }
+        if(scale>0.7){
+            scale=0.7;
+        }
+        if(scale<0){
+            scale = abs(scale);
+        }
+
+        std::cout<<scale<<std::endl;
+
+        (*vertices)[i].x = (*vertices)[i].x * scale;
+        (*vertices)[i].y = (*vertices)[i].y * scale;
+        (*vertices)[i].z = (*vertices)[i].z * scale;
+
+    }
+
+    //generate ebo
     for(int l=0; l<(num_longitude_lines-1); l++) {
         int arc_offset = l*(num_arc_segments+1);
         for (int k = 1; k < (num_arc_segments-1); k++) {

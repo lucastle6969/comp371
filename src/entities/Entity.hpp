@@ -41,6 +41,7 @@ public:
 	glm::vec3 getScale();
 	bool isHidden();
 	void scale(const float& scalar);
+    void scale(const glm::vec3& skew_vector);
     void rotate(const float& angle, const glm::vec3& axis);
     void resetRotation();
     void moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);

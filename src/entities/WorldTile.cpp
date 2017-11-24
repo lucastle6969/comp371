@@ -49,6 +49,7 @@ WorldTile::WorldTile(
 	for (int i = 0; i < 10; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
+        float y_span = utils::randomFloat(0.005f, 0.015f);
 		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
 		// Add rock child
@@ -61,7 +62,8 @@ WorldTile::WorldTile(
 				this
 		);
 		rock->setPosition(glm::vec3(x_position, 0.0f, z_position));
-        rock->scale(0.01f);
+
+        rock->scale(glm::vec3(x_span, y_span, z_span));
 		// Add rock to rocks array
 		this->rocks.emplace_back(rock);
 	}
@@ -69,7 +71,7 @@ WorldTile::WorldTile(
 	//enable tree distributor function
 	TreeDistributor::setEntity(this);
 	// add trees
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 0; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
