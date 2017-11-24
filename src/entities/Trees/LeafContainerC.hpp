@@ -21,14 +21,15 @@ class LeafContainerC {
 
     int lineMax;
     int heightChunking;
-    int leafPoints = 4;
-    float jagednessFactor_Leaf;
+    static constexpr int leafPoints = 4;
+    static constexpr int stretchFactor = 100;
+    static constexpr float jagednessFactor_Leaf = 0.0020;
     int branchMod;
 public:
     LeafContainerC(std::vector<glm::vec3>* combinedVertices, std::vector<GLuint>* combinedIndices,
            float lineMax);
 
-    void buildAllComponenets(const float& leafDiameter, const float& seed, float lineHeight);
+    void buildAllComponenets(const float& leafDiameter, const float& widthCutoff, const float& seed, float lineHeight);
 };
 
 

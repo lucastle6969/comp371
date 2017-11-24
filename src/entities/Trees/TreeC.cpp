@@ -21,6 +21,8 @@
         treeCluster.push_back(tci);
         numberOfTrees--;
 
+        sizeVariation = trunkDiameter / 10.0f;
+
         //distribute in random cirlce
         float tempTrunkDiameter = trunkDiameter;
         int i = 0;
@@ -46,9 +48,8 @@
         }
 
         duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-        printf("Duration of C %f Units: %f ms _CLUSTER HEAD\n", trunkDiameter, duration*1000);
+        //printf("Duration of C %f Units: %f ms _CLUSTER HEAD\n", trunkDiameter, duration*1000);
     }
-
 
     std::vector<TreeClusterItem*> TreeC::getTreeCluster(){
         return treeCluster;
@@ -56,11 +57,5 @@
 
     void TreeC::setSizeVariation(const float& r){
         sizeVariation = r;
-    }
-
-    TreeC::~TreeC(){
-        for(TreeClusterItem* tci: treeCluster){
-            delete tci;
-        }
     }
 #endif

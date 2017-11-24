@@ -1,3 +1,16 @@
+/*
+ *     ^
+ *  <-[]->
+ *    [x]
+ * <--[-]-->
+ *    [x]
+ * <--[-]-->
+ *
+ * Goes up alternating leaf angle ending with a top leaf
+ * Double sided index on leaves
+ * Sets index after. Read comments carefully.
+ */
+
 #include <cmath>
 
 #include "LeafContainerAB.hpp"

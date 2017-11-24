@@ -33,7 +33,12 @@
 
 class TreeClusterItem : public Tree {
 private:
-    static constexpr float boostFactor = 0.2;
+
+    float boostFactor = 4.2;
+    int k = 600;
+
+    const float boostReduction =boostFactor / 10 ;
+    const int kReduction =  k/100;
     static constexpr int branches = 1;
     static constexpr float zeroSize = 0.1;
     static constexpr int minYBranchAngle = 25;
@@ -50,8 +55,8 @@ private:
     int depth = 0;
     float trunkDiameter;
     int previousRotation;
-    int k = 600;
-    float widthCutoff;
+
+    float widthCutoff = 0.2;
     float finalCutoff;
     bool kill;
 
@@ -70,9 +75,6 @@ private:
     void moveSegments(int rotationPoint, AttatchmentGroupings* ag);
 
     void connectSegments(AttatchmentGroupings* ag, const int& m);
-
-    //values in radians
-    glm::vec3 makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3 vector);
 
     void bufferObject(const GLuint& shader_program);
 

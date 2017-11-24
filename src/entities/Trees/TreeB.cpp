@@ -15,7 +15,7 @@ TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter,
     rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
     duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-    printf("Duration of B %f Units: %f ms\n", trunkDiameter, duration*1000);
+    //printf("Duration of B %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
 

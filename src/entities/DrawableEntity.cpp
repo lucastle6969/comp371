@@ -139,10 +139,11 @@ void DrawableEntity::draw(
 	// Draw
 	glBindVertexArray(this->getVAO());
 	GLenum draw_mode = this->getDrawMode();
-	if (draw_mode == GL_POINTS) {
-		// it's inefficient and useless to use glDrawElements for a point cloud
-		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
-	} else {
+//	if (draw_mode == GL_POINTS) {
+//		// it's inefficient and useless to use glDrawElements for a point cloud
+//		//doesn't work though
+//		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
+//	} else {
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
 		int element_buffer_array_size;
@@ -153,7 +154,7 @@ void DrawableEntity::draw(
 			GL_UNSIGNED_INT,
 			nullptr
 		);
-	}
+//	}
 	glBindVertexArray(0);
 
 	glUseProgram(0);
