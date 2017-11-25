@@ -93,7 +93,7 @@ private:
 
 	void initiateMove(AttatchmentGroupings* ag);
 
-	void moveSegments(const int& previousRotation, AttatchmentGroupings* ag);
+	void moveSegments(int previousRotation, AttatchmentGroupings* ag);
 
 	void treeSetup(const GLuint& shader_program, float trunkDiameter, const int&);
 
