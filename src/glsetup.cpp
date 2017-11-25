@@ -47,6 +47,10 @@ void setupGlContext(
 	// Enable backface culling (only draw polygons on one side)
 	glEnable(GL_CULL_FACE);
 
+	// set up transparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	#ifndef __APPLE__
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;

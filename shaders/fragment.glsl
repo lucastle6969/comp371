@@ -29,6 +29,7 @@ uniform Material material;
 uniform int color_type;
 uniform int entity_position_x;
 uniform int entity_position_z;
+uniform float opacity;
 uniform sampler2D tex_image;
 
 uniform bool use_texture;
@@ -165,7 +166,7 @@ vec4 claculateColor(vec3 value){
        //specularValue *= tex3;
     }
 
-    return vec4(mix (fog_color,(ambientValue + diffuseValue + specularValue),fog), 0.0);
+    return vec4(mix(fog_color, ambientValue + diffuseValue + specularValue, fog), opacity);
 }
 
 // compute the basic color without considering attenuation or texture multiplication

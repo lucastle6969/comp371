@@ -76,6 +76,7 @@ void DrawableEntity::draw(
     auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
 	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
 	auto position_z_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_z");
+	auto opacity_loc = (GLuint)glGetUniformLocation(this->shader_program, "opacity");
     auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
 
     auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
@@ -108,6 +109,7 @@ void DrawableEntity::draw(
 	glm::vec3 position = this->getPosition();
 	glUniform1i(position_x_loc, (GLint)position.x);
 	glUniform1i(position_z_loc, (GLint)position.z);
+	glUniform1f(opacity_loc, this->getOpacity());
 	// compute world view position from inverse view matrix
 	// thanks: https://www.opengl.org/discussion_boards/showthread.php/178484-Extracting-camera-position-from-a-ModelView-Matrix
 	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
