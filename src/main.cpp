@@ -234,7 +234,6 @@ int main()
 
     Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
 
-
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -245,13 +244,29 @@ int main()
 		glfwPollEvents();
 		pollContinuousControls(window);
 
+		glm::vec3 follow_vector = getFollowVector();
+
+		world->getPlayer()->setOpacity(
+			(glm::length(follow_vector) - getPlayerScaleCoefficient() * 30.0f) /
+				(getPlayerScaleCoefficient() * 50.0f)
+		);
+
+		// rotate the sun
+		light.light_direction = glm::rotateZ(light.light_direction, 0.005f);
+		//move the fog
+
+		light.light_position = world->getPlayer()->getPosition() + glm::vec3(0,.1,0);
+
+		light.setDaytime();
+
+		float daytime = -light.light_direction.y;
 		// Render
 		// Clear the colorbuffer
-		glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
+		glClearColor(0.5f *daytime, 0.5f*daytime, 0.75f*daytime, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 player_position = world->getPlayer()->getPosition();
-		glm::mat4 view_matrix = glm::lookAt(player_position - getFollowVector(), player_position, up);
+		glm::mat4 view_matrix = glm::lookAt(player_position - follow_vector, player_position, up);
 
 		float player_scale = getPlayerScaleCoefficient();
 		glm::mat4 projection_matrix = glm::perspective(

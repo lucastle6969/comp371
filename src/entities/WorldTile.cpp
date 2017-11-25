@@ -37,7 +37,7 @@ WorldTile::WorldTile(
 		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
 		glm::vec3(.5,.5,.5),
 		glm::vec3(.25,.25,.25),
-		0.25f
+		25.0f
 	);
 
 	// position tile relative to parent based on x, z inputs
@@ -87,7 +87,7 @@ WorldTile::WorldTile(
                 z_span,
                 this
         );
-        rock->setPosition(glm::vec3(x_position, 0.007f, z_position));
+        rock->setPosition(glm::vec3(x_position, 0.002f, z_position));
 
         rock->scale(glm::vec3(x_span, y_span, z_span));
         // Add rock to rocks array

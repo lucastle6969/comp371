@@ -78,12 +78,13 @@ void DrawableEntity::draw(
     auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
 	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
 	auto position_z_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_z");
+	auto opacity_loc = (GLuint)glGetUniformLocation(this->shader_program, "opacity");
     auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
 
     auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
     auto material_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.diffuse");
     auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
-    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
+    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.shininess");
 
 
 	auto sun_direction_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.direction");
@@ -93,7 +94,12 @@ void DrawableEntity::draw(
 
 	auto use_texture_loc = (GLuint)glGetUniformLocation(this->shader_program, "use_texture");
 
-    glUseProgram(this->shader_program);
+	auto fog_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "fog_color");
+	auto daytime_value_loc = (GLuint)glGetUniformLocation(this->shader_program, "daytime_value");
+	auto nighttime_value_loc = (GLuint)glGetUniformLocation(this->shader_program, "nighttime_value");
+
+
+	glUseProgram(this->shader_program);
 
 	const glm::mat4& model_matrix = this->getModelMatrix();
 	// use the entity's model matrix to form a new Model View Projection matrix
@@ -105,6 +111,7 @@ void DrawableEntity::draw(
 	glm::vec3 position = this->getPosition();
 	glUniform1i(position_x_loc, (GLint)position.x);
 	glUniform1i(position_z_loc, (GLint)position.z);
+	glUniform1f(opacity_loc, this->getOpacity());
 	// compute world view position from inverse view matrix
 	// thanks: https://www.opengl.org/discussion_boards/showthread.php/178484-Extracting-camera-position-from-a-ModelView-Matrix
 	glm::vec3 world_view_position(glm::inverse(view_matrix)[3]);
@@ -114,13 +121,17 @@ void DrawableEntity::draw(
     glUniform3fv(sun_direction_loc, 1, glm::value_ptr(light.light_direction));
 	glUniform3fv(sun_color_loc, 1, glm::value_ptr(light.color));
 	// TODO: make the point light follow the player? or remove it?
-	glUniform3fv(point_light_pos_loc, 1, glm::value_ptr(glm::vec3(0)));
+	glUniform3fv(point_light_pos_loc, 1, glm::value_ptr(light.light_position));
 	// TODO: define the point light color somewhere else or remove it
-	glUniform3fv(point_light_color_loc, 1, glm::value_ptr(glm::vec3(0.2, 0.3, 0.3)));
+	glUniform3fv(point_light_color_loc, 1, glm::value_ptr(light.position_light_color));
     glUniform3fv(material_ambient_loc, 1, glm::value_ptr(this->ambient));
     glUniform3fv(material_diffuse_loc, 1, glm::value_ptr(this->diffuse));
     glUniform3fv(material_specular_loc, 1, glm::value_ptr(this->specular));
     glUniform1f(material_shininess_loc, this->shininess);
+
+	glUniform3fv(fog_color_loc, 1, glm::value_ptr(light.fog_color));
+	glUniform1f(daytime_value_loc, light.daytime_value);
+	glUniform1f(nighttime_value_loc, light.nighttime_value);
 
 	GLuint texture_id = this->getTextureId();
 	glUniform1i(use_texture_loc, texture_id != UINT_MAX);
