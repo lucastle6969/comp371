@@ -242,8 +242,7 @@ int main()
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 		// rotate the sun
-		light.daytime = glm::rotateZ(light.daytime, 0.005f);
-		light.nighttime = glm::rotateZ(light.nighttime, 0.005f);
+		light.daytime = glm::rotateZ(light.daytime, 0.0005f);
         //move the fog
 
 		light.light_position = world->getPlayer()->getPosition() + glm::vec3(0,.1,0);
@@ -257,7 +256,7 @@ int main()
 		daytime = -light.light_direction.y;
 		// Render
 		// Clear the colorbuffer
-		glClearColor(0.5f *daytime, 0.5f*daytime, 0.75f*daytime, 1.0f);
+		glClearColor(light.fog_color.x, light.fog_color.y, light.fog_color.z , 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 player_position = world->getPlayer()->getPosition();
