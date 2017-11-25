@@ -60,7 +60,7 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
@@ -75,7 +75,8 @@ private:
 
     const int branches = 1;
     const int k = 1;
-
+    static constexpr int previousRotationCap = 10;
+    float limiter = 1;
     static constexpr float boostFactor = 0.5;
     static constexpr int heightChunking = 12;//INVERSE
 
@@ -86,6 +87,7 @@ private:
 
     double trunkRatio = 1.0;
     double branchRatio = 0.850;
+
 
     void generateTreeB(const int& _case, float trunkDiameter, const float& seed,
                        float angleX, float angleY, float angleZ, char tag,

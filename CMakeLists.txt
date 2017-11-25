@@ -85,8 +85,8 @@ add_executable(proceduralworld
     src/entities/Trees/Tree.cpp
     src/entities/Trees/TreeA.hpp
     src/entities/Trees/TreeA.cpp
-    src/entities/Trees/TrunkA.hpp
-    src/entities/Trees/TrunkA.cpp
+        src/entities/Trees/TrunkAB.hpp
+        src/entities/Trees/TrunkAB.cpp
     src/entities/Trees/LeafAB.hpp
     src/entities/Trees/LeafAB.cpp
     src/entities/Trees/LeafBranchAB.hpp
@@ -103,7 +103,7 @@ add_executable(proceduralworld
     src/entities/Trees/TrunkC.cpp
     src/entities/Trees/LeafContainerC.cpp
     src/entities/Trees/LeafContainerC.hpp
-)
+        src/entities/Trees/Trunk.cpp src/entities/Trees/Trunk.hpp src/entities/Trees/Trunk.cpp src/entities/Trees/Trunk.cpp)
 
 # Link librarssies
 if(APPLE)

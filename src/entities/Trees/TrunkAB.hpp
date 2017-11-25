@@ -16,13 +16,14 @@
 #include <iostream>
 #include <cstdio>
 #include <ctime>
+#include "Trunk.hpp"
 
-class TrunkA{
+class TrunkAB : public Trunk{
 public:
     static constexpr int branchMod = 1;
-    static constexpr int trunkPoints = 4;
+    static constexpr int trunkPoints = 5;
 
-    static constexpr float itterations = 360.0f / trunkPoints;
+    static constexpr float itterations = 360.0f / (trunkPoints-1);
 
     static constexpr float jagednessFactor = 0.35;
     static constexpr float textureTrunkHeight = 1.0;
@@ -43,7 +44,7 @@ public:
 
     float getLineHeight();
 
-    TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed);
+    TrunkAB(std::vector<glm::vec3>* trunkVertices, const int& seed);
 
     static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                        std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,

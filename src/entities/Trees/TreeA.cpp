@@ -3,7 +3,7 @@
 
 #include "Tree.hpp"
 #include "TreeA.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 
 constexpr int TreeA::branches;
 constexpr int TreeA::k;
@@ -140,7 +140,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             //1B1.On circle put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC  and store in leafV and leafC and create leafI
             //1B2.On circle up one put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC and create trunkI  and store in leafV and leafC and create leafI
             //1B3. Repeat until max length
-            leafBranch(trunkDiameter, seed, lineHeight);
+            leafContainer(trunkDiameter, seed, lineHeight);
 
             //rotate my combined of predesecors
             //rotate based on the previous and current angles
@@ -174,7 +174,7 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     const float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkA trunk(combinedVertices,
+    TrunkAB trunk(combinedVertices,
                  seed
     );
     do {
@@ -187,9 +187,9 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     else return -1;
 }
 
-void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
+void TreeA::leafContainer(float trunkDiameter, const float &seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
-    LeafContainerA lc(combinedVertices,
+    LeafContainerAB lc(combinedVertices,
                       combinedIndices,
                       combinedUV,
                       seed);
@@ -199,7 +199,7 @@ void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 
 void TreeA::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
-    const int circularPoints = TrunkA::trunkPoints;
+    const int circularPoints = TrunkAB::trunkPoints - 1;
     int rotationPoint = std::abs((ag->angleY) % (int)(circularPoints / limiter ));
 
     rotationPoint = rotationPoint == 0 ? 0 : 1;
@@ -226,7 +226,7 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         if(previousRotation < previousRotationCap) limiter = 1;
         else if(previousRotation >= previousRotationCap) limiter = 0.01;
 
-        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerA::leafBranchPoints : TrunkA::trunkPoints;
+        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerAB::leafBranchPoints - 1: TrunkAB::trunkPoints - 1;
         int rotationPoint = std::abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
 
         rotationPoint = rotationPoint < 1 ? 1 : 0;
@@ -235,11 +235,13 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         const int fromPnt = (previousRotation);
 
         if (ag->ag[m]->side == 'L') {
-            moveTo = (ag->end - circularPoints + 1) + (( 0 + toPnt) % circularPoints);
+                                ///Because UV vertex
+            moveTo = (ag->end - (circularPoints + 1) + 1) + (( 0 + toPnt) % circularPoints);
             moveFrom = (ag->ag[m]->start + 1)  + ((0 + fromPnt) % circularPoints);
         }
         else {
-            moveTo = (ag->end - circularPoints + 1) + (int)(circularPoints/2.0 + toPnt ) % circularPoints;
+                                  ///Because UV vertex
+            moveTo = (ag->end - (circularPoints + 1) + 1) + (int)(circularPoints/2.0 + toPnt ) % circularPoints;
             moveFrom = (ag->ag[m]->start + 1) + (int)(circularPoints/2.0  + fromPnt) % circularPoints;
         }
 

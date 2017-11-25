@@ -18,9 +18,9 @@ TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter,
     //printf("Duration of B %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
-
 bool TreeB::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
+glPointSize(5.0f);
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
     widthCut = 0.5;
     finalCut = widthCut;
@@ -66,9 +66,9 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
                 angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed * (n+1), currentLineLength* (n + 1), maxYBranchAngle, minYBranchAngle);
                 angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed* (n + 1) * 7, currentLineLength* (n + 1), maxYBranchAngle, minYBranchAngle); //* (((int)seed) % 2 == 0 ? -1 : 1);
                 angleY = angleY;
+                //1A7. On new trunk join to junction and continue
                 generateTreeB(TRUNK, ShootDiameterBranch / (branches), seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
             }
-            //1A7. On new trunk join to junction and continue
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle) ;
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             angleY = angleY;
@@ -166,10 +166,10 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
 float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
+    //height chunking decides the size of the blocks
     float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkA trunk(combinedVertices,
-                 seed
-    );
+    //Create a segment of a tree
+    TrunkAB trunk(combinedVertices,  seed);
     int count = 0;
     do {
         loopInitialTrunk = trunk.buildTrunk(trunkDiameter, lineSegments);
@@ -183,7 +183,7 @@ float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
 
 void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
     int lineMax = lineMAX(trunkDiameter, k);
-    LeafContainerA lc(combinedVertices,
+    LeafContainerAB lc(combinedVertices,
                       combinedIndices,
                       combinedUV,
                       seed);
@@ -192,22 +192,19 @@ void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeB::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
-    //stbi_image_free(image_data);
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV,
+                                 &vbo, &ebo, &nbo, &UVbo);
 }
 
 int limiter = 1;
 void TreeB::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
-    int circularPoints = TrunkA::trunkPoints;
-    int rotationPoint = std::abs((ag->angleY) % (circularPoints / limiter ));
+    int circularPoints = TrunkAB::trunkPoints -1;
+    int rotationPoint = std::abs((ag->angleY) % (int)((circularPoints) / limiter ));
 
     rotationPoint = rotationPoint == 0 ? 1 : 0;
 
-    float r = 360.0/circularPoints  * (rotationPoint);
+    const float r = 360.0/circularPoints  * (rotationPoint);
     int start = ag->start + 1;
     int max = ag->end + 1;
     for (int k = start; k < max; k++) {
@@ -219,38 +216,39 @@ void TreeB::initiateMove(AttatchmentGroupings* ag){
     moveSegments(previousRotation, ag);
     return;
 }
+
 void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
     for (int m = 0; m < 2; m++) {
         if (ag->ag[m] == nullptr) continue;
         int moveTo = 0;
         int moveFrom = 0;
 
-        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerA::leafBranchPoints : TrunkA::trunkPoints;
-        int rotationPoint = std::abs((ag->ag[m]->angleY) % (circularPoints / limiter ));
+        if(previousRotation < previousRotationCap) limiter = 1;
+        else if(previousRotation >= previousRotationCap) limiter = 0.01;
 
-        //shrub like, large twists
-        if(previousRotation == 0) rotationPoint = 1;
+        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerAB::leafBranchPoints - 1: TrunkAB::trunkPoints - 1;
+        int rotationPoint = std::abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
 
-        rotationPoint = rotationPoint < 1 ? 0 : 1;
-
-        int fromPnt = (circularPoints-rotationPoint + (previousRotation));
-        int toPnt = (previousRotation);
-
+        rotationPoint = rotationPoint < 1 ? 1 : 0;
+        //""mess up the structure a bit for varition""
+        const int toPnt = (rotationPoint + (previousRotation));
+        const int fromPnt = (previousRotation);
 
         if (ag->ag[m]->side == 'L') {
-            moveTo = (ag->end - circularPoints + 1) + (( 2 + toPnt) % circularPoints);
-            moveFrom = (ag->ag[m]->start + 1)  + ((2 + fromPnt) % circularPoints);
-
+            ///Because UV vertex
+            moveTo = (ag->end - (circularPoints + 1) + 1) + ((2 + toPnt) % circularPoints);
+            moveFrom = (ag->ag[m]->start + 1)  + ((0 + fromPnt) % circularPoints);
         }
         else {
-            moveTo = (ag->end - circularPoints + 1) + (int)(0 + toPnt ) % circularPoints;
-            moveFrom = (ag->ag[m]->start + 1) + (int)(0  + fromPnt) % circularPoints;
+            ///Because UV vertex
+            moveTo = (ag->end - (circularPoints + 1) + 1) + (int)(circularPoints/2.0 + toPnt ) % circularPoints;
+            moveFrom = (ag->ag[m]->start + 1) + (int)(circularPoints/2.0  + fromPnt) % circularPoints;
         }
 
-        float r = 360.0/circularPoints  * (fromPnt);
+        const float r = 360.0f/circularPoints  * (toPnt);
 
-        int start = ag->ag[m]->start + 1;
-        int max = ag->ag[m]->end + 1;
+        const  int start = ag->ag[m]->start + 1;
+        const int max = ag->ag[m]->end + 1;
 
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
@@ -258,20 +256,17 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         }
 
         //translate components onto branch(destination - position)
-        glm::vec3 translation = combinedVertices->at(moveTo) - combinedVertices->at(moveFrom);
+        const glm::vec3 translation = combinedVertices->at(moveTo) - combinedVertices->at(moveFrom);
         //elevate from point
-        glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (heightChunking * boostFactor);
-        start = ag->ag[m]->start + 1;
-        max = ag->ag[m]->end + 1;
+        const glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (float)(heightChunking * boostFactor);
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) += translation + boost;
         }
-        Tree::computeElements(ag->ag[m]);
-        connectSegments(ag, m,fromPnt, toPnt, circularPoints, combinedIndices);
-        moveSegments(fromPnt, ag->ag[m]);
+        computeElements(ag->ag[m]);
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        moveSegments(toPnt, ag->ag[m]);
     }
     return;
-
 }
 
 const std::vector<glm::vec3>& TreeB::getVertices()
@@ -287,7 +282,7 @@ GLuint TreeB::getVAO()
 GLuint TreeB::getTextureId()
 {
     static GLuint tA_texture = loadTexture(
-            "../textures/TreeATexture.jpg",//1000Y break // 925X break
+            "../textures/TreeALeafTest.jpg",//1000Y break // 925X break
             GL_NEAREST,
             GL_NEAREST
     );

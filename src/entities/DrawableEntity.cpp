@@ -60,6 +60,8 @@ GLuint DrawableEntity::getTextureId()
     return texture_id;
 }
 
+int debuggingFlicker = 0;
+
 void DrawableEntity::draw(
     const glm::mat4& view_matrix,
     const glm::mat4& projection_matrix,
@@ -136,6 +138,11 @@ void DrawableEntity::draw(
 //		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
 //	} else {
 		glBindTexture(GL_TEXTURE_2D, texture_id);
+
+	//KNG's debugging method.
+//if(debuggingFlicker == 0){draw_mode = GL_POINTS;  debuggingFlicker =1;}
+//else if ( debuggingFlicker == 1){draw_mode = GL_TRIANGLES;  debuggingFlicker =0;}
+////else {draw_mode = GL_LINES; b = 0;}
 
 		int element_buffer_array_size;
 		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);

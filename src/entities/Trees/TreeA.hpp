@@ -60,7 +60,7 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
@@ -89,7 +89,7 @@ private:
 	static constexpr double branchRatio = 0.850;
 
 	float trunk(float trunkDiameter, const float& seed, float lineHeight);
-	void leafBranch(float trunkDiameter, const float& seed, float lineHeight);
+	void leafContainer(float trunkDiameter, const float &seed, float lineHeight);
 
 	void initiateMove(AttatchmentGroupings* ag);
 
