@@ -7,20 +7,17 @@
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
 
+#include <string>
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 
 class Text : public DrawableEntity {
 private:
-    GLuint vao;
-    GLuint vertices_buffer;
-    GLuint element_buffer;
-    GLuint normal_buffer;
-    GLuint uv_buffer;
+    std::string message;
 public:
     Text(
             const GLuint& shader_program,
-            const GLuint& message
+            const std::string& message
     ) : Text(
             shader_program,
             message,
@@ -28,7 +25,7 @@ public:
     ){}
     Text(
             const GLuint& shader_program,
-            const GLuint& message,
+            const std::string& message,
             Entity* parent
     );
     ~Text() override;

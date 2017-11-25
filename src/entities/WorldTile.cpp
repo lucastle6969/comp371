@@ -46,7 +46,12 @@ WorldTile::WorldTile(
 	// initialize random number generator based on world location
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
-	// TODO: better tree/rock distribution?
+	//add text
+    Text* text = new Text(shader_program, "welcomeTXT.png");
+    text->setPosition(glm::vec3(0.5, 0.0f, 0.5));
+    this->text.emplace_back(text);
+
+    // TODO: better tree/rock distribution?
 	// TODO: test/remove tree/rock overlaps
 
 	// add rocks
@@ -129,9 +134,16 @@ WorldTile::~WorldTile()
 	for (Rock* const& rock : this->rocks) {
 		delete rock;
 	}
+    for (RockB* const& rockB : this->rocksB) {
+        delete rockB;
+    }
 	for (Tree* const& tree : this->trees) {
 		delete tree;
 	}
+    for (Text* const& text : this->text) {
+        delete text;
+    }
+
 }
 
 const std::vector<glm::vec3>& WorldTile::getVertices() {
