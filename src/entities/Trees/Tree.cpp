@@ -6,6 +6,7 @@
 #endif
 
 #include <cmath>
+#include <glm/glm.hpp>
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
@@ -39,6 +40,8 @@ Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, 
     this->heightChunking = heightChunking;
     this->boostFactor = boostFactor;
     this->type = type;
+
+	this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 5.0f);
 }
 
 Tree::~Tree() {
