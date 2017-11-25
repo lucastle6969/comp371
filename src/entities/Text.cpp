@@ -9,8 +9,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/gtx/rotate_vector.hpp"
 #include <vector>
-#include <stdexcept>
-#include <algorithm>
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
@@ -49,10 +47,10 @@ Text::~Text()
     GLuint Text::getVAO()
     {
         static const std::vector<glm::vec3> normals = {
-                glm::vec3(0.0f, 0.0f, 1.0f),
-                glm::vec3(0.0f, 0.0f, 1.0f),
-                glm::vec3(0.0f, 0.0f, 1.0f),
-                glm::vec3(0.0f, 0.0f, 1.0f)
+                glm::vec3(1.0f, 1.0f, 1.0f),
+                glm::vec3(1.0f, 1.0f, 1.0f),
+                glm::vec3(1.0f, 1.0f, 1.0f),
+                glm::vec3(1.0f, 1.0f, 1.0f)
         };
 
 
