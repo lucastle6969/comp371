@@ -90,7 +90,7 @@ Text::~Text()
     GLuint Text::getTextureId()
     {
         GLuint text_texture = loadTexture(
-                "../textures/welcomeTXT.png",
+                "../textures/welcomeTXTsmall.png",
                 GL_LINEAR,
                 GL_LINEAR,
                 true
