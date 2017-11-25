@@ -80,7 +80,7 @@ const glm::mat4& Player::getBaseScale()
 // the vector indicating the direction the model faces by default (with no rotation)
 const glm::vec3& Player::getDefaultFaceVector()
 {
-	static glm::vec3 default_face_vec(1.0f, 0.0f, 0.0f);
+	static glm::vec3 default_face_vec(0.0f, 0.0f, -1.0f);
 
 	return default_face_vec;
 }
