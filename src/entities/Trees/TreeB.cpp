@@ -195,7 +195,7 @@ void TreeB::bufferObject(const GLuint& shader_program) {
     //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
     //int map_width, map_height, channels;
     //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
 
