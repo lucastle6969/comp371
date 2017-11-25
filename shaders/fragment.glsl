@@ -95,7 +95,11 @@ void main()
             color = claculateColor( colorValue = vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f));
             break;
         case COLOR_TEXTURE:
-            color = texture(tex_image, tex_coord);
+            vec4 texel = texture(tex_image, tex_coord);
+            if(texel.a < 0.5)
+                discard;
+            color = texel;
+
             break;
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting

@@ -16,4 +16,11 @@ GLuint loadTexture(
 	const GLint& mag_filter
 );
 
+GLuint loadTexture(
+        const std::string& path,
+        const GLint& min_filter,
+        const GLint& mag_filter,
+        const bool vert_align_flip
+);
+
 #endif //PROCEDURALWORLD_LOADTEXTURE_HPP
