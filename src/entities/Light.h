@@ -22,7 +22,7 @@
         Light(glm::vec3 direction, glm::vec3 color){
             this->daytime = direction;
             this->color = color;
-            this->position_light_color = glm::vec3(.3,.2,.1);
+            this->position_light_color = glm::vec3(.8, .7, .0);
         }
 
         void setDaytime(){
