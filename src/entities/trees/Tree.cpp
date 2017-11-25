@@ -85,20 +85,24 @@ glm::vec3 Tree::makeRotations(const float& xRot, const float& yRot, const float&
     return vector;
 }
 
-void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
+void Tree::connectSegments(AttatchmentGroupings* ag, const int& m, int k,
                            const int& rotPoint, const int& prevPoint, const int& circularPoints,
                      std::vector<GLuint>* indPntr){
     int set = std::abs((circularPoints - rotPoint) + prevPoint);
-    TrunkAB::buildConnectorElements(ag->end - TrunkAB::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
-                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+
+    const int lineMax = lineMAX(trunkDiameter, k);
+    bool loopInitialTrunk;
+    const float lineSegments = ((float)lineMax) / heightChunking * boostFactor ;
+
+    TrunkAB::buildConnectorElements(ag->end - TrunkAB::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side, lineSegments,
+                                   ag, combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
 
-void Tree::computeElements(const AttatchmentGroupings* ag) {
+void Tree::computeElements(AttatchmentGroupings* ag) {
     if(ag->type == 'L'){                                            //the 5th of a square for UVs
         LeafContainerAB::buildLeafContainerElements(ag->start + 1, ag->end,
                                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
     }
     else
-        TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
-                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+        TrunkAB::buildTrunkElements(ag, combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }

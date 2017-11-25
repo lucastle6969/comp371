@@ -18,7 +18,7 @@
 #include <ctime>
 #include "Trunk.hpp"
 
-class TrunkAB : public Trunk{
+class TrunkAB : public Trunk {
 public:
     static constexpr int branchMod = 1;
     static constexpr int trunkPoints = 5;
@@ -46,12 +46,12 @@ public:
 
     TrunkAB(std::vector<glm::vec3>* trunkVertices, const int& seed);
 
-    static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
-                                       std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
+    static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr, float boostLength,
+                                       AttatchmentGroupings* ag, std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                        std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms);
 
     //give both start point and end as the connection end point
-    static void buildTrunkElements(const int& start, const int& end,
+    static void buildTrunkElements(AttatchmentGroupings* ag,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                    std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms);
     

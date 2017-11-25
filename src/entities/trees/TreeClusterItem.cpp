@@ -78,7 +78,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
             agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
                                              (int)combinedVertices->size() - 1,
-                                             (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+                                             (int)angleX, (int)angleY, (int)angleZ, 'B', tag, lineHeight);
 
             //1A5. Start N new recursive functions from seed based angle at a certain base position
             offShootDiameterBranch = shootCalculation(trunkDiameter, branchRatio, branches);
@@ -138,7 +138,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
             //store current branch poosition and rotation sum at depth
             agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag, lineHeight);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
 
@@ -189,7 +189,9 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             combinedStartIndices->push_back({ (int)combinedVertices->size() - 1,(int)angleX,(int)angleY,(int)angleZ });
 
             //add to grouping at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0), (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
+            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
+                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ,
+                                             'L', tag, lineHeight);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
             //2. Translate and rotate into given location

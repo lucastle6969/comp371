@@ -16,7 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-#include "src/TreeRandom.hpp"
+#include "AttatchmentGroupings.hpp"
 
 #include <iostream>
 #include <cstdio>
@@ -24,8 +24,8 @@
 
 class Trunk {
 public:
-    static void computeUVs(int end , int start, int trunkPoints, float textureTrunkHeight, std::vector<glm::vec2>* trunkUVs);
-    static void computeUVsConnectors(int start, int trunkPoints, float textureTrunkHeight, std::vector<glm::vec2>* trunkUVs);
+    static void computeUVs(AttatchmentGroupings* ag, int trunkPoints, float textureTrunkHeight, std::vector<glm::vec2>* trunkUVs);
+    static void computeUVsConnectors(AttatchmentGroupings* ag, int trunkPoints, float boostLength, float textureTrunkHeight, std::vector<glm::vec2>* trunkUVs);
 };
 
 

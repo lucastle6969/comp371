@@ -197,9 +197,10 @@ void TreeA::leafContainer(float trunkDiameter, const float &seed, float lineHeig
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
 }
 
+
 void TreeA::initiateMove(AttatchmentGroupings* ag){
-    glm::mat4 rotation;
-    const int circularPoints = TrunkAB::trunkPoints - 1;
+
+    const int circularPoints = TrunkAB::trunkPoints;
     int rotationPoint = std::abs((ag->angleY) % (int)(circularPoints / limiter ));
 
     rotationPoint = rotationPoint == 0 ? 0 : 1;
@@ -216,7 +217,7 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
     computeElements(ag);
     moveSegments(previousRotation, ag);
 }
-
+//-1 because UV vertex
 void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
     for (int m = 0; m < 2; m++) {
         if (ag->ag[m] == nullptr) continue;
@@ -226,7 +227,7 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         if(previousRotation < previousRotationCap) limiter = 1;
         else if(previousRotation >= previousRotationCap) limiter = 0.01;
 
-        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerAB::leafBranchPoints - 1: TrunkAB::trunkPoints - 1;
+        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerAB::leafBranchPoints: TrunkAB::trunkPoints;
         int rotationPoint = std::abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
 
         rotationPoint = rotationPoint < 1 ? 1 : 0;
@@ -235,13 +236,11 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         const int fromPnt = (previousRotation);
 
         if (ag->ag[m]->side == 'L') {
-                                ///Because UV vertex
-            moveTo = (ag->end - (circularPoints + 1) + 1) + (( 0 + toPnt) % circularPoints);
+            moveTo = (ag->end - circularPoints + 1) + (( 0 + toPnt) % circularPoints);
             moveFrom = (ag->ag[m]->start + 1)  + ((0 + fromPnt) % circularPoints);
         }
         else {
-                                  ///Because UV vertex
-            moveTo = (ag->end - (circularPoints + 1) + 1) + (int)(circularPoints/2.0 + toPnt ) % circularPoints;
+            moveTo = (ag->end - circularPoints + 1) + (int)(circularPoints/2.0 + toPnt ) % circularPoints;
             moveFrom = (ag->ag[m]->start + 1) + (int)(circularPoints/2.0  + fromPnt) % circularPoints;
         }
 
@@ -258,12 +257,12 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         //translate components onto branch(destination - position)
         const glm::vec3 translation = combinedVertices->at(moveTo) - combinedVertices->at(moveFrom);
         //elevate from point
-        const glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (float)(heightChunking * boostFactor);
+        const glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (heightChunking * boostFactor);
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) += translation + boost;
         }
         computeElements(ag->ag[m]);
-        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, k,  combinedIndices);
         moveSegments(toPnt, ag->ag[m]);
     }
     return;

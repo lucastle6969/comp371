@@ -54,7 +54,7 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
 
             agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
                                              (int)combinedVertices->size() - 1,		//TYPE //SIDE
-                                             (int)angleX, (int)angleY, (int)angleZ, 'B', 'C');
+                                             (int)angleX, (int)angleY, (int)angleZ, 'B', 'C', lineHeight);
 
             //1A5. Start N new recursive functions from seed based angle at a certain base position
             ShootDiameterBranch = shootCalculation(trunkDiameter, branchRatio, branches);
@@ -99,7 +99,7 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
 
             //store current branch poosition and rotation sum at depth
             agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag, lineHeight);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
 
@@ -146,7 +146,7 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             //add to grouping at depth
             agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
                                              (int)combinedVertices->size() - 1,
-                                             (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
+                                             (int)angleX, (int)angleY, (int)angleZ, 'L', tag, lineHeight);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
             //2. Translate and rotate into given location
@@ -229,8 +229,8 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerAB::leafBranchPoints - 1: TrunkAB::trunkPoints - 1;
         int rotationPoint = std::abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
 
-        rotationPoint = rotationPoint < 1 ? 1 : 0;
         //""mess up the structure a bit for varition""
+        rotationPoint = rotationPoint < 1 ? 1 : 0;
         const int toPnt = (rotationPoint + (previousRotation));
         const int fromPnt = (previousRotation);
 
@@ -263,7 +263,7 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
             combinedVertices->at(k) += translation + boost;
         }
         computeElements(ag->ag[m]);
-        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, k,  combinedIndices);
         moveSegments(toPnt, ag->ag[m]);
     }
     return;
