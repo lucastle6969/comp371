@@ -26,6 +26,8 @@ Entity::Entity(Entity* parent)
 		parent->children.push_back(this);
 	}
 
+	this->opacity = 1.0f;
+
 	// can be toggled with this->hide(), this->unhide().
 	this->hidden = false;
 }
@@ -49,6 +51,11 @@ const glm::mat4& Entity::getModelMatrix()
 glm::vec3 Entity::getPosition()
 {
 	return utils::getTranslationVector(this->translation_matrix);
+}
+
+float Entity::getOpacity()
+{
+	return this->opacity;
 }
 
 glm::vec3 Entity::getScale()
@@ -138,6 +145,11 @@ void Entity::setPosition(const glm::vec3& position)
 	this->translation_matrix = glm::translate(identity, position);
 }
 
+void Entity::setOpacity(const float& opacity)
+{
+	this->opacity = glm::clamp(opacity, 0.0f, 1.0f);
+}
+
 void Entity::hide()
 {
 	this->hidden = true;
@@ -152,14 +164,24 @@ void Entity::toggleHide()
 {
 	this->hidden = !this->hidden;
 }
-
+#include <iostream>
 void Entity::draw(
 	const glm::mat4& view_matrix,
 	const glm::mat4& projection_matrix,
 	const Light& light
 ) {
+	// draw opaque objects
 	for (Entity* child : this->children) {
-		child->draw(view_matrix, projection_matrix, light);
+		if (child->getOpacity() >= 1.0f) {
+			child->draw(view_matrix, projection_matrix, light);
+		}
+	}
+	// draw transparent objects
+	for (Entity* child : this->children) {
+		if (child->getOpacity() < 1.0f) {
+			std::cout << child->getOpacity() << std::endl;
+			child->draw(view_matrix, projection_matrix, light);
+		}
 	}
 }
 
