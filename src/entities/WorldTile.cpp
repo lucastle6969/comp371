@@ -37,7 +37,7 @@ WorldTile::WorldTile(
 		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
 		glm::vec3(.5,.5,.5),
 		glm::vec3(.25,.25,.25),
-		0.25f
+		25.0f
 	);
 
 	// position tile relative to parent based on x, z inputs
