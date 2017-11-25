@@ -17,23 +17,28 @@
         float daytime_value;
         float nighttime_value;
         glm::vec3 fog_color;
+        glm::vec3 daytime;
+        glm::vec3 nighttime;
 
         Light(glm::vec3 direction, glm::vec3 color){
-            this->light_direction = direction;
+            this->daytime = direction;
+            this->nighttime = glm::vec3(0.0f,-direction.y,0.0f);
             this->color = color;
             this->position_light_color = glm::vec3(.5,.5,.5);
         }
 
         void setDaytime(){
 
-            if (light_direction.y < 0){
-                daytime_value = (0.5);
+            if (daytime.y < 0){
+                light_direction = daytime;
+                //daytime_value = (1-daytime.y);
                 nighttime_value = (-light_direction.y);
                 fog_color = glm::vec3(.5,.5 ,.75)* nighttime_value;
             } else {
-                daytime_value = (light_direction.y);
-                nighttime_value = (0.0);
-                fog_color = glm::vec3(.5,.5 ,.75)* nighttime_value;
+                light_direction = glm::vec3(1-daytime.x,1-daytime.y, 0.0f);
+                //daytime_value = (daytime.y);
+                nighttime_value = (light_direction.y);
+                fog_color = glm::vec3(.5,.5 ,.75)* -daytime.y;
             }
         };
 

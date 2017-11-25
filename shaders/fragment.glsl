@@ -147,14 +147,14 @@ vec4 claculateColor(vec3 value){
     );
 
     vec3 ambientValue =
-       (max(sunlight_components.ambient, 0) * nighttime_value) +
-       (max(pointlight_components.ambient * attenuation, 0) * daytime_value);
+       (max(sunlight_components.ambient, 0) * nighttime_value) ;
+       //(max(pointlight_components.ambient * attenuation, 0) * daytime_value);
     vec3 diffuseValue =
-      (max(sunlight_components.diffuse, 0) * nighttime_value) +
-       (max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
+        (max(sunlight_components.diffuse, 0) * nighttime_value) ;
+        //(max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
     vec3 specularValue =
-       (max(sunlight_components.specular, 0)*  nighttime_value) +
-       (max(pointlight_components.specular * attenuation, 0) * daytime_value);
+       (max(sunlight_components.specular, 0)*  nighttime_value) ;
+       //(max(pointlight_components.specular * attenuation, 0) * daytime_value);
 
     if (use_texture) {
        // multiply components against texture value but only if we've

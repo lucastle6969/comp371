@@ -242,8 +242,9 @@ int main()
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 		// rotate the sun
-		light.light_direction = glm::rotateZ(light.light_direction, 0.005f);
-		//move the fog
+		light.daytime = glm::rotateZ(light.daytime, 0.005f);
+		light.nighttime = glm::rotateZ(light.nighttime, 0.005f);
+        //move the fog
 
 		light.light_position = world->getPlayer()->getPosition() + glm::vec3(0,.1,0);
 
