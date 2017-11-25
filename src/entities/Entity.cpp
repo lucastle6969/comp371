@@ -164,7 +164,7 @@ void Entity::toggleHide()
 {
 	this->hidden = !this->hidden;
 }
-#include <iostream>
+
 void Entity::draw(
 	const glm::mat4& view_matrix,
 	const glm::mat4& projection_matrix,
@@ -179,7 +179,6 @@ void Entity::draw(
 	// draw transparent objects
 	for (Entity* child : this->children) {
 		if (child->getOpacity() < 1.0f) {
-			std::cout << child->getOpacity() << std::endl;
 			child->draw(view_matrix, projection_matrix, light);
 		}
 	}
