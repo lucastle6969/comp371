@@ -33,10 +33,10 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 		normals
 	);
 	this->setMaterial(
-		glm::vec3(0.8f, 0.7f, 0.0f),
-		glm::vec3(0.8f, 0.6f, 0.0f),
+		glm::vec3(0.3f, 0.2f, 0.0f),
+		glm::vec3(1.0f, 0.46f, 0.09f),
 		glm::vec3(0.05f, 0.05f, 0.05f),
-		10.0f
+		5.0f
 	);
 }
 
