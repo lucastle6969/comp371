@@ -179,7 +179,6 @@ void Entity::draw(
 	// draw transparent objects
 	for (Entity* child : this->children) {
 		if (child->getOpacity() < 1.0f) {
-			std::cout << child->getOpacity() << std::endl;
 			child->draw(view_matrix, projection_matrix, light);
 		}
 	}
