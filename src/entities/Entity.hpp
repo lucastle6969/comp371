@@ -20,6 +20,7 @@ private:
 	glm::mat4 rotation_matrix;
     glm::mat4 translation_matrix;
 	glm::mat4 model_matrix;
+	float opacity;
 	bool hidden;
 	void orient(const glm::vec3& forward_vec);
 
@@ -39,6 +40,7 @@ public:
 	const glm::mat4& getModelMatrix();
 	glm::vec3 getPosition();
 	glm::vec3 getScale();
+	float getOpacity();
 	bool isHidden();
 	void scale(const float& scalar);
     void scale(const glm::vec3& scale_vector);
@@ -50,6 +52,7 @@ public:
     void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
     void translate(const glm::vec3& translation_vec);
 	void setPosition(const glm::vec3& position);
+	void setOpacity(const float& opacity);
 	void hide();
 	void unhide();
 	void toggleHide();
