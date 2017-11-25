@@ -164,7 +164,7 @@ void Entity::toggleHide()
 {
 	this->hidden = !this->hidden;
 }
-
+#include <iostream>
 void Entity::draw(
 	const glm::mat4& view_matrix,
 	const glm::mat4& projection_matrix,
