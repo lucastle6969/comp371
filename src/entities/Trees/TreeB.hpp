@@ -110,5 +110,8 @@ public:
     GLuint getVAO();
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
+
+    GLuint getTextureId();
+    const int getColorType();
 };
 #endif //treeA

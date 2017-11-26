@@ -1,8 +1,9 @@
 #include <cmath>
 #include "TrunkA.hpp"
 
-TrunkA::TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed){
+TrunkA::TrunkA(std::vector<glm::vec3>* trunkVertices, std::vector<glm::vec2>* trunkUVs,  const int& seed){
     this->trunkVertices = trunkVertices;
+    this->trunkUVs = trunkUVs;
     baseVerticesSize = trunkVertices->size();
     this->seed = seed;
 }
@@ -31,6 +32,9 @@ int TrunkA::buildVertices(const float& trunkDiameter, const float& lineSegments)
                     tempTrunkDiameter * sin(glm::radians(itterations  * n)),
                     lineHeight + 0, tempTrunkDiameter *  cos(glm::radians(itterations  * n)) );
             trunkVertices->push_back(circleEdge);
+            unsigned  long s = trunkVertices->size();
+            trunkUVs->resize(s);
+            trunkUVs->at(s - 1) = {(n) % 2, 1-(2.0*y)/3.0};
         }
         lineHeight += lineSegments;
     }

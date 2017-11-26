@@ -30,7 +30,7 @@ public:
     static constexpr float textureConnectorEnd = 0.90;
 private:
     std::vector<glm::vec3>* trunkVertices;
-
+    std::vector<glm::vec2>* trunkUVs;
     float lineHeight = 0;
     int baseVerticesSize = 0;
     int heightCount = 0;
@@ -42,7 +42,7 @@ public:
 
     float getLineHeight();
 
-    TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed);
+    TrunkA(std::vector<glm::vec3>* trunkVertices ,std::vector<glm::vec2>* trunkUVs, const int& seed);
 
     static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                        std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,

@@ -1,8 +1,10 @@
 #include <cmath>
+#include <src/loadTexture.hpp>
 
 #include "Tree.hpp"
 #include "TreeA.hpp"
 #include "TrunkA.hpp"
+#include "TreeB.hpp"
 
 constexpr int TreeA::branches;
 constexpr int TreeA::k;
@@ -173,7 +175,7 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     const float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkA trunk(combinedVertices,
+    TrunkA trunk(combinedVertices, combinedUV,
                  seed
     );
     do {
@@ -269,10 +271,22 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
+    combinedUV->at(0) = {(0) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(1) = {(1) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(2) = {(0) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(3) = {(1) % 2, 1-(2.0*0)/3.0};
+
+    combinedUV->at(4) = {(0) % 2, 1-(2.0*1)/3.0};
+    combinedUV->at(5) = {(1) % 2, 1-(2.0*1)/3.0};
+    combinedUV->at(6) = {(0) % 2, 1-(2.0*1)/3.0};
+    combinedUV->at(7) = {(1) % 2, 1-(2.0*1)/3.0};
+
+    combinedUV->at(8) = {(0) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(9) = {(1) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(10) = {(0) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(11) = {(1) % 2, 1-(2.0*0)/3.0};
+
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
 
@@ -284,3 +298,16 @@ void TreeA::setTreeInit(bool val){
     treeInit = val;
 }
 
+GLuint TreeA::getTextureId()
+{
+    static GLuint tA_texture = loadTexture(
+            "../textures/TreeATexture.jpg",//1000Y break // 925X break
+            GL_NEAREST,
+            GL_NEAREST
+    );
+    return tA_texture;
+}
+
+const int TreeA::getColorType() {
+    return COLOR_TEXTURE;
+}

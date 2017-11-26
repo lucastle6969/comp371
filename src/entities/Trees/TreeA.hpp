@@ -108,5 +108,8 @@ public:
 	void setTreeInit(bool state);
 
 	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+
+	GLuint getTextureId();
+	const int getColorType();
 };
 #endif //treeA

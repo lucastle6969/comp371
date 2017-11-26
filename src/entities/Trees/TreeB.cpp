@@ -1,4 +1,5 @@
 #include <cmath>
+#include <src/loadTexture.hpp>
 
 #include "TreeB.hpp"
 #include "Tree.hpp"
@@ -167,7 +168,7 @@ float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkA trunk(combinedVertices,
+    TrunkA trunk(combinedVertices, combinedUV,
                  seed
     );
     int count = 0;
@@ -192,9 +193,16 @@ void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeB::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
+    combinedUV->at(0) = {(0) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(1) = {(1) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(2) = {(0) % 2, 1-(2.0*0)/3.0};
+    combinedUV->at(3) = {(1) % 2, 1-(2.0*0)/3.0};
+
+    combinedUV->at(4) = {(0) % 2, 1-(2.0*1)/3.0};
+    combinedUV->at(5) = {(1) % 2, 1-(2.0*1)/3.0};
+    combinedUV->at(6) = {(0) % 2, 1-(2.0*1)/3.0};
+    combinedUV->at(7) = {(1) % 2, 1-(2.0*1)/3.0};
+
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
@@ -284,5 +292,18 @@ GLuint TreeB::getVAO()
     return this->vao;
 }
 
+GLuint TreeB::getTextureId()
+{
+    static GLuint tB_texture = loadTexture(
+            "../textures/TreeBTexture.jpg",//1000Y break // 925X break
+            GL_NEAREST,
+            GL_NEAREST
+    );
+    return tB_texture;
+}
 
-//treeA
+const int TreeB::getColorType() {
+    return COLOR_TEXTURE;
+}
+
+//treeB
