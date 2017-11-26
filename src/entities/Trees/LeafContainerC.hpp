@@ -34,6 +34,7 @@ public:
                    float lineMax);
 
     void buildAllComponenets(const float& leafDiameter, const float& widthCutoff, const float& seed, float lineHeight);
+    void setLeafUV();
 };
 
 

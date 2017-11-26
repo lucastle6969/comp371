@@ -207,14 +207,14 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
 float TreeClusterItem::trunk(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
-    TrunkC tC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 273.0f/800.0);
+    TrunkC tC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 527.0f/800.0);
     return tC.buildAllComponents(trunkDiameter, seed, lineHeight);
 }
 
 void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
 
-    LeafContainerC lcC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 273.0f/800.0);
+    LeafContainerC lcC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 527.0f/800.0);
     lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
@@ -347,15 +347,6 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
-    combinedUV->at(0) = {(0) % 2, 1-(2.0*0)/3.0};
-    combinedUV->at(1) = {(1) % 2, 1-(2.0*0)/3.0};
-    combinedUV->at(2) = {(0) % 2, 1-(2.0*0)/3.0};
-    combinedUV->at(3) = {(1) % 2, 1-(2.0*0)/3.0};
-
-    combinedUV->at(4) = {(0) % 2, 1-(2.0*1)/3.0};
-    combinedUV->at(5) = {(1) % 2, 1-(2.0*1)/3.0};
-    combinedUV->at(6) = {(0) % 2, 1-(2.0*1)/3.0};
-    combinedUV->at(7) = {(1) % 2, 1-(2.0*1)/3.0};
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
