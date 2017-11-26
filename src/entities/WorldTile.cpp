@@ -47,7 +47,7 @@ WorldTile::WorldTile(
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
 	//add text
-    Text* text = new Text(shader_program, "../textures/modulusTXTsmall.png", this);
+    Text* text = new Text(shader_program, "../textures/modulusTXTlarge.png", this);
     text->setPosition(glm::vec3(0.5, 0.0f, 0.5));
     text->scale(0.7);
     this->text.emplace_back(text);
