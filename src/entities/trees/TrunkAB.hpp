@@ -17,7 +17,7 @@
 #include <cstdio>
 #include <ctime>
 
-class TrunkA{
+class TrunkAB{
 public:
     static constexpr int branchMod = 1;
     static constexpr int trunkPoints = 4;
@@ -42,7 +42,7 @@ public:
 
     float getLineHeight();
 
-    TrunkA(std::vector<glm::vec3>* trunkVertices ,std::vector<glm::vec2>* trunkUVs, const int& seed);
+    TrunkAB(std::vector<glm::vec3>* trunkVertices ,std::vector<glm::vec2>* trunkUVs, const int& seed);
 
     static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                        std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,

@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "src/constants.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
