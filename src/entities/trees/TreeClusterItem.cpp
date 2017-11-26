@@ -25,7 +25,7 @@ constexpr double TreeClusterItem::trunkRatio;
 constexpr double TreeClusterItem::branchRatio;
 
 TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
-    Tree(heightChunking, boostFactor, shader_program, entity, 'G'){
+    Tree(heightChunking, boostFactor,seed, shader_program, entity, 'G'){
     std::clock_t startTime;
     double duration;
     startTime = std::clock();

@@ -85,6 +85,8 @@ add_executable(proceduralworld
         src/entities/trees/Tree.cpp
         src/entities/trees/TreeA.hpp
         src/entities/trees/TreeA.cpp
+        src/entities/trees/TreeA_Autumn.hpp
+        src/entities/trees/TreeA_Autumn.cpp
         src/entities/trees/TrunkAB.hpp
         src/entities/trees/TrunkAB.cpp
         src/entities/trees/LeafAB.hpp

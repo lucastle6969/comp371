@@ -34,8 +34,9 @@ const int Tree::getColorType() {
 }
 
 
-Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type)
+Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type)
         : DrawableEntity(shader_program, entity){
+    this->seed = seed;
     draw_mode = GL_TRIANGLES;
     this->heightChunking = heightChunking;
     this->boostFactor = boostFactor;

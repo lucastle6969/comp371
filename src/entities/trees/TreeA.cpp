@@ -14,11 +14,17 @@ constexpr double TreeA::trunkRatio;
 constexpr double TreeA::branchRatio;
 
 TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
-        Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
-
+        Tree(heightChunking, boostFactor, seed, shader_program, entity, 'A'){
     std::clock_t startTime;
     double duration;
     startTime = std::clock();
+
+    std::cout << seed << " \n";
+    if((int)seed % 2 == 0)
+               textureMap = textureMap1;
+    else{
+        textureMap = textureMap2;
+    }
 
     treeSetup(shader_program, trunkDiameter, seed);
 
@@ -288,10 +294,10 @@ void TreeA::setTreeInit(bool val){
 GLuint TreeA::getTextureId()
 {
     static GLuint tA_texture = loadTexture(
-            "../textures/TreeATexture.jpg",//1000Y break // 925X break
-            GL_NEAREST,
-            GL_NEAREST
-    );
+                textureMap,
+                GL_NEAREST,
+                GL_NEAREST
+        );
     return tA_texture;
 }
 

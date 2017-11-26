@@ -5,7 +5,7 @@
 #include "Tree.hpp"
 
 TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
-        Tree(heightChunking, boostFactor, shader_program, entity, 'B'){
+        Tree(heightChunking, boostFactor, seed, shader_program, entity, 'B'){
     std::clock_t startTime;
     double duration;
     startTime = std::clock();
@@ -285,7 +285,7 @@ GLuint TreeB::getVAO()
 
 GLuint TreeB::getTextureId()
 {
-    static GLuint tB_texture = loadTexture(
+    static  GLuint tB_texture = loadTexture(
             "../textures/TreeBTexture.jpg",//1000Y break // 925X break
             GL_NEAREST,
             GL_NEAREST
