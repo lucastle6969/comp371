@@ -5,9 +5,11 @@
 
 #include "TrunkC.hpp"
 
-    TrunkC::TrunkC(std::vector<glm::vec3>* combinedVertices, std::vector<GLuint>* combinedIndices,
+    TrunkC::TrunkC(std::vector<glm::vec3>* combinedVertices, std::vector<glm::vec2>* combinedUV, std::vector<GLuint>* combinedIndices, float textureHeight,
            float lineMax){
         this->combinedVertices = combinedVertices;
+    this->combinedUV = combinedUV;
+        this->textureHeight = textureHeight;
         this->combinedIndices = combinedIndices;
         this->lineMax = lineMax;
     }
@@ -34,7 +36,10 @@
                             tempTrunkDiameter *  cos(glm::radians(itterations  * n))
                     );
                     combinedVertices->push_back(circleEdge);
-
+                    combinedVertices->push_back(circleEdge);
+                    unsigned  long s = combinedVertices->size();
+                    combinedUV->resize(s);
+                    combinedUV->at(s - 1) = {(n) % 2, 1 - textureHeight * (y % 2)};
                 }
                 lineHeight += lineSegments;
                 randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);

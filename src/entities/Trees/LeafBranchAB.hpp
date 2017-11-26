@@ -33,7 +33,7 @@ public:
                 std::vector<glm::vec3>* leafVertices,
                 std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs);
 
-    void buildLeafBranch(const float& trunkDiameter);
+    void buildLeafBranch(const float& trunkDiameter, int y, float textureLeafStart);
 
     void buildBranchElements(int baseVerticesSize, int i, int len);
 };

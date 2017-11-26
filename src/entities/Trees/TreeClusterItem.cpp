@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <ctime>
 #include <cmath>
+#include <src/loadTexture.hpp>
 
 constexpr int TreeClusterItem::branches;
 constexpr float TreeClusterItem::zeroSize;
@@ -206,7 +207,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
 float TreeClusterItem::trunk(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
-    TrunkC tC(combinedVertices, combinedIndices, lineMax);
+    TrunkC tC(combinedVertices, combinedUV, combinedIndices, lineMax, 273.0/800.0);
     return tC.buildAllComponents(trunkDiameter, seed, lineHeight);
 }
 
@@ -344,11 +345,10 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 
 }
 
+//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray(*combinedVertices, *combinedIndices, &vbo, &ebo);
+
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
 
@@ -363,5 +363,20 @@ void TreeClusterItem::setLocationWithPoints(const float& xPos, const float& zPos
 
 float TreeClusterItem::getTrunkDiameter(){
     return trunkDiameter;
+}
+
+
+GLuint TreeClusterItem::getTextureId()
+{
+    static GLuint tC_texture = loadTexture(
+            "../textures/TreeC-Texture.jpg",//1000Y break // 925X break
+            GL_NEAREST,
+            GL_NEAREST
+    );
+    return tC_texture;
+}
+
+const int TreeClusterItem::getColorType() {
+    return COLOR_TEXTURE;
 }
 

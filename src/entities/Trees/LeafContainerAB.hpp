@@ -30,7 +30,7 @@ public:
     static constexpr float itterationsLeafBranch = 360.0f / leafBranchPoints;
 
     static constexpr float jagednessFactor_Leaf = 0.35;
-    static constexpr float textureLeafStart = 0.9f;
+    static constexpr float textureLeafStart = 1 - 268.0f/800.0f;
     static constexpr float textureLeafEnd = 1.0f;
 private:
     std::vector<glm::vec3>* leafVertices;

@@ -65,13 +65,13 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
     while (lineHeight < lineMax - 2){
         //branch
         LeafBranchA LBA(randomSeedValue, branchItterations, leafBranchPoints,
-                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, nullptr);
-        LBA.buildLeafBranch(trunkDiameter);
+                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr,leafUVs);
+        LBA.buildLeafBranch(trunkDiameter, count, textureLeafStart);
 
         //builds 2 leaves at alternating 90 degrees. Uses count to do this.
         LeafA LA(leafPoints, randomSeedValue, count, lineHeight, branchItterations, jagednessFactor_Leaf,
-                 leafVertices, nullptr, nullptr);
-        LA.buildLeaf(r1, r2, r1, count);
+                 leafVertices, nullptr, leafUVs);
+        LA.buildLeaf(r1, r2, r1, count, textureLeafStart);
 
         lineHeight += lineSegments;
         count++;
@@ -84,13 +84,13 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
 
         //the branch is getting smaller
         LeafBranchA LBA(randomSeedValue, branchItterations, leafBranchPoints,
-                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, nullptr);
-        LBA.buildLeafBranch(trunkDiameter*y);
+                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, leafUVs);
+        LBA.buildLeafBranch(trunkDiameter*y, count, textureLeafStart);
 
         //still making leaves
         LeafA LA(leafPoints, randomSeedValue, count, lineHeight, leafItterations, jagednessFactor_Leaf,
-                 leafVertices, nullptr, nullptr);
-        LA.buildLeaf(r1, r2, r1, count);
+                 leafVertices, nullptr, leafUVs);
+        LA.buildLeaf(r1, r2, r1, count, textureLeafStart);
 
         lineHeight += lineSegments * y * 0.8;
         count++;
@@ -99,7 +99,7 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
     //Cap with a leaf
     LeafA LA(leafPoints, randomSeedValue, count, lineHeight, leafItterations, jagednessFactor_Leaf,
              leafVertices, leafIndices, leafUVs);
-    LA.buildLeafSingle(r1, r2, r1);
+    LA.buildLeafSingle(r1, r2, r1, count, textureLeafStart);
 }
 
 

@@ -25,7 +25,7 @@ public:
     static constexpr float itterations = 360.0f / trunkPoints;
 
     static constexpr float jagednessFactor = 0.35;
-    static constexpr float textureTrunkHeight = 0.75;
+    static constexpr float textureTrunkHeight = 273.0/800.0;
     static constexpr float textureConnectorStart = 0.75;
     static constexpr float textureConnectorEnd = 0.90;
 private:

@@ -80,7 +80,7 @@ private:
     static constexpr float boostFactor = 0.5;
     static constexpr int heightChunking = 20;//INVERSE
 
-    static constexpr int minYBranchAngle = 20;
+    static constexpr int minYBranchAngle = 30;
 	static constexpr int maxYBranchAngle = 45;
 	static constexpr int minYTrunkAngle = 0;
 	static constexpr int maxYTrunkAngle = 20;
