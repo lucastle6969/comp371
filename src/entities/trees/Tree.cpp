@@ -34,8 +34,9 @@ const int Tree::getColorType() {
 }
 
 
-Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type)
+Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type)
         : DrawableEntity(shader_program, entity){
+    this->seed = seed;
     draw_mode = GL_TRIANGLES;
     this->heightChunking = heightChunking;
     this->boostFactor = boostFactor;
@@ -89,16 +90,16 @@ void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
                            const int& rotPoint, const int& prevPoint, const int& circularPoints,
                      std::vector<GLuint>* indPntr){
     int set = std::abs((circularPoints - rotPoint) + prevPoint);
-    TrunkA::buildConnectorElements(ag->end - TrunkA::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
+    TrunkAB::buildConnectorElements(ag->end - TrunkAB::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
 
 void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
     if(ag->type == 'L'){
-        LeafContainerA::buildLeafContainerElements(ag->start + 1, ag->end,
+        LeafContainerAB::buildLeafContainerElements(ag->start + 1, ag->end,
                                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
     }
     else
-        TrunkA::buildTrunkElements(ag->start + 1, ag->end,
+        TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }

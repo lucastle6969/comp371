@@ -1,13 +1,16 @@
 #include <cmath>
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 
-TrunkA::TrunkA(std::vector<glm::vec3>* trunkVertices, const int& seed){
+bool TrunkAB::constructionFlowCounter = true;
+
+TrunkAB::TrunkAB(std::vector<glm::vec3>* trunkVertices, std::vector<glm::vec2>* trunkUVs,  const int& seed){
     this->trunkVertices = trunkVertices;
+    this->trunkUVs = trunkUVs;
     baseVerticesSize = trunkVertices->size();
     this->seed = seed;
 }
 
-bool TrunkA::buildTrunk(const float& trunkDiameter, const float& lineSegments){
+bool TrunkAB::buildTrunk(const float& trunkDiameter, const float& lineSegments){
     const int randomSeedValue = buildVertices(trunkDiameter, lineSegments);
     heightCount += 3;
     //make branch check
@@ -17,7 +20,7 @@ bool TrunkA::buildTrunk(const float& trunkDiameter, const float& lineSegments){
     return true;
 }
 
-int TrunkA::buildVertices(const float& trunkDiameter, const float& lineSegments){
+int TrunkAB::buildVertices(const float& trunkDiameter, const float& lineSegments){
     //build points
     const int randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
     for (int y = 0; y < 3; y++) {
@@ -31,13 +34,17 @@ int TrunkA::buildVertices(const float& trunkDiameter, const float& lineSegments)
                     tempTrunkDiameter * sin(glm::radians(itterations  * n)),
                     lineHeight + 0, tempTrunkDiameter *  cos(glm::radians(itterations  * n)) );
             trunkVertices->push_back(circleEdge);
+            unsigned  long s = trunkVertices->size();
+            trunkUVs->resize(s);
+            //std::cout << 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2) <<"\n";
+            trunkUVs->at(s - 1) = {(n) % 2, 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2)};
         }
         lineHeight += lineSegments;
     }
     return randomSeedValue;
 }
 //give both start point and end as the connection end point
-void TrunkA::buildTrunkElements(const int& start, const int& end,
+void TrunkAB::buildTrunkElements(const int& start, const int& end,
                                 std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                 std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
 
@@ -66,9 +73,9 @@ void TrunkA::buildTrunkElements(const int& start, const int& end,
 
 
 
-float TrunkA::getLineHeight(){return lineHeight;}
+float TrunkAB::getLineHeight(){return lineHeight;}
 
-void TrunkA::buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
+void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                    std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
     if(trunkVert->size() != trunkUVs->size()){

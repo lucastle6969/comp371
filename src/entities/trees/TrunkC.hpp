@@ -17,7 +17,11 @@
 
 class TrunkC {
     std::vector<glm::vec3>* combinedVertices;
+    std::vector<glm::vec2>* combinedUV;
+    std::vector<glm::vec3>* combinedNormals;
     std::vector<GLuint>* combinedIndices;
+
+    float textureHeight;
 
     static constexpr int heightChunking = 20;
     static constexpr int trunkPoints = 4;
@@ -26,7 +30,9 @@ class TrunkC {
     static constexpr float jagednessFactor = 0.020;
     float lineMax;
 public:
-    TrunkC(std::vector<glm::vec3>* combinedVertices, std::vector<GLuint>* combinedIndices,
+    static bool constructionFlowCounter;
+
+    TrunkC(std::vector<glm::vec3>* combinedVertices, std::vector<glm::vec2>* combinedUV, std::vector<glm::vec3>* combinedNormals, std::vector<GLuint>* combinedIndices, float textureHeight,
            float lineMax);
     float buildAllComponents(const float& trunkDiameter, const float& seed, float lineHeight);
 };

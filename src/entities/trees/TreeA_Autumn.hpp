@@ -34,8 +34,8 @@ SEGMENTS ARE STORED INTO ATTATCHMENT GROUPINGS AS A LINKED LIST AND ARE STICHED 
 ANGLES COMPUTED DURING RECURSIONS
 */
 
-#ifndef COMP371_TREE_A_HPP
-#define COMP371_TREE_A_HPP
+#ifndef COMP371_TREE_Aut_HPP
+#define COMP371_TREE_Aut_HPP
 
 #define START_TRUNK 0
 #define TRUNK 2
@@ -60,53 +60,16 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
 #include "Tree.hpp"
-
-class TreeA : public Tree {
-private:
-	bool treeLoaded = false;
-	bool treeInit = false;
-
-    static constexpr int branches = 1;
-    static constexpr int k = 250;
-	float limiter = 1;
-	static constexpr int previousRotationCap = 8;
-
-    static constexpr float boostFactor = 0.5;
-    static constexpr int heightChunking = 20;//INVERSE
-
-    static constexpr int minYBranchAngle = 20;
-	static constexpr int maxYBranchAngle = 45;
-	static constexpr int minYTrunkAngle = 0;
-	static constexpr int maxYTrunkAngle = 20;
-
-	static constexpr double trunkRatio = 1.0;
-	static constexpr double branchRatio = 0.850;
-
-	float trunk(float trunkDiameter, const float& seed, float lineHeight);
-	void leafBranch(float trunkDiameter, const float& seed, float lineHeight);
-
-	void initiateMove(AttatchmentGroupings* ag);
-
-	void moveSegments(const int& previousRotation, AttatchmentGroupings* ag);
-
-	void treeSetup(const GLuint& shader_program, float trunkDiameter, const int&);
-
-	void generateTreeA(const int& _case, float trunkDiameter, const float& seed,
-					   float angleX, float angleY, float angleZ,
-					   char tag, AttatchmentGroupings* ag, float lineHeight);
-
-	//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
-	void bufferObject(const GLuint& shader_program);
+#include "TreeA.hpp"
+class TreeA_Autumn : public TreeA {
 public:
-	void setTreeLoaded(bool state);
-	void setTreeInit(bool state);
-
-	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+	TreeA_Autumn(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+    GLuint getTextureId();
 };
 #endif //treeA

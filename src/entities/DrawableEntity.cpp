@@ -146,6 +146,7 @@ void DrawableEntity::draw(
 //		//doesn't work though
 //		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
 //	} else {
+
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
 		int element_buffer_array_size;

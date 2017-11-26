@@ -92,6 +92,10 @@ public:
     float getTrunkDiameter();
 
     TreeClusterItem(const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed);
+
+    GLuint getTextureId();
+
+    const int getColorType();
 };
 
 #endif //PROCEDURALWORLD_TREECLUSTERITEM_H

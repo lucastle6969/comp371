@@ -18,11 +18,11 @@
 
 #include "LeafAB.hpp"
 #include "LeafBranchAB.hpp"
-#include "src/entities/Trees/TrunkA.hpp"
+#include "src/entities/Trees/TrunkAB.hpp"
 #include "src/TreeRandom.hpp"
 
 
-class LeafContainerA {
+class LeafContainerAB {
 public:
     static constexpr int leafPoints = 4;
     static constexpr int leafBranchPoints = 4;
@@ -30,7 +30,7 @@ public:
     static constexpr float itterationsLeafBranch = 360.0f / leafBranchPoints;
 
     static constexpr float jagednessFactor_Leaf = 0.35;
-    static constexpr float textureLeafStart = 0.9f;
+    static constexpr float textureLeafStart = 1 - 268.0f/800.0f;
     static constexpr float textureLeafEnd = 1.0f;
 private:
     std::vector<glm::vec3>* leafVertices;
@@ -42,7 +42,7 @@ private:
     int heightCount = 0;
     int seed = 0;
 public:
-    LeafContainerA(std::vector<glm::vec3>* leafVertices,
+    LeafContainerAB(std::vector<glm::vec3>* leafVertices,
                         std::vector<GLuint>* leafIndices,
                         std::vector<glm::vec2>* leafUVs,
                         const int& seed);

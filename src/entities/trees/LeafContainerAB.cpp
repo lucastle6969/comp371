@@ -15,17 +15,17 @@
 
 #include "LeafContainerAB.hpp"
 
-constexpr int LeafContainerA::leafPoints;
-constexpr int LeafContainerA::leafBranchPoints;
+constexpr int LeafContainerAB::leafPoints;
+constexpr int LeafContainerAB::leafBranchPoints;
 
-constexpr float LeafContainerA::itterationsLeaf;
-constexpr float LeafContainerA::itterationsLeafBranch;
+constexpr float LeafContainerAB::itterationsLeaf;
+constexpr float LeafContainerAB::itterationsLeafBranch;
 
-constexpr float LeafContainerA::jagednessFactor_Leaf;
-constexpr float LeafContainerA::textureLeafStart;
-constexpr float LeafContainerA::textureLeafEnd;
+constexpr float LeafContainerAB::jagednessFactor_Leaf;
+constexpr float LeafContainerAB::textureLeafStart;
+constexpr float LeafContainerAB::textureLeafEnd;
 
-LeafContainerA::LeafContainerA(std::vector<glm::vec3>* leafVertices,
+LeafContainerAB::LeafContainerAB(std::vector<glm::vec3>* leafVertices,
                                std::vector<GLuint>* leafIndices,
                                std::vector<glm::vec2>* leafUVs,
                                const int& seed){
@@ -36,7 +36,7 @@ LeafContainerA::LeafContainerA(std::vector<glm::vec3>* leafVertices,
     this->seed = seed;
 }
 
-void LeafContainerA::buildContainer(float trunkDiameter, const float& seed, float lineHeight, const int& lineMax){
+void LeafContainerAB::buildContainer(float trunkDiameter, const float& seed, float lineHeight, const int& lineMax){
     int randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
 
     const float lineSegments = trunkDiameter * 3.0;
@@ -46,7 +46,7 @@ void LeafContainerA::buildContainer(float trunkDiameter, const float& seed, floa
     buildVertices(randomSeedValue, lineSegments, lineMax, trunkDiameter, seed, lineHeight, &baseVerticesSize);
 }
 
-void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegments,
+void LeafContainerAB::buildVertices(const int& randomSeedValue, float lineSegments,
                                    int lineMax, float trunkDiameter, const float& seed,
                                    float lineHeight, int* baseVerticesSize){
     float f = 2;
@@ -64,14 +64,14 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
     int count = 0;
     while (lineHeight < lineMax - 2){
         //branch
-        LeafBranchA LBA(randomSeedValue, branchItterations, leafBranchPoints,
-                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, nullptr);
-        LBA.buildLeafBranch(trunkDiameter);
+        LeafBranchAB LBA(randomSeedValue, branchItterations, leafBranchPoints,
+                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr,leafUVs);
+        LBA.buildLeafBranch(trunkDiameter, count, textureLeafStart);
 
         //builds 2 leaves at alternating 90 degrees. Uses count to do this.
         LeafA LA(leafPoints, randomSeedValue, count, lineHeight, branchItterations, jagednessFactor_Leaf,
-                 leafVertices, nullptr, nullptr);
-        LA.buildLeaf(r1, r2, r1, count);
+                 leafVertices, nullptr, leafUVs);
+        LA.buildLeaf(r1, r2, r1, count, textureLeafStart);
 
         lineHeight += lineSegments;
         count++;
@@ -83,14 +83,14 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
         f -= y * 0.55;
 
         //the branch is getting smaller
-        LeafBranchA LBA(randomSeedValue, branchItterations, leafBranchPoints,
-                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, nullptr);
-        LBA.buildLeafBranch(trunkDiameter*y);
+        LeafBranchAB LBA(randomSeedValue, branchItterations, leafBranchPoints,
+                        lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, leafUVs);
+        LBA.buildLeafBranch(trunkDiameter*y, count, textureLeafStart);
 
         //still making leaves
         LeafA LA(leafPoints, randomSeedValue, count, lineHeight, leafItterations, jagednessFactor_Leaf,
-                 leafVertices, nullptr, nullptr);
-        LA.buildLeaf(r1, r2, r1, count);
+                 leafVertices, nullptr, leafUVs);
+        LA.buildLeaf(r1, r2, r1, count, textureLeafStart);
 
         lineHeight += lineSegments * y * 0.8;
         count++;
@@ -99,11 +99,11 @@ void LeafContainerA::buildVertices(const int& randomSeedValue, float lineSegment
     //Cap with a leaf
     LeafA LA(leafPoints, randomSeedValue, count, lineHeight, leafItterations, jagednessFactor_Leaf,
              leafVertices, leafIndices, leafUVs);
-    LA.buildLeafSingle(r1, r2, r1);
+    LA.buildLeafSingle(r1, r2, r1, count, textureLeafStart);
 }
 
 
-void LeafContainerA::buildLeafContainerElements(const int& start, const int& end,
+void LeafContainerAB::buildLeafContainerElements(const int& start, const int& end,
                                        std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,
                                        std::vector<glm::vec2>* leafUVs, std::vector<glm::vec3>* leafNorms){
 

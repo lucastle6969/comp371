@@ -9,7 +9,7 @@ CREATES TRUNK AND LEAF VECTORS+INDICES WHICH ARE MERGED TOGETHER ARE SENT TO THE
 
 CURRENT LOADING SPEED SUGESTS THE 4-8 DIAMETER RANGE WILL GENERATE QUICKLY. SCALING TO HEIGHTS MAY BE NESCICARY.
 
-PROGRAM ENTRY POINT IN IN THE generateTreeA FUNCTION WHEREIN IT STARTS TO BUILD THE STARTER TRUNK,
+PROGRAM ENTRY POINT IN IN THE generateTreeA FUNCTION WHEREIN IT STARTS TO BUILD THE STARTER TRUNK, 
 THEN ENTERS BINARY RECURSIONS OF ITSELF TO GENERATE THE TRUNKS AND LEAVES WHEREUPON REACHING THE BASE CASE IN MOVES SEGMENTS OF
 ONE RECURSION ONTO THE STARTER TRUNK AND PROCEEDS TO DO THE NEXT BRANCH. RECURSIONS SET PARAMETERS OF ANGLES AND SEGMENT WIDTHS
 DECREASING AT A PYTHAGOREAN RATE.
@@ -20,7 +20,7 @@ TRUNKS HAVE FOUR PROPERTIES.
   3) THE MAX HEIGHT IT CAN REACH
   4) THE SEED RELATED TO IT
 THEY ARE STRAIGHT LINE PIECES OF ROUGHLY CIRCULAR SIZE
-
+ 
 LEAF BRANCHES HAVE FOUR PROPERTIES
   1) THE WIDTH OF THE BRANCH SEGMENT
   2) THE JAGEDNESS(BUMPYNESS) OF THE SEGMENT'S LEAVES
@@ -30,12 +30,12 @@ AT EVERY PART OF THE BRANCH IT SPLITS  INTO TWO LEAVES ALTERNATING IN PERPENDICU
 AT THE LAST 2 PARTS THE LEAVES GET SMALLER UNTIL THE LAST WHERE IT ENDS WITH A LEAF.
 LEAFS ARE DOUBLE SIDED FOR BACKFACE CULLING.
 
-SEGMENTS ARE STORED INTO ATTATCHMENT GROUPINGS AS A LINKED LIST AND ARE STICHED TOGETHER IN THE MOVE PROCESS USING THE
+SEGMENTS ARE STORED INTO ATTATCHMENT GROUPINGS AS A LINKED LIST AND ARE STICHED TOGETHER IN THE MOVE PROCESS USING THE 
 ANGLES COMPUTED DURING RECURSIONS
 */
 
-#ifndef COMP371_TREE_B_HPP
-#define COMP371_TREE_B_HPP
+#ifndef COMP371_TREE_A_HPP
+#define COMP371_TREE_A_HPP
 
 #define START_TRUNK 0
 #define TRUNK 2
@@ -60,55 +60,62 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
 #include "Tree.hpp"
 
-class TreeB : public Tree {
+class TreeA : public Tree {
 private:
+	bool treeLoaded = false;
+	bool treeInit = false;
 
-    //CONSIDERATION FOR MULTITHREADED LOADING
-    bool treeLoaded = false;
+    static constexpr int branches = 1;
+    static constexpr int k = 250;
+	float limiter = 1;
+	static constexpr int previousRotationCap = 8;
 
-    const int branches = 1;
-    const int k = 1;
+    static constexpr float boostFactor = 0.25;//0.5;
+    static constexpr int heightChunking = 20;//INVERSE
 
-    static constexpr float boostFactor = 0.5;
-    static constexpr int heightChunking = 12;//INVERSE
+    static constexpr int minYBranchAngle = 30;
+	static constexpr int maxYBranchAngle = 45;
+	static constexpr int minYTrunkAngle = 0;
+	static constexpr int maxYTrunkAngle = 20;
 
-    const int minYBranchAngle = 0;
-    const int maxYBranchAngle = 70;
-    const int minYTrunkAngle = 0;
-    const int maxYTrunkAngle = 70;
+	static constexpr double trunkRatio = 1.0;
+	static constexpr double branchRatio = 0.850;
 
-    double trunkRatio = 1.0;
-    double branchRatio = 0.850;
+	float trunk(float trunkDiameter, const float& seed, float lineHeight);
+	void leafBranch(float trunkDiameter, const float& seed, float lineHeight);
 
-    void generateTreeB(const int& _case, float trunkDiameter, const float& seed,
-                       float angleX, float angleY, float angleZ, char tag,
-                       AttatchmentGroupings* ag, float lineHeight);
+	void initiateMove(AttatchmentGroupings* ag);
 
-    float trunk(float trunkDiameter, const float& seed, float lineHeight);
+	void moveSegments(const int& previousRotation, AttatchmentGroupings* ag);
 
-    void leafBranch(float trunkDiameter, const float& seed, float lineHeight);
+	void treeSetup(const GLuint& shader_program, float trunkDiameter, const int&);
 
-    void bufferObject(const GLuint& shader_program);
+	void generateTreeA(const int& _case, float trunkDiameter, const float& seed,
+					   float angleX, float angleY, float angleZ,
+					   char tag, AttatchmentGroupings* ag, float lineHeight);
 
-    void initiateMove(AttatchmentGroupings* ag);
+	//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
+	void bufferObject(const GLuint& shader_program);
 
-    void moveSegments(const int& previousRotation, AttatchmentGroupings* ag);
+protected:
+    std::string textureMap;
 
-    bool treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed);
-
-
+    const std::string textureMap1 = "../textures/TreeATexture.jpg";
+    const std::string textureMap2 = "../textures/TreeATexture - Alternative.jpg";
 public:
-    const std::vector<glm::vec3>& getVertices();
+	void setTreeLoaded(bool state);
+	void setTreeInit(bool state);
 
-    GLuint getVAO();
+	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
 
-    TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
+	GLuint getTextureId();
+	const int getColorType();
 };
 #endif //treeA
