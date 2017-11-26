@@ -207,14 +207,14 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
 float TreeClusterItem::trunk(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
-    TrunkC tC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 527.0f/800.0);
+    TrunkC tC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 530.0f/800.0);
     return tC.buildAllComponents(trunkDiameter, seed, lineHeight);
 }
 
 void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
 
-    LeafContainerC lcC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 527.0f/800.0);
+    LeafContainerC lcC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 530.0f/800.0);
     lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){

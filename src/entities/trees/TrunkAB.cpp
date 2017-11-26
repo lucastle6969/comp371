@@ -1,6 +1,8 @@
 #include <cmath>
 #include "TrunkAB.hpp"
 
+bool TrunkAB::constructionFlowCounter = true;
+
 TrunkAB::TrunkAB(std::vector<glm::vec3>* trunkVertices, std::vector<glm::vec2>* trunkUVs,  const int& seed){
     this->trunkVertices = trunkVertices;
     this->trunkUVs = trunkUVs;
@@ -34,7 +36,8 @@ int TrunkAB::buildVertices(const float& trunkDiameter, const float& lineSegments
             trunkVertices->push_back(circleEdge);
             unsigned  long s = trunkVertices->size();
             trunkUVs->resize(s);
-            trunkUVs->at(s - 1) = {(n) % 2, 1 - textureTrunkHeight * (y % 2)};
+            //std::cout << 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2) <<"\n";
+            trunkUVs->at(s - 1) = {(n) % 2, 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2)};
         }
         lineHeight += lineSegments;
     }

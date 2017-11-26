@@ -6,6 +6,8 @@
 #include <iostream>
 #include "TrunkC.hpp"
 
+bool TrunkC::constructionFlowCounter = true;
+
 TrunkC::TrunkC(std::vector<glm::vec3>* combinedVertices, std::vector<glm::vec2>* combinedUV, std::vector<glm::vec3>* combinedNormals,
                std::vector<GLuint>* combinedIndices,
                float lineMax, float textureHeight){
@@ -41,7 +43,7 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                 combinedVertices->push_back(circleEdge);
                 unsigned  long s = combinedVertices->size();
                 combinedUV->resize(s);
-                combinedUV->at(s - 1) = {(n) % 2, 1 - textureHeight * (y % 2)};
+                combinedUV->at(s - 1) = {(n) % 2, 1 - textureHeight * ((y + (!constructionFlowCounter )) % 2)};
             }
             lineHeight += lineSegments;
             randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
@@ -81,7 +83,7 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
             }
         }
         count += 3;
-
+        TrunkC::constructionFlowCounter = !TrunkC::constructionFlowCounter;
         if ((randomSeedValue * (count + 1)) % branchMod == 0) {
             loopInitialTrunk = false;
         }

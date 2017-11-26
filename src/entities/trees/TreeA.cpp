@@ -180,12 +180,14 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     );
     do {
         loopInitialTrunk = trunk.buildTrunk(trunkDiameter, lineSegments);
+        TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     } while (loopInitialTrunk && trunk.getLineHeight() < lineMax);
     if (lineHeight >= lineMax)
         return -1;
     else if(!loopInitialTrunk)
         return lineHeight;
     else return -1;
+
 }
 
 void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {

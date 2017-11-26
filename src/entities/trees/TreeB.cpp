@@ -174,6 +174,7 @@ float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     int count = 0;
     do {
         loopInitialTrunk = trunk.buildTrunk(trunkDiameter, lineSegments);
+        TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     } while (loopInitialTrunk && trunk.getLineHeight() < lineMax);
     if (lineHeight >= lineMax)
         return -1;
