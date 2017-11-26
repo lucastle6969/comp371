@@ -271,8 +271,7 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo, &nbo, &uvbo);
     //stbi_image_free(image_data);
 }
 

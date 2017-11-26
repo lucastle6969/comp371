@@ -70,7 +70,7 @@ protected:
     std::vector<glm::vec3>* combinedNormals= new std::vector<glm::vec3>;
     std::vector<glm::vec2>* combinedUV = new std::vector<glm::vec2>;
     std::vector<std::vector<int>> *combinedStartIndices = new std::vector<std::vector<int>> ;
-    GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
+    GLuint vao; GLuint vbo; GLuint ebo; GLuint nbo; GLuint uvbo;
 
     float heightChunking;
     int boostFactor;

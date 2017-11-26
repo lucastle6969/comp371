@@ -207,14 +207,14 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
 float TreeClusterItem::trunk(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
-    TrunkC tC(combinedVertices, combinedUV, combinedIndices, lineMax, 273.0/800.0);
+    TrunkC tC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 273.0f/800.0);
     return tC.buildAllComponents(trunkDiameter, seed, lineHeight);
 }
 
 void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
 
-    LeafContainerC lcC(combinedVertices, combinedIndices, lineMax);
+    LeafContainerC lcC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 273.0f/800.0);
     lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
@@ -347,7 +347,6 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
-
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
@@ -365,11 +364,10 @@ float TreeClusterItem::getTrunkDiameter(){
     return trunkDiameter;
 }
 
-
 GLuint TreeClusterItem::getTextureId()
 {
     static GLuint tC_texture = loadTexture(
-            "../textures/TreeC-Texture.jpg",//1000Y break // 925X break
+            "../textures/TreeCTexture.jpg",//1000Y break // 925X break
             GL_NEAREST,
             GL_NEAREST
     );
