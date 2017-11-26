@@ -20,10 +20,10 @@
 #include "src/entities/trees/TreeA_Autumn.hpp"
 #include "src/entities/trees/TreeB.hpp"
 #include "src/entities/trees/TreeC.hpp"
-
 #include "WorldTile.hpp"
 #include "../utils.hpp"
 #include "../constants.hpp"
+
 
 WorldTile::WorldTile(
 	const GLuint &shader_program,
@@ -99,27 +99,73 @@ WorldTile::WorldTile(
 	//TreeDistributor::setEntity(this);
 	// add trees
 	for (int i = 0; i < 5; i++) {
-		static const float scale_factor = 100;
-		float base_span = utils::randomFloat(0.02f, 0.05f);
-		float internal_tree_width = base_span * scale_factor;
-		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
-		// Add tree child
-		Tree* tree;
-		if(seed % 10 < 2){
-			if(seed%2 == 0)
-				tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
-			else
-				tree = new TreeA_Autumn(shader_program, this, internal_tree_width*2.5, seed);
-		}
-		else if(seed % 10 < 7){
-			tree = new TreeB(shader_program, this, internal_tree_width, seed);
-		}
-		else{
-			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed);
-		}
-//		std::cout << x_position << " " <<  z_position <<" " << tree->getType() << "\n";
+        static const float scale_factor = 100;
+        float base_span = utils::randomFloat(0.02f, 0.05f);
+        float internal_tree_width = base_span * scale_factor;
+        float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
+        float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
+        int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position)) * scale_factor;
+        // Add tree child
+        Tree *tree;
+        //general biome
+        int generalBiomeX = 5, generalBiomeY = 5;
+        int alienBiomeX = 5, alienBiomeY = 10;
+        int quickRenderX = 10, quickRenderY = 5;
+        int heavyRenderX = 10, heavyRenderY = 10;
+        int worldBoundries = 10;
+        if (abs(world_x_location) % worldBoundries < generalBiomeX && abs(world_z_location) % worldBoundries < generalBiomeY) {
+            bool isAlien = false;
+            if (seed % worldBoundries < 2) {
+                if (seed % 2 == 0)
+                    tree = new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien);
+                else
+                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
+            } else if (seed % worldBoundries < 7) {
+                tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
+            } else {
+                tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed, isAlien);
+            }
+        }
+            //Alien biome
+        else if (abs(world_x_location) % worldBoundries < alienBiomeX  && abs(world_z_location) % worldBoundries < alienBiomeY ) {
+            bool isAlien = true;
+            if (seed % worldBoundries < 2) {
+                if (seed % 2 == 0)
+                    tree = new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien);
+                else
+                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
+            } else if (seed % worldBoundries < 7) {
+                tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
+            } else {
+                tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed, isAlien);
+            }
+        }
+            //Low ground cover(no type A) biome
+        else if(abs(world_x_location) % worldBoundries < quickRenderX && abs(world_z_location) % worldBoundries < quickRenderY) {
+            bool isAlien = false;
+            if (seed % 10 < 5) {
+                tree = new TreeB(shader_program, this, internal_tree_width * 0.5, seed, isAlien);
+            } else {
+                tree = new TreeC(seed % 15, shader_program, this, internal_tree_width * 0.5, seed, isAlien);
+            }
+        }
+            //forest biome (A and small C) heavyRenderX heavyRenderY
+        else{
+            bool isAlien = false;
+            if (seed % 10 < 7) {
+                if (seed % 2 == 0)
+                    tree = new TreeA(shader_program, this, internal_tree_width * 3, seed, isAlien);
+                else
+                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed);
+            } else {
+                TreeC::setSpacingConstant(100);
+                TreeC::setSizeVariation(0.0);
+                tree = new TreeC(seed % 30, shader_program, this, internal_tree_width * 0.1, seed, isAlien);
+                TreeC::setSpacingConstant(10);
+                TreeC::setSizeVariation(0.05);
+            }
+        }
+		std::cout << world_x_location << " "<< world_z_location <<  " " << seed << "\n";
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));
 		// Add tree to trees array

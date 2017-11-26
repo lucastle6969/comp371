@@ -13,7 +13,7 @@ constexpr int TreeA::previousRotationCap;
 constexpr double TreeA::trunkRatio;
 constexpr double TreeA::branchRatio;
 
-TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
+TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed, bool isAlien):
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'A'){
     std::clock_t startTime;
     double duration;
@@ -21,10 +21,14 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
 
     std::cout << seed << " \n";
     if((int)seed % 2 == 0)
-               textureMap = textureMap1;
+        textureMap = textureMap1;
     else{
         textureMap = textureMap2;
     }
+
+    this->isAlien = isAlien;
+    if(isAlien) TreeA::colorType = COLOR_TREE;
+    else TreeA::colorType = COLOR_TEXTURE;
 
     treeSetup(shader_program, trunkDiameter, seed);
 
@@ -35,7 +39,7 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
 void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-    widthCut = 0.5;//trunkDiameter / 32;
+    widthCut = 0.1;//trunkDiameter / 32;
     finalCut = widthCut;
 
     combinedStartIndices->push_back({-1,0,0,0});
@@ -279,8 +283,8 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo, &nbo, &uvbo);
-    //stbi_image_free(image_data);
+    if(isAlien)  this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, &vbo, &ebo);
+    else         this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
 }
 
 void TreeA::setTreeLoaded(bool val){
@@ -302,5 +306,5 @@ GLuint TreeA::getTextureId()
 }
 
 const int TreeA::getColorType() {
-    return COLOR_TEXTURE;
+    return colorType;
 }

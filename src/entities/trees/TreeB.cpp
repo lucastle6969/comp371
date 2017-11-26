@@ -4,14 +4,17 @@
 #include "TreeB.hpp"
 #include "Tree.hpp"
 
-TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
+TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed, bool isAlien):
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'B'){
     std::clock_t startTime;
     double duration;
     startTime = std::clock();
 
-    treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
+    this->isAlien = isAlien;
+    if(isAlien) TreeB::colorType = COLOR_TREE;
+    else TreeB::colorType = COLOR_TEXTURE;
 
+    treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
     float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
     rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
@@ -23,7 +26,7 @@ TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter,
 bool TreeB::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-    widthCut = 0.5;
+    widthCut = 0.1;
     finalCut = widthCut;
 
     combinedStartIndices->push_back({ -1, 0, 0, 0 });
@@ -194,8 +197,8 @@ void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeB::bufferObject(const GLuint& shader_program) {
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
-    //stbi_image_free(image_data);
+    if(isAlien)  this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, &vbo, &ebo);
+    else         this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
 }
 
 int limiter = 1;
@@ -294,7 +297,7 @@ GLuint TreeB::getTextureId()
 }
 
 const int TreeB::getColorType() {
-    return COLOR_TEXTURE;
+    return TreeB::colorType;
 }
 
 //treeB

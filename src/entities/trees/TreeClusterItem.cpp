@@ -24,7 +24,7 @@ constexpr int TreeClusterItem::leafPoints;
 constexpr double TreeClusterItem::trunkRatio;
 constexpr double TreeClusterItem::branchRatio;
 
-TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
+TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed, bool isAlien):
     Tree(heightChunking, boostFactor,seed, shader_program, entity, 'G'){
     std::clock_t startTime;
     double duration;
@@ -33,6 +33,11 @@ TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, 
     if (trunkDiameter <= 0.0) trunkDiameter = this->zeroSize;
     else if(trunkDiameter > 2.0)trunkDiameter = 2.0;
     this->trunkDiameter = trunkDiameter;
+
+    this->isAlien = isAlien;
+    if(isAlien) TreeClusterItem::colorType = COLOR_TREE;
+    else TreeClusterItem::colorType = COLOR_TEXTURE;
+
     seed = TreeRandom::treeRandom(trunkDiameter, seed, 991);
 
     //CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
@@ -345,10 +350,9 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 
 }
 
-//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
-    //stbi_image_free(image_data);
+    if(isAlien)  this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, &vbo, &ebo);
+    else         this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
 }
 
 void TreeClusterItem::setLocationFromCenter(const float& circleAngle, const float& distanceFromCenter){
@@ -366,15 +370,14 @@ float TreeClusterItem::getTrunkDiameter(){
 
 GLuint TreeClusterItem::getTextureId()
 {
-    static GLuint tC_texture = loadTexture(
-            "../textures/TreeCTexture.jpg",//1000Y break // 925X break
+    static GLuint tA_texture = loadTexture(
+            textureMap,
             GL_NEAREST,
             GL_NEAREST
     );
-    return tC_texture;
+    return tA_texture;
 }
-
 const int TreeClusterItem::getColorType() {
-    return COLOR_TEXTURE;
+    return colorType;
 }
 

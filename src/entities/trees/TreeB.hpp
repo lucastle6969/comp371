@@ -87,6 +87,9 @@ private:
     double trunkRatio = 1.0;
     double branchRatio = 0.850;
 
+
+    bool isAlien;
+
     void generateTreeB(const int& _case, float trunkDiameter, const float& seed,
                        float angleX, float angleY, float angleZ, char tag,
                        AttatchmentGroupings* ag, float lineHeight);
@@ -102,14 +105,14 @@ private:
     void moveSegments(const int& previousRotation, AttatchmentGroupings* ag);
 
     bool treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed);
-
-
+protected:
+    int colorType;
 public:
     const std::vector<glm::vec3>& getVertices();
 
     GLuint getVAO();
 
-    TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
+    TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed, bool isAlien);
 
     GLuint getTextureId();
     const int getColorType();

@@ -1,21 +1,25 @@
 #ifndef COMP371_TREE_C_cPP
 #define COMP371_TREE_C_cPP
 
+#include <src/loadTexture.hpp>
 #include "TreeC.hpp"
+
+    int TreeC::spacingConstant = 10;
+    float TreeC::sizeVariation = 0.05;
 
     int TreeC::maxWidth(const float& trunkDiameter){
         return (int)(pow(spacingConstant * (trunkDiameter+1), 1.0/2) + trunkDiameter);
     }
 
     TreeC::TreeC(int numberOfTrees, const GLuint& shader_program,
-                 Entity* entity, float trunkDiameter, long seed):
+                 Entity* entity, float trunkDiameter, long seed, bool isAlien):
             Tree(heightChunking, boostFactor, seed, shader_program, entity, 'C'){
         double duration;
         std::clock_t startTime;
         startTime = std::clock();
 
         //center piece
-        auto * tci = new TreeClusterItem(shader_program, this, trunkDiameter, seed);
+        auto * tci = new TreeClusterItem(shader_program, this, trunkDiameter, seed, isAlien);
         tci->setLocationWithPoints(0, 0);
         tci->setPosition(glm::vec3(tci->xPos, 0, tci->zPos));
         treeCluster.push_back(tci);
@@ -24,11 +28,14 @@
         sizeVariation = trunkDiameter / 10.0f;
 
         //distribute in random cirlce
-        float tempTrunkDiameter = trunkDiameter;
+        float tempTrunkDiameter;
         int i = 0;
         for (; i < numberOfTrees; i++) {
-            tempTrunkDiameter = TreeRandom::middleSquareRange(seed, sizeVariation*100, 0) / 100.0f;
-            seed = (unsigned long)(pow(seed, 2) * (tempTrunkDiameter+1)) % 99991;
+            if(sizeVariation != 0){
+                tempTrunkDiameter = TreeRandom::middleSquareRange(seed, sizeVariation*100, 0) / 100.0f;
+                seed = (unsigned long)(pow(seed, 2) * (tempTrunkDiameter+1)) % 99991;
+            }
+            else tempTrunkDiameter = trunkDiameter;
 
             float circleAngle = TreeRandom::middleSquareRange(seed, 360.0, 0.0);
             float distanceFromCenter = TreeRandom::middleSquareRange(seed, maxWidth(trunkDiameter), 1.0);
@@ -39,7 +46,7 @@
 
             auto * tci = new TreeClusterItem(shader_program, this,
                                                        tempTrunkDiameter <= 0? 0:  tempTrunkDiameter,
-                                                       seed);
+                                                       seed, isAlien);
 
             tci->setLocationWithPoints(xPos , zPos);
             tci->setPosition(glm::vec3(tci->xPos, 0, tci->zPos));
@@ -54,8 +61,12 @@
     std::vector<TreeClusterItem*> TreeC::getTreeCluster(){
         return treeCluster;
     }
+    void TreeC::setSpacingConstant(int k){
+        TreeC::spacingConstant = k;
+    }
 
     void TreeC::setSizeVariation(const float& r){
         sizeVariation = r;
     }
+
 #endif

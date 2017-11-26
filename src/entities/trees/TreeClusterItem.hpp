@@ -33,9 +33,12 @@
 
 class TreeClusterItem : public Tree {
 private:
-
+    const std::string textureMap = "../textures/TreeCTexture.jpg";
+    bool isAlien;
     float boostFactor = 4.2;
     int k = 600;
+
+    int colorType;
 
     const float boostReduction =boostFactor / 10 ;
     const int kReduction =  k/100;
@@ -56,7 +59,7 @@ private:
     float trunkDiameter;
     int previousRotation;
 
-    float widthCutoff = 0.2;
+    float widthCutoff = 0.05;
     float finalCutoff;
     bool kill;
 
@@ -91,10 +94,9 @@ public:
 
     float getTrunkDiameter();
 
-    TreeClusterItem(const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed);
+    TreeClusterItem(const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed, bool isAlien);
 
     GLuint getTextureId();
-
     const int getColorType();
 };
 

@@ -71,6 +71,7 @@ class TreeA : public Tree {
 private:
 	bool treeLoaded = false;
 	bool treeInit = false;
+	bool isAlien;
 
     static constexpr int branches = 1;
     static constexpr int k = 250;
@@ -106,6 +107,7 @@ private:
 
 protected:
     std::string textureMap;
+    int colorType;
 
     const std::string textureMap1 = "../textures/TreeATexture.jpg";
     const std::string textureMap2 = "../textures/TreeATexture - Alternative.jpg";
@@ -113,7 +115,7 @@ public:
 	void setTreeLoaded(bool state);
 	void setTreeInit(bool state);
 
-	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed, bool isAlien);
 
 	GLuint getTextureId();
 	const int getColorType();

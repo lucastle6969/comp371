@@ -5,7 +5,7 @@
 #include "TreeA_Autumn.hpp"
 
 TreeA_Autumn::TreeA_Autumn(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
-        TreeA(shader_program, entity, trunkDiameter, seed){
+        TreeA(shader_program, entity, trunkDiameter, seed, false){
         textureMap = textureMap2;
 };
 
