@@ -36,7 +36,7 @@ TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, 
 
     this->isAlien = isAlien;
     if(isAlien) TreeClusterItem::colorType = COLOR_TREE;
-    else TreeClusterItem::colorType = COLOR_TEXTURE;
+    else TreeClusterItem::colorType = COLOR_LIGHTING;
 
     seed = TreeRandom::treeRandom(trunkDiameter, seed, 991);
 

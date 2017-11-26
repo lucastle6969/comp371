@@ -28,7 +28,7 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
 
     this->isAlien = isAlien;
     if(isAlien) TreeA::colorType = COLOR_TREE;
-    else TreeA::colorType = COLOR_TEXTURE;
+    else TreeA::colorType = COLOR_LIGHTING;
 
     treeSetup(shader_program, trunkDiameter, seed);
 
