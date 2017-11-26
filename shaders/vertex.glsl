@@ -21,5 +21,6 @@ void main()
     // transform normal to world space coordinates
     // https://learnopengl.com/#!Lighting/Basic-Lighting
     worldNormal = mat3(transpose(inverse(model))) * normal;
+    worldNormal = -worldNormal;
     tex_coord = tex_coord_in;
 }

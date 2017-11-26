@@ -51,7 +51,11 @@ Tree::~Tree() {
     delete combinedNormals;
     delete combinedUV;
     delete combinedStartIndices;
-   // glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteBuffers(1, &nbo);
+    glDeleteBuffers(1, &uvbo);
+   glDeleteVertexArrays(1, &vao);
 }
 
 glm::vec3 Tree::boostSegment(const AttatchmentGroupings* agLow,const AttatchmentGroupings* agHigh,

@@ -21,7 +21,7 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
 
     std::cout << seed << " \n";
     if((int)seed % 2 == 0)
-               textureMap = textureMap1;
+        textureMap = textureMap1;
     else{
         textureMap = textureMap2;
     }
@@ -279,6 +279,7 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
+    for(int i = 0 ; i < combinedNormals->size() ; i++) combinedNormals->at(i) = glm::normalize(combinedNormals->at(i));
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo, &nbo, &uvbo);
     //stbi_image_free(image_data);
 }
@@ -302,5 +303,5 @@ GLuint TreeA::getTextureId()
 }
 
 const int TreeA::getColorType() {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }

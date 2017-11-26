@@ -80,7 +80,6 @@ uniform float nighttime_value;
 void main()
 {
     switch (color_type) {
-
         case COLOR_COORDINATE_AXES:
             color = vec4(ceil(pos), 1.0f);
             break;
@@ -96,6 +95,7 @@ void main()
             );
             break;
         case COLOR_TEXTURE:
+                    //Does not give light effects
             color = texture(tex_image, tex_coord);
             break;
         case COLOR_LIGHTING: {

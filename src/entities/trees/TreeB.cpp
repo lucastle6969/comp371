@@ -294,7 +294,7 @@ GLuint TreeB::getTextureId()
 }
 
 const int TreeB::getColorType() {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }
 
 //treeB

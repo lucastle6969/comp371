@@ -375,6 +375,6 @@ GLuint TreeClusterItem::getTextureId()
 }
 
 const int TreeClusterItem::getColorType() {
-    return COLOR_TEXTURE;
+    return COLOR_LIGHTING;
 }
 
