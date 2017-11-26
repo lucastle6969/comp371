@@ -52,31 +52,30 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                 const int offset = (y + 1) * trunkPoints + baseVerticesSize;
                 const int base = y * trunkPoints + baseVerticesSize;
                 //WORKS
-                //todo:possible fail point
                 combinedIndices->push_back(base + n + count * trunkPoints);
-                combinedIndices->push_back((base + n + 1) % trunkPoints + count * trunkPoints);
-                combinedIndices->push_back((offset + n + 1)% trunkPoints + count * trunkPoints);
-                combinedIndices->push_back((offset + n + 1)% trunkPoints + count * trunkPoints);
+                combinedIndices->push_back(base + (n + 1) % trunkPoints + count * trunkPoints);
+                combinedIndices->push_back(offset +(n + 1)% trunkPoints + count * trunkPoints);
+                combinedIndices->push_back(offset + (n + 1)% trunkPoints + count * trunkPoints);
                 combinedIndices->push_back(offset + n + count * trunkPoints);
                 combinedIndices->push_back(base + n + count * trunkPoints);
 
                 unsigned  long s = combinedVertices->size();
                 combinedNormals->resize(s);
-                combinedNormals->at((base + n) %  trunkPoints + count * trunkPoints) = glm::cross(
-                        combinedVertices->at((base + n + 1) %  trunkPoints + count * trunkPoints) - combinedVertices->at((base + n) %   trunkPoints+ count * trunkPoints),
-                        combinedVertices->at((offset + n) %  trunkPoints + count * trunkPoints) - combinedVertices->at((base + n) %  trunkPoints + count * trunkPoints)
+                combinedNormals->at(base + n + count * trunkPoints) = glm::cross(
+                        combinedVertices->at(base + (n + 1) %  trunkPoints + count * trunkPoints) - combinedVertices->at(base + n %   trunkPoints+ count * trunkPoints),
+                        combinedVertices->at(offset + n + count * trunkPoints) - combinedVertices->at(base + n %  trunkPoints + count * trunkPoints)
                 );
                 if (count > 0 && y == 0) {
                     int countTemp = count - 1;
                     combinedIndices->push_back(base + n + countTemp * trunkPoints);
-                    combinedIndices->push_back((base + n + 1) % trunkPoints  + countTemp * trunkPoints);
-                    combinedIndices->push_back((offset + n + 1 ) % trunkPoints+ countTemp * trunkPoints);
-                    combinedIndices->push_back((offset + n + 1) % trunkPoints + countTemp * trunkPoints);
+                    combinedIndices->push_back((base + (n + 1) % trunkPoints  + countTemp * trunkPoints));
+                    combinedIndices->push_back((offset +( n + 1 ) % trunkPoints+ countTemp * trunkPoints));
+                    combinedIndices->push_back((offset + (n + 1) % trunkPoints + countTemp * trunkPoints));
                     combinedIndices->push_back(offset + n + countTemp * trunkPoints);
                     combinedIndices->push_back(base + n + countTemp * trunkPoints);
-                    combinedNormals->at((base + n) %  + countTemp * trunkPoints) = glm::cross(
-                            combinedVertices->at((base + n + 1) % trunkPoints + countTemp  * trunkPoints) - combinedVertices->at((base + n) %  + countTemp * trunkPoints),
-                            combinedVertices->at((offset + n) + countTemp * trunkPoints) - combinedVertices->at((base + n) %  + countTemp * trunkPoints)
+                    combinedNormals->at(base + n  + countTemp * trunkPoints) = glm::cross(
+                            combinedVertices->at(base + (n + 1) % trunkPoints + countTemp  * trunkPoints) - combinedVertices->at((base + n)  + countTemp * trunkPoints),
+                            combinedVertices->at((offset + n) + countTemp * trunkPoints) - combinedVertices->at((base + n)  + countTemp * trunkPoints)
                     );
                 }
             }

@@ -193,7 +193,6 @@ void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeB::bufferObject(const GLuint& shader_program) {
-
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }

@@ -77,7 +77,7 @@ private:
 	float limiter = 1;
 	static constexpr int previousRotationCap = 8;
 
-    static constexpr float boostFactor = 0.5;
+    static constexpr float boostFactor = 0.25;//0.5;
     static constexpr int heightChunking = 20;//INVERSE
 
     static constexpr int minYBranchAngle = 30;
