@@ -1,20 +1,20 @@
 # Documentation on Biomes
 ## MAP		
 
-The following map explains the biomes.
-Please open in a text editor.
->		1	2	3	4	5	6	7	8	9	10
->		_	_	_	_	_	_	_	_	_	_	
-> 1	|					  |						|
-> 2	|		Planes		  |		Forest			|
-> 3	|	    [Quick]		  |		[Heavy]			|
-> 4	|		Biome		  |		Biome			|
-> 5	|	_	_	_	_   _ | _	_	_	_	_	|
-> 6	|					  |						|
-> 7	|     Mixed 		  |		Alien			|
-> 8	|	  				  |						|
-> 9	|	   Biome		  |		Biome			|
-> 10|	_	_	_	_  _  |	_	_	_	_	_	|
+The following map explains the biomes. 
+Please view on a text editor
+		1	2	3	4	5	6	7	8	9	10
+	_____________________________________________	
+1	|-------------------- |---------------------|
+2	|------	Quick-------- |-----Heavy-----------|
+3	|------	Render--------|-----Render----------|
+4	|-------Biome---------|-----Biome-----------|
+5	|--	_---_---_---_-- _ | _--	_--	_--	_--	_--	|
+6	|---------------------|---------------------|
+7	|------General--------|-----Alien-----------|
+8	|---------------------|---------------------|
+9	|-------Biome---------|-----Biome---------- |
+10	|_____________________|_____________________|
 
 # Details
 Quick render only uses Trees B and C which typically are not performace intensive.
