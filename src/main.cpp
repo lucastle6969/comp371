@@ -262,7 +262,7 @@ int main()
 		float daytime = -light.light_direction.y;
 		// Render
 		// Clear the colorbuffer
-		glClearColor(light.fog_color.x, light.fog_color.y, light.fog_color.z , 1.0f);
+		glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 player_position = world->getPlayer()->getPosition();
