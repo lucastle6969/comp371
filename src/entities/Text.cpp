@@ -89,7 +89,7 @@ Text::~Text()
 
     GLuint Text::getTextureId()
     {
-        GLuint text_texture = loadTexture(
+        static GLuint text_texture = loadTexture(
                 this->message,
                 GL_LINEAR,
                 GL_LINEAR,

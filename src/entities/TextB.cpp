@@ -327,7 +327,7 @@ TextB::~TextB()
 
     GLuint TextB::getTextureId()
     {
-        GLuint text_texture = loadTexture(
+       static  GLuint text_texture = loadTexture(
                 "../textures/mythos_text_map_medium.png",
                 GL_LINEAR,
                 GL_LINEAR,
