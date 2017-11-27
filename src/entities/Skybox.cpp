@@ -17,6 +17,7 @@
 #include "Skybox.hpp"
 #include "../utils.hpp"
 #include "../constants.hpp"
+#include "../loadTexture.hpp"
 
 float size = 50;
 
@@ -181,7 +182,7 @@ const int Skybox::getColorType() {
     return COLOR_TEXTURE;
 }
 
-GLuint RockB::getTextureId()
+GLuint Skybox::getTextureId()
 {
     //from pinterest
     static GLuint cloud_texture = loadTexture(
