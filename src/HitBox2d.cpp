@@ -12,7 +12,6 @@ HitBox2d::HitBox2d(const DrawableEntity& entity, const float& min_y, const float
 	glm::vec3 v;
 	const glm::mat4& model_matrix = entity.getModelMatrix();
 	for (const glm::vec3& vertex : entity.getVertices()) {
-		//std::cout << 'hey' << vertex.x << ' ' << vertex.y << ' ' << vertex.z << std::endl;
 		v = glm::vec3(model_matrix * glm::vec4(vertex, 1.0f));
 		if (v.y < min_y || v.y > max_y) {
 			// we don't want to include vertices outside the specified y range in our box
@@ -35,21 +34,11 @@ HitBox2d::HitBox2d(
     world_max_x(min_x + x_span),
     world_max_z(min_z + z_span) {}
 
-#include <iostream>
 bool HitBox2d::collidesWith(const HitBox2d& box) const
 {
-	static bool last_time = true;
 	// basic rectangle intersection test
-	bool ret = this->world_min_x < box.world_max_x &&
+	return this->world_min_x < box.world_max_x &&
 			this->world_max_x > box.world_min_x &&
 			this->world_min_z < box.world_max_z &&
-			this->world_max_z > box.world_min_z;
-	if (ret && !last_time) {
-		std::cout << this->world_min_x << ' ' << this->world_max_x << ' ' << this->world_min_z << ' ' << this->world_max_z << std::endl;
-		std::cout << box.world_min_x << ' ' << box.world_max_x << ' ' << box.world_min_z << ' ' << box.world_max_z << std::endl;
-		last_time = true;
-		return true;
-	}
-	last_time = ret;
-	return false;
+			this->world_max_z > box.world_min_x;
 }

@@ -40,10 +40,10 @@ const glm::mat4& Entity::getModelMatrix() const
 	// to incorporate the context of the parent's transformation
 	glm::mat4 parent_model_matrix = this->parent ? this->parent->getModelMatrix() : identity;
 
-	return parent_model_matrix *
+	return (parent_model_matrix *
 			this->translation_matrix * this->getBaseTranslation() *
 			this->rotation_matrix * this->getBaseRotation() *
-			this->scale_matrix * this->getBaseScale();
+			this->scale_matrix * this->getBaseScale());
 }
 
 glm::vec3 Entity::getPosition() const

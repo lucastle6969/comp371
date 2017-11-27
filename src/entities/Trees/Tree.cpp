@@ -23,7 +23,7 @@ int Tree::lineMAX(const float& trunkDiameter, int k) {
 
 const std::vector<glm::vec3>& Tree::getVertices() const
 {
-    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
+    return *combinedVertices;
 }
 
 GLuint Tree::getVAO() {

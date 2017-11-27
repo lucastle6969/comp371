@@ -36,7 +36,7 @@ World::World(
 	this->axes.hide();
 
 	this->player.scale(0.0005f);
-	this->player.setPosition(glm::vec3(x_center + 0.4, 0.01f, z_center));
+	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
 
 	// assume player's floating position from ground will remain constant and use
 	// the y range of the model to create specialized entity hit boxes for collision

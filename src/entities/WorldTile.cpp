@@ -126,7 +126,7 @@ WorldTile::WorldTile(
 		tree->scale(1.0f / (scale_factor*10));
 		// Add tree to trees array
 		this->trees.emplace_back(tree);
-		//this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
+		this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
 	}
 //	printf("=====================\n");
 }

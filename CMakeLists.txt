@@ -64,6 +64,8 @@ add_executable(proceduralworld
     src/TreeDistributor.cpp
     src/TreeRandom.cpp
     src/TreeRandom.hpp
+    src/HitBox2d.hpp
+    src/HitBox2d.cpp
     src/entities/Entity.hpp
     src/entities/Entity.cpp
     src/entities/DrawableEntity.hpp
@@ -103,7 +105,7 @@ add_executable(proceduralworld
     src/entities/Trees/TrunkC.cpp
     src/entities/Trees/LeafContainerC.cpp
     src/entities/Trees/LeafContainerC.hpp
-        src/HitBox2d.cpp src/HitBox2d.hpp)
+)
 
 # Link librarssies
 if(APPLE)
