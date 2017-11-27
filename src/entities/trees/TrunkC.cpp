@@ -47,10 +47,8 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                 combinedUV->at(s - 1) = {uCounter, 1 - textureHeight * ((y + (!TrunkC::constructionFlowCounter )) % 2) };
                 uCounter += 0.33;
             }
-            //std::cout << 1 - textureHeight * ((y + (!constructionFlowCounter)) % 2) << " " << !constructionFlowCounter << "\n";
             lineHeight += lineSegments;
             randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
-            std::cout << 1 - textureHeight * ((y + (!constructionFlowCounter )) % 2) << " ";
         }
         //build indices
         for (int y = 0; y < 2; y++) {
@@ -124,7 +122,6 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                 );
             }
         }
-        std::cout <<  !constructionFlowCounter << "\n";
         count += 3;
         TrunkC::constructionFlowCounter = !TrunkC::constructionFlowCounter;
         if ((randomSeedValue * (count + 1)) % branchMod == 0) {

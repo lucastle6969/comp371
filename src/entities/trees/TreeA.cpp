@@ -19,6 +19,7 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
     double duration;
     startTime = std::clock();
 
+
         textureMap = textureMap1;
 
     treeSetup(shader_program, trunkDiameter, seed);

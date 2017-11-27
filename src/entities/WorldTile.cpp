@@ -98,20 +98,23 @@ WorldTile::WorldTile(
 	//enable tree distributor function
 	//TreeDistributor::setEntity(this);
 	// add trees
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 2; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
 		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
-		// Add tree child
+		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
+				// Add tree child
 		Tree* tree;
 		if(seed % 10 < 2){
 			if(seed%2 == 0)
 				tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
-			else
-				tree = new TreeA_Autumn(shader_program, this, internal_tree_width*2.5, seed);
+			else {
+				std::cout << seed << " " << world_x_location << " " << world_z_location << "\n";
+				tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
+			}
 		}
 		else if(seed % 10 < 7){
 			tree = new TreeB(shader_program, this, internal_tree_width, seed);
