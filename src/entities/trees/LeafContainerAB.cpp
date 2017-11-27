@@ -151,7 +151,6 @@ void LeafContainerAB::buildLeafContainerElements(const int& start, const int& en
             );
         }
 
-
         i = LeafA::buildElements(i, start, leafPoints ,leafIndices, leafVert,
                                  leafUVs, leafNorms);
         i = LeafA::buildElements(i, start, leafPoints , leafIndices, leafVert,

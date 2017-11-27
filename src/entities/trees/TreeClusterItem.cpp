@@ -218,9 +218,7 @@ void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, 
     lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
-    int circularPoints = trunkPoints;
-
-    int start = ag->start + 1;
+     int start = ag->start + 1;
     int max = ag->end + 1;
     for (int k = start; k < max; k++) {
         combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(0.0f),
@@ -239,12 +237,12 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
 
         const int circularPoints = ag->ag[m]->type == 'L' ? leafPoints : trunkPoints;
         if (ag->ag[m]->side == 'L') {
-            moveTo = (ag->end - circularPoints + 1) +std::abs(2 ) % circularPoints;
-            moveFrom = (ag->ag[m]->start + 1) + (2 + rotationPoint) % circularPoints;
+            moveTo = (ag->end - circularPoints + 1) + 2;
+            moveFrom = (ag->ag[m]->start + 1) + 2;
         }
         else {
-            moveTo = (ag->end - circularPoints + 1) + std::abs(( 0 ) % circularPoints);
-            moveFrom = (ag->ag[m]->start + 1)  + ((0+ rotationPoint) % circularPoints);
+            moveTo = (ag->end - circularPoints + 1);
+            moveFrom = (ag->ag[m]->start + 1) ;
         }
 
         if (ag->ag[m]->type == 'B') {
@@ -329,14 +327,12 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 
         glm::vec3 surfaceNormal = -glm::cross(AB, AE);
         surfaceNormals.push_back(surfaceNormal);
-        std::cout << A << " "<< B << " " << A << " "<< E <<"\n";
     }
     //step 2: find the average of the surface normals of the surfaces this vertex is part of
     int len =  surfaceNormals.size();
     for(GLuint i = 0; i < len ; i++){
         int iPos = (ag->end - trunkPoints+ 1) + i + 1;
         if(iPos % trunkPoints == 0) iPos =  (ag->end - trunkPoints+ 1) + 0 ;
-        std::cout <<iPos <<"\n";
         combinedNormals->at(iPos) = -glm::normalize(
                 surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
         );
