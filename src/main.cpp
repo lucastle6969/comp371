@@ -16,6 +16,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
@@ -247,32 +248,8 @@ int main()
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
-    
-    // Load the texture
-     GLuint Texture = loadDDS("../textures/uvmap.DDS");
-    
-    // The quad's FBO. Used only for visualizing the shadowmap.
-    static const GLfloat g_quad_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        -1.0f,  1.0f, 0.0f,
-        -1.0f,  1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        1.0f,  1.0f, 0.0f,
-    };
-    
-    GLuint quad_vertexbuffer;
-    glGenBuffers(1, &quad_vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
-    
-    
-    
     bool shader_program_ok;
-    
-    GLuint quad_programID= prepareShaderProgram("../shaders/quad_vertex.glsl", "../shaders/quad_fragment.glsl", &shader_program_ok);
-    
-    GLuint texID = glGetUniformLocation(quad_programID, "shadowmap");
+
 
 	GLuint shader_program = prepareShaderProgram(
 		"../shaders/vertex.glsl",
@@ -290,6 +267,8 @@ int main()
     //Get a handle for sampler2DShadow
     GLuint ShadowMapID = glGetUniformLocation(shader_program, "shadowMap");
     
+    GLuint lightspace_loc = glGetUniformLocation(shader_program, "lightspace");
+    
 
 	world = new World(shader_program);
     //create light
@@ -305,7 +284,7 @@ int main()
         
         // Render to our framebuffer
         
-        glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+  //      glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 
         
@@ -324,11 +303,11 @@ int main()
         glm::mat4 lightViewMatrix = glm::lookAt(glm::vec3(light.light_direction), glm::vec3(0,0,0), glm::vec3(0,1,0));
         
 
-        
-        
+        glm::mat4 lightspace= lightProjectionMatrix * lightViewMatrix;
+        glUniformMatrix4fv(lightspace_loc, 1, GL_FALSE, glm::value_ptr(lightspace));   //Passes lightspace
         
         //Setting isShadowMapping to 1 , and sending our lightMVP to the shaders
-        world->drawShadowMap(lightViewMatrix, lightProjectionMatrix);
+        world->drawShadowMap(lightViewMatrix, lightProjectionMatrix);  //Passes light_mvp , light_bias_mvp , light_space
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         
@@ -336,7 +315,7 @@ int main()
         
         // 2. Render scene as normal using the generated shadow map
         
-        glViewport(0,0,width, height);
+     //   glViewport(0,0,width, height);
         
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
@@ -350,11 +329,6 @@ int main()
         glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
         
         
-        // Bind our texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, Texture);
-        // Set our "myTextureSampler" sampler to use Texture Unit 0
-        glUniform1i(TextureID, 1);
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -399,13 +373,13 @@ int main()
         
         
         
-        
+        /*
         
         
         //Optionally render the shadowmap (for debug only)
         
         // Render only on a corner of the window (or we we won't see the real rendering...)
-        glViewport(0,0,512,512);
+        glViewport(0,0,1024,1024);
         
         // Use our shader
         glUseProgram(quad_programID);
@@ -430,10 +404,11 @@ int main()
         
         // Draw the triangle !
         
-        // You have to disable GL_COMPARE_R_TO_TEXTURE above in order to see anything !
+        // Disable GL_COMPARE_R_TO_TEXTURE above in order to see anything !
         glDrawArrays(GL_TRIANGLES, 0, 2); // 2*3 indices starting at 0 -> 2 triangles
         glDisableVertexAttribArray(0);
         
+         */
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}

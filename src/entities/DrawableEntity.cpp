@@ -175,6 +175,7 @@ void DrawableEntity::drawShadowMap(const glm::mat4 &lightview_matrix, const glm:
     auto light_bias_mvp_loc = (GLuint) glGetUniformLocation(this->shader_program, "light_bias_mvp");
     auto isShadowMap_Loc = (GLuint) glGetUniformLocation(this->shader_program, "isShadowMapping");
     auto light_space_loc = (GLuint) glGetUniformLocation(this->shader_program, "light_space");
+  //  auto model_loc = (GLuint) glGetUniformLocation(this->shader_program, "model");
     
     
     glUseProgram(this->shader_program);
@@ -219,6 +220,9 @@ void DrawableEntity::drawShadowMap(const glm::mat4 &lightview_matrix, const glm:
     
     glm::mat4 lightspace= lightprojection_matrix * lightview_matrix;
     glUniformMatrix4fv(light_space_loc, 1, GL_FALSE, glm::value_ptr(lightspace));
+    
+    glm::mat4 model_matrix= this->getModelMatrix();
+  //  glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model_matrix));
     
     //Set bias to light MVP
     glm::mat4 light_bias_mvp = light_mvp_matrix * biasMatrix;
