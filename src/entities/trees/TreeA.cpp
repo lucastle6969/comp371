@@ -31,7 +31,6 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
 void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-    widthCut = 0.5;//trunkDiameter / 32;
     finalCut = widthCut;
 
     combinedStartIndices->push_back({-1,0,0,0});
@@ -281,14 +280,6 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 void TreeA::bufferObject(const GLuint& shader_program) {
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV,  &vbo, &ebo, &nbo, &uvbo);
     //stbi_image_free(image_data);
-}
-
-void TreeA::setTreeLoaded(bool val){
-    treeLoaded = val;
-}
-
-void TreeA::setTreeInit(bool val){
-    treeInit = val;
 }
 
 GLuint TreeA::getTextureId()

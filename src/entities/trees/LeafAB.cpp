@@ -2,20 +2,16 @@
 #include "LeafAB.hpp"
 
 //builds 2
-void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiameter, const int& count, float  leafTextureStart){
+void LeafAB::buildLeaf(const float& r1, const float& r2, const float& leafDiameter, const float& lineHeight, const int& count, float leafTextureStart){
     //place leaves parralel following angle
     //place approproate leaves parralel following angle
     for(int side = 0 ; side < 2 ; side++){
         for (int n = 0; n < leafPoints; n++) {
-            int sign = -1;
-            int jagednessRandom = this->randomSeedValue * (((int)(n * 13.4) % 17) + 1);
-            if (jagednessRandom % 2 == 0) sign *= -1;
-            float templeafDiameter = r1 + sign * (jagednessRandom) % ((int)(ceil(r1))) * jagednessFactor_Leaf / leafDiameter;
             //if even create a leaf with constant Z
             if (count % 2 == 0)
                 leafVertices->push_back(
                         glm::vec3(
-                                r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2 ,
+                                r2 * cos(glm::radians(itterations  * n)) + leafDiameter + r2 ,
                                 lineHeight + r1 *  sin(glm::radians(itterations  * n)) ,
                                 ((float)side) / 10.0f));
                 //else constant X
@@ -24,7 +20,7 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
                         glm::vec3(
                                 ((float)side) / 10.0f,
                                 lineHeight + r1 *  sin(glm::radians(itterations  * n)) + 0,
-                                r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2));
+                                r2 * cos(glm::radians(itterations  * n)) + leafDiameter / 2.0 + r2));
         }
         unsigned  long s = leafVertices->size();
         leafUVs->resize(s);
@@ -35,15 +31,10 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
     }
     for(int side = 0 ; side < 2 ; side++) {
         for (int n = 0; n < leafPoints; n++) {
-            int sign = -1;
-            int jagednessRandom = this->randomSeedValue * (((int) (n * 13.4) % 17) + 1);
-            if (jagednessRandom % 2 == 0) sign *= -1;
-            float templeafDiameter =
-                    r1 + sign * (jagednessRandom) % ((int) (ceil(r1))) * jagednessFactor_Leaf / leafDiameter;
             if (count % 2 == 0)
                 leafVertices->push_back(
                         glm::vec3(
-                                -r2 * cos(glm::radians(itterations * n)) - templeafDiameter / 2.0 - r2,
+                                -r2 * cos(glm::radians(itterations * n)) - leafDiameter / 2.0 - r2,
                                 lineHeight + r1 * sin(glm::radians(itterations * n)),
                                 ((float)side) / 10.0f));
             else
@@ -51,7 +42,7 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
                         glm::vec3(
                                 ((float)side) / 10.0f,
                                 lineHeight + r1 * sin(glm::radians(itterations * n)) + 0,
-                                -r2 * cos(glm::radians(itterations * n)) - templeafDiameter / 2.0 - r2));
+                                -r2 * cos(glm::radians(itterations * n)) - leafDiameter / 2.0 - r2));
 
         }
         unsigned  long s = leafVertices->size();
@@ -64,7 +55,7 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
     }
 }
 
-void LeafA::buildLeafSingle(const float&  r1, const float&  r2, const float&  trunkDiameter, int y, float leafTextureStart) {
+void LeafAB::buildLeafSingle(const float&  r1, const float&  r2, const float&  trunkDiameter, int y, float leafTextureStart) {
     for(int side = 0 ; side < 2 ; side++) {
         for (int n = 0; n < leafPoints; n++) {
             int sign = -1;
@@ -86,7 +77,7 @@ void LeafA::buildLeafSingle(const float&  r1, const float&  r2, const float&  tr
     }
 }
 
-GLuint LeafA::buildElements(int i, const int& start, const int& leafPoints,
+GLuint LeafAB::buildElements(int i, const int& start, const int& leafPoints,
                          std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,
                          std::vector<glm::vec2>* leafUVs, std::vector<glm::vec3>* leafNorms){
     glm::vec3 leafNormal = (glm::cross(
@@ -127,16 +118,15 @@ GLuint LeafA::buildElements(int i, const int& start, const int& leafPoints,
 
 
 
-LeafA::LeafA(const int& leafPoints, const int&  randomSeedValue, const int&  count, const float& lineHeight,
-                      const float& itterations, const float& jagednessFactor_Leaf, std::vector<glm::vec3>* leafVertices,
-                      std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs) {
+LeafAB::LeafAB(const int& leafPoints, const int&  randomSeedValue,
+                      const float& itterations, const float& jagednessFactor_Leaf,
+                        std::vector<glm::vec3>* leafVertices, std::vector<glm::vec2>* leafUVs) {
     this->leafPoints = leafPoints;
     this->randomSeedValue = randomSeedValue;
     this->count = count;
     this->lineHeight = lineHeight;
     this->itterations = itterations;
     this->jagednessFactor_Leaf = jagednessFactor_Leaf;
-    this->leafIndices = leafIndices;
     this->leafUVs = leafUVs;
     this->leafVertices = leafVertices;
 };

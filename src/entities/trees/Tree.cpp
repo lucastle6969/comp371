@@ -13,25 +13,6 @@
 #include "Tree.hpp"
 #include "src/constants.hpp"
 
-float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){
-    return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;
-}
-int Tree::lineMAX(const float& trunkDiameter, int k) {
-    return ceil(pow(pow(trunkDiameter, 2) * k, 1.0 / 2.0));
-}
-
-
-const std::vector<glm::vec3>& Tree::getVertices() {
-    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
-}
-
-GLuint Tree::getVAO() {
-    return this->vao;
-}
-
-const int Tree::getColorType() {
-    return COLOR_TREE;
-}
 
 
 Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type)
@@ -105,4 +86,24 @@ void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
     else
         TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
                                    combinedIndices, combinedVertices, combinedNormals);
+}
+
+float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){
+    return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;
+}
+int Tree::lineMAX(const float& trunkDiameter, int k) {
+    return ceil(pow(pow(trunkDiameter, 2) * k, 1.0 / 2.0));
+}
+
+
+const std::vector<glm::vec3>& Tree::getVertices() {
+    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
+}
+
+GLuint Tree::getVAO() {
+    return this->vao;
+}
+
+const int Tree::getColorType() {
+    return COLOR_TREE;
 }

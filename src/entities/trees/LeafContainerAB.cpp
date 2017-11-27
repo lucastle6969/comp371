@@ -8,7 +8,6 @@
  *
  * Goes up alternating leaf angle ending with a top leaf
  * Double sided index on leaves
- * Sets index after. Read comments carefully.
  */
 
 #include <cmath>
@@ -36,6 +35,7 @@ LeafContainerAB::LeafContainerAB(std::vector<glm::vec3>* leafVertices,
     this->seed = seed;
 }
 
+//method to encapsulate the construction.
 void LeafContainerAB::buildContainer(float trunkDiameter, const float& seed, float lineHeight, const int& lineMax){
     int randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
 
@@ -45,24 +45,27 @@ void LeafContainerAB::buildContainer(float trunkDiameter, const float& seed, flo
     //leaves are in altrenating 90 degrees and stord on a branch
     buildVertices(randomSeedValue, lineSegments, lineMax, trunkDiameter, seed, lineHeight, &baseVerticesSize);
 }
-
+//uses leafbranch and leaf classes to construct vertices
 void LeafContainerAB::buildVertices(const int& randomSeedValue, float lineSegments,
                                     int lineMax, float trunkDiameter, const float& seed,
                                     float lineHeight, int* baseVerticesSize){
-    float f = 1.0;
+
     const float branchItterations = 360.0f / leafBranchPoints;
     const float leafItterations = 360.0f/ leafPoints;
 
-    //consume the lineMax if it's not a multiple of three
-    while (lineMax % 3 != 0) lineMax--;
-    lineMax *= 2;
+    //boost line length
     lineSegments *= 1.5;
     //elipse radius values
     float r2 = 0.000176135f * sqrt(std::abs(-88063572 + 50843527 * trunkDiameter * lineSegments)) ;
-    float r1 = sqrt(3) * sqrt(std::abs(2 - r2 * r2)) * f;
+    float r1 = sqrt(3) * sqrt(std::abs(2 - r2 * r2));
     r1 = floor(r1) == 0 ? 1:r1;
 
     int count = 0;
+
+
+    LeafAB LA(leafPoints, randomSeedValue, branchItterations, jagednessFactor_Leaf,
+              leafVertices, leafUVs);
+
     while (lineHeight < lineMax - 2){
         //branch
         LeafBranchAB LBA(randomSeedValue, branchItterations, leafBranchPoints,
@@ -70,10 +73,9 @@ void LeafContainerAB::buildVertices(const int& randomSeedValue, float lineSegmen
         LBA.buildLeafBranch(trunkDiameter, count, textureLeafStart);
         trunkDiameter *= 0.9;
         //builds 2 leaves at alternating 90 degrees. Uses count to do this.
-        LeafA LA(leafPoints, randomSeedValue, count, lineHeight, branchItterations, jagednessFactor_Leaf,
-                 leafVertices, nullptr, leafUVs);
+
         //north and south
-        LA.buildLeaf(r1, r2, r1, count, textureLeafStart); //build two double sided leaves
+        LA.buildLeaf(r1, r2, trunkDiameter, lineHeight, count, textureLeafStart); //build two double sided leaves
         lineHeight += lineSegments;
         count++;
         //REPEAT NX
@@ -81,17 +83,13 @@ void LeafContainerAB::buildVertices(const int& randomSeedValue, float lineSegmen
     TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
 
     for (float y = 1.0; y >= 0.25; y -= 0.25) {
-        f -= y * 0.55;
-
         //the branch is getting smaller
         LeafBranchAB LBA(randomSeedValue, branchItterations, leafBranchPoints,
                          lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, leafUVs);
         LBA.buildLeafBranch(trunkDiameter, count, textureLeafStart);
 
         //still making leaves
-        LeafA LA(leafPoints, randomSeedValue, count, lineHeight, leafItterations, jagednessFactor_Leaf,
-                 leafVertices, nullptr, leafUVs);
-        LA.buildLeaf(r1, r2, r1, count, textureLeafStart); //build two double sided leaves
+        LA.buildLeaf(r1, r2, trunkDiameter, lineHeight, count, textureLeafStart);  //build two double sided leaves
         lineHeight += lineSegments;
         trunkDiameter *= y ;
         count++;
@@ -99,13 +97,11 @@ void LeafContainerAB::buildVertices(const int& randomSeedValue, float lineSegmen
     }
     LeafBranchAB LBA(randomSeedValue, branchItterations, leafBranchPoints,
                      lineHeight, jagednessFactor_Leaf, leafVertices, nullptr, leafUVs);
+
     LBA.buildLeafBranch(trunkDiameter*0.1, count, textureLeafStart);
 
-
-    LeafA LA(leafPoints, randomSeedValue, count, lineHeight, leafItterations, jagednessFactor_Leaf,
-             leafVertices, leafIndices, leafUVs);
     //final top two leaves
-    LA.buildLeaf(r1, r2, r1, count, textureLeafStart); //build two double sided leaves
+    LA.buildLeaf(r1, r2, trunkDiameter, lineHeight, count, textureLeafStart);  //build two double sided leaves
     //Cap with a leaf
     LA.buildLeafSingle(r1, r2, r1, count, textureLeafStart);
 }
@@ -151,19 +147,19 @@ void LeafContainerAB::buildLeafContainerElements(const int& start, const int& en
             );
         }
 
-        i = LeafA::buildElements(i, start, leafPoints ,leafIndices, leafVert,
+        i = LeafAB::buildElements(i, start, leafPoints ,leafIndices, leafVert,
                                  leafUVs, leafNorms);
-        i = LeafA::buildElements(i, start, leafPoints , leafIndices, leafVert,
+        i = LeafAB::buildElements(i, start, leafPoints , leafIndices, leafVert,
                                  leafUVs, leafNorms);
     }
     i+= leafPoints;
 
     //incides and normal of top leaf
-    i = LeafA::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
+    i = LeafAB::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
                              leafUVs, leafNorms);
-    i = LeafA::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
+    i = LeafAB::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
                              leafUVs, leafNorms);
-    i = LeafA::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
+    i = LeafAB::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
                              leafUVs, leafNorms);
 }
 
