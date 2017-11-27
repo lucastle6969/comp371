@@ -94,6 +94,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
                 angleY = angleY;
                 depth = 0;
                 generateTreeCI(TRUNK, offShootDiameterBranch / (branches), seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                TrunkC::constructionFlowCounter=!TrunkC::constructionFlowCounter;
             }
             //1A7. On new trunk join to junction and continue
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle); ;
@@ -103,7 +104,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             previousRotation = 0;
             //CONSIDERATION: MULTITHREAD THE TRUNK AND MOVEMENT
             generateTreeCI(TRUNK, offShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
-
+            TrunkC::constructionFlowCounter=!TrunkC::constructionFlowCounter;
             initiateMove(agNew);
             agNew->selfErase();
             delete agNew;
@@ -160,6 +161,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
                                                                maxYBranchAngle, minYBranchAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
                     angleY = angleY;
                     generateTreeCI(TRUNK, offShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                    TrunkC::constructionFlowCounter=!TrunkC::constructionFlowCounter;
                 }
             }
 
@@ -168,6 +170,7 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYTrunkAngle, minYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
             generateTreeCI(TRUNK, offShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            TrunkC::constructionFlowCounter=!TrunkC::constructionFlowCounter;
             k += kReduction;
             depth--;
             boostFactor += boostReduction;
@@ -178,7 +181,6 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             //1B2.On circle up one put 4 oval leaves with ragedness at each 90 degrees   and store in trunkV and trunkC and create trunkI  and store in leafV and leafC and create leafI
             //1B3. Repeat until max length
             leafBranch(trunkDiameter, seed, lineHeight);
-
             //rotate my combined of predesecors
             //rotate based on the previous and current angles
             angleX += ag->angleX;
@@ -342,6 +344,42 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
+/* Tester code
+    combinedUV->at(0) = {0,1 - 530.0f/800.0};
+    combinedUV->at(1) = {1,1 - 530.0f/800.0};
+    combinedUV->at(2) = {0,1 - 530.0f/800.0};
+    combinedUV->at(3) = {1,1 - 530.0f/800.0};
+
+    combinedUV->at(4) = {0,1 - 430.0f/800.0};
+    combinedUV->at(5) = {1,1 - 430.0f/800.0};
+    combinedUV->at(6) = {0, 1 - 430.0f/800.0};
+    combinedUV->at(7) = {1,1 - 430.0f/800.0};
+
+    combinedUV->at(8) = {0,1 - 330.0f/800.0};
+    combinedUV->at(9) = {1,1 - 330.0f/800.0};;
+    combinedUV->at(10) ={0,1 - 330.0f/800.0};
+    combinedUV->at(11) = {1,1 - 330.0f/800.0};
+
+    combinedUV->at(12) = {0,1 - 230.0f/800.0};
+    combinedUV->at(13) = {1,1 - 230.0f/800.0};
+    combinedUV->at(14) = {0,1 - 230.0f/800.0};
+    combinedUV->at(15) = {1,1 - 230.0f/800.0};
+
+    combinedUV->at(16) = {0,1 - 130.0f/800.0};
+    combinedUV->at(17) = {1,1 - 130.0f/800.0};
+    combinedUV->at(18) = {0,1 - 130.0f/800.0};
+    combinedUV->at(19) = {1,1 - 130.0f/800.0};
+
+    combinedUV->at(20) = {0,1 - 30.0f/800.0};
+    combinedUV->at(21) = {1,1 - 30.0f/800.0};
+    combinedUV->at(22) = {0,1 - 30.0f/800.0};
+    combinedUV->at(23) = {1,1 - 30.0f/800.0};
+
+    combinedUV->at(24) = {0,1};
+    combinedUV->at(25) = {1,1};
+    combinedUV->at(26) = {0,1};
+    combinedUV->at(27) = {1,1};
+*/
     this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
@@ -362,9 +400,12 @@ float TreeClusterItem::getTrunkDiameter(){
 GLuint TreeClusterItem::getTextureId()
 {
     static GLuint tC_texture = loadTexture(
-            "../textures/TreeCTexture.jpg",//1000Y break // 925X break
+            "../textures/TreeCTexture.jpg",
             GL_NEAREST,
-            GL_NEAREST
+            GL_LINEAR,
+            GL_CLAMP_TO_BORDER,
+            GL_CLAMP_TO_BORDER
+
     );
     return tC_texture;
 }

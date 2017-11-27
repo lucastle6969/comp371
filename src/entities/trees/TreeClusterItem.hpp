@@ -56,7 +56,7 @@ private:
     float trunkDiameter;
     int previousRotation;
 
-    float widthCutoff = 0.2;
+    float widthCutoff = 0.2;//0.2;
     float finalCutoff;
     bool kill;
 

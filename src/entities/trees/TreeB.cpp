@@ -288,7 +288,7 @@ GLuint TreeB::getTextureId()
     static  GLuint tB_texture = loadTexture(
             "../textures/TreeBTexture.jpg",//1000Y break // 925X break
             GL_NEAREST,
-            GL_NEAREST
+            GL_LINEAR
     );
     return tB_texture;
 }

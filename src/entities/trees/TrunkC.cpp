@@ -30,6 +30,7 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
     do {
         //build points
         for (int y = 0; y < 3; y++) {
+            float uCounter =  0;
             for (int n = 0; n < trunkPoints; n++) {
                 int sign = -1;
                 const int jagednessRandom = randomSeedValue  * (((int)(n * 13.4) % 17) + 1 + y);
@@ -43,10 +44,13 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                 combinedVertices->push_back(circleEdge);
                 unsigned  long s = combinedVertices->size();
                 combinedUV->resize(s);
-                combinedUV->at(s - 1) = {(n) % 2, 1 - textureHeight * ((y + (!constructionFlowCounter )) % 2)};
+                combinedUV->at(s - 1) = {uCounter, 1 - textureHeight * ((y + (!TrunkC::constructionFlowCounter )) % 2) };
+                uCounter += 0.33;
             }
+            //std::cout << 1 - textureHeight * ((y + (!constructionFlowCounter)) % 2) << " " << !constructionFlowCounter << "\n";
             lineHeight += lineSegments;
             randomSeedValue = TreeRandom::treeRandom(trunkDiameter, seed, lineHeight);
+            std::cout << 1 - textureHeight * ((y + (!constructionFlowCounter )) % 2) << " ";
         }
         //build indices
         for (int y = 0; y < 2; y++) {
@@ -120,12 +124,14 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                 );
             }
         }
+        std::cout <<  !constructionFlowCounter << "\n";
         count += 3;
         TrunkC::constructionFlowCounter = !TrunkC::constructionFlowCounter;
         if ((randomSeedValue * (count + 1)) % branchMod == 0) {
             loopInitialTrunk = false;
         }
     } while (loopInitialTrunk && lineHeight < lineMax);
+    //TrunkC::constructionFlowCounter = !TrunkC::constructionFlowCounter;
     if (lineHeight >= lineMax)
         return -1;
     else if(!loopInitialTrunk)

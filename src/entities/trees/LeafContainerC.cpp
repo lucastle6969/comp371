@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "LeafContainerC.hpp"
+#include "TrunkC.hpp"
 
 
 LeafContainerC::LeafContainerC(std::vector<glm::vec3>* combinedVertices, std::vector<glm::vec2>* combinedUV, std::vector<glm::vec3>* combinedNormals, std::vector<GLuint>* combinedIndices,
@@ -42,6 +43,7 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter,const float& 
     r1 = floor(r1) == 0 ? 1:r1;
     if(leafDiameter >=  widthCutoff/2) {
         while (lineHeight < lineMax - 2) {
+            float uCount = 0;
             for (int n = 0; n < leafPoints; n++) {
                 int sign = -1;
                 int jagednessRandom = randomSeedValue * (((int) (n * 13.4) % 17) + 1);
@@ -53,7 +55,8 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter,const float& 
                                   tempTrunkDiameter * cos(glm::radians(itterations * n))));
                 unsigned  long s = combinedVertices->size();
                 combinedUV->resize(s);
-                combinedUV->at(s - 1) = {(n) % 2, 1 - leafTextureHeight * (heightCount % 2)};
+                combinedUV->at(s - 1) = {uCount,  1 - leafTextureHeight * ((heightCount + (!TrunkC::constructionFlowCounter)) % 2)};
+                uCount += 0.33;
             }
             for (int side = 0 ; side < 2; side++){
                 //place leaves parralel following angle
@@ -100,7 +103,7 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter,const float& 
             heightCount++;
             //REPEAT NX
         }
-
+        TrunkC::constructionFlowCounter = !TrunkC::constructionFlowCounter ;
         for (float y = 0.5; y >= 0.25; y -= 0.25) {
             f -= y * 0.55;
             //Generate circle
@@ -309,21 +312,21 @@ void LeafContainerC::buildAllComponenets(const float& leafDiameter,const float& 
             combinedVertices->at(base + 0) - combinedVertices->at(base + 1),
             combinedVertices->at(base + 2) - combinedVertices->at((base + 1))
     ));
-    combinedNormals->at((base + 0)) = leafNormal;
-    combinedNormals->at((base + 1)) = leafNormal;
-    combinedNormals->at((base + 2)) = leafNormal;
-    combinedNormals->at((base + 3)) = leafNormal;
+
+    combinedNormals->at((base + 0)) = -leafNormal;
+    combinedNormals->at((base + 1)) = -leafNormal;
+    combinedNormals->at((base + 2)) = -leafNormal;
+    combinedNormals->at((base + 3)) = -leafNormal;
 
     base = combinedVertices->size() - leafPoints * 2;
 //    north
     combinedIndices->push_back(base+0); combinedIndices->push_back(base + 1); combinedIndices->push_back(base + 2);
     combinedIndices->push_back(base + 2);  combinedIndices->push_back(base + 3); combinedIndices->push_back(base+0);
 
-
-    combinedNormals->at((base + 0)) = -leafNormal;
-    combinedNormals->at((base + 1)) = -leafNormal;
-    combinedNormals->at((base + 2)) = -leafNormal;
-    combinedNormals->at((base + 3)) = -leafNormal;
+    combinedNormals->at((base + 0)) = leafNormal;
+    combinedNormals->at((base + 1)) = leafNormal;
+    combinedNormals->at((base + 2)) = leafNormal;
+    combinedNormals->at((base + 3)) = leafNormal;
 }
 
 void LeafContainerC::setLeafUV(){

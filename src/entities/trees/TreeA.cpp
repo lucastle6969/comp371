@@ -294,7 +294,7 @@ GLuint TreeA::getTextureId()
     static GLuint tA_texture = loadTexture(
                 textureMap,
                 GL_NEAREST,
-                GL_NEAREST
+                GL_LINEAR
         );
     return tA_texture;
 }
