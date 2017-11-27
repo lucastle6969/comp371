@@ -530,7 +530,7 @@ Rock::~Rock()
     glDeleteVertexArrays(1, &this->vao);
 }
 
-const std::vector<glm::vec3>& Rock::getVertices()
+const std::vector<glm::vec3>& Rock::getVertices() const
 {
     return this->vertices;
 }

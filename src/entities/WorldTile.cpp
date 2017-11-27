@@ -11,6 +11,10 @@
 #include <cmath>
 #include <cstdlib>
 
+#include <src/utils.hpp>
+#include <src/constants.hpp>
+#include <src/HitBox2d.hpp>
+
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
@@ -21,13 +25,13 @@
 #include "src/entities/Trees/TreeC.hpp"
 
 #include "WorldTile.hpp"
-#include "../utils.hpp"
-#include "../constants.hpp"
 
 WorldTile::WorldTile(
 	const GLuint &shader_program,
 	const int& world_x_location,
 	const int& world_z_location,
+	const float& min_hitbox_y,
+	const float& max_hitbox_y,
 	Entity *parent
 ) : DrawableEntity(shader_program, parent)
 {
@@ -70,6 +74,7 @@ WorldTile::WorldTile(
         rock->scale(glm::vec3(x_span, y_span, z_span));
 		// Add rock to rocks array
 		this->rocks.emplace_back(rock);
+		this->hitboxes.emplace_back(*rock, min_hitbox_y, max_hitbox_y);
 	}
 
     for (int i = 0; i < 10; i++) {
@@ -92,6 +97,7 @@ WorldTile::WorldTile(
         rock->scale(glm::vec3(x_span, y_span, z_span));
         // Add rock to rocks array
         this->rocksB.emplace_back(rock);
+	    this->hitboxes.emplace_back(*rock, min_hitbox_y, max_hitbox_y);
     }
 
 	//enable tree distributor function
@@ -120,6 +126,7 @@ WorldTile::WorldTile(
 		tree->scale(1.0f / (scale_factor*10));
 		// Add tree to trees array
 		this->trees.emplace_back(tree);
+		//this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
 	}
 //	printf("=====================\n");
 }
@@ -138,7 +145,8 @@ WorldTile::~WorldTile()
     }
 }
 
-const std::vector<glm::vec3>& WorldTile::getVertices() {
+const std::vector<glm::vec3>& WorldTile::getVertices() const
+{
 	static const std::vector<glm::vec3> vertices = {
 			glm::vec3(0.0f, 0.0f, 0.0f), // bottom-left
 			glm::vec3(1.0f, 0.0f, 0.0f), // bottom-right
@@ -186,4 +194,16 @@ GLuint WorldTile::getVAO() {
 
 const int WorldTile::getColorType() {
 	return COLOR_TILE;
+}
+
+// tests for x-z collision between the specified box and any child entities.
+// does NOT test if the box exists at all in the tile space.
+bool WorldTile::collidesWith(const HitBox2d &box) const
+{
+	for (const HitBox2d& hb : this->hitboxes) {
+		if (hb.collidesWith(box)) {
+			return true;
+		}
+	}
+	return false;
 }

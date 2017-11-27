@@ -96,7 +96,7 @@ public:
 
     void computeElementsInitial(const AttatchmentGroupings* ag);
 
-    const std::vector<glm::vec3>& getVertices();
+    const std::vector<glm::vec3>& getVertices() const;
 
     GLuint getVAO();
 

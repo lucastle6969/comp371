@@ -103,7 +103,7 @@ add_executable(proceduralworld
     src/entities/Trees/TrunkC.cpp
     src/entities/Trees/LeafContainerC.cpp
     src/entities/Trees/LeafContainerC.hpp
-)
+        src/HitBox2d.cpp src/HitBox2d.hpp)
 
 # Link librarssies
 if(APPLE)

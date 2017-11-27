@@ -11,9 +11,11 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#include <src/HitBox2d.hpp>
+
 #include "Entity.hpp"
 #include "Rock.hpp"
-#include "src/entities/Trees/Tree.hpp"
+#include "Trees/Tree.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "RockB.hpp"
@@ -23,22 +25,35 @@ private:
 	std::vector<Rock*> rocks;
     std::vector<RockB*> rocksB;
 	std::vector<Tree*> trees;
+	std::vector<HitBox2d> hitboxes;
 public:
 	WorldTile(
 		const GLuint& shader_program,
 		const int& world_x_location,
-		const int& world_z_location
-    ) : WorldTile(shader_program, world_x_location, world_z_location, nullptr) {}
+		const int& world_z_location,
+		const float& min_hitbox_y,
+		const float& max_hitbox_y
+    ) : WorldTile(
+		shader_program,
+		world_x_location,
+		world_z_location,
+		min_hitbox_y,
+		max_hitbox_y,
+		nullptr
+	) {}
 	WorldTile(
 		const GLuint& shader_program,
 		const int& world_x_location,
 		const int& world_z_location,
+		const float& min_hitbox_y,
+		const float& max_hitbox_y,
 		Entity* parent
 	);
 	~WorldTile() override;
-	const std::vector<glm::vec3>& getVertices() override;
+	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
+	bool collidesWith(const HitBox2d& box) const;
 };
 
 #endif //PROCEDURALWORLD_WORLDTILE_H

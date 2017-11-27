@@ -35,7 +35,7 @@ public:
 		const int& z_max,
 		Entity* parent
 	);
-	const std::vector<glm::vec3>& getVertices() override;
+	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
 };
