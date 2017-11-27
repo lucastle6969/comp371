@@ -24,6 +24,7 @@
 #include "src/entities/Player.hpp"
 #include "constants.hpp"
 #include "TreeDistributor.hpp"
+#include "src/entities/Skybox.hpp"
 
 World* world;
 
@@ -230,9 +231,11 @@ int main()
 	}
 
 	world = new World(shader_program);
-    //create light
 
+	//create light
     Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
+	//create skybox
+	Skybox skybox(shader_program);
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
