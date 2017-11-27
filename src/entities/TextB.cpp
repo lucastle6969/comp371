@@ -39,15 +39,20 @@ TextB::TextB(
     for(int i=0; i<message.length(); i++){
         if (i>100)
             break;
-        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
-        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
-        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
-        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
+//        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
+//        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
+//        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
+//        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
 
-        this->normals.emplace_back(1.0f, 1.0f, 1.0f);
-        this->normals.emplace_back(1.0f, 1.0f, 1.0f);
-        this->normals.emplace_back(1.0f, 1.0f, 1.0f);
-        this->normals.emplace_back(1.0f, 1.0f, 1.0f);
+        this->vertices.emplace_back(0,0,0);
+        this->vertices.emplace_back(1,0,0);
+        this->vertices.emplace_back(0,1,0);
+        this->vertices.emplace_back(1,1,0);
+
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
 
         this->elements.emplace_back(i+2);
         this->elements.emplace_back(i);
@@ -55,6 +60,7 @@ TextB::TextB(
         this->elements.emplace_back(i+2);
         this->elements.emplace_back(i+1);
         this->elements.emplace_back(i+3);
+
 
         switch(message[i]){
             case 'a':
@@ -327,8 +333,8 @@ TextB::~TextB()
 
     GLuint TextB::getTextureId()
     {
-       static  GLuint text_texture = loadTexture(
-                "../textures/mythos_text_map_medium.png",
+       static GLuint text_texture = loadTexture(
+                "../textures/mythos_text_map.png",
                 GL_LINEAR,
                 GL_LINEAR,
                 true
