@@ -140,6 +140,10 @@ WorldTile::~WorldTile()
 	for (Tree* const& tree : this->trees) {
 		delete tree;
 	}
+
+    for (RockB* const& rock : this->rocksB) {
+        delete rock;
+    }
 }
 
 const std::vector<glm::vec3>& WorldTile::getVertices() {

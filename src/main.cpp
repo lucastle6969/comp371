@@ -93,23 +93,42 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
 	Player* player = world->getPlayer();
-	// move forward
-	if (isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP)) {
+	bool up_press = isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP);
+	bool down_press = isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN);
+	bool left_press = isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT);
+	bool right_press = isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT);
+
+	// ignore action canceling button presses
+	if (up_press && down_press) {
+		up_press = down_press = false;
+	}
+	if (left_press && right_press) {
+		left_press = right_press = false;
+	}
+
+	// first check compound then single movement button actions
+	if (up_press && left_press) {
+		player->moveForwardLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		world->checkPosition();
+	} else if (up_press && right_press) {
+		player->moveForwardRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		world->checkPosition();
+	} else if (down_press && left_press) {
+		player->moveBackLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		world->checkPosition();
+	} else if (down_press && right_press) {
+		player->moveBackRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+		world->checkPosition();
+	} else if (up_press) {
 		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 		world->checkPosition();
-	}
-	// move back
-	if (isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN)) {
+	} else if (down_press) {
 		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 		world->checkPosition();
-	}
-	// move left
-	if (isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT)) {
+	} else if (left_press) {
 		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 		world->checkPosition();
-	}
-	// move right
-	if (isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT)) {
+	} else if (right_press) {
 		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 		world->checkPosition();
 	}
@@ -262,7 +281,7 @@ int main()
 		float daytime = -light.light_direction.y;
 		// Render
 		// Clear the colorbuffer
-		glClearColor(light.fog_color.x, light.fog_color.y, light.fog_color.z , 1.0f);
+		glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 player_position = world->getPlayer()->getPosition();

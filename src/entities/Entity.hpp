@@ -50,6 +50,10 @@ public:
     void moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
     void moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
     void moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveForwardLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveForwardRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveBackLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void moveBackRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
     void translate(const glm::vec3& translation_vec);
 	void setPosition(const glm::vec3& position);
 	void setOpacity(const float& opacity);
