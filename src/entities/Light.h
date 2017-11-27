@@ -34,7 +34,7 @@
                 color = glm::vec3(.5,.5,.5);
                 fog_color = glm::vec3(.6,.81,.92)* nighttime_value;
             } else {
-                light_direction = -daytime;
+                light_direction = daytime;
                 color = glm::vec3(.3,.3,.3);
                 fog_color = glm::vec3(.1,.1 ,.15)* nighttime_value;
             }
