@@ -54,12 +54,27 @@ WorldTile::WorldTile(
 	// TODO: test/remove tree/rock overlaps
 
 	// add rocks
-	for (int i = 0; i < 10; i++) {
+	int rock_tries_left = 3;
+	for (int i = 0; i < 7; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
         float y_span = utils::randomFloat(0.005f, 0.015f);
 		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+
+		if (this->collidesWith(HitBox2d(
+				x_position,
+				z_position,
+				x_position + x_span,
+				x_position + z_span
+		))) {
+			if (rock_tries_left--) {
+				// collision! but give it another try
+				i--;
+			}
+			continue;
+		}
+
 		// Add rock child
 		Rock* rock = new Rock(
 				shader_program,
@@ -77,12 +92,27 @@ WorldTile::WorldTile(
 		this->hitboxes.emplace_back(*rock, min_hitbox_y, max_hitbox_y);
 	}
 
-    for (int i = 0; i < 10; i++) {
+	int rockb_tries_left = 3;
+    for (int i = 0; i < 7; i++) {
         float x_span = utils::randomFloat(0.02f, 0.05f);
         float z_span = utils::randomFloat(0.02f, 0.05f);
         float y_span = utils::randomFloat(0.005f, 0.025f);
         float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
         float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+
+	    if (this->collidesWith(HitBox2d(
+			    x_position,
+			    z_position,
+			    x_position + x_span,
+			    x_position + z_span
+	    ))) {
+		    if (rockb_tries_left--) {
+			    // collision! but give it another try
+			    i--;
+		    }
+		    continue;
+	    }
+
         // Add rock child
         RockB* rock = new RockB(
                 shader_program,
@@ -103,12 +133,27 @@ WorldTile::WorldTile(
 	//enable tree distributor function
 	//TreeDistributor::setEntity(this);
 	// add trees
+	int tree_tries_left = 2;
 	for (int i = 0; i < 5; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
 		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
+
+		if (this->collidesWith(HitBox2d(
+				x_position,
+				z_position,
+				x_position + base_span,
+				x_position + base_span
+		))) {
+			if (tree_tries_left--) {
+				// collision! but give it another try
+				i--;
+			}
+			continue;
+		}
+
 		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
 		// Add tree child
 		Tree* tree;

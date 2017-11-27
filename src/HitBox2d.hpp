@@ -6,6 +6,7 @@
 #define PROCEDURALWORLD_HITBOX2D_HPP
 
 #include <limits>
+#include <iostream>
 
 #include "entities/DrawableEntity.hpp"
 
@@ -13,6 +14,7 @@
 // or generated via DrawableEntity and y range
 
 class HitBox2d {
+	friend std::ostream& operator<<(std::ostream& os, const HitBox2d& box);
 private:
 	float world_min_x;
 	float world_min_z;
