@@ -130,54 +130,154 @@ TextB::TextB(
                 this->uvs.emplace_back(1, 0.833333);
                 break;
             case 'm':
+                this->uvs.emplace_back(0, 0.5);
+                this->uvs.emplace_back(0.166666, 0.5);
+                this->uvs.emplace_back(0, 0.666666);
+                this->uvs.emplace_back(0.166666, 0.666666);
                 break;
             case 'n':
+                this->uvs.emplace_back(0.166666, 0.5);
+                this->uvs.emplace_back(0.333333, 0.5);
+                this->uvs.emplace_back(0.166666, 0.666666);
+                this->uvs.emplace_back(0.333333, 0.666666);
                 break;
             case 'o':
+                this->uvs.emplace_back(0.333333, 0.5);
+                this->uvs.emplace_back(0.5, 0.5);
+                this->uvs.emplace_back(0.333333, 0.666666);
+                this->uvs.emplace_back(0.5, 0.666666);
                 break;
             case 'p':
+                this->uvs.emplace_back(0.5, 0.5);
+                this->uvs.emplace_back(0.666666, 0.5);
+                this->uvs.emplace_back(0.5, 0.666666);
+                this->uvs.emplace_back(0.666666, 0.666666);
                 break;
             case 'q':
+                this->uvs.emplace_back(0.666666, 0.5);
+                this->uvs.emplace_back(0.833333, 0.5);
+                this->uvs.emplace_back(0.666666, 0.666666);
+                this->uvs.emplace_back(0.833333, 0.666666);
                 break;
             case 'r':
+                this->uvs.emplace_back(0.833333, 0.5);
+                this->uvs.emplace_back(1.0, 0.5);
+                this->uvs.emplace_back(0.833333, 0.666666);
+                this->uvs.emplace_back(1.0, 0.666666);
                 break;
             case 's':
+                this->uvs.emplace_back(0, 0.333333);
+                this->uvs.emplace_back(0.166666, 0.333333);
+                this->uvs.emplace_back(0, 0.5);
+                this->uvs.emplace_back(0.166666, 0.5);
                 break;
             case 't':
+                this->uvs.emplace_back(0.166666, 0.333333);
+                this->uvs.emplace_back(0.333333, 0.333333);
+                this->uvs.emplace_back(0.166666, 0.5);
+                this->uvs.emplace_back(0.333333, 0.5);
                 break;
             case 'u':
+                this->uvs.emplace_back(0.333333, 0.333333);
+                this->uvs.emplace_back(0.5, 0.333333);
+                this->uvs.emplace_back(0.333333, 0.5);
+                this->uvs.emplace_back(0.555555, 0.5);
                 break;
             case 'v':
+                this->uvs.emplace_back(0.5, 0.333333);
+                this->uvs.emplace_back(0.666666, 0.333333);
+                this->uvs.emplace_back(0.5, 0.5);
+                this->uvs.emplace_back(0.666666, 0.5);
                 break;
             case 'w':
+                this->uvs.emplace_back(0.666666, 0.333333);
+                this->uvs.emplace_back(0.833333, 0.333333);
+                this->uvs.emplace_back(0.666666, 0.5);
+                this->uvs.emplace_back(0.833333, 0.5);
                 break;
             case 'x':
+                this->uvs.emplace_back(0.833333, 0.333333);
+                this->uvs.emplace_back(1, 0.333333);
+                this->uvs.emplace_back(0.833333, 0.5);
+                this->uvs.emplace_back(1, 0.5);
                 break;
             case 'y':
+                this->uvs.emplace_back(0, 0.166666);
+                this->uvs.emplace_back(0.166666, 0.166666);
+                this->uvs.emplace_back(0, 0.333333);
+                this->uvs.emplace_back(0.166666, 0.333333);
                 break;
             case 'z':
-                break;
-            case '0':
+                this->uvs.emplace_back(0.166666, 0.166666);
+                this->uvs.emplace_back(0.333333, 0.166666);
+                this->uvs.emplace_back(0.166666, 0.333333);
+                this->uvs.emplace_back(0.333333, 0.333333);
                 break;
             case '1':
+                this->uvs.emplace_back(0.333333, 0.166666);
+                this->uvs.emplace_back(0.5, 0.166666);
+                this->uvs.emplace_back(0.333333, 0.333333);
+                this->uvs.emplace_back(0.5, 0.333333);
                 break;
             case '2':
+                this->uvs.emplace_back(0.5, 0.166666);
+                this->uvs.emplace_back(0.666666, 0.166666);
+                this->uvs.emplace_back(0.5, 0.333333);
+                this->uvs.emplace_back(0.666666, 0.333333);
                 break;
             case '3':
+                this->uvs.emplace_back(0.666666, 0.166666);
+                this->uvs.emplace_back(0.833333, 0.166666);
+                this->uvs.emplace_back(0.666666, 0.333333);
+                this->uvs.emplace_back(0.833333, 0.333333);
                 break;
             case '4':
+                this->uvs.emplace_back(0.833333, 0.166666);
+                this->uvs.emplace_back(1, 0.166666);
+                this->uvs.emplace_back(0.833333, 0.333333);
+                this->uvs.emplace_back(1, 0.333333);
                 break;
             case '5':
+                this->uvs.emplace_back(0, 0.166666);
+                this->uvs.emplace_back(0.166666, 0.166666);
+                this->uvs.emplace_back(0, 0.333333);
+                this->uvs.emplace_back(0.166666, 0.333333);
                 break;
             case '6':
+                this->uvs.emplace_back(0.166666, 0);
+                this->uvs.emplace_back(0.333333, 0);
+                this->uvs.emplace_back(0.166666, 0.166666);
+                this->uvs.emplace_back(0.333333, 0.166666);
                 break;
             case '7':
+                this->uvs.emplace_back(0.333333, 0);
+                this->uvs.emplace_back(0.5, 0);
+                this->uvs.emplace_back(0.333333, 0.166666);
+                this->uvs.emplace_back(0.5, 0.166666);
                 break;
             case '8':
+                this->uvs.emplace_back(0.5, 0);
+                this->uvs.emplace_back(0.666666, 0);
+                this->uvs.emplace_back(0.5, 0.166666);
+                this->uvs.emplace_back(0.666666, 0.166666);
                 break;
             case '9':
+                this->uvs.emplace_back(0.666666, 0);
+                this->uvs.emplace_back(0.833333, 0);
+                this->uvs.emplace_back(0.666666, 0.166666);
+                this->uvs.emplace_back(0.833333, 0.166666);
+                break;
+            case '0':
+                this->uvs.emplace_back(0.833333, 0);
+                this->uvs.emplace_back(1, 0);
+                this->uvs.emplace_back(0.833333, 0.166666);
+                this->uvs.emplace_back(1, 0.166666);
                 break;
             case ' ':
+                this->uvs.emplace_back(0.0f, 0.0f);
+                this->uvs.emplace_back(0.04, 0.0);
+                this->uvs.emplace_back(0.0f, 0.04f);
+                this->uvs.emplace_back(0.04f, 0.04f);
                 break;
             case ',':
                 break;
