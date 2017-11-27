@@ -84,7 +84,7 @@ Text::~Text()
 
     const int Text::getColorType()
     {
-        return COLOR_TEXTURE;
+        return COLOR_FONT;
     }
 
     GLuint Text::getTextureId()

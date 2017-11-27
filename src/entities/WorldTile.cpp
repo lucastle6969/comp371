@@ -135,12 +135,14 @@ WorldTile::~WorldTile()
 	for (Rock* const& rock : this->rocks) {
 		delete rock;
 	}
-    for (RockB* const& rockB : this->rocksB) {
-        delete rockB;
-    }
 	for (Tree* const& tree : this->trees) {
 		delete tree;
 	}
+
+    for (RockB* const& rockB : this->rocksB) {
+        delete rockB;
+    }
+
     for (Text* const& text : this->text) {
         delete text;
     }

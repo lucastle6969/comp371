@@ -81,6 +81,7 @@ RockB::~RockB()
     glDeleteBuffers(1, &this->vertices_buffer);
     glDeleteBuffers(1, &this->element_buffer);
     glDeleteBuffers(1, &this->uv_buffer);
+    glDeleteBuffers(1, &this->normal_buffer);
     glDeleteVertexArrays(1, &this->vao);
 }
 

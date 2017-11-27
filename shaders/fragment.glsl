@@ -45,6 +45,7 @@ const int COLOR_TILE = 3;
 const int COLOR_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 const int COLOR_TREE = 6;
+const int COLOR_FONT = 7;
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -115,6 +116,12 @@ void main()
                     1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f)
                 )
             );
+            break;
+        case COLOR_FONT:
+            vec4 texel = texture(tex_image, tex_coord);
+            if(texel.a < 0.5)
+                discard;
+            color = texel;
             break;
         default:
             color = WHITE;
