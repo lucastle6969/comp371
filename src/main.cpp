@@ -39,6 +39,9 @@ const float first_person_pitch = 20.0f;
 const float max_follow_distance = 300.0f;
 const float first_person_follow_distance = 0.01f;
 
+//Shadow resolution: width and height for ViewPort when rendering first pass (generating the depth map)
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
 // Camera variables
 float pitch = initial_pitch;
 float yaw = initial_yaw;
@@ -253,7 +256,30 @@ int main()
 
     Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
 
-	// Game loop
+    //Create Depth Buffer for Shadow rendering
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+
+    //2D texture that we'll use as the framebuffer's depth buffer
+    unsigned int depthTexture;
+    glGenTextures(1, &depthTexture);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+
+    // Game loop
 	while (!glfwWindowShouldClose(window))
 	{
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
