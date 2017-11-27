@@ -94,7 +94,7 @@ void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
                      std::vector<GLuint>* indPntr){
     int set = std::abs((circularPoints - rotPoint) + prevPoint);
     TrunkAB::buildConnectorElements(ag->end - TrunkAB::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
-                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+                                   combinedIndices, combinedVertices, combinedNormals);
 }
 
 void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
@@ -104,5 +104,5 @@ void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
     }
     else
         TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
-                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+                                   combinedIndices, combinedVertices, combinedNormals);
 }

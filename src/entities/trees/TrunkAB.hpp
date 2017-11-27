@@ -48,12 +48,12 @@ public:
 
     static void buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                        std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
-                                       std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms);
+                                        std::vector<glm::vec3>* trunkNorms);
 
     //give both start point and end as the connection end point
     static void buildTrunkElements(const int& start, const int& end,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
-                                   std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms);
+                                   std::vector<glm::vec3>* trunkNorms);
     
     bool buildTrunk(const float& trunkDiameter, const float& lineSegments);
 };

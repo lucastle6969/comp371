@@ -36,18 +36,18 @@ int TrunkAB::buildVertices(const float& trunkDiameter, const float& lineSegments
             trunkVertices->push_back(circleEdge);
             unsigned  long s = trunkVertices->size();
             trunkUVs->resize(s);
-            trunkUVs->at(s - 1) = {(n) % 2, 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2)};
+            trunkUVs->at(s - 1) = {(n) % 2, 1 - textureTrunkHeight * ((y + (!constructionFlowCounter)) % 2)};
         }
         lineHeight += lineSegments;
     }
+    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     return randomSeedValue;
 }
 //give both start point and end as the connection end point
 void TrunkAB::buildTrunkElements(const int& start, const int& end,
                                 std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
-                                std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
+                                std::vector<glm::vec3>* trunkNorms){
     if(trunkVert->size() != trunkNorms->size()){
-        trunkUVs->resize(trunkVert->size());
         trunkNorms->resize(trunkVert->size());
     }
 
@@ -98,9 +98,8 @@ float TrunkAB::getLineHeight(){return lineHeight;}
 
 void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
-                                   std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
-    if(trunkVert->size() != trunkUVs->size()){
-        trunkUVs->resize(trunkVert->size());
+                                   std::vector<glm::vec3>* trunkNorms){
+    if(trunkVert->size() != trunkNorms->size()){
         trunkNorms->resize(trunkVert->size());
     }
 
@@ -145,10 +144,5 @@ void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& s
         trunkNorms->at(iPos  ) = -glm::normalize(
                 surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
         );
-    }
-
-    //Connector UV to top segment
-    for(GLuint i = 0; i < trunkPoints; i++) {
-        trunkUVs->at(segmentConnectStart + (i + set) % trunkPoints) = glm::vec2(0, 1 - TrunkAB::constructionFlowCounter);
     }
 }

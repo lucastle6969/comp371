@@ -78,7 +78,7 @@ void LeafContainerAB::buildVertices(const int& randomSeedValue, float lineSegmen
         count++;
         //REPEAT NX
     }
-
+    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
 
     for (float y = 1.0; y >= 0.25; y -= 0.25) {
         f -= y * 0.55;

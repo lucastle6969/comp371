@@ -81,9 +81,9 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle) ;
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             ///angleY = angleY;
-
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
-
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             initiateMove(agNew);
             agNew->selfErase();
             delete agNew;
@@ -135,7 +135,9 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed, currentLineLength, minYTrunkAngle, maxYTrunkAngle);
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, minYTrunkAngle, maxYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             break;
         case LEAF:
             //1B. If trunk width is past a threshold then create a leaf line
@@ -181,7 +183,6 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     );
     do {
         loopInitialTrunk = trunk.buildTrunk(trunkDiameter, lineSegments);
-        TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     } while (loopInitialTrunk && trunk.getLineHeight() < lineMax);
     if (lineHeight >= lineMax)
         return -1;

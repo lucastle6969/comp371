@@ -73,9 +73,9 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle) ;
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             angleY = angleY;
-
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             generateTreeB(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
-
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             initiateMove(agNew);
             agNew->selfErase();
             delete agNew;
@@ -126,7 +126,9 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed, currentLineLength, minYTrunkAngle, maxYTrunkAngle);
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, minYTrunkAngle, maxYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             generateTreeB(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             break;
         case LEAF:
             //1B. If trunk width is past a threshold then create a leaf line
@@ -152,7 +154,6 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             else			ag->ag[0] = agNew;
             //2. Translate and rotate into given location
             //get branch end, get leaf segment start get leaf segment end
-
             generateTreeB(END_TRUNK, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, lineHeight);
             break;
         default:
@@ -176,6 +177,7 @@ float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
         loopInitialTrunk = trunk.buildTrunk(trunkDiameter, lineSegments);
         TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     } while (loopInitialTrunk && trunk.getLineHeight() < lineMax);
+    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     if (lineHeight >= lineMax)
         return -1;
     else if(!loopInitialTrunk)
@@ -189,7 +191,9 @@ void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
                       combinedIndices,
                       combinedUV,
                       seed);
+    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
+    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
 }
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
@@ -265,10 +269,13 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) += translation + boost;
         }
+        //create the connector's elements from previous to m
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        //create elements for segment
         computeElementsInitial(ag->ag[m]);
-        connectSegments(ag, m,fromPnt, toPnt, circularPoints, combinedIndices);
-        moveSegments(fromPnt, ag->ag[m]);
-    }
+        //move them to position
+        moveSegments(toPnt, ag->ag[m]);
+}
     return;
 
 }
