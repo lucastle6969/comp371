@@ -25,7 +25,7 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 	std::vector<GLuint> elements;
 
 	// get the vertices from the pacman.obj file (ignore the rest)
-	loadOBJ("../models/pacman.obj", &this->vertices, &normals, &UVs, &elements);
+	loadOBJ("../models/pumpkin.obj", &this->vertices, &normals, &UVs, &elements);
 
 	this->vao = this->initVertexArray(
 		this->vertices,
@@ -33,10 +33,10 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 		normals
 	);
 	this->setMaterial(
-		glm::vec3(0.8f, 0.7f, 0.0f),
-		glm::vec3(1.0f, 0.9f, 0.0f),
+		glm::vec3(0.3f, 0.2f, 0.0f),
+		glm::vec3(1.0f, 0.46f, 0.09f),
 		glm::vec3(0.05f, 0.05f, 0.05f),
-		10.0f
+		5.0f
 	);
 }
 
@@ -58,16 +58,29 @@ const int Player::getColorType()
 const glm::mat4& Player::getBaseRotation()
 {
 	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
+	static glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
 	static glm::mat4 identity;
-	static glm::mat4 rotation = glm::rotate(identity, Player::base_rotation_angle, x_axis);
+	static glm::mat4 rotation = glm::rotate(
+		glm::rotate(identity, Player::base_y_rotation_angle, y_axis),
+		Player::base_x_rotation_angle,
+		x_axis
+	);
 
 	return rotation;
+}
+
+const glm::mat4& Player::getBaseScale()
+{
+	static glm::mat4 identity;
+	static glm::mat4 scale = glm::scale(identity, glm::vec3(0.4f));
+
+	return scale;
 }
 
 // the vector indicating the direction the model faces by default (with no rotation)
 const glm::vec3& Player::getDefaultFaceVector()
 {
-	static glm::vec3 default_face_vec(1.0f, 0.0f, 0.0f);
+	static glm::vec3 default_face_vec(0.0f, 0.0f, -1.0f);
 
 	return default_face_vec;
 }
