@@ -18,12 +18,14 @@
 #include "Rock.hpp"
 #include "RockB.hpp"
 #include "Text.hpp"
+#include "TextB.hpp"
 
 class WorldTile: public DrawableEntity {
 private:
 	std::vector<Rock*> rocks;
     std::vector<RockB*> rocksB;
     std::vector<Text*> text;
+    std::vector<TextB*> textB;
 	std::vector<Tree*> trees;
 public:
 	WorldTile(

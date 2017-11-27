@@ -20,8 +20,8 @@
 TextB::TextB(
         const GLuint& shader_program,
         const std::string& message,
-        const float line_height,
-        const float left_margin,
+        const int line_height,
+        const int left_margin,
         Entity* parent
 ) : DrawableEntity(shader_program, parent) {
 
@@ -161,7 +161,11 @@ TextB::TextB(
 
 TextB::~TextB()
 {
-
+    glDeleteBuffers(1, &this->vertices_buffer);
+    glDeleteBuffers(1, &this->element_buffer);
+    glDeleteBuffers(1, &this->uv_buffer);
+    glDeleteBuffers(1, &this->normal_buffer);
+    glDeleteVertexArrays(1, &this->vao);
 }
 
     const std::vector<glm::vec3>& TextB::getVertices()
@@ -182,7 +186,7 @@ TextB::~TextB()
     GLuint TextB::getTextureId()
     {
         GLuint text_texture = loadTexture(
-                "../textures/mythos_text_map.png",
+                "../textures/mythos_text_map_medium.png",
                 GL_LINEAR,
                 GL_LINEAR,
                 true

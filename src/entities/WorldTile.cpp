@@ -47,16 +47,21 @@ WorldTile::WorldTile(
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
 	//add text
-    Text* text = new Text(shader_program, "../textures/modulusTXTlarge.png", this);
-    text->setPosition(glm::vec3(0.5, 0.0f, 0.5));
-    text->scale(0.7);
-    this->text.emplace_back(text);
+//    Text* text = new Text(shader_program, "../textures/modulusTXTsmall.png", this);
+//    text->setPosition(glm::vec3(0.5, 0.0f, 0.5));
+//    text->scale(0.7);
+//    this->text.emplace_back(text);
+
+    TextB* textb = new TextB(shader_program, "a", 0, 0, this);
+    textb->setPosition(glm::vec3(0.5, 0.0f, 0.5));
+    textb->scale(2.7);
+    this->textB.emplace_back(textb);
 
     // TODO: better tree/rock distribution?
 	// TODO: test/remove tree/rock overlaps
 
 	// add rocks
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 3; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
         float y_span = utils::randomFloat(0.005f, 0.015f);
@@ -103,7 +108,7 @@ WorldTile::WorldTile(
 	//enable tree distributor function
 	//TreeDistributor::setEntity(this);
 	// add trees
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 2; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
@@ -144,6 +149,10 @@ WorldTile::~WorldTile()
     }
 
     for (Text* const& text : this->text) {
+        delete text;
+    }
+
+    for (TextB* const& text : this->textB){
         delete text;
     }
 

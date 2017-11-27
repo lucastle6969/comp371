@@ -97,11 +97,7 @@ void main()
             );
             break;
         case COLOR_TEXTURE:
-            vec4 texel = texture(tex_image, tex_coord);
-            if(texel.a < 0.5)
-                discard;
-            color = texel;
-
+            color = texture(tex_image, tex_coord);
             break;
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting

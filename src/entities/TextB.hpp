@@ -27,19 +27,20 @@ public:
     TextB(
             const GLuint& shader_program,
             const std::string& message,
-            const float line_height,
-            const float left_margin
+            const int line_height,
+            const int left_margin
     ) : TextB(
             shader_program,
             message,
             line_height,
+            left_margin,
             nullptr
     ){}
     TextB(
             const GLuint& shader_program,
             const std::string& message,
-            const float line_height,
-            const float left_margin,
+            const int line_height,
+            const int left_margin,
             Entity* parent
     );
     ~TextB() override;
