@@ -30,7 +30,7 @@ World::World(
     x_center(x_center),
     z_center(z_center),
     player_min_world_y(FLT_MAX),
-    player_max_world_y(FLT_MIN)
+    player_max_world_y(-FLT_MAX)
 {
     // hide the axes by default
 	this->axes.hide();
@@ -45,6 +45,7 @@ World::World(
 		this->player_min_world_y = std::min(this->player_min_world_y, vertex.y);
 		this->player_max_world_y = std::max(this->player_max_world_y, vertex.y);
 	}
+	HitBox2d player_starting_hitbox(this->player);
 
 	// populate tiles
 	int x, z;
@@ -57,6 +58,7 @@ World::World(
 				z,
 				this->player_min_world_y,
 				this->player_max_world_y,
+				player_starting_hitbox,
 				this
 		));
 	}
@@ -92,6 +94,8 @@ void World::checkPosition()
 		std::cout << std::endl;
 	}
 
+	HitBox2d player_current_hitbox(this->player);
+
 	int diff_x = (int)floor(position.x) - this->x_center;
 	int diff_z = (int)floor(position.z) - this->z_center;
 
@@ -104,7 +108,7 @@ void World::checkPosition()
 	if (diff_x != 0) {
 		int new_col_x = this->x_center + diff_x * 2;
 		for (int z = this->z_center - 1; z <= this->z_center + 1; z++) {
-			this->placeWorldTile(new_col_x, z);
+			this->placeWorldTile(new_col_x, z, player_current_hitbox);
 		}
 		this->x_center += diff_x;
 	}
@@ -113,13 +117,13 @@ void World::checkPosition()
 	if (diff_z != 0) {
 		int new_row_z = this->z_center + diff_z * 2;
 		for (int x = this->x_center - 1; x <= this->x_center + 1; x++) {
-			this->placeWorldTile(x, new_row_z);
+			this->placeWorldTile(x, new_row_z, player_current_hitbox);
 		}
 		this->z_center += diff_z;
 	}
 }
 
-void World::placeWorldTile(const int &x, const int &z)
+void World::placeWorldTile(const int &x, const int &z, const HitBox2d& player_hitbox)
 {
 	// find tile array index corresponding to new tile location
 	int index = World::locationToTileIndex(x, z);
@@ -136,6 +140,7 @@ void World::placeWorldTile(const int &x, const int &z)
 			z,
 			this->player_min_world_y,
 			this->player_max_world_y,
+			player_hitbox,
 			this
 	);
 }

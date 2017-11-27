@@ -21,7 +21,7 @@ private:
 	float world_max_x;
 	float world_max_z;
 public:
-	explicit HitBox2d(const DrawableEntity& entity, const float& min_y = FLT_MIN, const float& max_y = FLT_MAX);
+	explicit HitBox2d(const DrawableEntity& entity, const float& min_y = -FLT_MAX, const float& max_y = FLT_MAX);
 	HitBox2d(const float& min_x, const float& min_z, const float& max_x, const float& max_z);
 	bool collidesWith(const HitBox2d& box) const;
 };

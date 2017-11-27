@@ -8,7 +8,7 @@
 #include "HitBox2d.hpp"
 
 HitBox2d::HitBox2d(const DrawableEntity& entity, const float& min_y, const float& max_y)
-	: world_min_x(FLT_MAX), world_min_z(FLT_MAX), world_max_x(FLT_MIN), world_max_z(FLT_MIN)
+	: world_min_x(FLT_MAX), world_min_z(FLT_MAX), world_max_x(-FLT_MAX), world_max_z(-FLT_MAX)
 {
 	glm::vec3 v;
 	const glm::mat4& model_matrix = entity.getModelMatrix();
@@ -42,8 +42,8 @@ bool HitBox2d::collidesWith(const HitBox2d& box) const
 			this->world_max_x > box.world_min_x &&
 			this->world_min_z < box.world_max_z &&
 			this->world_max_z > box.world_min_x;
-	if (r) 	std::cout << *this << std::endl;
-	if (r) 	std::cout << box << std::endl;
+	if (r) 	std::cout << "this " << *this << std::endl;
+	if (r) 	std::cout << "box " << box << std::endl;
 	return r;
 }
 

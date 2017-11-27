@@ -32,6 +32,7 @@ WorldTile::WorldTile(
 	const int& world_z_location,
 	const float& min_hitbox_y,
 	const float& max_hitbox_y,
+	const HitBox2d& player_hitbox,
 	Entity *parent
 ) : DrawableEntity(shader_program, parent)
 {
@@ -62,13 +63,9 @@ WorldTile::WorldTile(
 		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
 
-		if (this->collidesWith(HitBox2d(
-				x_position,
-				z_position,
-				x_position + x_span,
-				x_position + z_span
-		))) {
-			if (rock_tries_left--) {
+		HitBox2d box(x_position, z_position, x_position + x_span, z_position + z_span);
+		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
+			if (rock_tries_left-- > 0) {
 				// collision! but give it another try
 				i--;
 			}
@@ -90,6 +87,9 @@ WorldTile::WorldTile(
 		// Add rock to rocks array
 		this->rocks.emplace_back(rock);
 		this->hitboxes.emplace_back(*rock, min_hitbox_y, max_hitbox_y);
+		std::cout << "ROCK:" << std::endl;
+		std::cout << "This is what I gave you... x: " << x_position << " z: " << z_position << " x-span: " << x_span << " z-span: " << z_span << std::endl;
+		std::cout << "And this is what you gave me: " << this->hitboxes[this->hitboxes.size() - 1] << std::endl;
 	}
 
 	int rockb_tries_left = 3;
@@ -100,13 +100,9 @@ WorldTile::WorldTile(
         float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
         float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
 
-	    if (this->collidesWith(HitBox2d(
-			    x_position,
-			    z_position,
-			    x_position + x_span,
-			    x_position + z_span
-	    ))) {
-		    if (rockb_tries_left--) {
+	    HitBox2d box(x_position, z_position, x_position + x_span, z_position + z_span);
+	    if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
+		    if (rockb_tries_left-- > 0) {
 			    // collision! but give it another try
 			    i--;
 		    }
@@ -128,6 +124,9 @@ WorldTile::WorldTile(
         // Add rock to rocks array
         this->rocksB.emplace_back(rock);
 	    this->hitboxes.emplace_back(*rock, min_hitbox_y, max_hitbox_y);
+	    std::cout << "ROCK B:" << std::endl;
+	    std::cout << "This is what I gave you... BL: (" << x_position << ", " << z_position << "), TR: (" << x_position + x_span << ", " << z_position + z_span << ")" << std::endl;
+	    std::cout << "And this is what you gave me: " << this->hitboxes[this->hitboxes.size() - 1] << std::endl;
     }
 
 	//enable tree distributor function
@@ -141,13 +140,9 @@ WorldTile::WorldTile(
 		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
 
-		if (this->collidesWith(HitBox2d(
-				x_position,
-				z_position,
-				x_position + base_span,
-				x_position + base_span
-		))) {
-			if (tree_tries_left--) {
+		HitBox2d box(x_position, z_position, x_position + base_span, z_position + base_span);
+		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
+			if (tree_tries_left-- > 0) {
 				// collision! but give it another try
 				i--;
 			}
@@ -172,6 +167,9 @@ WorldTile::WorldTile(
 		// Add tree to trees array
 		this->trees.emplace_back(tree);
 		this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
+		std::cout << "TREE:" << std::endl;
+		std::cout << "This is what I gave you... x: " << x_position << " z: " << z_position << " base-span: " << base_span << std::endl;
+		std::cout << "And this is what you gave me: " << this->hitboxes[this->hitboxes.size() - 1] << std::endl;
 	}
 //	printf("=====================\n");
 }
