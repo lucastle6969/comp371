@@ -96,11 +96,11 @@ public:
 
     void computeElementsInitial(const AttatchmentGroupings* ag);
 
-    const std::vector<glm::vec3>& getVertices() const;
+    const std::vector<glm::vec3>& getVertices() const override;
 
-    GLuint getVAO();
+    GLuint getVAO() override;
 
-    const int getColorType();
+    const int getColorType() override;
 
     Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type);
     ~Tree();

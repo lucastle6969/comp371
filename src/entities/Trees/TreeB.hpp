@@ -105,9 +105,9 @@ private:
 
 
 public:
-    const std::vector<glm::vec3>& getVertices();
+    const std::vector<glm::vec3>& getVertices() const override;
 
-    GLuint getVAO();
+    GLuint getVAO() override;
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
 };
