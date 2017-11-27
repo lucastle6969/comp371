@@ -18,6 +18,8 @@
 #include "../utils.hpp"
 #include "../constants.hpp"
 
+float size = 50;
+
 Skybox::Skybox(const GLuint& shader_program, Entity* parent) : DrawableEntity(shader_program, parent)
 {
     this->draw_mode = GL_TRIANGLES;
