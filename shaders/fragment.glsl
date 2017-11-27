@@ -4,6 +4,7 @@ in vec3 pos;
 in vec3 worldPos;
 in vec3 worldNormal;
 in vec2 tex_coord;
+in vec4 ShadowCoord;
 
 struct SunLight {
     vec3 direction;
@@ -31,6 +32,7 @@ uniform int entity_position_x;
 uniform int entity_position_z;
 uniform float opacity;
 uniform sampler2D tex_image;
+uniform sampler2D shadowMap;
 
 uniform bool use_texture;
 
@@ -88,11 +90,13 @@ void main()
             color = WHITE;
             break;
         case COLOR_HEIGHT:
-             color = calculateColor(0.3f * vec3(pos.y));
+          //   color = calculateColor(0.3f * vec3(pos.y));
             break;
         case COLOR_TILE:
+            
+            //Make ambient darker
             color = calculateColor(
-                0.3f * vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f)
+            0.3f * vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f)
             );
             break;
         case COLOR_TEXTURE:
@@ -101,6 +105,7 @@ void main()
         case COLOR_LIGHTING: {
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
             color = calculateColor (material.ambient);
+            
             break;
         }
         case COLOR_TREE:
@@ -116,6 +121,26 @@ void main()
             color = WHITE;
             break;
     }
+}
+
+
+float ShadowCalculation(vec4 ShadowCoord)
+{
+    // if point light
+    // vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    
+    
+    ShadowCoord = ShadowCoord * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowMap, ShadowCoord.xy).r;
+    // get depth of current fragment from light's perspective
+    float currentDepth = ShadowCoord.z;
+    // check whether current frag pos is in shadow
+    
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+    
+    return shadow;
 }
 
 vec4 calculateColor(vec3 ambientColor){
@@ -146,15 +171,29 @@ vec4 calculateColor(vec3 ambientColor){
        normal,
        view_dir
     );
+    
+    //If fragment is in shadow, shadow=1 -> diffuse and specular =0
+    float ShadowValue= ShadowCalculation(ShadowCoord);
 
     vec3 ambientValue = max(ambientColor, 0);
     vec3 diffuseValue =
+    
+   
+  
         (max(sunlight_components.diffuse, 0) * nighttime_value) +
-        (max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
+        (max(pointlight_components.diffuse * attenuation, 0) * daytime_value)
+    
+    ;
     vec3 specularValue =
-       (max(sunlight_components.specular, 0) * nighttime_value) +
-       (max(pointlight_components.specular * attenuation, 0) * daytime_value);
 
+       (max(sunlight_components.specular, 0) * nighttime_value) +
+       (max(pointlight_components.specular * attenuation, 0) * daytime_value)
+    
+        ;
+    
+    
+    if(ShadowValue==1){ diffuseValue =vec3(0,0,0); specularValue=vec3(0,0,0);}
+    
     if (use_texture) {
        // multiply components against texture value but only if we've
        // got a texture!
@@ -165,6 +204,12 @@ vec4 calculateColor(vec3 ambientColor){
 
     return vec4(mix(fog_color, ambientValue + diffuseValue + specularValue, fog), opacity);
 }
+
+
+
+
+
+
 
 // compute the basic color without considering attenuation or texture multiplication
 ColorComponents calculateColor(

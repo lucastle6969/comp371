@@ -61,6 +61,7 @@ public:
 		const glm::mat4& projection_matrix,
 		const Light& light
 	);
+    virtual void drawShadowMap(const glm::mat4& lightview_matrix, const glm::mat4& lightprojection_matrix);
 };
 
 #endif //PACMAN3D_ENTITY_H

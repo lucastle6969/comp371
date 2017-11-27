@@ -24,6 +24,7 @@
 #include "src/entities/Player.hpp"
 #include "constants.hpp"
 #include "TreeDistributor.hpp"
+#include "loadTexture.hpp"
 
 World* world;
 
@@ -38,6 +39,9 @@ const float min_pitch = -89.0f;
 const float first_person_pitch = 20.0f;
 const float max_follow_distance = 300.0f;
 const float first_person_follow_distance = 0.01f;
+
+//Shadown width and Height for ViewPort
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
 // Camera variables
 float pitch = initial_pitch;
@@ -218,7 +222,57 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	framebufferSizeCallback(window, width, height);
 
-	bool shader_program_ok;
+    
+    //Create Depth Buffer for Shadown rendering
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    
+    
+    //2D texture that we'll use as the framebuffer's depth buffer
+    
+    unsigned int depthTexture;
+    glGenTextures(1, &depthTexture);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    
+    
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    
+    // Load the texture
+     GLuint Texture = loadDDS("../textures/uvmap.DDS");
+    
+    // The quad's FBO. Used only for visualizing the shadowmap.
+    static const GLfloat g_quad_vertex_buffer_data[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        1.0f,  1.0f, 0.0f,
+    };
+    
+    GLuint quad_vertexbuffer;
+    glGenBuffers(1, &quad_vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+    
+    
+    
+    bool shader_program_ok;
+    
+    GLuint quad_programID= prepareShaderProgram("../shaders/quad_vertex.glsl", "../shaders/quad_fragment.glsl", &shader_program_ok);
+    
+    GLuint texID = glGetUniformLocation(quad_programID, "shadowmap");
 
 	GLuint shader_program = prepareShaderProgram(
 		"../shaders/vertex.glsl",
@@ -228,15 +282,62 @@ int main()
 	if (!shader_program_ok) {
 		return -1;
 	}
+    
+    
+  
+    // Get a handle for our sampler2D
+    GLuint TextureID  = glGetUniformLocation(shader_program, "myTextureSampler");
+    //Get a handle for sampler2DShadow
+    GLuint ShadowMapID = glGetUniformLocation(shader_program, "shadowMap");
+    
 
 	world = new World(shader_program);
     //create light
 
-    Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
+    Light light(glm::vec3(1, -1, 0), glm::vec3(.5, .5, .5));
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
-	{
+    {
+        
+        
+        // 1. render depth of scene to texture (from light's perspective)
+        
+        // Render to our framebuffer
+        
+        glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+
+        
+        
+        // We don't use bias in the shader, but instead we draw back faces,
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+        
+        //Only depth, no draw
+        glClear(GL_DEPTH_BUFFER_BIT );
+        
+        
+        
+        // Compute the MVP matrix from the light's point of view
+        glm::mat4 lightProjectionMatrix = glm::ortho<float>(-10,10,-10,10,-100,100);
+        glm::mat4 lightViewMatrix = glm::lookAt(glm::vec3(light.light_direction), glm::vec3(0,0,0), glm::vec3(0,1,0));
+        
+
+        
+        
+        
+        //Setting isShadowMapping to 1 , and sending our lightMVP to the shaders
+        world->drawShadowMap(lightViewMatrix, lightProjectionMatrix);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        
+        
+        // 2. Render scene as normal using the generated shadow map
+        
+        glViewport(0,0,width, height);
+        
 		static glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 		static glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 
@@ -244,6 +345,22 @@ int main()
 		glfwPollEvents();
 		pollContinuousControls(window);
 
+        
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+        
+        
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, Texture);
+        // Set our "myTextureSampler" sampler to use Texture Unit 0
+        glUniform1i(TextureID, 1);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        glUniform1i(ShadowMapID, 0);
+        
+        
 		glm::vec3 follow_vector = getFollowVector();
 
 		world->getPlayer()->setOpacity(
@@ -252,7 +369,7 @@ int main()
 		);
 
 		// rotate the sun
-		light.daytime = glm::rotateZ(light.daytime, 0.0005f);
+		//light.daytime = glm::rotateZ(light.daytime, 0.0005f);
         //move the fog
 
 		light.light_position = world->getPlayer()->getPosition();
@@ -278,11 +395,51 @@ int main()
 
 		world->draw(view_matrix, projection_matrix, light);
 
+        
+        
+        
+        
+        
+        
+        
+        //Optionally render the shadowmap (for debug only)
+        
+        // Render only on a corner of the window (or we we won't see the real rendering...)
+        glViewport(0,0,512,512);
+        
+        // Use our shader
+        glUseProgram(quad_programID);
+        
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        // Set our "renderedTexture" sampler to use Texture Unit 0
+        glUniform1i(texID,0);
+        
+        // 1rst attribute buffer : vertices
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+        glVertexAttribPointer(
+                              0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                              3,                  // size
+                              GL_FLOAT,           // type
+                              GL_FALSE,           // normalized?
+                              0,                  // stride
+                              (void*)0            // array buffer offset
+                              );
+        
+        // Draw the triangle !
+        
+        // You have to disable GL_COMPARE_R_TO_TEXTURE above in order to see anything !
+        glDrawArrays(GL_TRIANGLES, 0, 2); // 2*3 indices starting at 0 -> 2 triangles
+        glDisableVertexAttribArray(0);
+        
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
 
 	delete world;
+    glDeleteFramebuffers(1, &depthMapFBO);
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();

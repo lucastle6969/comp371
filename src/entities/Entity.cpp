@@ -184,6 +184,14 @@ void Entity::draw(
 	}
 }
 
+
+void Entity::drawShadowMap(const glm::mat4& lightview_matrix, const glm::mat4& lightprojection_matrix)
+{
+    for (Entity* child : this->children) {
+        child->drawShadowMap (lightview_matrix, lightprojection_matrix);
+    }
+}
+
 void Entity::orient(const glm::vec3& new_face_vec)
 {
 	static glm::mat4 identity;
