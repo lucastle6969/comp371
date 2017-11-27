@@ -184,10 +184,10 @@ const int Skybox::getColorType() {
 GLuint RockB::getTextureId()
 {
     //from pinterest
-    static GLuint rock_texture = loadTexture(
+    static GLuint cloud_texture = loadTexture(
             "../textures/clouds.jpg",
             GL_LINEAR,
             GL_LINEAR
     );
-    return rock_texture;
+    return cloud_texture;
 }
