@@ -36,7 +36,6 @@ int TrunkAB::buildVertices(const float& trunkDiameter, const float& lineSegments
             trunkVertices->push_back(circleEdge);
             unsigned  long s = trunkVertices->size();
             trunkUVs->resize(s);
-            //std::cout << 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2) <<"\n";
             trunkUVs->at(s - 1) = {(n) % 2, 1 - textureTrunkHeight * ((y + (!constructionFlowCounter )) % 2)};
         }
         lineHeight += lineSegments;

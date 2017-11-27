@@ -17,12 +17,12 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
                         glm::vec3(
                                 r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2 ,
                                 lineHeight + r1 *  sin(glm::radians(itterations  * n)) ,
-                                0.0f));
+                                ((float)side) / 10.0f));
                 //else constant X
             else
                 leafVertices->push_back(
                         glm::vec3(
-                                0.0f,
+                                ((float)side) / 10.0f,
                                 lineHeight + r1 *  sin(glm::radians(itterations  * n)) + 0,
                                 r2 * cos(glm::radians(itterations  * n)) + templeafDiameter / 2.0 + r2));
         }
@@ -45,11 +45,11 @@ void LeafA::buildLeaf(const float& r1, const float& r2, const float& leafDiamete
                         glm::vec3(
                                 -r2 * cos(glm::radians(itterations * n)) - templeafDiameter / 2.0 - r2,
                                 lineHeight + r1 * sin(glm::radians(itterations * n)),
-                                0.0f));
+                                ((float)side) / 10.0f));
             else
                 leafVertices->push_back(
                         glm::vec3(
-                                0.0f,
+                                ((float)side) / 10.0f,
                                 lineHeight + r1 * sin(glm::radians(itterations * n)) + 0,
                                 -r2 * cos(glm::radians(itterations * n)) - templeafDiameter / 2.0 - r2));
 
@@ -75,7 +75,7 @@ void LeafA::buildLeafSingle(const float&  r1, const float&  r2, const float&  tr
                                       (trunkDiameter);
             leafVertices->push_back(glm::vec3(r1 * sin(glm::radians(itterations * n)),
                                               r2 * cos(glm::radians(itterations * n)) + lineHeight + r2,
-                                              0.0f));
+                                              ((float)side) / 10.0f));
         }
         unsigned long s = leafVertices->size();
         leafUVs->resize(s);
@@ -112,7 +112,6 @@ GLuint LeafA::buildElements(int i, const int& start, const int& leafPoints,
     leafIndices->push_back(i + 6 + start);
     leafIndices->push_back(i + 5 + start);
     leafIndices->push_back(i + 4 + start);
-    std::cout << leafVert->size() << " " << i + 0 + start << "\n";
     leafNorms->at(i + 0 + start) = (leafNormal);
     leafNorms->at(i + 1 + start) = (leafNormal);
     leafNorms->at(i + 2 + start) = (leafNormal);

@@ -59,7 +59,7 @@ GLuint DrawableEntity::getTextureId()
     static GLuint texture_id = UINT_MAX; // default value
     return texture_id;
 }
-
+bool g = false;
 void DrawableEntity::draw(
     const glm::mat4& view_matrix,
     const glm::mat4& projection_matrix,
@@ -146,7 +146,10 @@ void DrawableEntity::draw(
 //		//doesn't work though
 //		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
 //	} else {
-//	draw_mode = GL_LINES;
+//	if(g = !g)
+//		draw_mode = GL_POINTS;
+//	else
+//		draw_mode = GL_TRIANGLES;
 //	glPointSize(3.0f);
 
 		glBindTexture(GL_TEXTURE_2D, texture_id);

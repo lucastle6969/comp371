@@ -219,18 +219,14 @@ void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, 
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
     int circularPoints = trunkPoints;
-    int rotationPoint = std::abs((ag->angleY) % (circularPoints));
 
-    const float r = 360.0f/circularPoints  * (rotationPoint);
     int start = ag->start + 1;
     int max = ag->end + 1;
     for (int k = start; k < max; k++) {
-        combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),
+        combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(0.0f),
                                                  glm::radians((float)ag->angleZ), combinedVertices->at(k));
     }
-    previousRotation += rotationPoint;
-    moveSegments(rotationPoint, ag);
-    previousRotation -= rotationPoint;
+    moveSegments(0, ag);
     return;
 }
 
@@ -242,8 +238,6 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
         int moveFrom = 0;
 
         const int circularPoints = ag->ag[m]->type == 'L' ? leafPoints : trunkPoints;
-        rotationPoint = std::abs((ag->ag[m]->angleY) % (circularPoints));
-        rotationPoint = 0;
         if (ag->ag[m]->side == 'L') {
             moveTo = (ag->end - circularPoints + 1) +std::abs(2 ) % circularPoints;
             moveFrom = (ag->ag[m]->start + 1) + (2 + rotationPoint) % circularPoints;
@@ -253,13 +247,12 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             moveFrom = (ag->ag[m]->start + 1)  + ((0+ rotationPoint) % circularPoints);
         }
 
-        const float r = 360.0f/circularPoints  * (0);
         if (ag->ag[m]->type == 'B') {
             const int start = ag->ag[m]->start + 1;
             const  int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
                 combinedVertices->at(k) = makeRotations(glm::radians(
-                        (float)ag->ag[m]->angleX), -glm::radians(r), glm::radians((float)ag->ag[m]->angleZ),
+                        (float)ag->ag[m]->angleX), -glm::radians(0.0f), glm::radians((float)ag->ag[m]->angleZ),
                                                         combinedVertices->at(k));
             }
         }
@@ -267,7 +260,7 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             const int start = ag->ag[m]->start + 1;
             const int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
-                combinedVertices->at(k) = makeRotations(glm::radians((float)ag->ag[m]->angleX), -glm::radians(r), glm::radians((float)ag->ag[m]->angleZ),
+                combinedVertices->at(k) = makeRotations(glm::radians((float)ag->ag[m]->angleX), -glm::radians(0.0f), glm::radians((float)ag->ag[m]->angleZ),
                                                         combinedVertices->at(k));
             }
         }
@@ -300,47 +293,53 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
                 combinedVertices->at(k) += translation + boost;
             }
         }
-        previousRotation += rotationPoint;
         connectSegments(ag, m);
-        moveSegments(ag->ag[m]->angleY, ag->ag[m]);
-        previousRotation -= rotationPoint;
+        moveSegments(0, ag->ag[m]);
     }
     return;
 }
 
 void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
     depth--;
+    std::vector<glm::vec3> surfaceNormals;
     //go through each point on upper part of at depth circle
     for (int j = 0; j < trunkPoints; j++) {
-        if (j == trunkPoints - 1) {
-            const GLuint A = (ag->end - trunkPoints+ 1) + j;
-            const GLuint B = (ag->end - trunkPoints+ 1) + 0;
-            const GLuint C = (ag->ag[m]->start+1) + 0;
-            combinedIndices->push_back(A);
-            combinedIndices->push_back(B);
-            combinedIndices->push_back(C);
-            const  GLuint D = C;
-            const GLuint E = (ag->ag[m]->start+1) + j;
-            const  GLuint F = A;
-            combinedIndices->push_back(D);
-            combinedIndices->push_back(E);
-            combinedIndices->push_back(F);
-        }
-        else {
             //WORKS
-            const GLuint A = (ag->end - trunkPoints+ 1) + j;
-            const GLuint B = (ag->end - trunkPoints+ 1) + 1 + j;
-            const GLuint C = (ag->ag[m]->start+1) + 1 + j;
+            const GLuint A = ag->end - trunkPoints+ 1 + j;
+            const GLuint B = (ag->end - trunkPoints+ 1)+ (j+1) % trunkPoints ;
+            const GLuint C = (ag->ag[m]->start+1) + (j+1)% trunkPoints ;
             combinedIndices->push_back(A);
             combinedIndices->push_back(B);
             combinedIndices->push_back(C);
             const GLuint D = C;
-            const GLuint E = (ag->ag[m]->start+1) + j;
+            const GLuint E = (ag->ag[m]->start+1)  + j;
             const GLuint F = A;
             combinedIndices->push_back(D);
             combinedIndices->push_back(E);
             combinedIndices->push_back(F);
-        }
+
+        // calculate normals
+        //------------------
+
+        //step 1: find the surface normal
+        glm::vec3 AB = combinedVertices->at(B) -
+                       combinedVertices->at(A);
+        glm::vec3 AE = combinedVertices->at(E) -
+                       combinedVertices->at(A);
+
+        glm::vec3 surfaceNormal = -glm::cross(AB, AE);
+        surfaceNormals.push_back(surfaceNormal);
+        std::cout << A << " "<< B << " " << A << " "<< E <<"\n";
+    }
+    //step 2: find the average of the surface normals of the surfaces this vertex is part of
+    int len =  surfaceNormals.size();
+    for(GLuint i = 0; i < len ; i++){
+        int iPos = (ag->end - trunkPoints+ 1) + i + 1;
+        if(iPos % trunkPoints == 0) iPos =  (ag->end - trunkPoints+ 1) + 0 ;
+        std::cout <<iPos <<"\n";
+        combinedNormals->at(iPos) = -glm::normalize(
+                surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
+        );
     }
 
 }

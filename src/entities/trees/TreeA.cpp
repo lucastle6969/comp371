@@ -82,7 +82,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             ///angleY = angleY;
 
-            //generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
 
             initiateMove(agNew);
             agNew->selfErase();
@@ -127,7 +127,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
                     angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed, currentLineLength, maxYBranchAngle, minYBranchAngle);
                     angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYBranchAngle, minYBranchAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
                     ///angleY = angleY;
-              //      generateTreeA(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                    generateTreeA(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
                 }
             }
 
@@ -165,7 +165,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             generateTreeA(END_TRUNK, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, lineHeight);
             break;
         default:
-            return;
+            return; break;
     }
     //AFTER FUNCTION INSIDE CONSTRUCTOR
     //3. Merge Trunk V with Leaf V into combined V

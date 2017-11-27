@@ -27,7 +27,7 @@ class TrunkC {
     static constexpr int trunkPoints = 4;
     static constexpr int branchMod  = 10;
 
-    static constexpr float jagednessFactor = 0.020;
+    static constexpr float jagednessFactor = 0.20;
     float lineMax;
 public:
     static bool constructionFlowCounter;

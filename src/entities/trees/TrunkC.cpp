@@ -50,9 +50,41 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
         }
         //build indices
         for (int y = 0; y < 2; y++) {
+            std::vector<glm::vec3> surfaceNormals;
+            const int offset = (y + 1) * trunkPoints + baseVerticesSize;
+            const int base = y * trunkPoints + baseVerticesSize;
+            if (count > 0 && y == 0) {
+                for (int n = 0; n < trunkPoints; n++) {
+                    int countTemp = count - 1;
+                    combinedIndices->push_back(base + n + countTemp * trunkPoints);
+                    combinedIndices->push_back(base + (n + 1) % trunkPoints + countTemp * trunkPoints);
+                    combinedIndices->push_back(offset + (n + 1) % trunkPoints + countTemp * trunkPoints);
+                    combinedIndices->push_back(offset + (n + 1) % trunkPoints + countTemp * trunkPoints);
+                    combinedIndices->push_back(offset + n + countTemp * trunkPoints);
+                    combinedIndices->push_back(base + n + countTemp * trunkPoints);
+                    // calculate normals
+                    //------------------
+
+                    //step 1: find the surface normal
+                    glm::vec3 AB = combinedVertices->at(base + (n + 1) % trunkPoints + countTemp * trunkPoints) -
+                                   combinedVertices->at(base + n + countTemp * trunkPoints);
+                    glm::vec3 AC = combinedVertices->at(offset + n + countTemp * trunkPoints) -
+                                   combinedVertices->at(base + n + countTemp * trunkPoints);
+
+                    glm::vec3 surfaceNormal = -glm::cross(AB, AC);
+                    surfaceNormals.push_back(surfaceNormal);
+                }
+                //step 2: find the average of the surface normals of the surfaces this vertex is part of
+                int len =  surfaceNormals.size();
+                for(GLuint i = 0; i < len ; i++){
+                    int iPos = base + i + (count - 1) * trunkPoints + 1;
+                    if(iPos % trunkPoints == 0) iPos =  base + 0 + (count - 1) * trunkPoints;
+                    combinedNormals->at(iPos) = -glm::normalize(
+                            surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
+                    );
+                }
+            }
             for (int n = 0; n < trunkPoints; n++) {
-                const int offset = (y + 1) * trunkPoints + baseVerticesSize;
-                const int base = y * trunkPoints + baseVerticesSize;
                 //WORKS
                 combinedIndices->push_back(base + n + count * trunkPoints);
                 combinedIndices->push_back(base + (n + 1) % trunkPoints + count * trunkPoints);
@@ -67,19 +99,25 @@ float TrunkC::buildAllComponents(const float& trunkDiameter, const float& seed, 
                         combinedVertices->at(base + (n + 1) %  trunkPoints + count * trunkPoints) - combinedVertices->at(base + n %   trunkPoints+ count * trunkPoints),
                         combinedVertices->at(offset + n + count * trunkPoints) - combinedVertices->at(base + n %  trunkPoints + count * trunkPoints)
                 );
-                if (count > 0 && y == 0) {
-                    int countTemp = count - 1;
-                    combinedIndices->push_back(base + n + countTemp * trunkPoints);
-                    combinedIndices->push_back((base + (n + 1) % trunkPoints  + countTemp * trunkPoints));
-                    combinedIndices->push_back((offset +( n + 1 ) % trunkPoints+ countTemp * trunkPoints));
-                    combinedIndices->push_back((offset + (n + 1) % trunkPoints + countTemp * trunkPoints));
-                    combinedIndices->push_back(offset + n + countTemp * trunkPoints);
-                    combinedIndices->push_back(base + n + countTemp * trunkPoints);
-                    combinedNormals->at(base + n  + countTemp * trunkPoints) = glm::cross(
-                            combinedVertices->at(base + (n + 1) % trunkPoints + countTemp  * trunkPoints) - combinedVertices->at((base + n)  + countTemp * trunkPoints),
-                            combinedVertices->at((offset + n) + countTemp * trunkPoints) - combinedVertices->at((base + n)  + countTemp * trunkPoints)
-                    );
-                }
+                // calculate normals
+                //------------------
+
+                //step 1: find the surface normal
+                glm::vec3 AB = combinedVertices->at(base + (n + 1) % trunkPoints  + count * trunkPoints)    -  combinedVertices->at(base + n + count* trunkPoints);
+                glm::vec3 AC = combinedVertices->at(offset + n + count* trunkPoints)    -   combinedVertices->at(base + n + count * trunkPoints);
+
+                glm::vec3 surfaceNormal = -glm::cross(AB, AC);
+                surfaceNormals.push_back(surfaceNormal);
+            }
+
+            //step 2: find the average of the surface normals of the surfaces this vertex is part of
+            int len =  surfaceNormals.size();
+            for(GLuint i = 0; i < len ; i++){
+                int iPos = base + i + count * trunkPoints + 1;
+                if(iPos % trunkPoints == 0) iPos = base + 0 + count * trunkPoints;
+                combinedNormals->at(iPos  ) = -glm::normalize(
+                        surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
+                );
             }
         }
         count += 3;
