@@ -82,19 +82,7 @@ void TrunkAB::buildTrunkElements(const int& start, const int& end,
                     surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
             );
     }
-
-
-//    const float increments = ((end - start) / trunkPoints) / 2.0;
-//    const float jumps = textureTrunkHeight / increments;
-//    for (GLuint i = start; i < end; i ++){
-//        float v = std::abs(-textureTrunkHeight + jumps*i/trunkPoints);
-//        trunkUVs->push_back(glm::vec2(((float)i) / trunkPoints, v));
-//    }
 }
-
-
-
-float TrunkAB::getLineHeight(){return lineHeight;}
 
 void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& start, const int& set, const char& lr,
                                    std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
@@ -129,13 +117,6 @@ void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& s
 
     }
 
-
-
-
-
-
-
-
     //step 2: find the average of the surface normals of the surfaces this vertex is part of
     int len =  surfaceNormals.size();
     for(GLuint i = 0; i < len ; i++){
@@ -146,3 +127,5 @@ void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& s
         );
     }
 }
+
+float TrunkAB::getLineHeight(){return lineHeight;}

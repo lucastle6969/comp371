@@ -116,6 +116,7 @@ void LeafContainerAB::buildLeafContainerElements(const int& start, const int& en
     const  int factor = (leafBranchPoints + leafPoints*4);
 
     GLuint i = 0;
+    //build a running set of vertices to add indices to.
     for(int k = 0 ; k < endVert; k++){
         std::vector<glm::vec3> surfaceNormals;
         int j = i;
@@ -142,7 +143,7 @@ void LeafContainerAB::buildLeafContainerElements(const int& start, const int& en
         for(GLuint j = 0; j < len ; j++){
             int jPos = i + start - leafBranchPoints + j + 1;
             if(jPos % leafPoints == 0) jPos =  i + start - leafBranchPoints + 0;
-            leafNorms->at(jPos  ) = -glm::normalize(
+            leafNorms->at(jPos ) = -glm::normalize(
                     surfaceNormals.at(j) + surfaceNormals.at((j+1) % len)
             );
         }
@@ -159,6 +160,7 @@ void LeafContainerAB::buildLeafContainerElements(const int& start, const int& en
                              leafUVs, leafNorms);
     i = LeafAB::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
                              leafUVs, leafNorms);
+    //
     i = LeafAB::buildElements(i, start,  leafPoints,  leafIndices, leafVert,
                              leafUVs, leafNorms);
 }

@@ -6,17 +6,12 @@
 
 TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed):
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'B'){
-    std::clock_t startTime;
-    double duration;
-    startTime = std::clock();
 
     treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
 
     float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
     rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
-    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-    //printf("Duration of B %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
 

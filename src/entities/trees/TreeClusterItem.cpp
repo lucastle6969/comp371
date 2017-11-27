@@ -26,22 +26,17 @@ constexpr double TreeClusterItem::branchRatio;
 
 TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed):
     Tree(heightChunking, boostFactor,seed, shader_program, entity, 'G'){
-    std::clock_t startTime;
-    double duration;
-    startTime = std::clock();
 
     if (trunkDiameter <= 0.0) trunkDiameter = this->zeroSize;
     else if(trunkDiameter > 2.0)trunkDiameter = 2.0;
     this->trunkDiameter = trunkDiameter;
     seed = TreeRandom::treeRandom(trunkDiameter, seed, 991);
 
-    //CONSIDERATION: MULTITHREAD THE GENERATION TO NOT INTERFERE WITH GAME LOOP
     treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
 
     float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*100);
     rotate(globalRotation, glm::vec3(0.0f,1.0f,0.0f));
 
-    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
 };
 
 

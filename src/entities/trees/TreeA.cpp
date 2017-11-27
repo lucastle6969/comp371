@@ -15,17 +15,10 @@ constexpr double TreeA::branchRatio;
 
 TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'A'){
-    std::clock_t startTime;
-    double duration;
-    startTime = std::clock();
-
 
         textureMap = textureMap1;
 
     treeSetup(shader_program, trunkDiameter, seed);
-
-    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-   // printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
 void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
@@ -201,12 +194,13 @@ void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
     //a leaf container is an object that holds a set of leaves and a branch that they're held on
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
 }
-
+//atatchment grouping -> See Tree.hpp
 void TreeA::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
     const int circularPoints = TrunkAB::trunkPoints;
     int rotationPoint = std::abs((ag->angleY) % (int)(circularPoints / limiter ));
 
+    //limit rotations to one segment at a time
     rotationPoint = rotationPoint == 0 ? 0 : 1;
 
     const float r = 360.0f/circularPoints  * (rotationPoint);
@@ -223,6 +217,29 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
     moveSegments(previousRotation, ag);
 }
 
+
+
+/*
+ *
+ * 1_______2
+ *  |     |
+ *  |     |
+ *  |_____|
+ * 0       3
+ *
+ * This figure rotates and needs to connect with a lower square.
+ *
+ * eg.
+ *  0______1
+ *  |     |
+ *  |     |
+ *  |_____|
+ * 3       2
+ *
+ * The methods below do this procedure and pass on rotation information to the move connect, compute and recurse back
+ * through binary recursion until the furthest branch has been reached as the base case.
+ *
+ */
 void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
     for (int m = 0; m < 2; m++) {
         if (ag->ag[m] == nullptr) continue;
@@ -282,6 +299,7 @@ void TreeA::bufferObject(const GLuint& shader_program) {
     //stbi_image_free(image_data);
 }
 
+//use carlo's loading systems
 GLuint TreeA::getTextureId()
 {
     static GLuint tA_texture = loadTexture(

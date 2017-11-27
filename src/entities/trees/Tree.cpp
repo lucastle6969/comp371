@@ -11,7 +11,6 @@
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
 #include "Tree.hpp"
-#include "src/constants.hpp"
 
 
 
@@ -79,13 +78,13 @@ void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
 }
 
 void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
-    if(ag->type == 'L'){
-        LeafContainerAB::buildLeafContainerElements(ag->start + 1, ag->end,
-                                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+    if(ag->type == 'B'){
+        TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
+                                    combinedIndices, combinedVertices, combinedNormals);
     }
     else
-        TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
-                                   combinedIndices, combinedVertices, combinedNormals);
+        LeafContainerAB::buildLeafContainerElements(ag->start + 1, ag->end,
+                                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
 }
 
 float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){

@@ -73,7 +73,7 @@ protected:
     GLuint vao; GLuint vbo; GLuint ebo; GLuint nbo; GLuint uvbo;
 
     float heightChunking;
-    int boostFactor;
+    float boostFactor;
     float seed;
 
     float widthCut;
