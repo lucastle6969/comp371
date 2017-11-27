@@ -316,7 +316,7 @@ int main()
 
         //get the player scale coef to adjust our near and far planes dynamically
         float player_scale = getPlayerScaleCoefficient();
-        glm::mat4 lightProjectionMatrix = glm::ortho<float>
+        glm::mat4 light_projection_matrix = glm::ortho<float>
                 (ortho_box_left,
                  ortho_box_right,
                  ortho_box_bottom,
@@ -330,7 +330,9 @@ int main()
 
         glm::vec3 scene_center = world->getPlayer()->getPosition();
 
-        glm::mat4 lightView = glm::lookAt(light_position, scene_center, glm::vec3(0.0f, 1.0f,0.0f));
+        glm::mat4 light_view = glm::lookAt(light_position, scene_center, glm::vec3(0.0f, 1.0f,0.0f));
+
+        glm::mat4 lightSpaceMatrix = light_projection_matrix * light_view;
 
 
         // Render
