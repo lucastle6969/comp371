@@ -64,28 +64,70 @@ TextB::TextB(
                 this->uvs.emplace_back(0.166666, 1);
                 break;
             case 'b':
-
+                this->uvs.emplace_back(0.166666, 0.833333);
+                this->uvs.emplace_back(0.333333, 0.833333);
+                this->uvs.emplace_back(0.166666, 1);
+                this->uvs.emplace_back(0.333333, 1);
                 break;
             case 'c':
-
+                this->uvs.emplace_back(0.333333, 0.833333);
+                this->uvs.emplace_back(0.5, 0.833333);
+                this->uvs.emplace_back(0.333333, 1);
+                this->uvs.emplace_back(0.5, 1);
                 break;
             case 'd':
+                this->uvs.emplace_back(0.5, 0.833333);
+                this->uvs.emplace_back(0.666666, 0.833333);
+                this->uvs.emplace_back(0.5, 1);
+                this->uvs.emplace_back(0.666666, 1);
                 break;
             case 'e':
+                this->uvs.emplace_back(0.666666, 0.833333);
+                this->uvs.emplace_back(0.833333, 0.833333);
+                this->uvs.emplace_back(0.666666, 1);
+                this->uvs.emplace_back(0.833333, 1);
                 break;
             case 'f':
+                this->uvs.emplace_back(0.833333, 0.833333);
+                this->uvs.emplace_back(1, 0.833333);
+                this->uvs.emplace_back(0.833333, 1);
+                this->uvs.emplace_back(1, 1);
                 break;
             case 'g':
+                this->uvs.emplace_back(0, 0.666666);
+                this->uvs.emplace_back(0.166666, 0.666666);
+                this->uvs.emplace_back(0, 0.833333);
+                this->uvs.emplace_back(0.166666, 0.833333);
                 break;
             case 'h':
+                this->uvs.emplace_back(0.166666, 0.666666);
+                this->uvs.emplace_back(0.333333, 0.666666);
+                this->uvs.emplace_back(0.166666, 0.833333);
+                this->uvs.emplace_back(0.333333, 0.833333);
                 break;
             case 'i':
+                this->uvs.emplace_back(0.333333, 0.666666);
+                this->uvs.emplace_back(0.5, 0.666666);
+                this->uvs.emplace_back(0.333333, 0.833333);
+                this->uvs.emplace_back(0.5, 0.833333);
                 break;
             case 'j':
+                this->uvs.emplace_back(0.5, 0.666666);
+                this->uvs.emplace_back(0.666666, 0.666666);
+                this->uvs.emplace_back(0.5, 0.833333);
+                this->uvs.emplace_back(0.666666, 0.833333);
                 break;
             case 'k':
+                this->uvs.emplace_back(0.666666, 0.666666);
+                this->uvs.emplace_back(0.833333, 0.666666);
+                this->uvs.emplace_back(0.666666, 0.833333);
+                this->uvs.emplace_back(0.833333, 0.833333);
                 break;
             case 'l':
+                this->uvs.emplace_back(0.833333, 0.666666);
+                this->uvs.emplace_back(1, 0.666666);
+                this->uvs.emplace_back(0.833333, 0.833333);
+                this->uvs.emplace_back(1, 0.833333);
                 break;
             case 'm':
                 break;
