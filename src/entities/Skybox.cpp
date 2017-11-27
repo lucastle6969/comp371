@@ -19,7 +19,7 @@
 #include "../constants.hpp"
 #include "../loadTexture.hpp"
 
-float size = 50;
+float size = 10;
 
 Skybox::Skybox(const GLuint& shader_program, Entity* parent) : DrawableEntity(shader_program, parent)
 {

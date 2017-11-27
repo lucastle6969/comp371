@@ -280,7 +280,7 @@ int main()
 		);
 
 		world->draw(view_matrix, projection_matrix, light);
-
+        skybox.draw(view_matrix, projection_matrix, light);
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
