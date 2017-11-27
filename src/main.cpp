@@ -252,7 +252,7 @@ int main()
 		);
 
 		// rotate the sun
-		light.daytime = glm::rotateZ(light.daytime, 0.0005f);
+		light.daytime = //glm::vec3(0.0,0,0);//glm::rotateZ(light.daytime, 0.005f);
         //move the fog
 
 		light.light_position = world->getPlayer()->getPosition();

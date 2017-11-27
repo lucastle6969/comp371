@@ -105,6 +105,12 @@ private:
 	void bufferObject(const GLuint& shader_program);
 
 protected:
+
+	void createSegmentNormals(AttatchmentGroupings* ag,int m);
+
+	void createConnectorElements(AttatchmentGroupings* ag,int m);
+
+
     std::string textureMap;
 
     const std::string textureMap1 = "../textures/TreeATexture.jpg";

@@ -19,12 +19,7 @@ TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, 
     double duration;
     startTime = std::clock();
 
-    std::cout << seed << " \n";
-    if((int)seed % 2 == 0)
         textureMap = textureMap1;
-    else{
-        textureMap = textureMap2;
-    }
 
     treeSetup(shader_program, trunkDiameter, seed);
 
@@ -87,7 +82,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             ///angleY = angleY;
 
-            generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            //generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
 
             initiateMove(agNew);
             agNew->selfErase();
@@ -132,7 +127,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
                     angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed, currentLineLength, maxYBranchAngle, minYBranchAngle);
                     angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYBranchAngle, minYBranchAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
                     ///angleY = angleY;
-                    generateTreeA(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+              //      generateTreeA(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
                 }
             }
 
@@ -170,7 +165,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             generateTreeA(END_TRUNK, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, lineHeight);
             break;
         default:
-            return; break;
+            return;
     }
     //AFTER FUNCTION INSIDE CONSTRUCTOR
     //3. Merge Trunk V with Leaf V into combined V
@@ -222,6 +217,7 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
                                                  combinedVertices->at(k));
     }
     const int previousRotation = rotationPoint;
+    //create elements for segment
     computeElementsInitial(ag);
     moveSegments(previousRotation, ag);
 }
@@ -269,18 +265,19 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         for (int k = start; k < max; k++) {
             combinedVertices->at(k) += translation + boost;
         }
-        computeElementsInitial(ag->ag[m]);
+        //create the connector's elements from previous to m
         connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        //create elements for segment
+        computeElementsInitial(ag->ag[m]);
+        //move them to position
         moveSegments(toPnt, ag->ag[m]);
     }
     return;
-
 }
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-    for(int i = 0 ; i < combinedNormals->size() ; i++) combinedNormals->at(i) = glm::normalize(combinedNormals->at(i));
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo, &nbo, &uvbo);
+    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV,  &vbo, &ebo, &nbo, &uvbo);
     //stbi_image_free(image_data);
 }
 

@@ -47,7 +47,12 @@ int TrunkAB::buildVertices(const float& trunkDiameter, const float& lineSegments
 void TrunkAB::buildTrunkElements(const int& start, const int& end,
                                 std::vector<GLuint>* trunkIndices, std::vector<glm::vec3>* trunkVert,
                                 std::vector<glm::vec2>* trunkUVs, std::vector<glm::vec3>* trunkNorms){
+    if(trunkVert->size() != trunkNorms->size()){
+        trunkUVs->resize(trunkVert->size());
+        trunkNorms->resize(trunkVert->size());
+    }
 
+    std::vector<glm::vec3> surfaceNormals;
     for (GLuint i = start; i < end - trunkPoints + 1; i++) {
         GLuint i1 = (i + 1) % trunkPoints + (i / trunkPoints * trunkPoints);
 
@@ -58,17 +63,34 @@ void TrunkAB::buildTrunkElements(const int& start, const int& end,
         trunkIndices->push_back(i + trunkPoints);
         trunkIndices->push_back(i);
 
-        trunkNorms->push_back(glm::cross(
-                trunkVert->at(i1) - trunkVert->at(i), trunkVert->at(i + trunkPoints) - trunkVert->at(i)
-        ));
+        // calculate normals
+        //------------------
 
+        //step 1: find the surface normal
+        glm::vec3 AB = trunkVert->at(i1)    -  trunkVert->at(i);
+        glm::vec3 AC = trunkVert->at(i + trunkPoints)    -   trunkVert->at(i);
+
+        glm::vec3 surfaceNormal = -glm::cross(AB, AC);
+        surfaceNormals.push_back(surfaceNormal);
     }
-    const float increments = ((end - start) / trunkPoints) / 2.0;
-    const float jumps = textureTrunkHeight / increments;
-    for (GLuint i = start; i < end; i ++){
-        float v = std::abs(-textureTrunkHeight + jumps*i/trunkPoints);
-        trunkUVs->push_back(glm::vec2(((float)i) / trunkPoints, v));
+
+    //step 2: find the average of the surface normals of the surfaces this vertex is part of
+    int len =  surfaceNormals.size();
+        for(GLuint i = 0; i < len ; i++){
+            int iPos = i + start + 1;
+            if(iPos % trunkPoints == 0) iPos = i + start + 1 - trunkPoints;
+            trunkNorms->at(iPos  ) = -glm::normalize(
+                    surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
+            );
     }
+
+
+//    const float increments = ((end - start) / trunkPoints) / 2.0;
+//    const float jumps = textureTrunkHeight / increments;
+//    for (GLuint i = start; i < end; i ++){
+//        float v = std::abs(-textureTrunkHeight + jumps*i/trunkPoints);
+//        trunkUVs->push_back(glm::vec2(((float)i) / trunkPoints, v));
+//    }
 }
 
 
@@ -83,36 +105,51 @@ void TrunkAB::buildConnectorElements(const int& segmentConnectStart,const int& s
         trunkNorms->resize(trunkVert->size());
     }
 
+    std::vector<glm::vec3> surfaceNormals;
+
     //Norms to top segment starting from lower circle
     for(GLuint i = 0 ; i < trunkPoints; i++){
         GLuint i1 = (i + 1) % trunkPoints;
 
         trunkIndices->push_back(segmentConnectStart + (i % trunkPoints));
         trunkIndices->push_back(segmentConnectStart + (i+1) % trunkPoints);
+        //start implies top, or start of top segment
         trunkIndices->push_back(start + (i + 1 + set) % trunkPoints);
         trunkIndices->push_back(start + (i + 1 + set) % trunkPoints);
         trunkIndices->push_back(start + (i + set) % trunkPoints);
         trunkIndices->push_back(segmentConnectStart + i % trunkPoints);
-        if(i % trunkPoints < trunkPoints / 2 && lr == 'R'){
-            trunkNorms->at(i) = (glm::cross(
-                    trunkVert->at(i1 + segmentConnectStart) - trunkVert->at(i + segmentConnectStart),
-                    trunkVert->at(i + start) - trunkVert->at(i + segmentConnectStart)
-            ));
-        }
-        else if (i % trunkPoints >= trunkPoints / 2 && lr == 'L'){
-            trunkNorms->at(i) = (glm::cross(
-                    trunkVert->at(i1 + segmentConnectStart) - trunkVert->at(i + segmentConnectStart),
-                    trunkVert->at(i + start) - trunkVert->at(i + segmentConnectStart)
-            ));
-        }
+
+        // calculate normals
+        //------------------
+
+        //step 1: find the surface normal
+        glm::vec3 AB = trunkVert->at(segmentConnectStart + (i + 1) % trunkPoints)    -   trunkVert->at(segmentConnectStart + i % trunkPoints);
+        glm::vec3 AC = trunkVert->at(start +  (i + set) % trunkPoints)    -   trunkVert->at(segmentConnectStart + i % trunkPoints);
+
+        glm::vec3 surfaceNormal = -glm::cross(AB, AC);
+        surfaceNormals.push_back(surfaceNormal);
+
     }
+
+
+
+
+
+
+
+
+    //step 2: find the average of the surface normals of the surfaces this vertex is part of
+    int len =  surfaceNormals.size();
+    for(GLuint i = 0; i < len ; i++){
+        int iPos = i + segmentConnectStart + 1;
+        if(iPos % trunkPoints == 0) iPos = i + segmentConnectStart + 1 - trunkPoints;
+        trunkNorms->at(iPos  ) = -glm::normalize(
+                surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
+        );
+    }
+
     //Connector UV to top segment
     for(GLuint i = 0; i < trunkPoints; i++) {
-        if(i % trunkPoints < trunkPoints / 2 && lr == 'R'){
-            trunkUVs->at(start + i)  = glm::vec2(((float)i) / trunkPoints, textureConnectorEnd);
-        }
-        else if (i % trunkPoints >= trunkPoints / 2 && lr == 'L'){
-            trunkUVs->at(start + i)  = glm::vec2(((float)i) / trunkPoints, textureConnectorEnd);
-        }
+        trunkUVs->at(segmentConnectStart + (i + set) % trunkPoints) = glm::vec2(0, 1 - TrunkAB::constructionFlowCounter);
     }
 }

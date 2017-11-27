@@ -146,6 +146,8 @@ void DrawableEntity::draw(
 //		//doesn't work though
 //		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
 //	} else {
+//	draw_mode = GL_LINES;
+//	glPointSize(3.0f);
 
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
