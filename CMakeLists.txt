@@ -81,6 +81,8 @@ add_executable(proceduralworld
     src/entities/Rock.cpp
     src/entities/RockB.hpp
     src/entities/RockB.cpp
+    src/entities/Tentacle.hpp
+    src/entities/Tentacle.cpp
         src/entities/trees/Tree.hpp
         src/entities/trees/Tree.cpp
         src/entities/trees/TreeA.hpp

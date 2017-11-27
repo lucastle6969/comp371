@@ -24,6 +24,7 @@
 #include "WorldTile.hpp"
 #include "../utils.hpp"
 #include "../constants.hpp"
+#include "Tentacle.hpp"
 
 WorldTile::WorldTile(
 	const GLuint &shader_program,
@@ -108,13 +109,13 @@ WorldTile::WorldTile(
 		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
 				// Add tree child
 		Tree* tree;
-		if(seed % 10 < 2){
+		if(seed % 10 < 6){
 			if(seed%2 == 0)
 				tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
-			else {
-				std::cout << seed << " " << world_x_location << " " << world_z_location << "\n";
+            else if(seed % 3 == 1)
+                    tree = new Tentacle(shader_program, this, internal_tree_width*2.5, seed);
+			else
 				tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
-			}
 		}
 		else if(seed % 10 < 7){
 			tree = new TreeB(shader_program, this, internal_tree_width, seed);
