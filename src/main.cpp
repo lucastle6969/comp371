@@ -277,6 +277,12 @@ int main()
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    //ortho box size for shadow calculation
+    float ortho_box_left = -3.0f;
+    float ortho_box_right = 3.0f;
+    float ortho_box_bottom = 0.0f;
+    float ortho_box_top = 3.0f;
+
 
 
     // Game loop
@@ -305,7 +311,29 @@ int main()
 		light.setDaytime();
 
 		float daytime = -light.light_direction.y;
-		// Render
+
+        //start shadow render
+
+        //get the player scale coef to adjust our near and far planes dynamically
+        float player_scale = getPlayerScaleCoefficient();
+        glm::mat4 lightProjectionMatrix = glm::ortho<float>
+                (ortho_box_left,
+                 ortho_box_right,
+                 ortho_box_bottom,
+                 ortho_box_top,
+                 15.0f * player_scale,
+                 1500.0f * player_scale
+                );
+
+        //temporary static light position to debug shadows
+        glm::vec3 light_position = glm::vec3(0.5f, 4.0f, 0.5f);
+
+        glm::vec3 scene_center = world->getPlayer()->getPosition();
+
+        glm::mat4 lightView = glm::lookAt(light_position, scene_center, glm::vec3(0.0f, 1.0f,0.0f));
+
+
+        // Render
 		// Clear the colorbuffer
 		glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
