@@ -39,15 +39,15 @@ TextB::TextB(
     for(int i=0; i<message.length(); i++){
         if (i>100)
             break;
-//        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
-//        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
-//        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
-//        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
 
-        this->vertices.emplace_back(0,0,0);
-        this->vertices.emplace_back(1,0,0);
-        this->vertices.emplace_back(0,1,0);
-        this->vertices.emplace_back(1,1,0);
+//        this->vertices.emplace_back(0,0,0);
+//        this->vertices.emplace_back(1,0,0);
+//        this->vertices.emplace_back(0,1,0);
+//        this->vertices.emplace_back(1,1,0);
 
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
@@ -62,235 +62,195 @@ TextB::TextB(
         this->elements.emplace_back(i+3);
 
 
+        const float x_width = 6.0f;
+        const float y_width = 6.0f;
+        int x_offset;
+        int y_offset;
         switch(message[i]){
             case 'a':
-                this->uvs.emplace_back(0, 0.833333);
-                this->uvs.emplace_back(0.166666, 0.833333);
-                this->uvs.emplace_back(0, 1);
-                this->uvs.emplace_back(0.166666, 1);
+            case 'A':
+                x_offset = 0;
+                y_offset = 5;
                 break;
             case 'b':
-                this->uvs.emplace_back(0.166666, 0.833333);
-                this->uvs.emplace_back(0.333333, 0.833333);
-                this->uvs.emplace_back(0.166666, 1);
-                this->uvs.emplace_back(0.333333, 1);
+            case 'B':
+                x_offset = 1;
+                y_offset = 5;
                 break;
             case 'c':
-                this->uvs.emplace_back(0.333333, 0.833333);
-                this->uvs.emplace_back(0.5, 0.833333);
-                this->uvs.emplace_back(0.333333, 1);
-                this->uvs.emplace_back(0.5, 1);
+            case 'C':
+                x_offset = 2;
+                y_offset = 5;
                 break;
             case 'd':
-                this->uvs.emplace_back(0.5, 0.833333);
-                this->uvs.emplace_back(0.666666, 0.833333);
-                this->uvs.emplace_back(0.5, 1);
-                this->uvs.emplace_back(0.666666, 1);
+            case 'D':
+                x_offset = 3;
+                y_offset = 5;
                 break;
             case 'e':
-                this->uvs.emplace_back(0.666666, 0.833333);
-                this->uvs.emplace_back(0.833333, 0.833333);
-                this->uvs.emplace_back(0.666666, 1);
-                this->uvs.emplace_back(0.833333, 1);
+            case 'E':
+                x_offset = 4;
+                y_offset = 5;
                 break;
             case 'f':
-                this->uvs.emplace_back(0.833333, 0.833333);
-                this->uvs.emplace_back(1, 0.833333);
-                this->uvs.emplace_back(0.833333, 1);
-                this->uvs.emplace_back(1, 1);
+            case 'F':
+                x_offset = 5;
+                y_offset = 5;
                 break;
             case 'g':
-                this->uvs.emplace_back(0, 0.666666);
-                this->uvs.emplace_back(0.166666, 0.666666);
-                this->uvs.emplace_back(0, 0.833333);
-                this->uvs.emplace_back(0.166666, 0.833333);
+            case 'G':
+                x_offset = 0;
+                y_offset = 4;
                 break;
             case 'h':
-                this->uvs.emplace_back(0.166666, 0.666666);
-                this->uvs.emplace_back(0.333333, 0.666666);
-                this->uvs.emplace_back(0.166666, 0.833333);
-                this->uvs.emplace_back(0.333333, 0.833333);
+            case 'H':
+                x_offset = 1;
+                y_offset = 4;
                 break;
             case 'i':
-                this->uvs.emplace_back(0.333333, 0.666666);
-                this->uvs.emplace_back(0.5, 0.666666);
-                this->uvs.emplace_back(0.333333, 0.833333);
-                this->uvs.emplace_back(0.5, 0.833333);
+            case 'I':
+                x_offset = 2;
+                y_offset = 4;
                 break;
             case 'j':
-                this->uvs.emplace_back(0.5, 0.666666);
-                this->uvs.emplace_back(0.666666, 0.666666);
-                this->uvs.emplace_back(0.5, 0.833333);
-                this->uvs.emplace_back(0.666666, 0.833333);
+            case 'J':
+                x_offset = 3;
+                y_offset = 4;
                 break;
             case 'k':
-                this->uvs.emplace_back(0.666666, 0.666666);
-                this->uvs.emplace_back(0.833333, 0.666666);
-                this->uvs.emplace_back(0.666666, 0.833333);
-                this->uvs.emplace_back(0.833333, 0.833333);
+            case 'K':
+                x_offset = 4;
+                y_offset = 4;
                 break;
             case 'l':
-                this->uvs.emplace_back(0.833333, 0.666666);
-                this->uvs.emplace_back(1, 0.666666);
-                this->uvs.emplace_back(0.833333, 0.833333);
-                this->uvs.emplace_back(1, 0.833333);
+            case 'L':
+                x_offset = 5;
+                y_offset = 4;
                 break;
             case 'm':
-                this->uvs.emplace_back(0, 0.5);
-                this->uvs.emplace_back(0.166666, 0.5);
-                this->uvs.emplace_back(0, 0.666666);
-                this->uvs.emplace_back(0.166666, 0.666666);
+            case 'M':
+                x_offset = 0;
+                y_offset = 3;
                 break;
             case 'n':
-                this->uvs.emplace_back(0.166666, 0.5);
-                this->uvs.emplace_back(0.333333, 0.5);
-                this->uvs.emplace_back(0.166666, 0.666666);
-                this->uvs.emplace_back(0.333333, 0.666666);
+            case 'N':
+                x_offset = 1;
+                y_offset = 3;
                 break;
             case 'o':
-                this->uvs.emplace_back(0.333333, 0.5);
-                this->uvs.emplace_back(0.5, 0.5);
-                this->uvs.emplace_back(0.333333, 0.666666);
-                this->uvs.emplace_back(0.5, 0.666666);
+            case 'O':
+                x_offset = 2;
+                y_offset = 3;
                 break;
             case 'p':
-                this->uvs.emplace_back(0.5, 0.5);
-                this->uvs.emplace_back(0.666666, 0.5);
-                this->uvs.emplace_back(0.5, 0.666666);
-                this->uvs.emplace_back(0.666666, 0.666666);
+            case 'P':
+                x_offset = 3;
+                y_offset = 3;
                 break;
             case 'q':
-                this->uvs.emplace_back(0.666666, 0.5);
-                this->uvs.emplace_back(0.833333, 0.5);
-                this->uvs.emplace_back(0.666666, 0.666666);
-                this->uvs.emplace_back(0.833333, 0.666666);
+            case 'Q':
+                x_offset = 4;
+                y_offset = 3;
                 break;
             case 'r':
-                this->uvs.emplace_back(0.833333, 0.5);
-                this->uvs.emplace_back(1.0, 0.5);
-                this->uvs.emplace_back(0.833333, 0.666666);
-                this->uvs.emplace_back(1.0, 0.666666);
+            case 'R':
+                x_offset = 5;
+                y_offset = 3;
                 break;
             case 's':
-                this->uvs.emplace_back(0, 0.333333);
-                this->uvs.emplace_back(0.166666, 0.333333);
-                this->uvs.emplace_back(0, 0.5);
-                this->uvs.emplace_back(0.166666, 0.5);
+            case 'S':
+                x_offset = 0;
+                y_offset = 2;
                 break;
             case 't':
-                this->uvs.emplace_back(0.166666, 0.333333);
-                this->uvs.emplace_back(0.333333, 0.333333);
-                this->uvs.emplace_back(0.166666, 0.5);
-                this->uvs.emplace_back(0.333333, 0.5);
+            case 'T':
+                x_offset = 1;
+                y_offset = 2;
                 break;
             case 'u':
-                this->uvs.emplace_back(0.333333, 0.333333);
-                this->uvs.emplace_back(0.5, 0.333333);
-                this->uvs.emplace_back(0.333333, 0.5);
-                this->uvs.emplace_back(0.555555, 0.5);
+            case 'U':
+                x_offset = 2;
+                y_offset = 2;
                 break;
             case 'v':
-                this->uvs.emplace_back(0.5, 0.333333);
-                this->uvs.emplace_back(0.666666, 0.333333);
-                this->uvs.emplace_back(0.5, 0.5);
-                this->uvs.emplace_back(0.666666, 0.5);
+            case 'V':
+                x_offset = 3;
+                y_offset = 2;
                 break;
             case 'w':
-                this->uvs.emplace_back(0.666666, 0.333333);
-                this->uvs.emplace_back(0.833333, 0.333333);
-                this->uvs.emplace_back(0.666666, 0.5);
-                this->uvs.emplace_back(0.833333, 0.5);
+            case 'W':
+                x_offset = 4;
+                y_offset = 2;
                 break;
             case 'x':
-                this->uvs.emplace_back(0.833333, 0.333333);
-                this->uvs.emplace_back(1, 0.333333);
-                this->uvs.emplace_back(0.833333, 0.5);
-                this->uvs.emplace_back(1, 0.5);
+            case 'X':
+                x_offset = 5;
+                y_offset = 2;
                 break;
             case 'y':
-                this->uvs.emplace_back(0, 0.166666);
-                this->uvs.emplace_back(0.166666, 0.166666);
-                this->uvs.emplace_back(0, 0.333333);
-                this->uvs.emplace_back(0.166666, 0.333333);
+            case 'Y':
+                x_offset = 0;
+                y_offset = 1;
                 break;
             case 'z':
-                this->uvs.emplace_back(0.166666, 0.166666);
-                this->uvs.emplace_back(0.333333, 0.166666);
-                this->uvs.emplace_back(0.166666, 0.333333);
-                this->uvs.emplace_back(0.333333, 0.333333);
+            case 'Z':
+                x_offset = 1;
+                y_offset = 1;
                 break;
             case '1':
-                this->uvs.emplace_back(0.333333, 0.166666);
-                this->uvs.emplace_back(0.5, 0.166666);
-                this->uvs.emplace_back(0.333333, 0.333333);
-                this->uvs.emplace_back(0.5, 0.333333);
+                x_offset = 2;
+                y_offset = 1;
                 break;
             case '2':
-                this->uvs.emplace_back(0.5, 0.166666);
-                this->uvs.emplace_back(0.666666, 0.166666);
-                this->uvs.emplace_back(0.5, 0.333333);
-                this->uvs.emplace_back(0.666666, 0.333333);
+                x_offset = 3;
+                y_offset = 1;
                 break;
             case '3':
-                this->uvs.emplace_back(0.666666, 0.166666);
-                this->uvs.emplace_back(0.833333, 0.166666);
-                this->uvs.emplace_back(0.666666, 0.333333);
-                this->uvs.emplace_back(0.833333, 0.333333);
+                x_offset = 4;
+                y_offset = 1;
                 break;
             case '4':
-                this->uvs.emplace_back(0.833333, 0.166666);
-                this->uvs.emplace_back(1, 0.166666);
-                this->uvs.emplace_back(0.833333, 0.333333);
-                this->uvs.emplace_back(1, 0.333333);
+                x_offset = 5;
+                y_offset = 1;
                 break;
             case '5':
-                this->uvs.emplace_back(0, 0.166666);
-                this->uvs.emplace_back(0.166666, 0.166666);
-                this->uvs.emplace_back(0, 0.333333);
-                this->uvs.emplace_back(0.166666, 0.333333);
+                x_offset = 0;
+                y_offset = 0;
                 break;
             case '6':
-                this->uvs.emplace_back(0.166666, 0);
-                this->uvs.emplace_back(0.333333, 0);
-                this->uvs.emplace_back(0.166666, 0.166666);
-                this->uvs.emplace_back(0.333333, 0.166666);
+                x_offset = 1;
+                y_offset = 0;
                 break;
             case '7':
-                this->uvs.emplace_back(0.333333, 0);
-                this->uvs.emplace_back(0.5, 0);
-                this->uvs.emplace_back(0.333333, 0.166666);
-                this->uvs.emplace_back(0.5, 0.166666);
+                x_offset = 2;
+                y_offset = 0;
                 break;
             case '8':
-                this->uvs.emplace_back(0.5, 0);
-                this->uvs.emplace_back(0.666666, 0);
-                this->uvs.emplace_back(0.5, 0.166666);
-                this->uvs.emplace_back(0.666666, 0.166666);
+                x_offset = 3;
+                y_offset = 0;
                 break;
             case '9':
-                this->uvs.emplace_back(0.666666, 0);
-                this->uvs.emplace_back(0.833333, 0);
-                this->uvs.emplace_back(0.666666, 0.166666);
-                this->uvs.emplace_back(0.833333, 0.166666);
+                x_offset = 4;
+                y_offset = 0;
                 break;
             case '0':
-                this->uvs.emplace_back(0.833333, 0);
-                this->uvs.emplace_back(1, 0);
-                this->uvs.emplace_back(0.833333, 0.166666);
-                this->uvs.emplace_back(1, 0.166666);
+                x_offset = 5;
+                y_offset = 0;
                 break;
             case ' ':
+            default:
+                // space by default
                 this->uvs.emplace_back(0.0f, 0.0f);
                 this->uvs.emplace_back(0.04, 0.0);
                 this->uvs.emplace_back(0.0f, 0.04f);
                 this->uvs.emplace_back(0.04f, 0.04f);
                 break;
-            case ',':
-                break;
-            case '.':
-                break;
-
         }
+
+        this->uvs.emplace_back(x_offset / x_width, y_offset / y_width);
+        this->uvs.emplace_back((x_offset + 1) / x_width, y_offset / y_width);
+        this->uvs.emplace_back(x_offset / x_width, (y_offset + 1) / y_width);
+        this->uvs.emplace_back((x_offset + 1) / x_width, (y_offset + 1) / y_width);
     }
 
     this->vao = DrawableEntity::initVertexArray(
