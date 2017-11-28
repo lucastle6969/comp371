@@ -49,14 +49,6 @@ public:
             const unsigned int FONT_STYLE,
             Entity* parent
     );
-    Text(
-            const GLuint& shader_program,
-            const std::vector<std::string>& messageArray,
-            const int line_height,
-            const float left_margin,
-            const unsigned int FONT_STYLE,
-            Entity* parent
-    );
     ~Text() override;
     const std::vector<glm::vec3>& getVertices() const override;
     GLuint getVAO() override;

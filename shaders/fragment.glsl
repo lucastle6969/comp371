@@ -117,7 +117,7 @@ void main()
             color = vec4(mix(
                 vec3(texture(tex_image, tex_coord)),
                 fog_color,
-                nighttime_value * 0.4 + 0.6
+                nighttime_value * 0.2 + 0.8
             ), 1);
             break;
         case COLOR_FONT:

@@ -34,7 +34,6 @@ World::World(
     player_min_world_y(FLT_MAX),
     player_max_world_y(-FLT_MAX)
 {
-
     // hide the axes by default
 	this->axes.hide();
 
@@ -44,9 +43,11 @@ World::World(
 	// assume player's floating position from ground will remain constant and use
 	// the y range of the model to create specialized entity hit boxes for collision
 	// detection
+    glm::mat4 player_model_matrix = player.getModelMatrix();
 	for (const glm::vec3& vertex : this->player.getVertices()) {
-		this->player_min_world_y = std::min(this->player_min_world_y, vertex.y);
-		this->player_max_world_y = std::max(this->player_max_world_y, vertex.y);
+        float y = (player_model_matrix * glm::vec4(vertex, 1.0f)).y;
+        this->player_min_world_y = std::min(this->player_min_world_y, y);
+        this->player_max_world_y = std::max(this->player_max_world_y, y);
 	}
 	HitBox2d player_starting_hitbox(this->player);
 	// populate tiles
@@ -79,9 +80,40 @@ const Player* World::getPlayer()
 	return &this->player;
 }
 
-Text* World::getMenu()
-{
-    return &this->menu;
+Text* World::getMenu() {
+	return &this->menu;
+}
+
+bool World::pollWorld(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units) {
+    if(player.deadTime != player.deadMax){
+        if(player.fore){
+            player.moveBack(view_vec, up_vec, units);
+        }
+        else if(player.back){
+            player.moveForward(view_vec, up_vec, units);
+        }
+        else if(player.left){
+            player.moveRight(view_vec, up_vec, units);
+        }
+        else{
+            player.moveLeft(view_vec, up_vec, units);
+        }
+//        if(player.fore){
+//            player.moveForward(view_vec, up_vec, -units / (float)player.deadMax);
+//        }
+//        else if(player.back){
+//            player.moveBack(view_vec, up_vec, -units/ (float)player.deadMax);
+//        }
+//        else if(player.left){
+//            player.moveLeft(view_vec, up_vec, -units/ (float)player.deadMax);
+//        }
+//        else{
+//            player.moveRight(view_vec, up_vec, -units/ (float)player.deadMax);
+//        }
+        player.deadTime++;
+        return true;
+    }
+    return false;
 }
 
 void World::toggleAxes()
@@ -190,50 +222,77 @@ void World::setPlayerOpacity(const float& opacity)
 
 void World::movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveForward(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+    if(player.deadTime == player.deadMax) {
+        glm::vec3 old_player_position = this->player.getPosition();
+        HitBox2d player_hitbox(this->player);
+        this->player.moveForward(view_vec, up_vec, units);
+        if (this->collidesWith(player_hitbox)) {
+            player.deadTime = 0;
+            player.fore = true;
+            this->player.setPosition(old_player_position);
+//            this->player.setPosition(player.oldPosition);
+        } else {
+            this->checkPosition();
+        }
+        player.oldPosition = old_player_position;
+    }
+    else{  }
 }
 
 void World::movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveBack(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+
+    if(player.deadTime == player.deadMax){
+        glm::vec3 old_player_position = this->player.getPosition();
+        HitBox2d player_hitbox(this->player);
+        this->player.moveBack(view_vec, up_vec, units);
+        if (this->collidesWith(player_hitbox) ) {
+            player.deadTime = 0;
+            player.back = true;
+            this->player.setPosition(old_player_position);
+//            this->player.setPosition(player.oldPosition);
+        } else {
+            this->checkPosition();
+        }
+        player.oldPosition = old_player_position;
+    }
+
 }
 
 void World::movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveLeft(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+    if(player.deadTime == player.deadMax){
+        glm::vec3 old_player_position = this->player.getPosition();
+        HitBox2d player_hitbox(this->player);
+        this->player.moveLeft(view_vec, up_vec, units);
+        if (this->collidesWith(player_hitbox)) {
+           player.deadTime = 0;
+            player.right = true;
+            this->player.setPosition(old_player_position);
+//            this->player.setPosition(player.oldPosition);
+        } else {
+            this->checkPosition();
+        }
+        player.oldPosition = old_player_position;
+    }
 }
 
 void World::movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveRight(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+    if(player.deadTime == player.deadMax) {
+        glm::vec3 old_player_position = this->player.getPosition();
+        HitBox2d player_hitbox(this->player);
+        this->player.moveRight(view_vec, up_vec, units);
+        if (this->collidesWith(player_hitbox)) {
+//            this->player.setPosition(player.oldPosition);
+            this->player.setPosition(old_player_position);
+            player.deadTime = 0;
+            player.left = true;
+        } else {
+            this->checkPosition();
+        }
+        //player.oldPosition = old_player_position;
+    }
 }
 
 void World::movePlayerForwardLeft(
@@ -241,14 +300,17 @@ void World::movePlayerForwardLeft(
 	const glm::vec3& up_vec,
 	const float& units
 ) {
+
 	glm::vec3 old_player_position = this->player.getPosition();
 	HitBox2d player_hitbox(this->player);
 	this->player.moveForwardLeft(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+        this->player.setPosition(player.oldPosition);
+    } else {
+        this->checkPosition();
+    }
+    player.oldPosition = old_player_position;
+
 }
 
 void World::movePlayerForwardRight(
@@ -256,14 +318,16 @@ void World::movePlayerForwardRight(
 	const glm::vec3& up_vec,
 	const float& units
 ) {
+
 	glm::vec3 old_player_position = this->player.getPosition();
 	HitBox2d player_hitbox(this->player);
 	this->player.moveForwardRight(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+        this->player.setPosition(player.oldPosition);
+    } else {
+        this->checkPosition();
+    }
+    player.oldPosition = old_player_position;
 }
 
 void World::movePlayerBackLeft(
@@ -275,10 +339,11 @@ void World::movePlayerBackLeft(
 	HitBox2d player_hitbox(this->player);
 	this->player.moveBackLeft(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+        this->player.setPosition(player.oldPosition);
+    } else {
+        this->checkPosition();
+    }
+    player.oldPosition = old_player_position;
 }
 
 void World::movePlayerBackRight(
@@ -290,10 +355,11 @@ void World::movePlayerBackRight(
 	HitBox2d player_hitbox(this->player);
 	this->player.moveBackRight(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-		this->player.setPosition(old_player_position);
-	} else {
-		this->checkPosition();
-	}
+        this->player.setPosition(player.oldPosition);
+    } else {
+        this->checkPosition();
+    }
+    player.oldPosition = old_player_position;
 }
 
 bool World::collidesWith(const HitBox2d& box)

@@ -1,9 +1,9 @@
 #include <cmath>
 #include <src/loadTexture.hpp>
 
-#include "trees/Tree.hpp"
-#include "trees/TreeA.hpp"
-#include "trees/TrunkAB.hpp"
+#include "Trees/Tree.hpp"
+#include "Trees/TreeA.hpp"
+#include "Trees/TrunkAB.hpp"
 #include "Tentacle.hpp"
 
 constexpr int Tentacle::branches;

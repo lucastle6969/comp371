@@ -18,7 +18,7 @@
 
 #include "LeafAB.hpp"
 #include "LeafBranchAB.hpp"
-#include "src/entities/trees/TrunkAB.hpp"
+#include "src/entities/Trees/TrunkAB.hpp"
 #include "src/TreeRandom.hpp"
 
 

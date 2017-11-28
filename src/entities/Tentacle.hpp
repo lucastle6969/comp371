@@ -60,12 +60,12 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "trees/TrunkAB.hpp"
-#include "trees/LeafContainerAB.hpp"
+#include "Trees/TrunkAB.hpp"
+#include "Trees/LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
-#include "trees/Tree.hpp"
+#include "Trees/Tree.hpp"
 
 class Tentacle : public Tree {
 private:
