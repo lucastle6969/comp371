@@ -45,6 +45,7 @@ const int COLOR_TILE = 3;
 const int COLOR_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 const int COLOR_TREE = 6;
+const int COLOR_SKY_TEXTURE = 7;
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -98,11 +99,10 @@ void main()
         case COLOR_TEXTURE:
             color = texture(tex_image, tex_coord);
             break;
-        case COLOR_LIGHTING: {
+        case COLOR_LIGHTING:
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
             color = calculateColor (material.ambient);
             break;
-        }
         case COLOR_TREE:
             color = calculateColor(
                 0.3f * vec3(
@@ -111,6 +111,13 @@ void main()
                     1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f)
                 )
             );
+            break;
+        case COLOR_SKY_TEXTURE:
+            color = vec4(mix(
+                vec3(texture(tex_image, tex_coord)),
+                fog_color,
+                nighttime_value * 0.4 + 0.6
+            ), 1);
             break;
         default:
             color = WHITE;

@@ -189,7 +189,7 @@ GLuint Skybox::getVAO() {
 }
 
 const int Skybox::getColorType() {
-    return COLOR_TEXTURE;
+    return COLOR_SKY_TEXTURE;
 }
 
 GLuint Skybox::getTextureId()
