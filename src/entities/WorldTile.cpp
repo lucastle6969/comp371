@@ -99,14 +99,15 @@ WorldTile::WorldTile(
 	//enable tree distributor function
 	//TreeDistributor::setEntity(this);
 	// add trees
-<<<<<<< HEAD
+
 	for (int i = 0; i < 5; i++) {
         static const float scale_factor = 100;
         float base_span = utils::randomFloat(0.02f, 0.05f);
         float internal_tree_width = base_span * scale_factor;
         float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
         float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
-        int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position)) * scale_factor;
+		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
+		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
         // Add tree child
         Tree *tree;
         //general biome
@@ -168,33 +169,6 @@ WorldTile::WorldTile(
             }
         }
 		std::cout << world_x_location << " "<< world_z_location <<  " " << seed << "\n";
-=======
-	for (int i = 0; i < 2; i++) {
-		static const float scale_factor = 100;
-		float base_span = utils::randomFloat(0.02f, 0.05f);
-		float internal_tree_width = base_span * scale_factor;
-		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
-		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
-				// Add tree child
-		Tree* tree;
-		if(seed % 10 < 6){
-			if(seed%2 == 0)
-				tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
-            else if(seed % 3 == 1)
-                    tree = new Tentacle(shader_program, this, internal_tree_width*2.5, seed);
-			else
-				tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
-		}
-		else if(seed % 10 < 7){
-			tree = new TreeB(shader_program, this, internal_tree_width, seed);
-		}
-		else{
-			tree = new TreeC(seed % 15, shader_program, this, internal_tree_width, seed);
-		}
-//		std::cout << x_position << " " <<  z_position <<" " << tree->getType() << "\n";
->>>>>>> 9e773be442eeb239519d5e7fb41593f6d9f60e81
 		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));
 		// Add tree to trees array
