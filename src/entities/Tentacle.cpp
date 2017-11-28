@@ -13,20 +13,24 @@ constexpr int Tentacle::previousRotationCap;
 constexpr double Tentacle::trunkRatio;
 constexpr double Tentacle::branchRatio;
 
-Tentacle::Tentacle(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
+Tentacle::Tentacle(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed,
+                   bool isAlien, bool isTextured):
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'A'){
-    std::clock_t startTime;
-    double duration;
-    startTime = std::clock();
 
-        textureMap = textureMap1;
+
+        this->isAlien = isAlien;
+        this->isTextured = isTextured;
+
+    if(isAlien) Tentacle::colorType = COLOR_TREE;
+    else Tentacle::colorType = COLOR_LIGHTING;
+
+
+    textureMap = textureMap1;
 
 	
 	this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 20.0f);
     treeSetup(shader_program, trunkDiameter, seed);
 
-    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-   // printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
 void Tentacle::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
@@ -274,7 +278,8 @@ void Tentacle::moveSegments(const int& previousRotation, AttatchmentGroupings* a
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void Tentacle::bufferObject(const GLuint& shader_program) {
-    this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, combinedUV,  &vbo, &ebo, &nbo, &uvbo);
+    if(isTextured)  this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, combinedUV,  &vbo, &ebo, &nbo, &uvbo);
+    else            this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals,  &vbo, &ebo, &nbo);
     //stbi_image_free(image_data);
 }
 
@@ -297,5 +302,5 @@ GLuint Tentacle::getTextureId()
 }
 
 const int Tentacle::getColorType() {
-    return COLOR_TREE;
+    return colorType;
 }

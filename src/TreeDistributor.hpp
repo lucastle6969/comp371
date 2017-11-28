@@ -1,6 +1,4 @@
-//
-// Created by Tof on 2017-11-20.
-//
+////////DISCONTINUED//////////////
 
 #ifndef PROCEDURALWORLD_TREEDISTRIBUTOR_H
 #define PROCEDURALWORLD_TREEDISTRIBUTOR_H

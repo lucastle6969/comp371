@@ -22,7 +22,8 @@ Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shad
     this->heightChunking = heightChunking;
     this->boostFactor = boostFactor;
     this->type = type;
-    this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 10.0f);
+
+    this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 0.5f);
 }
 
 Tree::~Tree() {
