@@ -316,6 +316,7 @@ int main()
 		light.daytime = glm::rotateZ(light.daytime, 0.0005f);
         //move the fog
 		glm::vec3 player_position = world->getPlayer()->getPosition();
+        world->getMenu()->setPosition(glm::vec3(player_position.x -0.05, -0.96, player_position.z-0.05));
 		light.light_position = player_position;
 		skybox.setPosition(player_position);
 
