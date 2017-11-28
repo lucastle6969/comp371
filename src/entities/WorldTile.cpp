@@ -52,9 +52,9 @@ WorldTile::WorldTile(
 //    text->scale(0.7);
 //    this->text.emplace_back(text);
 
-    TextB* textb = new TextB(shader_program, "d", 0, 0, this);
+    TextB* textb = new TextB(shader_program, "carlo", 0, 0, this);
     textb->setPosition(glm::vec3(0.6, 0.0f, 0.3));
-    textb->scale(0.1);
+    textb->scale(10.0f);
     this->textB.emplace_back(textb);
 
     // TODO: better tree/rock distribution?
