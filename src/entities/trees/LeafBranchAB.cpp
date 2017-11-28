@@ -1,4 +1,5 @@
 #include "LeafBranchAB.hpp"
+#include "TrunkAB.hpp"
 
 void LeafBranchAB::buildLeafBranch(const float& trunkDiameter, int y , float textureLeafStart ){
     for (int n = 0; n < branchPoints ; n++) {
@@ -12,7 +13,7 @@ void LeafBranchAB::buildLeafBranch(const float& trunkDiameter, int y , float tex
                 tempTrunkDiameter *  cos(glm::radians(itterations  * n))));
         unsigned  long s = leafVertices->size();
         leafUVs->resize(s);
-        leafUVs->at(s - 1) = {(n) % 2, 1 - textureLeafStart * (y % 2)};
+        leafUVs->at(s - 1) = {(n) % 2, 1 - textureLeafStart * ((y + (!TrunkAB::constructionFlowCounter )) % 2)};
     }
 }
 
@@ -28,7 +29,6 @@ void LeafBranchAB::buildBranchElements(int baseVerticesSize, int i, int len){
             leafIndices->push_back(set + 0);
             leafIndices->push_back(set + n);
             leafIndices->push_back(base + n);
-            leafUVs->push_back(glm::vec2((float) (n + nSolution) / branchPoints, (float) i / (len)));
             nSolution++;
         } else {
             leafIndices->push_back(base + n);

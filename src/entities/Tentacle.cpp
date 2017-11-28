@@ -1,46 +1,47 @@
 #include <cmath>
 #include <src/loadTexture.hpp>
 
-#include "Tree.hpp"
-#include "TreeA.hpp"
+#include "trees/Tree.hpp"
+#include "trees/TreeA.hpp"
+#include "trees/TrunkAB.hpp"
+#include "Tentacle.hpp"
 
-constexpr int TreeA::branches;
-constexpr int TreeA::k;
-constexpr int TreeA::previousRotationCap;
+constexpr int Tentacle::branches;
+constexpr int Tentacle::k;
+constexpr int Tentacle::previousRotationCap;
 
-constexpr double TreeA::trunkRatio;
-constexpr double TreeA::branchRatio;
+constexpr double Tentacle::trunkRatio;
+constexpr double Tentacle::branchRatio;
 
-TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed, bool isAlien):
+Tentacle::Tentacle(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'A'){
-
     std::clock_t startTime;
     double duration;
     startTime = std::clock();
 
+        textureMap = textureMap1;
 
-    textureMap = textureMap1;
-
-    this->isAlien = isAlien;
-    if(isAlien) TreeA::colorType = COLOR_TREE;
-    else TreeA::colorType = COLOR_LIGHTING;
-
+	
+	this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 20.0f);
     treeSetup(shader_program, trunkDiameter, seed);
 
+    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
+   // printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
-void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
+void Tentacle::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
+    widthCut = 0.5;//trunkDiameter / 32;
     finalCut = widthCut;
 
     combinedStartIndices.push_back({-1,0,0,0});
-    generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
+    generateTentacle(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
     rotate(TreeRandom::treeRandom(trunkDiameter, seed,100), glm::vec3(0.0f,1.0f,0.0f));
     bufferObject(shader_program);
 }
 
-void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& seed,
+void Tentacle::generateTentacle(const int& _case, float trunkDiameter, const float& seed,
                           float angleX, float angleY, float angleZ, char tag,
                           AttatchmentGroupings* ag, float lineHeight) {
     int currentLineLength = lineHeight;
@@ -75,23 +76,18 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
                 angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed * (n+1), currentLineLength* (n + 1), maxYBranchAngle, minYBranchAngle);
                 angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed* (n + 1) * 7, currentLineLength* (n + 1), maxYBranchAngle, minYBranchAngle); //* (((int)seed) % 2 == 0 ? -1 : 1);
                 //angleY = angleY;
-
-                generateTreeA(TRUNK, ShootDiameterBranch / (branches), seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
+                generateTentacle(TRUNK, ShootDiameterBranch / (branches), seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             }
-            //1A7. On new trunk join to junction and continue
-            angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle) ;
-            angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
-            ///angleY = angleY;
-            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
-            generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
-            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
+  
             initiateMove(agNew);
             agNew->selfErase();
             delete agNew;
             break;
         case TRUNK:
             if (trunkDiameter < widthCut) {
-                generateTreeA(LEAF, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, 0);
+                generateTentacle(LEAF, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, 0);
                 if (trunkDiameter < finalCut) {
                     return;
                 }
@@ -128,17 +124,15 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
                     angleZ = TreeRandom::branchAngleFromRandom(trunkDiameter, seed, currentLineLength, maxYBranchAngle, minYBranchAngle);
                     angleX = TreeRandom::branchAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, maxYBranchAngle, minYBranchAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
                     ///angleY = angleY;
-                    generateTreeA(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
+                    generateTentacle(TRUNK, ShootDiameterBranch, seed, -std::abs(angleX), angleY, std::abs(angleZ), 'R', agNew, 0);
+                    TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
                 }
-            }
 
-            //1A7. On new trunk create circle then indices flowing back once to top circle.
-            angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed, currentLineLength, minYTrunkAngle, maxYTrunkAngle);
-            angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, minYTrunkAngle, maxYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
-            angleY = angleY;
-            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
-            generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
-            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
+
+
+
+            }
             break;
         case LEAF:
             //1B. If trunk width is past a threshold then create a leaf line
@@ -165,7 +159,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             //2. Translate and rotate into given location
             //get branch end, get leaf segment start get leaf segment end
 
-            generateTreeA(END_TRUNK, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, lineHeight);
+            generateTentacle(END_TRUNK, trunkDiameter, seed, angleX, angleY, angleZ, tag, ag, lineHeight);
             break;
         default:
             return; break;
@@ -175,7 +169,7 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
     //4. Generate rendering properties.
 }
 
-float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
+float Tentacle::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     const float lineSegments = ((float)lineMax) / heightChunking;
@@ -184,6 +178,7 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     );
     do {
         loopInitialTrunk = trunk.buildTrunk(trunkDiameter, lineSegments);
+        TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     } while (loopInitialTrunk && trunk.getLineHeight() < lineMax);
     if (lineHeight >= lineMax)
         return -1;
@@ -193,22 +188,21 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
 
 }
 
-void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
+void Tentacle::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
     LeafContainerAB lc(&combinedVertices,
-                       &combinedIndices,
+                      &combinedIndices,
                        &combinedUV,
                       seed);
     //a leaf container is an object that holds a set of leaves and a branch that they're held on
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
 }
-//atatchment grouping -> See Tree.hpp
-void TreeA::initiateMove(AttatchmentGroupings* ag){
+
+void Tentacle::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
     const int circularPoints = TrunkAB::trunkPoints;
     int rotationPoint = std::abs((ag->angleY) % (int)(circularPoints / limiter ));
 
-    //limit rotations to one segment at a time
     rotationPoint = rotationPoint == 0 ? 0 : 1;
 
     const float r = 360.0f/circularPoints  * (rotationPoint);
@@ -225,30 +219,7 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
     moveSegments(previousRotation, ag);
 }
 
-
-
-/*
- *
- * 1_______2
- *  |     |
- *  |     |
- *  |_____|
- * 0       3
- *
- * This figure rotates and needs to connect with a lower square.
- *
- * eg.
- *  0______1
- *  |     |
- *  |     |
- *  |_____|
- * 3       2
- *
- * The methods below do this procedure and pass on rotation information to the move connect, compute and recurse back
- * through binary recursion until the furthest branch has been reached.
- *
- */
-void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
+void Tentacle::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
     for (int m = 0; m < 2; m++) {
         if (ag->ag[m] == nullptr) continue;
         int moveTo = 0;
@@ -302,25 +273,29 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 }
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
-void TreeA::bufferObject(const GLuint& shader_program) {
-    if(isAlien)  this->vao  = initVertexArray(combinedVertices, combinedIndices, combinedNormals,
-                                              &vbo, &ebo, &nbo);
-    else         this->vao = initVertexArray(combinedVertices, combinedIndices, combinedNormals,
-                                             combinedUV,  &vbo, &ebo, &nbo, &uvbo);
+void Tentacle::bufferObject(const GLuint& shader_program) {
+    this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, combinedUV,  &vbo, &ebo, &nbo, &uvbo);
+    //stbi_image_free(image_data);
 }
 
-//use carlo's loading systems
-GLuint TreeA::getTextureId()
+void Tentacle::setTreeLoaded(bool val){
+    treeLoaded = val;
+}
+
+void Tentacle::setTreeInit(bool val){
+    treeInit = val;
+}
+
+GLuint Tentacle::getTextureId()
 {
     static GLuint tA_texture = loadTexture(
                 textureMap,
-                GL_NEAREST,
-                GL_LINEAR
+                GL_LINEAR_MIPMAP_LINEAR,
+                GL_NEAREST
         );
     return tA_texture;
 }
 
-const int TreeA::getColorType() {
-    return colorType;
-
+const int Tentacle::getColorType() {
+    return COLOR_TREE;
 }

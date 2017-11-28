@@ -60,6 +60,7 @@ private:
     int previousRotation;
 
     float widthCutoff = 0.05;
+
     float finalCutoff;
     bool kill;
 
