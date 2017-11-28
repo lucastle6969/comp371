@@ -4,6 +4,7 @@ in vec3 pos;
 in vec3 worldPos;
 in vec3 worldNormal;
 in vec2 tex_coord;
+in vec4 frag_pos_light_space;
 
 struct SunLight {
     vec3 direction;
@@ -30,9 +31,14 @@ uniform int color_type;
 uniform int entity_position_x;
 uniform int entity_position_z;
 uniform float opacity;
+
 uniform sampler2D tex_image;
+uniform sampler2D shadow_map;
+
+uniform vec3 light_pos;
 
 uniform bool use_texture;
+uniform bool shadow;
 
 uniform vec3 worldViewPos;
 
@@ -45,6 +51,7 @@ const int COLOR_TILE = 3;
 const int COLOR_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 const int COLOR_TREE = 6;
+
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -59,6 +66,7 @@ struct ColorComponents {
 };
 
 vec4 calculateColor(vec3 ambientColor);
+vec4 calculateColor2(vec3 ambientColor, float shadow);
 ColorComponents calculateColor(
     const vec3 light_dir,
     const vec3 light_color,
@@ -77,44 +85,54 @@ uniform vec3 fog_color;
 uniform float daytime_value;
 uniform float nighttime_value;
 
+float ShadowCalculation(vec4 frag_pos_light_space);
+
 void main()
 {
-    switch (color_type) {
 
-        case COLOR_COORDINATE_AXES:
-            color = vec4(ceil(pos), 1.0f);
-            break;
-        case COLOR_WHITE:
-            color = WHITE;
-            break;
-        case COLOR_HEIGHT:
-             color = calculateColor(0.3f * vec3(pos.y));
-            break;
-        case COLOR_TILE:
-            color = calculateColor(
-                0.3f * vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f)
-            );
-            break;
-        case COLOR_TEXTURE:
-            color = texture(tex_image, tex_coord);
-            break;
-        case COLOR_LIGHTING: {
-            // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
-            color = calculateColor (material.ambient);
-            break;
-        }
-        case COLOR_TREE:
-            color = calculateColor(
+    if(shadow){
+    //intentionally do nothing
+
+    }
+    else{
+        switch (color_type) {
+
+            case COLOR_COORDINATE_AXES:
+                color = vec4(ceil(pos), 1.0f);
+                break;
+            case COLOR_WHITE:
+                color = WHITE;
+                break;
+            case COLOR_HEIGHT:
+                color = calculateColor(0.3f * vec3(pos.y));
+                break;
+            case COLOR_TILE:
+                color = calculateColor(
+                    0.3f * vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f)
+                );
+                break;
+            case COLOR_TEXTURE:
+                color = texture(tex_image, tex_coord);
+                break;
+            case COLOR_LIGHTING: {
+                // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
+                float shadow = ShadowCalculation(frag_pos_light_space);
+                color = calculateColor2(material.ambient, shadow);
+                break;
+                }
+            case COLOR_TREE:
+                color = calculateColor(
                 0.3f * vec3(
                     1.0f - abs(pos.x / 10.0f) - abs(pos.y /1000.0f),
                     1.0f,
                     1.0f - abs(pos.z/ 10.0f) - abs(pos.y /1000.0f)
-                )
-            );
-            break;
-        default:
-            color = WHITE;
-            break;
+                    )
+                );
+                break;
+            default:
+                color = WHITE;
+                break;
+        }
     }
 }
 
@@ -164,6 +182,65 @@ vec4 calculateColor(vec3 ambientColor){
     }
 
     return vec4(mix(fog_color, ambientValue + diffuseValue + specularValue, fog), opacity);
+}
+
+vec4 calculateColor2(vec3 ambientColor, float shadow){
+   // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
+    vec3 normal = normalize(worldNormal);
+    vec3 view_dir = normalize(worldViewPos - worldPos);
+    // we're passing in the direction of the sunlight but we want the vector
+    // pointing TOWARD the sun!
+    vec3 sun_dir = -1.0f * normalize(sunLight.direction);
+    vec3 pointlight_dir = normalize(pointLight.position - worldPos);
+    float point_distance = length(pointLight.position - worldPos);
+    // fog thats right we have fog
+    fog = (fog_end - length(point_distance))/(fog_end-fog_start);
+    float attenuation = 1.0f /
+       (constant + linear * point_distance + quadratic * (point_distance * point_distance));
+
+    // get individual components (before texture/attenuation)
+    // of sunlight and point light
+    ColorComponents sunlight_components = calculateColor(
+       sun_dir,
+       sunLight.color,
+       normal,
+       view_dir
+    );
+    ColorComponents pointlight_components = calculateColor(
+       pointlight_dir,
+       pointLight.color,
+       normal,
+       view_dir
+    );
+
+    vec3 ambientValue = max(ambientColor, 0);
+    vec3 diffuseValue =
+        (max(sunlight_components.diffuse, 0) * nighttime_value) +
+        (max(pointlight_components.diffuse * attenuation, 0) * daytime_value);
+    vec3 specularValue =
+       (max(sunlight_components.specular, 0) * nighttime_value) +
+       (max(pointlight_components.specular * attenuation, 0) * daytime_value);
+
+    if (use_texture) {
+       // multiply components against texture value but only if we've
+       // got a texture!
+       vec3 tex3 = vec3(texture(tex_image, tex_coord));
+       ambientValue *= tex3;
+       diffuseValue *= tex3;
+    }
+
+    return vec4(mix(fog_color, (ambientValue + (1.0 - shadow)) + diffuseValue + specularValue, fog), opacity);
+}
+
+float ShadowCalculation(vec4 frag_pos_light_space)
+{
+    vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
+    proj_coords = proj_coords * 0.5 + 0.5;
+    float closest_depth = texture(shadow_map, proj_coords.xy).r;
+    float current_depth = proj_coords.z;
+    float shadow = current_depth > closest_depth ? 1.0 : 0.0;
+
+    return shadow;
 }
 
 // compute the basic color without considering attenuation or texture multiplication

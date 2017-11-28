@@ -16,6 +16,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "glsetup.hpp"       // include gl context setup function
 #include "shaderprogram.hpp" // include the shader program compiler
@@ -261,9 +262,9 @@ int main()
     glGenFramebuffers(1, &depthMapFBO);
 
     //2D texture that we'll use as the framebuffer's depth buffer
-    unsigned int depthTexture;
-    glGenTextures(1, &depthTexture);
-    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    unsigned int depth_map;
+    glGenTextures(1, &depth_map);
+    glBindTexture(GL_TEXTURE_2D, depth_map);
 
     glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -272,16 +273,28 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_map, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glActiveTexture(GL_TEXTURE0);
+
 
     //ortho box size for shadow calculation
     float ortho_box_left = -3.0f;
     float ortho_box_right = 3.0f;
     float ortho_box_bottom = 0.0f;
     float ortho_box_top = 3.0f;
+
+
+
+    GLuint shadow_map_loc = glGetUniformLocation(shader_program, "shadow_map");
+
+    GLuint is_shadow_pass_loc = glGetUniformLocation(shader_program, "shadow");
+
+    GLuint light_space_loc = glGetUniformLocation(shader_program, "light_space_matrix");
+
+    glUniform1i(shadow_map_loc, depth_map);
 
 
 
@@ -332,10 +345,38 @@ int main()
 
         glm::mat4 light_view = glm::lookAt(light_position, scene_center, glm::vec3(0.0f, 1.0f,0.0f));
 
-        glm::mat4 lightSpaceMatrix = light_projection_matrix * light_view;
+        glm::mat4 light_space_matrix = light_projection_matrix * light_view;
+
+        glUniform1i(is_shadow_pass_loc, 1);
+
+        glUniformMatrix4fv(light_space_loc, 1, GL_FALSE, glm::value_ptr(light_space_matrix));
+
+        glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glViewport(0,0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+            glClear(GL_DEPTH_BUFFER_BIT);
 
 
-        // Render
+        glm::mat4 projection_matrixA = glm::perspective(
+                glm::radians(fovy),
+                (GLfloat)framebuffer_width / (GLfloat)framebuffer_height,
+                15.0f * player_scale,
+                1500.0f * player_scale
+        );
+
+        glm::vec3 player_positionA = world->getPlayer()->getPosition();
+        glm::mat4 view_matrixA = glm::lookAt(player_positionA - follow_vector, player_positionA, up);
+        //draw here
+        world->draw(view_matrixA, projection_matrixA, light);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        //reset viewport
+        glViewport(0,0,800,800);
+
+        glUniform1i(is_shadow_pass_loc, 0);
+        // Render (normal draw)
 		// Clear the colorbuffer
 		glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -343,7 +384,7 @@ int main()
 		glm::vec3 player_position = world->getPlayer()->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - follow_vector, player_position, up);
 
-		float player_scale = getPlayerScaleCoefficient();
+		//float player_scale = getPlayerScaleCoefficient();
 		glm::mat4 projection_matrix = glm::perspective(
 			glm::radians(fovy),
 			(GLfloat)framebuffer_width / (GLfloat)framebuffer_height,
@@ -351,6 +392,8 @@ int main()
 			1500.0f * player_scale
 		);
 
+        glActiveTexture(shadow_map_loc);
+        glBindTexture(GL_TEXTURE_2D, depth_map);
 		world->draw(view_matrix, projection_matrix, light);
 
 		// Swap the screen buffers

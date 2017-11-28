@@ -135,8 +135,8 @@ void DrawableEntity::draw(
 	glUniform1i(use_texture_loc, texture_id != UINT_MAX);
 
 	// TODO: figure out why the commented-out code below fails on macOS
-	// glUniform1i(tex_image_loc, GL_TEXTURE0);
-	// glActiveTexture(GL_TEXTURE0);
+    //glUniform1i(glGetUniformLocation(shader_program, "tex_image"), GL_TEXTURE8);
+
 
 	// Draw
 	glBindVertexArray(this->getVAO());
@@ -146,6 +146,7 @@ void DrawableEntity::draw(
 //		//doesn't work though
 //		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
 //	} else {
+        glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
 		int element_buffer_array_size;
