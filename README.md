@@ -10,12 +10,13 @@ Works on macOS and Linux. Should work for Windows, but not recently tested.
 
 ### Controls
 
-* Use WASD or the arrow keys to move the player forward, back, left or right
-* Click the window with the left mouse button to capture the mouse and enter camera look mode
-* Move the mouse in camera look mode to rotate about the player and change the forward direction
+* Use WASD or the arrow keys to move the player forward, back, left or right.
+* Click the window with the left mouse button to capture the mouse and enter camera look mode.
+* Move the mouse in camera look mode to rotate about the player and change the forward direction.
 * Press escape to exit camera look mode, and get your mouse back
+* Scroll up to narrow the viewer perspective (zoom in) and scroll down to zoom out.
+* Press the `0` key at any time to print a seed value to the console. You can enter this later to generate a world at the same starting position.
 * Press the grave/backtick button (`) to toggle the visibility of the X, Y and Z axes (hidden by default)
-* Press backspace to reset the camera
 
 ## Building
 

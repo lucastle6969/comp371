@@ -144,11 +144,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_GRAVE_ACCENT:
 				world->toggleAxes();
 				break;
-			case GLFW_KEY_BACKSPACE:
-				// Reset camera
-				pitch = initial_pitch;
-				yaw = initial_yaw;
+			case GLFW_KEY_0: {
+				// Print world seed based on player position
+				glm::vec3 player_position = world->getPlayer()->getPosition();
+				std::cout << "Seed for current world location: ";
+				std::cout << player_position.x << ':' << player_position.z << std::endl;
 				break;
+			}
 			case GLFW_KEY_ESCAPE:
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				break;
