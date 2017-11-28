@@ -109,6 +109,8 @@ add_executable(proceduralworld
     src/entities/Trees/LeafContainerC.hpp
     src/entities/Skybox.cpp
     src/entities/Skybox.hpp
+    src/entities/Text.hpp
+    src/entities/Text.cpp
 )
 
 # Link librarssies

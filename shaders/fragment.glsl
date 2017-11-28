@@ -46,6 +46,7 @@ const int COLOR_UNLIT_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 const int COLOR_TREE = 6;
 const int COLOR_SKY_TEXTURE = 7;
+const int COLOR_FONT = 8;
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -118,6 +119,12 @@ void main()
                 fog_color,
                 nighttime_value * 0.2 + 0.8
             ), 1);
+            break;
+        case COLOR_FONT:
+            vec4 texel = texture(tex_image, tex_coord);
+            if(texel.a < 0.5)
+                discard;
+            color = texel;
             break;
         default:
             color = WHITE;

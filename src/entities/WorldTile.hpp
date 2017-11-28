@@ -19,6 +19,7 @@
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "RockB.hpp"
+#include "Text.hpp"
 
 class WorldTile: public DrawableEntity {
 private:
@@ -26,6 +27,7 @@ private:
     std::vector<RockB*> rocksB;
 	std::vector<Tree*> trees;
 	std::vector<HitBox2d> hitboxes;
+    Text seed_loc_message;
 public:
 	WorldTile(
 		const GLuint& shader_program,

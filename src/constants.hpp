@@ -11,7 +11,10 @@ static const int COLOR_UNLIT_TEXTURE = 4;
 static const int COLOR_LIGHTING = 5;
 static const int COLOR_TREE = 6;
 static const int COLOR_SKY_TEXTURE = 7;
+static const int COLOR_FONT = 8;
 
+static unsigned int FONT_STYLE_MYTHOS = 1;
+static unsigned int FONT_STYLE_OUTLINE = 2;
 
 static const char* APP_NAME = "Procedural World";
 

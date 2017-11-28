@@ -49,6 +49,9 @@ const float first_person_pitch = 20.0f;
 const float max_follow_distance = 300.0f;
 const float first_person_follow_distance = 0.01f;
 
+//menu display
+bool menu = true;
+
 // Camera variables
 float pitch = initial_pitch;
 float yaw = initial_yaw;
@@ -150,15 +153,23 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 // Print world seed based on player position
                 glm::vec3 player_position = world->getPlayer()->getPosition();
                 std::cout << "Seed for current world location: ";
-                std::cout << player_position.x << ':' << player_position.z << std::endl;
+                std::cout << player_position.x << ', ' << player_position.z << std::endl;
                 break;
             }
-            case GLFW_KEY_ESCAPE:
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            case GLFW_KEY_M:
+                //toggle menu
+                if(menu){
+                    menu = false;
+                }else{
+                    menu = true;
+                }
                 break;
-            default:
-                break;
-        }
+			case GLFW_KEY_ESCAPE:
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				break;
+			default:
+				break;
+		}
     }
 }
 
@@ -325,7 +336,7 @@ int main()
 
         // rotate the sun
         light.daytime = glm::rotateZ(light.daytime, 0.0005f);
-        //move the fog
+
         glm::vec3 player_position = world->getPlayer()->getPosition();
         light.light_position = player_position;
         skybox.setPosition(player_position);
@@ -333,6 +344,14 @@ int main()
         light.setDaytime();
 
         float daytime = -light.light_direction.y;
+
+        world->getMenu()->setPosition(glm::vec3(player_position.x -0.035, -0.93, player_position.z-0.05));
+        if(!menu){
+            world->getMenu()->hide();
+        }else{
+            world->getMenu()->unhide();
+        }
+
         // Render
         // Clear the colorbuffer
         glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
