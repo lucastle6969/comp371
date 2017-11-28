@@ -229,7 +229,7 @@ vec4 calculateColor2(vec3 ambientColor, float shadow){
        diffuseValue *= tex3;
     }
 
-    return vec4(mix(fog_color, (ambientValue + (1.0 - shadow)) + diffuseValue + specularValue, fog), opacity);
+    return vec4(mix(fog_color, ambientValue + (1.0 - shadow)*(diffuseValue + specularValue), fog), opacity);
 }
 
 float ShadowCalculation(vec4 frag_pos_light_space)
