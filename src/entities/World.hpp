@@ -57,6 +57,12 @@ public:
 		Entity* parent
 	);
 	~World() override;
+
+
+	///////////
+	bool pollWorld(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	/////////////
+
 	const Player* getPlayer();
 	void toggleAxes();
 	void setPlayerOpacity(const float& opacity);

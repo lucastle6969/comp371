@@ -42,8 +42,8 @@ bool HitBox2d::collidesWith(const HitBox2d& box) const
 			this->world_max_x > box.world_min_x &&
 			this->world_min_z < box.world_max_z &&
 			this->world_max_z > box.world_min_z;
-	if (r) 	std::cout << "this " << *this << std::endl;
-	if (r) 	std::cout << "box " << box << std::endl;
+//	if (r) 	std::cout << "this " << *this << std::endl;
+//	if (r) 	std::cout << "box " << box << std::endl;
 	return r;
 }
 

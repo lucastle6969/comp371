@@ -99,7 +99,6 @@ WorldTile::WorldTile(
                 this->rocksB.emplace_back(rockB);
                 this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
             }
-
             else{
                 // Add rock child
                 Rock* rockA = new Rock(
@@ -115,7 +114,6 @@ WorldTile::WorldTile(
                 rockA->scale(glm::vec3(x_span, y_span, z_span));
                 // Add rock to rocks array
                 this->rocks.emplace_back(rockA);
-                this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
                 this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
             }
         }
@@ -134,11 +132,12 @@ WorldTile::WorldTile(
                     this
             );
             rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
             rockB->scale(glm::vec3(x_span, y_span, z_span));
             // Add rock to rocks array
             this->rocksB.emplace_back(rockB);
             this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
+
+
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
             float y_span = utils::randomFloat(0.005f, 0.015f);
@@ -154,7 +153,6 @@ WorldTile::WorldTile(
                     this
             );
             rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
             rockA->scale(glm::vec3(x_span, y_span, z_span));
             // Add rock to rocks array
             this->rocks.emplace_back(rockA);
@@ -175,11 +173,10 @@ WorldTile::WorldTile(
                         this
                 );
                 rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
                 rockB->scale(glm::vec3(x_span, y_span, z_span));
                 // Add rock to rocks array
                 this->rocksB.emplace_back(rockB);
-            this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
+                this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
 
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
@@ -222,6 +219,13 @@ WorldTile::WorldTile(
             // Add rock to rocks array
             this->rocksB.emplace_back(rockB);
             this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
+
+            float x_span = utils::randomFloat(0.02f, 0.05f);
+            float z_span = utils::randomFloat(0.02f, 0.05f);
+            float y_span = utils::randomFloat(0.005f, 0.015f);
+            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
+            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+
             // Add rock child
             Rock* rockA = new Rock(
                     shader_program,
@@ -236,7 +240,7 @@ WorldTile::WorldTile(
             rockA->scale(glm::vec3(x_span, y_span, z_span));
             // Add rock to rocks array
             this->rocks.emplace_back(rockA);
-
+            this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
             break;
             }
 	}
