@@ -28,10 +28,10 @@ TreeClusterItem::TreeClusterItem (const GLuint& shader_program, Entity* entity, 
     Tree(heightChunking, boostFactor,seed, shader_program, entity, 'G'){
 
     if (trunkDiameter <= 0.0) trunkDiameter = this->zeroSize;
-    else if(trunkDiameter > 2.0)trunkDiameter = 2.0;
     this->trunkDiameter = trunkDiameter;
 
     this->isAlien = isAlien;
+
     if(isAlien) TreeClusterItem::colorType = COLOR_TREE;
     else TreeClusterItem::colorType = COLOR_LIGHTING;
 
@@ -341,43 +341,6 @@ void TreeClusterItem::bufferObject(const GLuint& shader_program) {
     if(isAlien)  this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, &vbo, &ebo, &nbo);
     else         this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals,
                                               combinedUV, &vbo, &ebo,  &uvbo);
-/* Tester code
-    combinedUV->at(0) = {0,1 - 530.0f/800.0};
-    combinedUV->at(1) = {1,1 - 530.0f/800.0};
-    combinedUV->at(2) = {0,1 - 530.0f/800.0};
-    combinedUV->at(3) = {1,1 - 530.0f/800.0};
-
-    combinedUV->at(4) = {0,1 - 430.0f/800.0};
-    combinedUV->at(5) = {1,1 - 430.0f/800.0};
-    combinedUV->at(6) = {0, 1 - 430.0f/800.0};
-    combinedUV->at(7) = {1,1 - 430.0f/800.0};
-
-    combinedUV->at(8) = {0,1 - 330.0f/800.0};
-    combinedUV->at(9) = {1,1 - 330.0f/800.0};;
-    combinedUV->at(10) ={0,1 - 330.0f/800.0};
-    combinedUV->at(11) = {1,1 - 330.0f/800.0};
-
-    combinedUV->at(12) = {0,1 - 230.0f/800.0};
-    combinedUV->at(13) = {1,1 - 230.0f/800.0};
-    combinedUV->at(14) = {0,1 - 230.0f/800.0};
-    combinedUV->at(15) = {1,1 - 230.0f/800.0};
-
-    combinedUV->at(16) = {0,1 - 130.0f/800.0};
-    combinedUV->at(17) = {1,1 - 130.0f/800.0};
-    combinedUV->at(18) = {0,1 - 130.0f/800.0};
-    combinedUV->at(19) = {1,1 - 130.0f/800.0};
-
-    combinedUV->at(20) = {0,1 - 30.0f/800.0};
-    combinedUV->at(21) = {1,1 - 30.0f/800.0};
-    combinedUV->at(22) = {0,1 - 30.0f/800.0};
-    combinedUV->at(23) = {1,1 - 30.0f/800.0};
-
-    combinedUV->at(24) = {0,1};
-    combinedUV->at(25) = {1,1};
-    combinedUV->at(26) = {0,1};
-    combinedUV->at(27) = {1,1};
-*/
-    this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, combinedUV, &vbo, &ebo);
 }
 
 void TreeClusterItem::setLocationFromCenter(const float& circleAngle, const float& distanceFromCenter){
@@ -397,9 +360,7 @@ GLuint TreeClusterItem::getTextureId()
 {
     static GLuint tC_texture = loadTexture( textureMap,
             GL_NEAREST,
-            GL_LINEAR,
-            GL_CLAMP_TO_BORDER,
-            GL_CLAMP_TO_BORDER
+            GL_LINEAR
     );
     return tC_texture;
 }

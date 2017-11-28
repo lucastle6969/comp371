@@ -21,7 +21,6 @@ TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter,
 bool TreeB::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-    widthCut = 0.1;
     finalCut = widthCut;
 
     combinedStartIndices.push_back({ -1, 0, 0, 0 });
@@ -272,7 +271,7 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
             combinedVertices.at(k) += translation + boost;
         }
         //create the connector's elements from previous to m
-        connectSegments(ag, m,toPnt, fromPnt, circularPoints, &combinedIndices);
+        connectSegments(ag, m,toPnt+1, fromPnt, circularPoints+1, &combinedIndices);
         //create elements for segment
         computeElementsInitial(ag->ag[m]);
         //move them to position

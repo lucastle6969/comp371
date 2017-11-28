@@ -75,14 +75,15 @@ private:
 
     const int branches = 1;
     const int k = 1;
+    float widthCut = 0.325;
 
-    static constexpr float boostFactor = 0.5;
-    static constexpr int heightChunking = 12;//INVERSE
+    static constexpr float boostFactor = 0.52;
+    static constexpr int heightChunking = 6;//INVERSE
 
-    const int minYBranchAngle = 0;
-    const int maxYBranchAngle = 70;
-    const int minYTrunkAngle = 0;
-    const int maxYTrunkAngle = 70;
+    const int minYBranchAngle = 30;
+    const int maxYBranchAngle = 90;
+    const int minYTrunkAngle = 30;
+    const int maxYTrunkAngle = 90;
 
     double trunkRatio = 1.0;
     double branchRatio = 0.850;

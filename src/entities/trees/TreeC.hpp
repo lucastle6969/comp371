@@ -1,3 +1,5 @@
+////////DISCONTINUED////////////
+
 #ifndef COMP371_TREE_C_HPP
 #define COMP371_TREE_C_HPP
 
@@ -23,11 +25,11 @@
 #include "TreeClusterItem.hpp"
 #include "src/TreeRandom.hpp"
 
-class TreeC: public Tree{
+class TreeC{
 private:
-    std::vector<TreeClusterItem*> treeCluster;
+    std::vector<Tree*>* trees;
 
-    static float sizeVariation;
+    static constexpr float sizeVariation = 1.2;
     static constexpr int heightChunking = 0;
     static constexpr int boostFactor = 0;
     static int spacingConstant;
@@ -36,11 +38,10 @@ private:
 public:
 
     TreeC(int numberOfTrees, const GLuint& shader_program,
-          Entity* entity, float trunkDiameter, long seed, bool isAlien);
-
-    std::vector<TreeClusterItem*> getTreeCluster();
+          Entity* entity, float trunkDiameter, long seed, bool isAlien,
+            std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude);
 
     static void setSpacingConstant(int k);
-    static void setSizeVariation(const float& r);
+
 };
 #endif
