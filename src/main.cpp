@@ -11,6 +11,12 @@
 #define GLFW_INCLUDE_NONE // don't include deprecated gl headers on macOS
 #include <GLFW/glfw3.h>	// include GLFW helper library
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <iostream>
 #include <algorithm>
 #include <limits>
@@ -228,7 +234,13 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 void getWorldSeedFromUser(float* const& seed_x, float* const& seed_z)
 {
 	// seed random number generator
-	utils::srand((unsigned int)std::time(0));
+	unsigned int pid;
+	#ifdef _WIN32
+	pid = GetCurrentProcessId(nullptr);
+	#else
+	pid = (unsigned int)getpid();
+	#endif
+	utils::srand((unsigned int)(std::time(nullptr) * pid));
 	bool valid_seed = false;
 	while (!valid_seed) {
 		std::cout << "Enter a world seed (or press ENTER for a random seed):" << std::endl;
