@@ -59,8 +59,8 @@ RockB::RockB(
 
     //generate a sphere
     //this could be useful to change with  +/-  rand() % 5
-    int num_arc_points = rand()%5 + 7;
-    int num_longitude_lines = rand()%10 + 5;
+    int num_arc_points = utils::rand()%5 + 7;
+    int num_longitude_lines = utils::rand()%10 + 5;
 
     generateSphere(&this->vertices, &this->elements, &this->normals, &this->uvs, (num_arc_points-1), num_longitude_lines);
 
@@ -109,7 +109,7 @@ void RockB::generateSphere(
 
 
     for(int i=0; i<vertices->size(); i++){
-        float scale = float((*vertices)[i].x * ((((float)rand())/(RAND_MAX))));
+        float scale = float((*vertices)[i].x * ((((float)utils::rand())/(RAND_MAX))));
         if(scale<0.5 && scale>-0.5){
             scale = 0.5f;
         }

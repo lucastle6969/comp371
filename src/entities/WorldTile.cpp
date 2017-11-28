@@ -46,7 +46,7 @@ WorldTile::WorldTile(
 	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));
 
 	// initialize random number generator based on world location
-	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
+	utils::srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
 	// TODO: better tree/rock distribution?
 	// TODO: test/remove tree/rock overlaps

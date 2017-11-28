@@ -7,9 +7,21 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <cstdlib>
 
 namespace utils {
+	// platform-independent rand/srand implementations taken from C
+	// standard 7.20.2 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
+	static unsigned long int next = 1;
+	inline int rand() // RAND_MAX assumed to be 32767
+	{
+		next = next * 1103515245 + 12345;
+		return (unsigned int)(next / 65536) % 32768;
+	}
+	inline void srand(unsigned int seed)
+	{
+		next = seed;
+	}
+
 	// https://stackoverflow.com/a/30099727
 	// use ignoreResult(some_function_call()) to explicitly ignore
 	// return values we don't need, and suppress compiler warnings
@@ -21,7 +33,7 @@ namespace utils {
 		// based on example: https://stackoverflow.com/a/27934300
 
 		// random from 0 (inclusive) to 1 (exclusive)
-		double r = ((double) (rand() % RAND_MAX) / RAND_MAX);
+		double r = ((double) (utils::rand() % RAND_MAX) / RAND_MAX);
 		// adjust to max/min range
 		return float(r * (max - min) + min);
 	}

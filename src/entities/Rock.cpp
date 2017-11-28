@@ -449,9 +449,9 @@ Rock::Rock(
 
         //random number between 0-1 , multiplied by 25 (the space between vertices is 0.25, - 13 (to have it go around zero
         // divided be 100 to put it back to 0.xx
-        float jitterX = ((((float) rand())/(RAND_MAX))*25 - 13)/100;
-        float jitterY = ((((float) rand())/(RAND_MAX))*25 - 13)/100;
-        float jitterZ = ((((float) rand())/(RAND_MAX))*25 - 13)/100;
+        float jitterX = ((((float) utils::rand())/(RAND_MAX))*25 - 13)/100;
+        float jitterY = ((((float) utils::rand())/(RAND_MAX))*25 - 13)/100;
+        float jitterZ = ((((float) utils::rand())/(RAND_MAX))*25 - 13)/100;
 
         this->vertices[i] = this->vertices[i] + glm::vec3(jitterX, jitterY, jitterZ);
 

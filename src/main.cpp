@@ -14,7 +14,6 @@
 #include <iostream>
 #include <algorithm>
 #include <limits>
-#include <cstdlib>
 #include <ctime>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -229,7 +228,7 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 void getWorldSeedFromUser(float* const& seed_x, float* const& seed_z)
 {
 	// seed random number generator
-	srand((unsigned int)time(nullptr));
+	utils::srand((unsigned int)std::time(0));
 	bool valid_seed = false;
 	while (!valid_seed) {
 		std::cout << "Enter a world seed (or press ENTER for a random seed):" << std::endl;

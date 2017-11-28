@@ -38,6 +38,7 @@ Beyond the C++ standard library this application relies on:
 ### Other help
 
 * Starter skeleton code adapted from [LearnOpenGL.com](https://learnopengl.com/) (including inspiration for [camera direction movement](https://learnopengl.com/#!Getting-started/Camera) and COMP 371 at Concordia University
+* Platform-independent `rand`/`srand` implementations adopted from the [C standard](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
 * Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunter)
 * Camera direction mouse movement partially modeled after tutorial
 * Thanks to the COMP 371 TAs and my classmates for helping me think through some of these tougher problems
