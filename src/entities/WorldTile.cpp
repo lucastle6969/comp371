@@ -64,7 +64,7 @@ WorldTile::WorldTile(
 	// TODO: test/remove tree/rock overlaps
 
 	// add rocks
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 10; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
         float y_span = utils::randomFloat(0.005f, 0.015f);
