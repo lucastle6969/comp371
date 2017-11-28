@@ -83,28 +83,34 @@ add_executable(proceduralworld
     src/entities/Rock.cpp
     src/entities/RockB.hpp
     src/entities/RockB.cpp
-    src/entities/Trees/Tree.hpp
-    src/entities/Trees/Tree.cpp
-    src/entities/Trees/TreeA.hpp
-    src/entities/Trees/TreeA.cpp
-    src/entities/Trees/TrunkA.hpp
-    src/entities/Trees/TrunkA.cpp
-    src/entities/Trees/LeafAB.hpp
-    src/entities/Trees/LeafAB.cpp
-    src/entities/Trees/LeafBranchAB.hpp
-    src/entities/Trees/LeafBranchAB.cpp
-    src/entities/Trees/LeafContainerAB.hpp
-    src/entities/Trees/LeafContainerAB.cpp
-    src/entities/Trees/TreeB.hpp
-    src/entities/Trees/TreeB.cpp
-    src/entities/Trees/TreeC.hpp
-    src/entities/Trees/TreeC.cpp
-    src/entities/Trees/TreeClusterItem.hpp
-    src/entities/Trees/TreeClusterItem.cpp
-    src/entities/Trees/TrunkC.hpp
-    src/entities/Trees/TrunkC.cpp
-    src/entities/Trees/LeafContainerC.cpp
-    src/entities/Trees/LeafContainerC.hpp
+    src/entities/Tentacle.hpp
+    src/entities/Tentacle.cpp
+        src/entities/trees/Tree.hpp
+        src/entities/trees/Tree.cpp
+        src/entities/trees/TreeA.hpp
+        src/entities/trees/TreeA.cpp
+        src/entities/trees/TreeA_Autumn.hpp
+        src/entities/trees/TreeA_Autumn.cpp
+        src/entities/trees/TrunkAB.hpp
+        src/entities/trees/TrunkAB.cpp
+        src/entities/trees/LeafAB.hpp
+        src/entities/trees/LeafAB.cpp
+        src/entities/trees/LeafBranchAB.hpp
+        src/entities/trees/LeafBranchAB.cpp
+        src/entities/trees/LeafContainerAB.hpp
+        src/entities/trees/LeafContainerAB.cpp
+        src/entities/trees/TreeB.hpp
+        src/entities/trees/TreeB.cpp
+        src/entities/trees/TreeC.hpp
+        src/entities/trees/TreeC.cpp
+        src/entities/trees/TreeClusterItem.hpp
+        src/entities/trees/TreeClusterItem.cpp
+        src/entities/trees/TrunkC.hpp
+        src/entities/trees/TrunkC.cpp
+        src/entities/trees/LeafContainerC.cpp
+        src/entities/trees/LeafContainerC.hpp
+    src/entities/Skybox.cpp
+    src/entities/Skybox.hpp
 )
 
 # Link librarssies

@@ -9,7 +9,7 @@
 
     TreeC::TreeC(int numberOfTrees, const GLuint& shader_program,
                  Entity* entity, float trunkDiameter, long seed):
-            Tree(heightChunking, boostFactor, shader_program, entity, 'C'){
+            Tree(heightChunking, boostFactor, seed, shader_program, entity, 'C'){
         double duration;
         std::clock_t startTime;
         startTime = std::clock();

@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "src/constants.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
@@ -65,15 +65,16 @@ protected:
     int lineMAX(const float& trunkDiameter, int k);
 
     std::vector<AttatchmentGroupings> branchStore;
-    std::vector<glm::vec3>* combinedVertices = new std::vector<glm::vec3>;
-    std::vector<GLuint>* combinedIndices = new std::vector<GLuint>;
-    std::vector<glm::vec3>* combinedNormals= new std::vector<glm::vec3>;
-    std::vector<glm::vec2>* combinedUV = new std::vector<glm::vec2>;
-    std::vector<std::vector<int>> *combinedStartIndices = new std::vector<std::vector<int>> ;
-    GLuint vao; GLuint vbo; GLuint ebo; GLuint tbo;
+    std::vector<glm::vec3> combinedVertices;
+    std::vector<GLuint> combinedIndices;
+    std::vector<glm::vec3> combinedNormals;
+    std::vector<glm::vec2> combinedUV;
+    std::vector<std::vector<int>> combinedStartIndices;
+    GLuint vao; GLuint vbo; GLuint ebo; GLuint nbo; GLuint uvbo;
 
     float heightChunking;
-    int boostFactor;
+    float boostFactor;
+    float seed;
 
     float widthCut;
     float finalCut;
@@ -102,7 +103,7 @@ public:
 
     const int getColorType() override;
 
-    Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type);
+    Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type);
     ~Tree();
 };
 

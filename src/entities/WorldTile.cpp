@@ -19,12 +19,14 @@
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 
-#include "src/entities/Trees/Tree.hpp"
-#include "src/entities/Trees/TreeA.hpp"
-#include "src/entities/Trees/TreeB.hpp"
-#include "src/entities/Trees/TreeC.hpp"
+#include "src/entities/trees/Tree.hpp"
+#include "src/entities/trees/TreeA.hpp"
+#include "src/entities/trees/TreeA_Autumn.hpp"
+#include "src/entities/trees/TreeB.hpp"
+#include "src/entities/trees/TreeC.hpp"
 
 #include "WorldTile.hpp"
+#include "Tentacle.hpp"
 
 WorldTile::WorldTile(
 	const GLuint &shader_program,
@@ -150,10 +152,16 @@ WorldTile::WorldTile(
 		}
 
 		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
-		// Add tree child
+		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
+				// Add tree child
 		Tree* tree;
-		if(seed % 10 < 2){
-			tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
+		if(seed % 10 < 6){
+			if(seed%2 == 0)
+				tree = new TreeA(shader_program, this, internal_tree_width*2.5, seed);
+            else if(seed % 3 == 1)
+                    tree = new Tentacle(shader_program, this, internal_tree_width*2.5, seed);
+			else
+				tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
 		}
 		else if(seed % 10 < 7){
 			tree = new TreeB(shader_program, this, internal_tree_width, seed);
@@ -216,7 +224,7 @@ GLuint WorldTile::getVAO() {
 			glm::vec3(0.0f, 1.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f)
+			glm::vec3(0.0f, 1.0f, 0.0f),
 	};
 
 	static GLuint vao;

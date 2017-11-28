@@ -46,7 +46,6 @@ World::World(
 		this->player_max_world_y = std::max(this->player_max_world_y, vertex.y);
 	}
 	HitBox2d player_starting_hitbox(this->player);
-
 	// populate tiles
 	int x, z;
 	for (int i = 0; i < 9; i++) {
@@ -62,6 +61,7 @@ World::World(
 				this
 		));
 	}
+
 }
 
 World::~World()
