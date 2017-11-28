@@ -95,8 +95,7 @@ add_executable(proceduralworld
     src/entities/trees/TreeC.hpp
     src/entities/trees/TreeC.cpp
     src/entities/trees/TreeClusterItem.hpp
-    src/entities/trees/TreeClusterItem.cpp
-    src/entities/Skybox.cpp
+        src/entities/Skybox.cpp
     src/entities/Skybox.hpp
     src/entities/TextB.hpp
     src/entities/TextB.cpp
