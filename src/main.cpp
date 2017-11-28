@@ -319,6 +319,8 @@ int main()
 		light.light_position = player_position;
 		skybox.setPosition(player_position);
 
+        world->getMenu()->setPosition(glm::vec3(player_position.x-0.05, -0.96, player_position.z-0.05));
+
 		light.setDaytime();
 
 		float daytime = -light.light_direction.y;

@@ -18,6 +18,7 @@
 #include "Player.hpp"
 #include "WorldOrigin.hpp"
 #include "WorldTile.hpp"
+#include "TextB.hpp"
 
 class World: public Entity {
 private:
@@ -31,6 +32,7 @@ private:
 	);
 	Player player;
 	WorldOrigin axes;
+    TextB menu;
 	std::vector<WorldTile*> tiles;
 	// current center tile position
 	int x_center;
@@ -57,7 +59,12 @@ public:
 		Entity* parent
 	);
 	~World() override;
+<<<<<<< HEAD
+	Player* getPlayer();
+    TextB* getMenu();
+=======
 	const Player* getPlayer();
+>>>>>>> master
 	void toggleAxes();
 	void setPlayerOpacity(const float& opacity);
 	void movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);

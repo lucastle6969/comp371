@@ -53,7 +53,19 @@ WorldTile::WorldTile(
 	// initialize random number generator based on world location
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
-	// TODO: better tree/rock distribution?
+
+    TextB* textb = new TextB(shader_program, "welcome}to escape keys}0,1.23,456,789", 0, 0, FONT_STYLE_MYTHOS, this);
+    textb->setPosition(glm::vec3(0.9, -0.97f, 0.8));
+    //textb->scale(0.7);
+
+    this->textB.emplace_back(textb);
+
+    TextB* textb2 = new TextB(shader_program, "welcome}to outline font}0,1.23,456,789", 0, 0, FONT_STYLE_OUTLINE, this);
+    textb2->setPosition(glm::vec3(0.9, -0.93f, 0.8));
+
+    this->textB.emplace_back(textb2);
+
+    // TODO: better tree/rock distribution?
 	// TODO: test/remove tree/rock overlaps
 
     const int generalBiomeX = 5, generalBiomeY = 5;
@@ -357,10 +369,13 @@ WorldTile::~WorldTile()
 	for (Tree* const& tree : this->trees) {
 		delete tree;
 	}
-
-    for (RockB* const& rock : this->rocksB) {
-        delete rock;
+    for (RockB* const& rockB : this->rocksB) {
+        delete rockB;
     }
+    for (TextB* const& text : this->textB){
+        delete text;
+    }
+
 }
 
 const std::vector<glm::vec3>& WorldTile::getVertices() const

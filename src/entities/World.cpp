@@ -27,6 +27,15 @@ World::World(
     shader_program(shader_program),
     player(shader_program, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
+<<<<<<< HEAD
+    menu(shader_program, "menu style}world child}0,1.23,456,789", 0, 0, FONT_STYLE_OUTLINE, this),
+x_center((int)floor(player_x_start)),
+z_center((int)floor(player_z_start))
+{
+    this->player.scale(0.0005f);
+    this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));    this->menu.setPosition(glm::vec3(x_center-0.05, -0.96f, z_center-0.05));
+
+=======
 //<<<<<<< HEAD
 //    x_center(x_center),
 //    z_center(z_center),
@@ -36,6 +45,7 @@ World::World(
     player_max_world_y(-FLT_MAX)
 {
 //=======
+>>>>>>> master
 
 //{
 //	this->player.scale(0.0005f);
@@ -84,6 +94,11 @@ World::~World()
 const Player* World::getPlayer()
 {
 	return &this->player;
+}
+
+TextB* World::getMenu()
+{
+    return  &this->menu;
 }
 
 void World::toggleAxes()

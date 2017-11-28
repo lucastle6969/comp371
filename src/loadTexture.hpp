@@ -19,6 +19,13 @@ GLuint loadTexture(
 );
 
 GLuint loadTexture(
+        const std::string& path,
+        const GLint& min_filter,
+        const GLint& mag_filter,
+        const bool vert_align_flip
+);
+
+GLuint loadTexture(
 		const std::string& path,
 		const GLint& min_filter,
 		const GLint& mag_filter,
