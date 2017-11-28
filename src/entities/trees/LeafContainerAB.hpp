@@ -15,8 +15,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-
-#include "LeafAB.hpp"
 #include "LeafBranchAB.hpp"
 #include "src/entities/trees/TrunkAB.hpp"
 #include "src/TreeRandom.hpp"

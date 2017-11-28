@@ -91,22 +91,13 @@ add_executable(proceduralworld
     src/entities/trees/TreeA_Autumn.cpp
     src/entities/trees/TrunkAB.hpp
     src/entities/trees/TrunkAB.cpp
-    src/entities/trees/LeafAB.hpp
-    src/entities/trees/LeafAB.cpp
     src/entities/trees/LeafBranchAB.hpp
     src/entities/trees/LeafBranchAB.cpp
-    src/entities/trees/LeafContainerAB.hpp
-    src/entities/trees/LeafContainerAB.cpp
-    src/entities/trees/TreeB.hpp
     src/entities/trees/TreeB.cpp
     src/entities/trees/TreeC.hpp
     src/entities/trees/TreeC.cpp
     src/entities/trees/TreeClusterItem.hpp
     src/entities/trees/TreeClusterItem.cpp
-    src/entities/trees/TrunkC.hpp
-    src/entities/trees/TrunkC.cpp
-    src/entities/trees/LeafContainerC.cpp
-    src/entities/trees/LeafContainerC.hpp
     src/entities/Skybox.cpp
     src/entities/Skybox.hpp
     src/entities/TextB.hpp
