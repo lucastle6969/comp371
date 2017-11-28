@@ -1,12 +1,15 @@
-# comp-371-procedural-generation-project
+# Modulus Woods
 
-Loads a raster image and renders a 3D surface by mapping brightness at a given location to surface height at the corresponding location.
+You're a brave Jack-O-Lantern exploring Modulus Woods, a procedurally generated world of curious shrubbery.
 
-Works on macOS and Linux. Should work for Windows, but not recently tested.
+*Screenshots: Coming Soon*
+
+Developed with C++ and OpenGL for macOS, Windows and Linux.
 
 ## Features
 
-* Follow a character around an on-the-fly generated world!
+* Explore an endless world
+* Save and load seeds which will regenerate the world as you last saw it
 
 ### Controls
 
@@ -27,17 +30,17 @@ See [Building and running the project](docs/building.md).
 ### Dependencies
 
 Beyond the C++ standard library this application relies on:
-* OpenGL
-* GLFW
-* GLEW
-* GLM
-* tinyobjloader
+* [OpenGL](https://www.opengl.org/)
+* [GLFW](http://www.glfw.org/)
+* [GLEW](http://glew.sourceforge.net/)
+* [GLM](https://glm.g-truc.net/0.9.8/index.html)
+* [tinyobjloader](https://github.com/syoyo/tinyobjloader)
+* [stb image](https://github.com/nothings/stb)
 
 (Following standard setup procedure in a CMake-compatible IDE should fetch all these dependencies for you, so you shouldn't need to download them separately.)
 
 ### Other help
 
-* Starter skeleton code adapted from [LearnOpenGL.com](https://learnopengl.com/) (including inspiration for [camera direction movement](https://learnopengl.com/#!Getting-started/Camera) and COMP 371 at Concordia University
+* Starter skeleton code adapted from [LearnOpenGL.com](https://learnopengl.com/) and COMP 371 at Concordia University
 * Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunter)
-* Camera direction mouse movement partially modeled after tutorial
-* Thanks to the COMP 371 TAs and my classmates for helping me think through some of these tougher problems
+
