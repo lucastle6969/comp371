@@ -36,7 +36,9 @@ WorldTile::WorldTile(
 	const float& max_hitbox_y,
 	const HitBox2d& player_hitbox,
 	Entity *parent
-) : DrawableEntity(shader_program, parent)
+) : DrawableEntity(shader_program, parent),
+    seed_loc_message(shader_program, {"Seed for current location ", std::to_string(world_x_location), std::to_string(world_z_location)}, 0, 0, FONT_STYLE_OUTLINE, this)
+
 {
 	this->draw_mode = GL_TRIANGLES;
 
@@ -46,6 +48,8 @@ WorldTile::WorldTile(
 		glm::vec3(.25,.25,.25),
 		25.0f
 	);
+
+    seed_loc_message.setPosition(glm::vec3(0.5, -0.96, 0.5));
 
 	// position tile relative to parent based on x, z inputs
 	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));

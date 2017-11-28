@@ -334,7 +334,7 @@ int main()
 
 		float daytime = -light.light_direction.y;
 
-        world->getMenu()->setPosition(glm::vec3(player_position.x -0.035, -0.96, player_position.z-0.04));
+        world->getMenu()->setPosition(glm::vec3(player_position.x -0.035, -0.93, player_position.z-0.05));
         if(!menu){
             world->getMenu()->hide();
         }else{
