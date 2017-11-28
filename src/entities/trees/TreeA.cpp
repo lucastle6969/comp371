@@ -3,8 +3,6 @@
 
 #include "Tree.hpp"
 #include "TreeA.hpp"
-#include "TrunkAB.hpp"
-#include "TreeB.hpp"
 
 constexpr int TreeA::branches;
 constexpr int TreeA::k;
@@ -26,7 +24,7 @@ void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const i
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
     finalCut = widthCut;
 
-    combinedStartIndices->push_back({-1,0,0,0});
+    combinedStartIndices.push_back({-1,0,0,0});
     generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
     rotate(TreeRandom::treeRandom(trunkDiameter, seed,100), glm::vec3(0.0f,1.0f,0.0f));
     bufferObject(shader_program);
@@ -51,10 +49,10 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             //1A4. Make branch check
             currentLineLength = trunk(trunkDiameter, seed, currentLineLength);
 
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ});
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ});
 
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,		//TYPE //SIDE
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,		//TYPE //SIDE
                                              (int)angleX, (int)angleY, (int)angleZ, 'B', 'C');
 
             //1A5. Start N new recursive functions from seed based angle at a certain base position
@@ -98,11 +96,11 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ += ag->angleZ;
 
             //add the sum of angles onto the current branch
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ });
 
             //store current branch poosition and rotation sum at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
 
@@ -146,11 +144,11 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ += ag->angleZ;
 
             //and add to leaf index with combined
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1,(int)angleX,(int)angleY,(int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1,(int)angleX,(int)angleY,(int)angleZ });
 
             //add to grouping at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,
                                              (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
@@ -171,7 +169,7 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     const float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkAB trunk(combinedVertices, combinedUV,
+    TrunkAB trunk(&combinedVertices, &combinedUV,
                  seed
     );
     do {
@@ -187,9 +185,9 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
 
 void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
-    LeafContainerAB lc(combinedVertices,
-                      combinedIndices,
-                      combinedUV,
+    LeafContainerAB lc(&combinedVertices,
+                       &combinedIndices,
+                       &combinedUV,
                       seed);
     //a leaf container is an object that holds a set of leaves and a branch that they're held on
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
@@ -207,9 +205,9 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
     const int start = ag->start + 1;
     const int max = ag->end + 1;
     for (int k = start; k < max; k++) {
-        combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),
+        combinedVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),
                                                  glm::radians((float)ag->angleZ),
-                                                 combinedVertices->at(k));
+                                                 combinedVertices.at(k));
     }
     const int previousRotation = rotationPoint;
     //create elements for segment
@@ -237,7 +235,7 @@ void TreeA::initiateMove(AttatchmentGroupings* ag){
  * 3       2
  *
  * The methods below do this procedure and pass on rotation information to the move connect, compute and recurse back
- * through binary recursion until the furthest branch has been reached as the base case.
+ * through binary recursion until the furthest branch has been reached.
  *
  */
 void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
@@ -272,19 +270,19 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         const int max = ag->ag[m]->end + 1;
 
         for (int k = start; k < max; k++) {
-            combinedVertices->at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
-                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices->at(k));
+            combinedVertices.at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
+                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices.at(k));
         }
 
         //translate components onto branch(destination - position)
-        const glm::vec3 translation = combinedVertices->at(moveTo) - combinedVertices->at(moveFrom);
+        const glm::vec3 translation = combinedVertices.at(moveTo) - combinedVertices.at(moveFrom);
         //elevate from point
-        const glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (float)(heightChunking * boostFactor);
+        const glm::vec3 boost = boostSegment(ag, ag->ag[m], &combinedVertices) *  (float)(heightChunking * boostFactor);
         for (int k = start; k < max; k++) {
-            combinedVertices->at(k) += translation + boost;
+            combinedVertices.at(k) += translation + boost;
         }
         //create the connector's elements from previous to m
-        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, &combinedIndices);
         //create elements for segment
         computeElementsInitial(ag->ag[m]);
         //move them to position
@@ -295,7 +293,8 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV,  &vbo, &ebo, &nbo, &uvbo);
+    this->vao = initVertexArray(combinedVertices, combinedIndices, combinedNormals,
+                                combinedUV,  &vbo, &ebo, &nbo, &uvbo);
     //stbi_image_free(image_data);
 }
 

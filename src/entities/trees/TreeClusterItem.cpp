@@ -44,7 +44,7 @@ bool TreeClusterItem::treeSetup(const GLuint& shader_program, const float& trunk
     draw_mode = GL_TRIANGLES;
     //widthCutoff
     finalCutoff = widthCutoff;
-    combinedStartIndices->push_back({-1,0,0,0});
+    combinedStartIndices.push_back({-1,0,0,0});
     generateTreeCI(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
     bufferObject(shader_program);
     rotate(TreeRandom::treeRandom(trunkDiameter, seed,100), glm::vec3(0.0f,1.0f,0.0f));
@@ -69,10 +69,10 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             //1A3. Draw circle up one with seed based ragedness and store in trunkV and trunkC and create trunkI
             //1A4. Make branch check
             currentLineLength = trunk(trunkDiameter, seed, currentLineLength);
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ});
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ});
 
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,
                                              (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
 
             //1A5. Start N new recursive functions from seed based angle at a certain base position
@@ -130,11 +130,11 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             angleZ += ag->angleZ;
 
             //add the sum of angles onto the current branch
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ });
 
             //store current branch poosition and rotation sum at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
 
@@ -183,10 +183,11 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
             angleZ += ag->angleZ;
 
             //and add to leaf index with combined
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1,(int)angleX,(int)angleY,(int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1,(int)angleX,(int)angleY,(int)angleZ });
 
             //add to grouping at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0), (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
             //2. Translate and rotate into given location
@@ -204,22 +205,22 @@ void TreeClusterItem::generateTreeCI(const int& _case, float trunkDiameter, cons
 
 float TreeClusterItem::trunk(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
-    TrunkC tC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 530.0f/800.0);
+    TrunkC tC(&combinedVertices, &combinedUV, &combinedNormals, &combinedIndices, lineMax, 530.0f/800.0);
     return tC.buildAllComponents(trunkDiameter, seed, lineHeight);
 }
 
 void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, float lineHeight) {
     const float lineMax = lineMAX(trunkDiameter, k);
 
-    LeafContainerC lcC(combinedVertices, combinedUV, combinedNormals, combinedIndices, lineMax, 530.0f/800.0);
+    LeafContainerC lcC(&combinedVertices, &combinedUV, &combinedNormals, &combinedIndices, lineMax, 530.0f/800.0);
     lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
      int start = ag->start + 1;
     int max = ag->end + 1;
     for (int k = start; k < max; k++) {
-        combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(0.0f),
-                                                 glm::radians((float)ag->angleZ), combinedVertices->at(k));
+        combinedVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(0.0f),
+                                                 glm::radians((float)ag->angleZ), combinedVertices.at(k));
     }
     moveSegments(0, ag);
     return;
@@ -246,46 +247,40 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             const int start = ag->ag[m]->start + 1;
             const  int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
-                combinedVertices->at(k) = makeRotations(glm::radians(
+                combinedVertices.at(k) = makeRotations(glm::radians(
                         (float)ag->ag[m]->angleX), -glm::radians(0.0f), glm::radians((float)ag->ag[m]->angleZ),
-                                                        combinedVertices->at(k));
+                                                        combinedVertices.at(k));
             }
         }
         else {
             const int start = ag->ag[m]->start + 1;
             const int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
-                combinedVertices->at(k) = makeRotations(glm::radians((float)ag->ag[m]->angleX), -glm::radians(0.0f), glm::radians((float)ag->ag[m]->angleZ),
-                                                        combinedVertices->at(k));
+                combinedVertices.at(k) = makeRotations(glm::radians((float)ag->ag[m]->angleX), -glm::radians(0.0f),
+                                                       glm::radians((float)ag->ag[m]->angleZ),
+                                                        combinedVertices.at(k));
             }
         }
 
         //translate components onto branch(destination - position)
-        std::vector<glm::vec3>* vContainer2 = nullptr;
-        if (ag->ag[m]->type == 'B') vContainer2 = combinedVertices;
-        else vContainer2 = combinedVertices;
-        std::vector<glm::vec3>* vContainer1 = nullptr;
-        if (ag->type == 'B') vContainer1 = combinedVertices;
-        else vContainer1 = combinedVertices;
-
-        glm::vec3 translation = vContainer1->at(moveTo) - vContainer2->at(moveFrom);
+        glm::vec3 translation = combinedVertices.at(moveTo) - combinedVertices.at(moveFrom);
         glm::vec3 boost = glm::vec3();
         if(trunkDiameter > this->zeroSize){
-            boost = boostSegment(ag,ag->ag[m],vContainer1);
+            boost = boostSegment(ag,ag->ag[m], &combinedVertices);
         }
 
         if (ag->ag[m]->type == 'B') {
             int start = ag->ag[m]->start + 1;
             int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
-                combinedVertices->at(k) += translation + boost;
+                combinedVertices.at(k) += translation + boost;
             }
         }
         else {
             int start = ag->ag[m]->start + 1;
             int max = ag->ag[m]->end + 1;
             for (int k = start; k < max; k++) {
-                combinedVertices->at(k) += translation + boost;
+                combinedVertices.at(k) += translation + boost;
             }
         }
         connectSegments(ag, m);
@@ -303,24 +298,24 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
             const GLuint A = ag->end - trunkPoints+ 1 + j;
             const GLuint B = (ag->end - trunkPoints+ 1)+ (j+1) % trunkPoints ;
             const GLuint C = (ag->ag[m]->start+1) + (j+1)% trunkPoints ;
-            combinedIndices->push_back(A);
-            combinedIndices->push_back(B);
-            combinedIndices->push_back(C);
+            combinedIndices.push_back(A);
+            combinedIndices.push_back(B);
+            combinedIndices.push_back(C);
             const GLuint D = C;
             const GLuint E = (ag->ag[m]->start+1)  + j;
             const GLuint F = A;
-            combinedIndices->push_back(D);
-            combinedIndices->push_back(E);
-            combinedIndices->push_back(F);
+            combinedIndices.push_back(D);
+            combinedIndices.push_back(E);
+            combinedIndices.push_back(F);
 
         // calculate normals
         //------------------
 
         //step 1: find the surface normal
-        glm::vec3 AB = combinedVertices->at(B) -
-                       combinedVertices->at(A);
-        glm::vec3 AE = combinedVertices->at(E) -
-                       combinedVertices->at(A);
+        glm::vec3 AB = combinedVertices.at(B) -
+                       combinedVertices.at(A);
+        glm::vec3 AE = combinedVertices.at(E) -
+                       combinedVertices.at(A);
 
         glm::vec3 surfaceNormal = -glm::cross(AB, AE);
         surfaceNormals.push_back(surfaceNormal);
@@ -330,7 +325,7 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
     for(GLuint i = 0; i < len ; i++){
         int iPos = (ag->end - trunkPoints+ 1) + i + 1;
         if(iPos % trunkPoints == 0) iPos =  (ag->end - trunkPoints+ 1) + 0 ;
-        combinedNormals->at(iPos) = -glm::normalize(
+        combinedNormals.at(iPos) = -glm::normalize(
                 surfaceNormals.at(i) + surfaceNormals.at((i+1) % len)
         );
     }
@@ -375,7 +370,7 @@ void TreeClusterItem::bufferObject(const GLuint& shader_program) {
     combinedUV->at(26) = {0,1};
     combinedUV->at(27) = {1,1};
 */
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
+    this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
 
@@ -400,7 +395,6 @@ GLuint TreeClusterItem::getTextureId()
             GL_LINEAR,
             GL_CLAMP_TO_BORDER,
             GL_CLAMP_TO_BORDER
-
     );
     return tC_texture;
 }

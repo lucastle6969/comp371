@@ -65,11 +65,11 @@ protected:
     int lineMAX(const float& trunkDiameter, int k);
 
     std::vector<AttatchmentGroupings> branchStore;
-    std::vector<glm::vec3>* combinedVertices = new std::vector<glm::vec3>;
-    std::vector<GLuint>* combinedIndices = new std::vector<GLuint>;
-    std::vector<glm::vec3>* combinedNormals= new std::vector<glm::vec3>;
-    std::vector<glm::vec2>* combinedUV = new std::vector<glm::vec2>;
-    std::vector<std::vector<int>> *combinedStartIndices = new std::vector<std::vector<int>> ;
+    std::vector<glm::vec3> combinedVertices;
+    std::vector<GLuint> combinedIndices;
+    std::vector<glm::vec3> combinedNormals;
+    std::vector<glm::vec2> combinedUV;
+    std::vector<std::vector<int>> combinedStartIndices;
     GLuint vao; GLuint vbo; GLuint ebo; GLuint nbo; GLuint uvbo;
 
     float heightChunking;

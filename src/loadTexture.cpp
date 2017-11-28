@@ -10,38 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <src/vendor/stb_image.h>
 
-//reduction to the size of load texture
-GLuint loadImage(std::string path, GLuint rock_texture){
-	//load image, create texture and generate mipmaps
-	int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
-
-	unsigned char* rock_tex_data = stbi_load(
-			path.c_str(),
-			&rock_tex_width,
-			&rock_tex_height,
-			&rock_tex_nrChannels,
-			0
-	);
-	if (rock_tex_data) {
-		glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RGB,
-				rock_tex_width,
-				rock_tex_height,
-				0,
-				GL_RGB,
-				GL_UNSIGNED_BYTE,
-				rock_tex_data
-		);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	} else {
-		throw std::runtime_error("Failed to load image \'" + path + "\': ");
-	}
-	stbi_image_free(rock_tex_data);
-
-	return rock_texture;
-}
+static GLuint loadImage(std::string path, GLuint rock_texture);
 
 GLuint loadTexture(
 	const std::string& path,
@@ -92,6 +61,7 @@ GLuint loadTexture(
 }
 
 
+
 GLuint loadTexture(
 		const std::string& path,
 		const GLint& min_filter,
@@ -115,3 +85,35 @@ GLuint loadTexture(
 }
 
 
+//reduction to the size of load texture
+static GLuint loadImage(std::string path, GLuint rock_texture){
+	//load image, create texture and generate mipmaps
+	int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
+
+	unsigned char* rock_tex_data = stbi_load(
+			path.c_str(),
+			&rock_tex_width,
+			&rock_tex_height,
+			&rock_tex_nrChannels,
+			0
+	);
+	if (rock_tex_data) {
+		glTexImage2D(
+				GL_TEXTURE_2D,
+				0,
+				GL_RGB,
+				rock_tex_width,
+				rock_tex_height,
+				0,
+				GL_RGB,
+				GL_UNSIGNED_BYTE,
+				rock_tex_data
+		);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	} else {
+		throw std::runtime_error("Failed to load image \'" + path + "\': ");
+	}
+	stbi_image_free(rock_tex_data);
+
+	return rock_texture;
+}

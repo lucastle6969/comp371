@@ -30,8 +30,7 @@ public:
                    std::vector<glm::vec2>* leafUVs);
 
     //builds 2
-    void buildLeaf(const float& r1, const float& r2,const float& lineHeight, const float& leafDiameter,
-                   const int& count, float leafTextureStar);
+    void buildLeaf(const float& r1, const float& r2,const float& lineHeight, const float& leafDiameter, const int& count, float leafTextureStar);
 
     static GLuint buildElements(int i, const int& start, const int& leafPoints,
                              std::vector<GLuint>* leafIndices, std::vector<glm::vec3>* leafVert,

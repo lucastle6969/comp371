@@ -59,7 +59,7 @@ GLuint DrawableEntity::getTextureId()
     static GLuint texture_id = UINT_MAX; // default value
     return texture_id;
 }
-bool g = false;
+
 void DrawableEntity::draw(
     const glm::mat4& view_matrix,
     const glm::mat4& projection_matrix,
@@ -141,38 +141,19 @@ void DrawableEntity::draw(
 	// Draw
 	glBindVertexArray(this->getVAO());
 	GLenum draw_mode = this->getDrawMode();
-
-
-
-
-
-//	if (draw_mode == GL_POINTS) {
-//		// it's inefficient and useless to use glDrawElements for a point cloud
-//		//doesn't work though
-//		glDrawArrays(draw_mode, 0, (GLuint) this->getVertices().size());
-//	} else {
-//	if(g = !g)
-//		draw_mode = GL_POINTS;
-//	else
-//		draw_mode = GL_TRIANGLES;
-//	glPointSize(3.0f);
 	draw_mode = GL_TRIANGLES;
 
+    glBindTexture(GL_TEXTURE_2D, texture_id);
 
+    int element_buffer_array_size;
+    glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);
+    glDrawElements(
+        draw_mode,
+        element_buffer_array_size / sizeof(GLuint),
+        GL_UNSIGNED_INT,
+        nullptr
+    );
 
-
-
-		glBindTexture(GL_TEXTURE_2D, texture_id);
-
-		int element_buffer_array_size;
-		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &element_buffer_array_size);
-		glDrawElements(
-			draw_mode,
-			element_buffer_array_size / sizeof(GLuint),
-			GL_UNSIGNED_INT,
-			nullptr
-		);
-//	}
 	glBindVertexArray(0);
 
 	glUseProgram(0);

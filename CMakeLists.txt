@@ -83,30 +83,30 @@ add_executable(proceduralworld
     src/entities/RockB.cpp
     src/entities/Tentacle.hpp
     src/entities/Tentacle.cpp
-        src/entities/trees/Tree.hpp
-        src/entities/trees/Tree.cpp
-        src/entities/trees/TreeA.hpp
-        src/entities/trees/TreeA.cpp
-        src/entities/trees/TreeA_Autumn.hpp
-        src/entities/trees/TreeA_Autumn.cpp
-        src/entities/trees/TrunkAB.hpp
-        src/entities/trees/TrunkAB.cpp
-        src/entities/trees/LeafAB.hpp
-        src/entities/trees/LeafAB.cpp
-        src/entities/trees/LeafBranchAB.hpp
-        src/entities/trees/LeafBranchAB.cpp
-        src/entities/trees/LeafContainerAB.hpp
-        src/entities/trees/LeafContainerAB.cpp
-        src/entities/trees/TreeB.hpp
-        src/entities/trees/TreeB.cpp
-        src/entities/trees/TreeC.hpp
-        src/entities/trees/TreeC.cpp
-        src/entities/trees/TreeClusterItem.hpp
-        src/entities/trees/TreeClusterItem.cpp
-        src/entities/trees/TrunkC.hpp
-        src/entities/trees/TrunkC.cpp
-        src/entities/trees/LeafContainerC.cpp
-        src/entities/trees/LeafContainerC.hpp
+    src/entities/trees/Tree.hpp
+    src/entities/trees/Tree.cpp
+    src/entities/trees/TreeA.hpp
+    src/entities/trees/TreeA.cpp
+    src/entities/trees/TreeA_Autumn.hpp
+    src/entities/trees/TreeA_Autumn.cpp
+    src/entities/trees/TrunkAB.hpp
+    src/entities/trees/TrunkAB.cpp
+    src/entities/trees/LeafAB.hpp
+    src/entities/trees/LeafAB.cpp
+    src/entities/trees/LeafBranchAB.hpp
+    src/entities/trees/LeafBranchAB.cpp
+    src/entities/trees/LeafContainerAB.hpp
+    src/entities/trees/LeafContainerAB.cpp
+    src/entities/trees/TreeB.hpp
+    src/entities/trees/TreeB.cpp
+    src/entities/trees/TreeC.hpp
+    src/entities/trees/TreeC.cpp
+    src/entities/trees/TreeClusterItem.hpp
+    src/entities/trees/TreeClusterItem.cpp
+    src/entities/trees/TrunkC.hpp
+    src/entities/trees/TrunkC.cpp
+    src/entities/trees/LeafContainerC.cpp
+    src/entities/trees/LeafContainerC.hpp
 )
 
 # Link librarssies

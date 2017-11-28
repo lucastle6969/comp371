@@ -119,10 +119,6 @@ private:
 
 protected:
 
-	void createSegmentNormals(AttatchmentGroupings* ag,int m);
-
-	void createConnectorElements(AttatchmentGroupings* ag,int m);
-
 	float limiter = 1;
 
     std::string textureMap;

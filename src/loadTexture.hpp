@@ -10,6 +10,8 @@
 
 #include <string>
 
+static GLuint loadImage(std::string path, GLuint rock_texture);
+
 GLuint loadTexture(
 	const std::string& path,
 	const GLint& min_filter,

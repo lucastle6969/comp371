@@ -14,6 +14,7 @@
 
 
 
+
 Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type)
         : DrawableEntity(shader_program, entity){
     this->seed = seed;
@@ -25,11 +26,11 @@ Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shad
 }
 
 Tree::~Tree() {
-    delete combinedVertices;
-    delete combinedIndices;
-    delete combinedNormals;
-    delete combinedUV;
-    delete combinedStartIndices;
+//    delete combinedVertices;
+//    delete combinedIndices;
+//    delete combinedNormals;
+//    delete combinedUV;
+//    delete combinedStartIndices;
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteBuffers(1, &nbo);
@@ -74,17 +75,17 @@ void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
                      std::vector<GLuint>* indPntr){
     int set = std::abs((circularPoints - rotPoint) + prevPoint);
     TrunkAB::buildConnectorElements(ag->end - TrunkAB::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
-                                   combinedIndices, combinedVertices, combinedNormals);
+                                   &combinedIndices, &combinedVertices, &combinedNormals);
 }
 
 void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
     if(ag->type == 'B'){
         TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
-                                    combinedIndices, combinedVertices, combinedNormals);
+                                    &combinedIndices, &combinedVertices, &combinedNormals);
     }
     else
         LeafContainerAB::buildLeafContainerElements(ag->start + 1, ag->end,
-                                                    combinedIndices, combinedVertices, combinedUV, combinedNormals);
+                                                    &combinedIndices, &combinedVertices, &combinedUV, &combinedNormals);
 }
 
 float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){

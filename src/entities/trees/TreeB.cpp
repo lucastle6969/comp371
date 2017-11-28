@@ -21,7 +21,7 @@ bool TreeB::treeSetup(const GLuint& shader_program, float trunkDiameter, const i
     widthCut = 0.5;
     finalCut = widthCut;
 
-    combinedStartIndices->push_back({ -1, 0, 0, 0 });
+    combinedStartIndices.push_back({ -1, 0, 0, 0 });
     generateTreeB(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
     bufferObject(shader_program);
     return true;
@@ -46,10 +46,10 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             //1A4. Make branch check
             currentLineLength = trunk(trunkDiameter, seed, currentLineLength);
 
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ});
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ});
 
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,		//TYPE //SIDE
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,		//TYPE //SIDE
                                              (int)angleX, (int)angleY, (int)angleZ, 'B', 'C');
 
             //1A5. Start N new recursive functions from seed based angle at a certain base position
@@ -91,11 +91,11 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             angleZ += ag->angleZ;
 
             //add the sum of angles onto the current branch
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ });
 
             //store current branch poosition and rotation sum at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
 
@@ -139,11 +139,11 @@ void TreeB::generateTreeB(const int& _case, float trunkDiameter, const float& se
             angleZ += ag->angleZ;
 
             //and add to leaf index with combined
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1,(int)angleX,(int)angleY,(int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1,(int)angleX,(int)angleY,(int)angleZ });
 
             //add to grouping at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,
                                              (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
@@ -164,7 +164,7 @@ float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkAB trunk(combinedVertices, combinedUV,
+    TrunkAB trunk(&combinedVertices, &combinedUV,
                  seed
     );
     int count = 0;
@@ -182,9 +182,9 @@ float TreeB::trunk(float trunkDiameter, const float& seed, float lineHeight) {
 
 void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
     int lineMax = lineMAX(trunkDiameter, k);
-    LeafContainerAB lc(combinedVertices,
-                      combinedIndices,
-                      combinedUV,
+    LeafContainerAB lc(&combinedVertices,
+                       &combinedIndices,
+                       &combinedUV,
                       seed);
     TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
@@ -193,7 +193,7 @@ void TreeB::leafBranch(float trunkDiameter, const float& seed, float lineHeight)
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeB::bufferObject(const GLuint& shader_program) {
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, *combinedNormals, *combinedUV, &vbo, &ebo);
+    this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, combinedUV, &vbo, &ebo);
     //stbi_image_free(image_data);
 }
 
@@ -209,8 +209,8 @@ void TreeB::initiateMove(AttatchmentGroupings* ag){
     int start = ag->start + 1;
     int max = ag->end + 1;
     for (int k = start; k < max; k++) {
-        combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),glm::radians((float)ag->angleZ),
-                                                 combinedVertices->at(k));
+        combinedVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),glm::radians((float)ag->angleZ),
+                                                 combinedVertices.at(k));
     }
     int previousRotation = rotationPoint;
     computeElementsInitial(ag);
@@ -251,21 +251,21 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         int max = ag->ag[m]->end + 1;
 
         for (int k = start; k < max; k++) {
-            combinedVertices->at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
-                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices->at(k));
+            combinedVertices.at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
+                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices.at(k));
         }
 
         //translate components onto branch(destination - position)
-        glm::vec3 translation = combinedVertices->at(moveTo) - combinedVertices->at(moveFrom);
+        glm::vec3 translation = combinedVertices.at(moveTo) - combinedVertices.at(moveFrom);
         //elevate from point
-        glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (heightChunking * boostFactor);
+        glm::vec3 boost = boostSegment(ag, ag->ag[m], &combinedVertices) *  (heightChunking * boostFactor);
         start = ag->ag[m]->start + 1;
         max = ag->ag[m]->end + 1;
         for (int k = start; k < max; k++) {
-            combinedVertices->at(k) += translation + boost;
+            combinedVertices.at(k) += translation + boost;
         }
         //create the connector's elements from previous to m
-        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, &combinedIndices);
         //create elements for segment
         computeElementsInitial(ag->ag[m]);
         //move them to position
@@ -277,7 +277,7 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 const std::vector<glm::vec3>& TreeB::getVertices()
 {
-    return  *combinedVertices;
+    return combinedVertices;
 }
 
 GLuint TreeB::getVAO()

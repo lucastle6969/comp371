@@ -2,7 +2,8 @@
 #include "LeafAB.hpp"
 
 //builds 2
-void LeafAB::buildLeaf(const float& r1, const float& r2, const float& leafDiameter, const float& lineHeight, const int& count, float leafTextureStart){
+void LeafAB::buildLeaf(const float& r1, const float& r2, const float& leafDiameter,
+                       const float& lineHeight, const int& count, float leafTextureStart){
     //place leaves parralel following angle
     //place approproate leaves parralel following angle
     for(int side = 0 ; side < 2 ; side++){
@@ -123,8 +124,6 @@ LeafAB::LeafAB(const int& leafPoints, const int&  randomSeedValue,
                         std::vector<glm::vec3>* leafVertices, std::vector<glm::vec2>* leafUVs) {
     this->leafPoints = leafPoints;
     this->randomSeedValue = randomSeedValue;
-    this->count = count;
-    this->lineHeight = lineHeight;
     this->itterations = itterations;
     this->jagednessFactor_Leaf = jagednessFactor_Leaf;
     this->leafUVs = leafUVs;
