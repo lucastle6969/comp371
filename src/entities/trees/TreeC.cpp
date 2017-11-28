@@ -4,6 +4,7 @@
 #define COMP371_TREE_C_cPP
 
 #include <src/loadTexture.hpp>
+#include <src/entities/World.hpp>
 #include "TreeC.hpp"
 
     int TreeC::spacingConstant = 5;
@@ -13,7 +14,8 @@
     }
 
     TreeC::TreeC(int numberOfTrees, const GLuint& shader_program, Entity* entity, float trunkDiameter, long seed, bool isAlien,
-                 std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude){
+                 std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude,
+                    float min_hitbox_y, float max_hitbox_y, std::vector<HitBox2d>& hbEnt){
 
 
         //center piece
@@ -21,7 +23,9 @@
         tci->setLocationWithPoints(0, 0);
         tci->setPosition(pos + glm::vec3(tci->xPos, 0, tci->zPos));
         tci->scale(magnitude);
+
         treeContainer.emplace_back(tci);
+        hbEnt.emplace_back(*tci, min_hitbox_y, max_hitbox_y);
 
         //distribute in random cirlce
         float tempTrunkDiameter;
@@ -49,7 +53,9 @@
             tci->setLocationWithPoints(xPos , zPos);
             tci->setPosition(pos + glm::vec3(tci->xPos + 0.05, 0.0, tci->zPos));
             tci->scale(magnitude);
+
             treeContainer.emplace_back(tci);
+            hbEnt.emplace_back(*tci, min_hitbox_y, max_hitbox_y);
         }
     }
 

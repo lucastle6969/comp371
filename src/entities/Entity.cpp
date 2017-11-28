@@ -32,7 +32,7 @@ Entity::Entity(Entity* parent)
 	this->hidden = false;
 }
 
-const glm::mat4& Entity::getModelMatrix()
+const glm::mat4 Entity::getModelMatrix() const
 {
 	static glm::mat4 identity;
 
@@ -40,15 +40,13 @@ const glm::mat4& Entity::getModelMatrix()
 	// to incorporate the context of the parent's transformation
 	glm::mat4 parent_model_matrix = this->parent ? this->parent->getModelMatrix() : identity;
 
-	this->model_matrix =
-			parent_model_matrix *
+	return (parent_model_matrix *
 			this->translation_matrix * this->getBaseTranslation() *
 			this->rotation_matrix * this->getBaseRotation() *
-			this->scale_matrix * this->getBaseScale();
-	return this->model_matrix;
+			this->scale_matrix * this->getBaseScale());
 }
 
-glm::vec3 Entity::getPosition()
+glm::vec3 Entity::getPosition() const
 {
 	return utils::getTranslationVector(this->translation_matrix);
 }
@@ -58,7 +56,7 @@ float Entity::getOpacity()
 	return this->opacity;
 }
 
-glm::vec3 Entity::getScale()
+glm::vec3 Entity::getScale() const
 {
 	return utils::getScaleVector(this->scale_matrix);
 }
@@ -264,7 +262,7 @@ void Entity::orient(const glm::vec3& new_face_vec)
 
 // derived classes should override this if the model
 // needs a fundamental scale offset
-const glm::mat4& Entity::getBaseScale()
+const glm::mat4& Entity::getBaseScale() const
 {
 	static glm::mat4 identity;
 	return identity;
@@ -272,7 +270,7 @@ const glm::mat4& Entity::getBaseScale()
 
 // derived classes should override this if the model
 // needs a fundamental rotation offset
-const glm::mat4& Entity::getBaseRotation()
+const glm::mat4& Entity::getBaseRotation() const
 {
 	static glm::mat4 identity;
 	return identity;
@@ -280,14 +278,14 @@ const glm::mat4& Entity::getBaseRotation()
 
 // derived classes should override this if the model
 // needs a fundamental translation offset
-const glm::mat4& Entity::getBaseTranslation()
+const glm::mat4& Entity::getBaseTranslation() const
 {
 	static glm::mat4 identity;
 	return identity;
 }
 
 // the vector indicating the direction the model faces by default (with no rotation)
-const glm::vec3& Entity::getDefaultFaceVector()
+const glm::vec3& Entity::getDefaultFaceVector() const
 {
 	static glm::vec3 default_face_vec(1.0f, 0.0f, 0.0f);
 

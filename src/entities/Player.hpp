@@ -18,16 +18,16 @@ class Player: public DrawableEntity {
 private:
 	static constexpr float base_x_rotation_angle = -1.0f * (float)(M_PI / 2);
 	static constexpr float base_y_rotation_angle = (float)M_PI;
-	const glm::mat4& getBaseRotation() override;
-	const glm::mat4& getBaseScale() override;
-	const glm::vec3& getDefaultFaceVector() override;
+	const glm::mat4& getBaseRotation() const override;
+	const glm::mat4& getBaseScale() const override;
+	const glm::vec3& getDefaultFaceVector() const override;
 	std::vector<glm::vec3> vertices;
 	GLuint vao;
 
 public:
 	explicit Player(const GLuint& shader_program) : Player(shader_program, nullptr) {}
 	Player(const GLuint& shader_program, Entity* parent);
-	const std::vector<glm::vec3>& getVertices() override;
+	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
 };

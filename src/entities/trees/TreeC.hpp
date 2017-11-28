@@ -39,7 +39,8 @@ public:
 
     TreeC(int numberOfTrees, const GLuint& shader_program,
           Entity* entity, float trunkDiameter, long seed, bool isAlien,
-            std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude);
+            std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude,
+          float min_hitbox_y, float max_hitbox_y, std::vector<HitBox2d>& hbEnt);
 
     static void setSpacingConstant(int k);
 

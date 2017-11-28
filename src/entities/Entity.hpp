@@ -25,10 +25,10 @@ private:
 	void orient(const glm::vec3& forward_vec);
 
 protected:
-	virtual const glm::mat4& getBaseScale();
-	virtual const glm::mat4& getBaseRotation();
-	virtual const glm::mat4& getBaseTranslation();
-	virtual const glm::vec3& getDefaultFaceVector();
+	virtual const glm::mat4& getBaseScale() const;
+	virtual const glm::mat4& getBaseRotation() const;
+	virtual const glm::mat4& getBaseTranslation() const;
+	virtual const glm::vec3& getDefaultFaceVector() const;
 	// this method is NOT responsible for freeing memory
 	// and does NOT remove the parent pointer from the child
 	void detachChild(Entity* const& child);
@@ -37,9 +37,9 @@ public:
 	Entity() : Entity(nullptr) {}
 	explicit Entity(Entity* parent);
 	virtual ~Entity() = default;
-	const glm::mat4& getModelMatrix();
-	glm::vec3 getPosition();
-	glm::vec3 getScale();
+	const glm::mat4 getModelMatrix() const;
+	glm::vec3 getPosition() const;
+	glm::vec3 getScale() const;
 	float getOpacity();
 	bool isHidden();
 	void scale(const float& scalar);

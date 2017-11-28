@@ -281,7 +281,7 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
 
 }
 
-const std::vector<glm::vec3>& TreeB::getVertices()
+const std::vector<glm::vec3>& TreeB::getVertices() const
 {
     return combinedVertices;
 }

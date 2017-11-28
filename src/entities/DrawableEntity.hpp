@@ -65,7 +65,7 @@ public:
 	explicit DrawableEntity(const GLuint& shader_program) : DrawableEntity(shader_program, nullptr) {}
 	DrawableEntity(const GLuint& shader_program, Entity* parent);
 	// pure virtual methods must be overridden by derived classes
-	virtual const std::vector<glm::vec3>& getVertices() = 0;
+	virtual const std::vector<glm::vec3>& getVertices() const = 0;
 	virtual GLuint getVAO() = 0;
 	virtual const int getColorType() = 0;
 	// end pure virtual functions

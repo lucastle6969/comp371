@@ -97,7 +97,6 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
-	Player* player = world->getPlayer();
 	bool up_press = isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP);
 	bool down_press = isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN);
 	bool left_press = isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT);
@@ -113,29 +112,21 @@ void pollContinuousControls(GLFWwindow* window) {
 
 	// first check compound then single movement button actions
 	if (up_press && left_press) {
-		player->moveForwardLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerForwardLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (up_press && right_press) {
-		player->moveForwardRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerForwardRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (down_press && left_press) {
-		player->moveBackLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerBackLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (down_press && right_press) {
-		player->moveBackRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerBackRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (up_press) {
-		player->moveForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (down_press) {
-		player->moveBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (left_press) {
-		player->moveLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	} else if (right_press) {
-		player->moveRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-		world->checkPosition();
+		world->movePlayerRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
 	}
 }
 
@@ -316,7 +307,7 @@ int main()
 
 		glm::vec3 follow_vector = getFollowVector();
 
-		world->getPlayer()->setOpacity(
+		world->setPlayerOpacity(
 			(glm::length(follow_vector) - getPlayerScaleCoefficient() * 30.0f) /
 				(getPlayerScaleCoefficient() * 50.0f)
 		);

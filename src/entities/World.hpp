@@ -10,6 +10,9 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+
+#include <src/HitBox2d.hpp>
+
 #include "Light.h"
 #include "Entity.hpp"
 #include "Player.hpp"
@@ -33,7 +36,11 @@ private:
 	int x_center;
 	int z_center;
 	GLuint shader_program;
-	void placeWorldTile(const int& x, const int& z);
+	float player_min_world_y;
+	float player_max_world_y;
+	bool collidesWith(const HitBox2d& box);
+	void placeWorldTile(const int& x, const int& z, const HitBox2d& player_hitbox);
+	void checkPosition();
 public:
 	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
 	World(const GLuint& shader_program, Entity* parent)
@@ -50,9 +57,17 @@ public:
 		Entity* parent
 	);
 	~World() override;
-	Player* getPlayer();
+	const Player* getPlayer();
 	void toggleAxes();
-	void checkPosition();
+	void setPlayerOpacity(const float& opacity);
+	void movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerForwardLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerForwardRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerBackLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayerBackRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
 };
 
 
