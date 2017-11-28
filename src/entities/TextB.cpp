@@ -29,6 +29,22 @@ TextB::TextB(
 
     this->draw_mode = GL_TRIANGLES;
 
+    if(FONT_STYLE==FONT_STYLE_OUTLINE){
+        this->font_map = loadTexture(
+                "../textures/outline_text_map.png",
+                GL_LINEAR,
+                GL_LINEAR,
+                true
+        );
+    }else{
+        this->font_map = loadTexture(
+                "../textures/mythos_text_map.png",
+                GL_LINEAR,
+                GL_LINEAR,
+                true
+        );
+    }
+
     // 0.01 scale for at least 100 chars per line
     float char_width = 0.01;
     float char_height = 0.01;
@@ -448,10 +464,7 @@ TextB::~TextB()
 
     GLuint TextB::getTextureId()
     {
-        if(blabla = 1){
-
-        }else text_texture = blabla2;
-        return text_texture;
+        return this->font_map;
     }
 
 

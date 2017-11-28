@@ -18,6 +18,7 @@ private:
     std::vector<GLuint> elements;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2>uvs;
+    GLuint font_map;
     GLuint vao;
     GLuint vertices_buffer;
     GLuint element_buffer;
