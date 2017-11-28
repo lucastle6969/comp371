@@ -423,7 +423,7 @@ TextB::TextB(
         }
 
         //we are 'cutting away' the extra space before and after chars
-        line_width_sum += char_width - (current_char_l_space + current_char_r_space);
+        line_width_sum += char_width - (char_l_space + char_r_space);
 
         //we need to check if we need to go to the next line BEFORE assigning the vertices
         if(line_width_sum > 1.0){
@@ -437,10 +437,10 @@ TextB::TextB(
             break;
         }
 
-        this->vertices.emplace_back(cursor - current_char_l_space, 1.0f - line_height - char_height, 0.0f);
-        this->vertices.emplace_back(cursor - current_char_l_space + char_width, 1.0f - line_height - char_height, 0.0f);
-        this->vertices.emplace_back(cursor - current_char_l_space, 1.0f - line_height, 0.0f);
-        this->vertices.emplace_back(cursor - current_char_l_space + char_width, 1.0f - line_height, 0.0f);
+        this->vertices.emplace_back(cursor - char_l_space, 1.0f - line_height - char_height, 0.0f);
+        this->vertices.emplace_back(cursor - char_l_space + char_width, 1.0f - line_height - char_height, 0.0f);
+        this->vertices.emplace_back(cursor - char_l_space, 1.0f - line_height, 0.0f);
+        this->vertices.emplace_back(cursor - char_l_space + char_width, 1.0f - line_height, 0.0f);
 
     }
 
