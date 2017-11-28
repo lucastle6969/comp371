@@ -826,7 +826,7 @@ Text::Text(
 
     }
 
-    this->vao = DrawableEntity::initVertexArray(
+    this->vao = this->initVertexArray(
             this->vertices,
             this->elements,
             this->normals,
@@ -849,7 +849,7 @@ Text::~Text()
     glDeleteVertexArrays(1, &this->vao);
 }
 
-const std::vector<glm::vec3>& Text::getVertices()
+const std::vector<glm::vec3>& Text::getVertices() const
 {
     return this->vertices;
 }
