@@ -238,7 +238,7 @@ void RockB::generateSphere(
 }
 
 
-const std::vector<glm::vec3>& RockB::getVertices()
+const std::vector<glm::vec3>& RockB::getVertices() const
 {
     return this->vertices;
 }

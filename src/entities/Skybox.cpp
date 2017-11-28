@@ -37,7 +37,7 @@ Skybox::Skybox(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 
 Skybox::~Skybox() {}
 
-const std::vector<glm::vec3>& Skybox::getVertices() {
+const std::vector<glm::vec3>& Skybox::getVertices() const {
 	/*
 	static const std::vector<glm::vec3> vertices = {
 			//front square

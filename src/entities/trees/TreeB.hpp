@@ -109,13 +109,13 @@ private:
 protected:
     int colorType;
 public:
-    const std::vector<glm::vec3>& getVertices();
+    const std::vector<glm::vec3>& getVertices() const override;
 
-    GLuint getVAO();
+    GLuint getVAO() override;
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed, bool isAlien);
 
-    GLuint getTextureId();
-    const int getColorType();
+    GLuint getTextureId() override;
+    const int getColorType() override;
 };
 #endif //treeA

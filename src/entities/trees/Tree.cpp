@@ -13,8 +13,6 @@
 #include "Tree.hpp"
 
 
-
-
 Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type)
         : DrawableEntity(shader_program, entity){
     this->seed = seed;
@@ -97,8 +95,8 @@ int Tree::lineMAX(const float& trunkDiameter, int k) {
 }
 
 
-const std::vector<glm::vec3>& Tree::getVertices() {
-    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
+const std::vector<glm::vec3>& Tree::getVertices() const {
+    return combinedVertices;
 }
 
 GLuint Tree::getVAO() {

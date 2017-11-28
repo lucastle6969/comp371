@@ -40,7 +40,7 @@ Player::Player(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 	);
 }
 
-const std::vector<glm::vec3>& Player::getVertices()
+const std::vector<glm::vec3>& Player::getVertices() const
 {
 	return this->vertices;
 }
@@ -55,7 +55,7 @@ const int Player::getColorType()
 	return COLOR_LIGHTING;
 }
 
-const glm::mat4& Player::getBaseRotation()
+const glm::mat4& Player::getBaseRotation() const
 {
 	static glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
 	static glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -69,7 +69,7 @@ const glm::mat4& Player::getBaseRotation()
 	return rotation;
 }
 
-const glm::mat4& Player::getBaseScale()
+const glm::mat4& Player::getBaseScale() const
 {
 	static glm::mat4 identity;
 	static glm::mat4 scale = glm::scale(identity, glm::vec3(0.4f));
@@ -78,7 +78,7 @@ const glm::mat4& Player::getBaseScale()
 }
 
 // the vector indicating the direction the model faces by default (with no rotation)
-const glm::vec3& Player::getDefaultFaceVector()
+const glm::vec3& Player::getDefaultFaceVector() const
 {
 	static glm::vec3 default_face_vec(0.0f, 0.0f, -1.0f);
 

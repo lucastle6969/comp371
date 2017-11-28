@@ -36,7 +36,7 @@ WorldOrigin::WorldOrigin(
 	this->vao = this->initVertexArray(this->vertices);
 }
 
-const std::vector<glm::vec3>& WorldOrigin::getVertices()
+const std::vector<glm::vec3>& WorldOrigin::getVertices() const
 {
 	return this->vertices;
 }
