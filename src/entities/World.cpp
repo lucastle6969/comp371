@@ -35,7 +35,7 @@ World::World(
 	// populate tiles
 	int x, z;
 	for (int i = 0; i < 9; i++) {
-		World::tileIndexToLocation(i, x_center, z_center, &x, &z);
+		World::tileIndexToLocation(i, this->x_center, this->z_center, &x, &z);
 		// create tile and add to list of tiles AS WELL AS list of children
 		this->tiles.push_back(new WorldTile(shader_program, x, z, this));
 	}
