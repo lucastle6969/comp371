@@ -162,40 +162,40 @@ TextB::TextB(
                 this->uvs.emplace_back(0.333333, 0.833333);
                 break;
             case 'i':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.36f;
+                char_r_space = char_width*0.28f;
                 this->uvs.emplace_back(0.333333, 0.666666);
                 this->uvs.emplace_back(0.5, 0.666666);
                 this->uvs.emplace_back(0.333333, 0.833333);
                 this->uvs.emplace_back(0.5, 0.833333);
                 break;
             case 'j':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.24f;
+                char_r_space = char_width*0.24f;
                 this->uvs.emplace_back(0.5, 0.666666);
                 this->uvs.emplace_back(0.666666, 0.666666);
                 this->uvs.emplace_back(0.5, 0.833333);
                 this->uvs.emplace_back(0.666666, 0.833333);
                 break;
             case 'k':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.24f;
+                char_r_space = char_width*0.24f;
                 this->uvs.emplace_back(0.666666, 0.666666);
                 this->uvs.emplace_back(0.833333, 0.666666);
                 this->uvs.emplace_back(0.666666, 0.833333);
                 this->uvs.emplace_back(0.833333, 0.833333);
                 break;
             case 'l':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.32f;
+                char_r_space = char_width*0.16f;
                 this->uvs.emplace_back(0.833333, 0.666666);
                 this->uvs.emplace_back(1, 0.666666);
                 this->uvs.emplace_back(0.833333, 0.833333);
                 this->uvs.emplace_back(1, 0.833333);
                 break;
             case 'm':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.0f;
+                char_r_space = char_width*0.0f;
                 this->uvs.emplace_back(0, 0.5);
                 this->uvs.emplace_back(0.166666, 0.5);
                 this->uvs.emplace_back(0, 0.666666);
@@ -203,102 +203,102 @@ TextB::TextB(
                 break;
             case 'n':
                 char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_r_space = char_width*0.16f;
                 this->uvs.emplace_back(0.166666, 0.5);
                 this->uvs.emplace_back(0.333333, 0.5);
                 this->uvs.emplace_back(0.166666, 0.666666);
                 this->uvs.emplace_back(0.333333, 0.666666);
                 break;
             case 'o':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.16f;
+                char_r_space = char_width*0.12f;
                 this->uvs.emplace_back(0.333333, 0.5);
                 this->uvs.emplace_back(0.5, 0.5);
                 this->uvs.emplace_back(0.333333, 0.666666);
                 this->uvs.emplace_back(0.5, 0.666666);
                 break;
             case 'p':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.2f;
+                char_r_space = char_width*0.16f;
                 this->uvs.emplace_back(0.5, 0.5);
                 this->uvs.emplace_back(0.666666, 0.5);
                 this->uvs.emplace_back(0.5, 0.666666);
                 this->uvs.emplace_back(0.666666, 0.666666);
                 break;
             case 'q':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.16f;
+                char_r_space = char_width*0.12f;
                 this->uvs.emplace_back(0.666666, 0.5);
                 this->uvs.emplace_back(0.833333, 0.5);
                 this->uvs.emplace_back(0.666666, 0.666666);
                 this->uvs.emplace_back(0.833333, 0.666666);
                 break;
             case 'r':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.28f;
+                char_r_space = char_width*0.12f;
                 this->uvs.emplace_back(0.833333, 0.5);
                 this->uvs.emplace_back(1.0, 0.5);
                 this->uvs.emplace_back(0.833333, 0.666666);
                 this->uvs.emplace_back(1.0, 0.666666);
                 break;
             case 's':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.2f;
+                char_r_space = char_width*0.28f;
                 this->uvs.emplace_back(0, 0.333333);
                 this->uvs.emplace_back(0.166666, 0.333333);
                 this->uvs.emplace_back(0, 0.5);
                 this->uvs.emplace_back(0.166666, 0.5);
                 break;
             case 't':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.2f;
+                char_r_space = char_width*0.16f;
                 this->uvs.emplace_back(0.166666, 0.333333);
                 this->uvs.emplace_back(0.333333, 0.333333);
                 this->uvs.emplace_back(0.166666, 0.5);
                 this->uvs.emplace_back(0.333333, 0.5);
                 break;
             case 'u':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.2f;
+                char_r_space = char_width*0.16f;
                 this->uvs.emplace_back(0.333333, 0.333333);
                 this->uvs.emplace_back(0.5, 0.333333);
                 this->uvs.emplace_back(0.333333, 0.5);
                 this->uvs.emplace_back(0.555555, 0.5);
                 break;
             case 'v':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.2f;
+                char_r_space = char_width*0.16f;
                 this->uvs.emplace_back(0.5, 0.333333);
                 this->uvs.emplace_back(0.666666, 0.333333);
                 this->uvs.emplace_back(0.5, 0.5);
                 this->uvs.emplace_back(0.666666, 0.5);
                 break;
             case 'w':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.0f;
+                char_r_space = char_width*0.0f;
                 this->uvs.emplace_back(0.666666, 0.333333);
                 this->uvs.emplace_back(0.833333, 0.333333);
                 this->uvs.emplace_back(0.666666, 0.5);
                 this->uvs.emplace_back(0.833333, 0.5);
                 break;
             case 'x':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.16f;
+                char_r_space = char_width*0.08f;
                 this->uvs.emplace_back(0.833333, 0.333333);
                 this->uvs.emplace_back(1, 0.333333);
                 this->uvs.emplace_back(0.833333, 0.5);
                 this->uvs.emplace_back(1, 0.5);
                 break;
             case 'y':
-                char_l_space = char_width*0.12f;
-                char_r_space = char_width*0.2f;
+                char_l_space = char_width*0.16f;
+                char_r_space = char_width*0.24f;
                 this->uvs.emplace_back(0, 0.166666);
                 this->uvs.emplace_back(0.166666, 0.166666);
                 this->uvs.emplace_back(0, 0.333333);
                 this->uvs.emplace_back(0.166666, 0.333333);
                 break;
             case 'z':
-                char_l_space = char_width*0.12f;
+                char_l_space = char_width*0.2f;
                 char_r_space = char_width*0.2f;
                 this->uvs.emplace_back(0.166666, 0.166666);
                 this->uvs.emplace_back(0.333333, 0.166666);
@@ -386,8 +386,8 @@ TextB::TextB(
                 this->uvs.emplace_back(1, 0.166666);
                 break;
             case ' ':
-                char_l_space = char_width*0.0;//is this too much for a space ?
-                char_r_space = char_width*0.0;
+                char_l_space = char_width*0.0;
+                char_r_space = char_width*0.5;
                 this->uvs.emplace_back(0.0f, 0.0f);
                 this->uvs.emplace_back(0.04, 0.0);
                 this->uvs.emplace_back(0.0f, 0.04f);
@@ -411,7 +411,7 @@ TextB::TextB(
                 break;
             case '}' : // new line key
                         line_width_sum = l_margin;
-                        line_height =+ char_height;
+                        line_height += char_height;
                         continue;
             default:
                 char_l_space = 0.0;

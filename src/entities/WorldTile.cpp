@@ -49,8 +49,8 @@ WorldTile::WorldTile(
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
 
 
-    TextB* textb = new TextB(shader_program, "welcome to escape keys}0,1.23,456,789", 0, 0, FONT_STYLE_MYTHOS, this);
-    textb->setPosition(glm::vec3(0.9, -0.98f, 0.8));
+    TextB* textb = new TextB(shader_program, "welcome}to escape keys}0,1.23,456,789", 0, 0, FONT_STYLE_MYTHOS, this);
+    textb->setPosition(glm::vec3(0.9, -0.97f, 0.8));
     //textb->scale(0.7);
 
     this->textB.emplace_back(textb);
