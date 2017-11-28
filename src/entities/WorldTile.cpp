@@ -51,7 +51,7 @@ WorldTile::WorldTile(
 
     TextB* textb = new TextB(shader_program, "ben fucking rocks", 0, 0, this);
     textb->setPosition(glm::vec3(0.9, 0.0f, 0.8));
-    textb->scale(2);
+    //textb->scale(0.7);
 
     this->textB.emplace_back(textb);
 
