@@ -15,7 +15,7 @@
 
 #include "src/TreeRandom.hpp"
 #include <cstdio>
-class LeafBranchA {
+class LeafBranchAB {
     int randomSeedValue;
     float itterations;
     int branchPoints;
@@ -28,12 +28,12 @@ class LeafBranchA {
 public:
     float getLineHeight();
 
-    LeafBranchA(const int& randomSeedValue, const float& itterations, const int& branchPoints,
+    LeafBranchAB(const int& randomSeedValue, const float& itterations, const int& branchPoints,
                 const float& lineHeight, const float& jagednessFactor_Leaf,
                 std::vector<glm::vec3>* leafVertices,
                 std::vector<GLuint>* leafIndices, std::vector<glm::vec2>* leafUVs);
 
-    void buildLeafBranch(const float& trunkDiameter);
+    void buildLeafBranch(const float& trunkDiameter, int y, float textureLeafStart);
 
     void buildBranchElements(int baseVerticesSize, int i, int len);
 };

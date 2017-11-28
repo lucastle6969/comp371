@@ -42,10 +42,14 @@ const int COLOR_WHITE = 0;
 const int COLOR_COORDINATE_AXES = 1;
 const int COLOR_HEIGHT = 2;
 const int COLOR_TILE = 3;
-const int COLOR_TEXTURE = 4;
+const int COLOR_UNLIT_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 const int COLOR_TREE = 6;
-const int COLOR_FONT = 7;
+const int COLOR_SKY_TEXTURE = 7;
+const int COLOR_FONT = 8;
+
+
+
 
 const vec4 WHITE = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -81,7 +85,6 @@ uniform float nighttime_value;
 void main()
 {
     switch (color_type) {
-
         case COLOR_COORDINATE_AXES:
             color = vec4(ceil(pos), 1.0f);
             break;
@@ -96,14 +99,14 @@ void main()
                 0.3f * vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f)
             );
             break;
-        case COLOR_TEXTURE:
+        case COLOR_UNLIT_TEXTURE:
+                    //Does not give light effects
             color = texture(tex_image, tex_coord);
             break;
-        case COLOR_LIGHTING: {
+        case COLOR_LIGHTING:
             // inspired by tutorial at: https://learnopengl.com/#!Lighting/Basic-Lighting
             color = calculateColor (material.ambient);
             break;
-        }
         case COLOR_TREE:
             color = calculateColor(
                 0.3f * vec3(
@@ -113,12 +116,23 @@ void main()
                 )
             );
             break;
+
+        case COLOR_SKY_TEXTURE:
+            color = vec4(mix(
+                vec3(texture(tex_image, tex_coord)),
+                fog_color,
+                nighttime_value * 0.4 + 0.6
+            ), 1);
+
+            break;
+
         case COLOR_FONT:
             vec4 texel = texture(tex_image, tex_coord);
             if(texel.a < 0.5)
                 discard;
             color = texel;
             break;
+
         default:
             color = WHITE;
             break;

@@ -29,9 +29,6 @@ World::World(
 	this->player.scale(0.0005f);
 	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
 
-	//light
-	//this->light = new Light(glm::vec3(0,-1,0), glm::vec3(1,1,1));
-
     // hide the axes by default
 	this->axes.hide();
 
@@ -42,6 +39,7 @@ World::World(
 		// create tile and add to list of tiles AS WELL AS list of children
 		this->tiles.push_back(new WorldTile(shader_program, x, z, this));
 	}
+
 }
 
 World::~World()

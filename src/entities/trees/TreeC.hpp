@@ -44,9 +44,4 @@ public:
     void setSizeVariation(const float& r);
 
 };
-//
-//glm::vec3 U = leafVertices.at(base + n+1) - leafVertices.at(base + n);
-//glm::vec3 V = leafVertices.at(offset + n) - leafVertices.at(base + n);
-//glm::vec3 normal = glm::normalize(glm::cross(U, V));
-//combinedNormals.push_back(normal);
 #endif

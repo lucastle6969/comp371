@@ -11,46 +11,31 @@
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
 #include "Tree.hpp"
-#include "src/constants.hpp"
-
-float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){
-    return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;
-}
-int Tree::lineMAX(const float& trunkDiameter, int k) {
-    return ceil(pow(pow(trunkDiameter, 2) * k, 1.0 / 2.0));
-}
 
 
-const std::vector<glm::vec3>& Tree::getVertices() {
-    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
-}
-
-GLuint Tree::getVAO() {
-    return this->vao;
-}
-
-const int Tree::getColorType() {
-    return COLOR_TREE;
-}
 
 
-Tree::Tree(int heightChunking, float boostFactor, const GLuint& shader_program, Entity* entity, const char& type)
+Tree::Tree(int heightChunking, float boostFactor, float seed, const GLuint& shader_program, Entity* entity, const char& type)
         : DrawableEntity(shader_program, entity){
+    this->seed = seed;
     draw_mode = GL_TRIANGLES;
     this->heightChunking = heightChunking;
     this->boostFactor = boostFactor;
     this->type = type;
-
-	this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 5.0f);
+    this->setMaterial(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f), 10.0f);
 }
 
 Tree::~Tree() {
-    delete combinedVertices;
-    delete combinedIndices;
-    delete combinedNormals;
-    delete combinedUV;
-    delete combinedStartIndices;
-   // glDeleteVertexArrays(1, &vao);
+//    delete combinedVertices;
+//    delete combinedIndices;
+//    delete combinedNormals;
+//    delete combinedUV;
+//    delete combinedStartIndices;
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteBuffers(1, &nbo);
+    glDeleteBuffers(1, &uvbo);
+   glDeleteVertexArrays(1, &vao);
 }
 
 glm::vec3 Tree::boostSegment(const AttatchmentGroupings* agLow,const AttatchmentGroupings* agHigh,
@@ -89,16 +74,36 @@ void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
                            const int& rotPoint, const int& prevPoint, const int& circularPoints,
                      std::vector<GLuint>* indPntr){
     int set = std::abs((circularPoints - rotPoint) + prevPoint);
-    TrunkA::buildConnectorElements(ag->end - TrunkA::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
-                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+    TrunkAB::buildConnectorElements(ag->end - TrunkAB::trunkPoints + 1, ag->ag[m]->start + 1, set, ag->side,
+                                   &combinedIndices, &combinedVertices, &combinedNormals);
 }
 
 void Tree::computeElementsInitial(const AttatchmentGroupings* ag) {
-    if(ag->type == 'L'){
-        LeafContainerA::buildLeafContainerElements(ag->start + 1, ag->end,
-                                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+    if(ag->type == 'B'){
+        TrunkAB::buildTrunkElements(ag->start + 1, ag->end,
+                                    &combinedIndices, &combinedVertices, &combinedNormals);
     }
     else
-        TrunkA::buildTrunkElements(ag->start + 1, ag->end,
-                                   combinedIndices, combinedVertices, combinedUV, combinedNormals);
+        LeafContainerAB::buildLeafContainerElements(ag->start + 1, ag->end,
+                                                    &combinedIndices, &combinedVertices, &combinedUV, &combinedNormals);
+}
+
+float Tree::shootCalculation(const float& trunkDiameter, const double& ratio, const int& branches){
+    return pow(pow(trunkDiameter, 2) / (branches + 1), 1.0 / 2.0) * ratio;
+}
+int Tree::lineMAX(const float& trunkDiameter, int k) {
+    return ceil(pow(pow(trunkDiameter, 2) * k, 1.0 / 2.0));
+}
+
+
+const std::vector<glm::vec3>& Tree::getVertices() {
+    return reinterpret_cast<const std::vector<glm::vec3> &>(combinedVertices);
+}
+
+GLuint Tree::getVAO() {
+    return this->vao;
+}
+
+const int Tree::getColorType() {
+    return COLOR_TREE;
 }
