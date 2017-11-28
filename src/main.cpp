@@ -339,7 +339,7 @@ int main()
                 );
 
         //temporary static light position to debug shadows
-        glm::vec3 light_position = glm::vec3(0.5f, 4.0f, 0.5f);
+        glm::vec3 light_position = glm::vec3(0.0f, 4.0f, 0.0f);
 
         glm::vec3 scene_center = world->getPlayer()->getPosition();
 
@@ -352,7 +352,7 @@ int main()
         glUniformMatrix4fv(light_space_loc, 1, GL_FALSE, glm::value_ptr(light_space_matrix));
 
         glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
         glViewport(0,0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -373,7 +373,7 @@ int main()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         //reset viewport
-        glViewport(0,0,800,800);
+        glViewport(0,0, width,height);
 
         glUniform1i(is_shadow_pass_loc, 0);
         // Render (normal draw)
