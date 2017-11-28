@@ -49,19 +49,30 @@ TextB::TextB(
     float char_width = 0.01;
     float char_height = 0.01;
 
+    float line_height = 0;
+    if(line_start<1){
+        line_height = 0;
+    }else line_height = line_start * char_height;
+
     //just initializing for good measure (default)
     float current_char_r_space = 0.0f;
     float prev_char_r_space = 0.0f;
     float current_char_l_space = 0.0f;
     float prev_char_l_space = 0.0f;
 
-    // keep track of the width to return line (line width sum accumulator)
-    float cursor = left_margin;
+
+    float l_margin = left_margin;
+
+    if(l_margin<char_width){
+        l_margin = char_width;
+    }
+
+    // keep track of the width to return line (line width sum accumulator) , start at the left margin
+    float line_width_sum = 0.0f;
+
+    float cursor = l_margin;
 
     for(int i=0, j=0; i<message.length(); i++, j+=4){
-
-
-
 
         this->elements.emplace_back(j+2);
         this->elements.emplace_back(j);
@@ -386,14 +397,20 @@ TextB::TextB(
             case ',':
                 current_char_l_space = 0.0;
                 current_char_r_space = 0.0;
+                this->uvs.emplace_back(0.416666, 0.25f); // 5.0f/12.0f, 3.0f/12.0f
+                this->uvs.emplace_back(0.5, 0.25);
+                this->uvs.emplace_back(0.416666, 0.333333);
+                this->uvs.emplace_back(0.5, 0.333333);
+
+
                 break;
             case '.':
                 current_char_l_space = 0.0;
                 current_char_r_space = 0.0;
-                this->uvs.emplace_back(0.0f, 0.0f);
-                this->uvs.emplace_back(0.04, 0.0);
-                this->uvs.emplace_back(0.0f, 0.04f);
-                this->uvs.emplace_back(0.04f, 0.04f);
+                this->uvs.emplace_back(0.333333, 0.166666); // 2.0f/6.0f, 1.0f/6.0f
+                this->uvs.emplace_back(0.416666, 0.166666); // 5.0f/12.0f, 1.0f/6.0f
+                this->uvs.emplace_back(0.333333, 0.25f); // 2.0f/6.0f, 3.0f/12.0f
+                this->uvs.emplace_back(0.416666, 0.25f);
                 break;
             default:
                 current_char_l_space = 0.0;
@@ -407,19 +424,24 @@ TextB::TextB(
         }
 
         //we are 'cutting away' the extra space before and after chars
-        cursor += char_width - (current_char_l_space + current_char_r_space);
+        line_width_sum += char_width - (current_char_l_space + current_char_r_space);
 
         //we need to check if we need to go to the next line BEFORE assigning the vertices
-        if(cursor > 1.0){
-            cursor = 0.0f;
-
+        if(line_width_sum > 1.0){
+            //we are drawing from the top down
+            line_height += char_height;
+            cursor = l_margin;
+            line_width_sum = 0.0f;
         }
 
+        if(line_height>1){
+            break;
+        }
 
-        this->vertices.emplace_back(line_width_accumulator * var_char_width, line_height * char_height, 0.0f);
-        this->vertices.emplace_back(i * var_char_width + var_char_width, line_height * char_height, 0.0f);
-        this->vertices.emplace_back(i * var_char_width, line_height * char_height + char_height, 0.0f);
-        this->vertices.emplace_back(i * var_char_width + var_char_width, line_height * char_height + char_height, 0.0f);
+        this->vertices.emplace_back(cursor - current_char_l_space, 1.0f - line_height - char_height, 0.0f);
+        this->vertices.emplace_back(cursor - current_char_l_space + char_width, 1.0f - line_height - char_height, 0.0f);
+        this->vertices.emplace_back(cursor - current_char_l_space, 1.0f - line_height, 0.0f);
+        this->vertices.emplace_back(cursor - current_char_l_space + char_width, 1.0f - line_height, 0.0f);
 
 
     }
