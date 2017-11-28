@@ -147,7 +147,8 @@ GLuint loadTexture(
             &rock_tex_nrChannels,
             0
     );
-    if (rock_tex_data) {
+	stbi_set_flip_vertically_on_load(false);
+	if (rock_tex_data) {
         glTexImage2D(
                 GL_TEXTURE_2D,
                 0,
