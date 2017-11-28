@@ -103,7 +103,11 @@ add_executable(proceduralworld
     src/entities/Trees/TrunkC.cpp
     src/entities/Trees/LeafContainerC.cpp
     src/entities/Trees/LeafContainerC.hpp
-        src/entities/Text.hpp src/entities/Text.cpp src/entities/TextB.hpp src/entities/TextB.cpp)
+    src/entities/Text.hpp
+    src/entities/Text.cpp
+    src/entities/TextB.hpp
+    src/entities/TextB.cpp
+)
 
 # Link librarssies
 if(APPLE)

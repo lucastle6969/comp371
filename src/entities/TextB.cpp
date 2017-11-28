@@ -16,6 +16,7 @@
 
 #include "../constants.hpp"
 #include "../loadTexture.hpp"
+#include <iostream>
 
 TextB::TextB(
         const GLuint& shader_program,
@@ -36,32 +37,27 @@ TextB::TextB(
 
     float char_width = 0.01;
 
-    for(int i=0; i<message.length(); i++){
+    for(int i=0, j=0; i<message.length(); i++, j+=4){
         if (i>100)
             break;
-//        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
-//        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
-//        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
-//        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
-
-        this->vertices.emplace_back(0,0,0);
-        this->vertices.emplace_back(1,0,0);
-        this->vertices.emplace_back(0,1,0);
-        this->vertices.emplace_back(1,1,0);
-
+        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
+        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
+        
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
 
-        this->elements.emplace_back(i+2);
-        this->elements.emplace_back(i);
-        this->elements.emplace_back(i+1);
-        this->elements.emplace_back(i+2);
-        this->elements.emplace_back(i+1);
-        this->elements.emplace_back(i+3);
+        this->elements.emplace_back(j+2);
+        this->elements.emplace_back(j);
+        this->elements.emplace_back(j+1);
+        this->elements.emplace_back(j+2);
+        this->elements.emplace_back(j+1);
+        this->elements.emplace_back(j+3);
 
-
+        std::cout<<message[i]<<std::endl;
         switch(message[i]){
             case 'a':
                 this->uvs.emplace_back(0, 0.833333);
