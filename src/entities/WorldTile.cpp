@@ -55,6 +55,11 @@ WorldTile::WorldTile(
 
     this->textB.emplace_back(textb);
 
+    TextB* textb2 = new TextB(shader_program, "welcome}to outline font}0,1.23,456,789", 0, 0, FONT_STYLE_OUTLINE, this);
+    textb2->setPosition(glm::vec3(0.9, -0.93f, 0.8));
+
+    this->textB.emplace_back(textb2);
+
     // TODO: better tree/rock distribution?
 	// TODO: test/remove tree/rock overlaps
 

@@ -15,6 +15,7 @@
 #include "Player.hpp"
 #include "WorldOrigin.hpp"
 #include "WorldTile.hpp"
+#include "TextB.hpp"
 
 class World: public Entity {
 private:
@@ -28,6 +29,7 @@ private:
 	);
 	Player player;
 	WorldOrigin axes;
+    TextB menu;
 	std::vector<WorldTile*> tiles;
 	// current center tile position
 	int x_center;
