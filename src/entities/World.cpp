@@ -16,18 +16,18 @@
 
 World::World(
 	const GLuint& shader_program,
-	const int& x_center,
-	const int& z_center,
+	const float& player_x_start,
+	const float& player_z_start,
 	Entity* parent
 ) : Entity(parent),
     shader_program(shader_program),
     player(shader_program, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
-    x_center(x_center),
-    z_center(z_center)
+    x_center((int)floor(player_x_start)),
+    z_center((int)floor(player_z_start))
 {
 	this->player.scale(0.0005f);
-	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
+	this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));
 
     // hide the axes by default
 	this->axes.hide();
