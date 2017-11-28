@@ -27,21 +27,11 @@ World::World(
     shader_program(shader_program),
     player(shader_program, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
-//<<<<<<< HEAD
-//    x_center(x_center),
-//    z_center(z_center),
 	x_center((int)floor(player_x_start)),
 	z_center((int)floor(player_z_start)),
     player_min_world_y(FLT_MAX),
     player_max_world_y(-FLT_MAX)
 {
-//=======
-
-//{
-//	this->player.scale(0.0005f);
-//	this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));
-//
-//>>>>>>> 059ae0cf96f0ff98b816dcb34b9f305e01605639
     // hide the axes by default
 	this->axes.hide();
 
@@ -51,9 +41,11 @@ World::World(
 	// assume player's floating position from ground will remain constant and use
 	// the y range of the model to create specialized entity hit boxes for collision
 	// detection
+	glm::mat4 player_model_matrix = player.getModelMatrix();
 	for (const glm::vec3& vertex : this->player.getVertices()) {
-		this->player_min_world_y = std::min(this->player_min_world_y, vertex.y);
-		this->player_max_world_y = std::max(this->player_max_world_y, vertex.y);
+		float y = (player_model_matrix * glm::vec4(vertex, 1.0f)).y;
+		this->player_min_world_y = std::min(this->player_min_world_y, y);
+		this->player_max_world_y = std::max(this->player_max_world_y, y);
 	}
 	HitBox2d player_starting_hitbox(this->player);
 	// populate tiles
