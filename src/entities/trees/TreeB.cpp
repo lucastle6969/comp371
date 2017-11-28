@@ -8,8 +8,8 @@ TreeB::TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter,
         Tree(heightChunking, boostFactor, seed, shader_program, entity, 'B'){
 
     this->isAlien = isAlien;
-    if(isAlien) TreeB::colorType = COLOR_TREE;
-    else TreeB::colorType = COLOR_LIGHTING;
+    if(isAlien) colorType = COLOR_TREE;
+    else colorType = COLOR_LIGHTING;
 
     treeLoaded = treeSetup(shader_program, trunkDiameter, seed);
     float globalRotation = TreeRandom::treeRandom(trunkDiameter,seed,widthCut*10);
