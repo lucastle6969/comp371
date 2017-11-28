@@ -1,61 +1,62 @@
+////////DISCONTINUED////////////
+
 #ifndef COMP371_TREE_C_cPP
 #define COMP371_TREE_C_cPP
 
+#include <src/loadTexture.hpp>
 #include "TreeC.hpp"
+
+    int TreeC::spacingConstant = 5;
 
     int TreeC::maxWidth(const float& trunkDiameter){
         return (int)(pow(spacingConstant * (trunkDiameter+1), 1.0/2) + trunkDiameter);
     }
 
-    TreeC::TreeC(int numberOfTrees, const GLuint& shader_program,
-                 Entity* entity, float trunkDiameter, long seed):
-            Tree(heightChunking, boostFactor, seed, shader_program, entity, 'C'){
-        double duration;
-        std::clock_t startTime;
-        startTime = std::clock();
+    TreeC::TreeC(int numberOfTrees, const GLuint& shader_program, Entity* entity, float trunkDiameter, long seed, bool isAlien,
+                 std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude){
+
 
         //center piece
-        auto * tci = new TreeClusterItem(shader_program, this, trunkDiameter, seed);
+        auto * tci = new TreeClusterItem(shader_program, entity, trunkDiameter, seed, isAlien);
         tci->setLocationWithPoints(0, 0);
-        tci->setPosition(glm::vec3(tci->xPos, 0, tci->zPos));
-        treeCluster.push_back(tci);
-        numberOfTrees--;
-
-        sizeVariation = trunkDiameter / 10.0f;
+        tci->setPosition(pos + glm::vec3(tci->xPos, 0, tci->zPos));
+        tci->scale(magnitude);
+        treeContainer.emplace_back(tci);
 
         //distribute in random cirlce
-        float tempTrunkDiameter = trunkDiameter;
+        float tempTrunkDiameter;
         int i = 0;
         for (; i < numberOfTrees; i++) {
-            tempTrunkDiameter = TreeRandom::middleSquareRange(seed, sizeVariation*100, 0) / 100.0f;
-            seed = (unsigned long)(pow(seed, 2) * (tempTrunkDiameter+1)) % 99991;
+            if(sizeVariation != 0){
+                tempTrunkDiameter = TreeRandom::middleSquareRange(seed, trunkDiameter * 2,  sizeVariation) / 20.0f;
+                seed = (unsigned long)(pow(seed, 2) * (tempTrunkDiameter+1)) % 99991;
+            }
+            else tempTrunkDiameter = trunkDiameter / 1.0f;
+            seed = seed == 0 ? (tempTrunkDiameter + 1) * 913 * magnitude : seed;
 
-            float circleAngle = TreeRandom::middleSquareRange(seed, 360.0, 0.0);
             float distanceFromCenter = TreeRandom::middleSquareRange(seed, maxWidth(trunkDiameter), 1.0);
+            distanceFromCenter = distanceFromCenter <= 1 ? TreeRandom::middleSquareRange(seed * 2, maxWidth(trunkDiameter)* 1.00 , 1.0) : distanceFromCenter;
+            float circleAngle = TreeRandom::middleSquareRange(seed, 360.0, 0.0)  * TreeRandom::treeOddEvenRandom(distanceFromCenter, seed, circleAngle);
 
-            float distScale = 30.0f;
+            float distScale = .125f;
             float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter * distScale;
             float zPos =  sin(glm::radians(circleAngle)) * distanceFromCenter * distScale;
 
-            auto * tci = new TreeClusterItem(shader_program, this,
+            auto * tci = new TreeClusterItem(shader_program, entity,
                                                        tempTrunkDiameter <= 0? 0:  tempTrunkDiameter,
-                                                       seed);
+                                                       seed, isAlien);
 
             tci->setLocationWithPoints(xPos , zPos);
-            tci->setPosition(glm::vec3(tci->xPos, 0, tci->zPos));
-
-            treeCluster.push_back(tci);
+            tci->setPosition(pos + glm::vec3(tci->xPos + 0.05, 0.0, tci->zPos));
+            tci->scale(magnitude);
+            treeContainer.emplace_back(tci);
         }
-
-        duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-        //printf("Duration of C %f Units: %f ms _CLUSTER HEAD\n", trunkDiameter, duration*1000);
     }
 
-    std::vector<TreeClusterItem*> TreeC::getTreeCluster(){
-        return treeCluster;
+
+    void TreeC::setSpacingConstant(int k){
+        TreeC::spacingConstant = k;
     }
 
-    void TreeC::setSizeVariation(const float& r){
-        sizeVariation = r;
-    }
+
 #endif

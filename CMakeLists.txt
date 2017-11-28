@@ -60,8 +60,6 @@ add_executable(proceduralworld
     src/loadTexture.cpp
     src/utils.hpp
     src/constants.hpp
-    src/TreeDistributor.hpp
-    src/TreeDistributor.cpp
     src/TreeRandom.cpp
     src/TreeRandom.hpp
     src/entities/Entity.hpp

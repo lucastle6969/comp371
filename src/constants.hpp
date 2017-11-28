@@ -26,6 +26,6 @@ static const int WORLD_Y_MAX = 10;
 // this one is only used for the z-axis
 static const int WORLD_Z_MAX = 10;
 
-static const float PLAYER_MOVEMENT_SPEED = 0.002;
+static const float PLAYER_MOVEMENT_SPEED = 0.006;
 
 #endif // PROCEDURALWORLD_CONSTANTS_H
