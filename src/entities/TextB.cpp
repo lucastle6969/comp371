@@ -35,15 +35,26 @@ TextB::TextB(
         row_from_bottom = line_height;
     }
 
-    float char_width = 0.01;
+    // the height is 0.01 because the char is a a square in a 100 char line BEFORE variable spacing
+
+    float char_height = 0.01;
+
+    //just initializing for good measure (default)
+    float var_char_width = 0.01;
+
+
+    // keep track of the width to return line
+    float line_width_accumulator;
 
     for(int i=0, j=0; i<message.length(); i++, j+=4){
         if (i>100)
             break;
-        this->vertices.emplace_back(i * char_width, line_height * char_width, 0.0f);
-        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width, 0.0f);
-        this->vertices.emplace_back(i * char_width, line_height * char_width + char_width, 0.0f);
-        this->vertices.emplace_back(i * char_width + char_width, line_height * char_width + char_width, 0.0f);
+
+
+
+
+
+
 
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
         this->normals.emplace_back(0.0f, 0.0f, 1.0f);
@@ -62,18 +73,21 @@ TextB::TextB(
 
         switch(message[i]){
             case 'a':
+                float char_width = 0.01;
                 this->uvs.emplace_back(0, 0.833333);
                 this->uvs.emplace_back(0.166666, 0.833333);
                 this->uvs.emplace_back(0, 1);
                 this->uvs.emplace_back(0.166666, 1);
                 break;
             case 'b':
+                float char_width = 0.01;
                 this->uvs.emplace_back(0.166666, 0.833333);
                 this->uvs.emplace_back(0.333333, 0.833333);
                 this->uvs.emplace_back(0.166666, 1);
                 this->uvs.emplace_back(0.333333, 1);
                 break;
             case 'c':
+                float char_width = 0.01;
                 this->uvs.emplace_back(0.333333, 0.833333);
                 this->uvs.emplace_back(0.5, 0.833333);
                 this->uvs.emplace_back(0.333333, 1);
@@ -288,12 +302,21 @@ TextB::TextB(
             case '.':
                 break;
             default:
+                var_char_width = 0.01;
                 this->uvs.emplace_back(0.0f, 0.0f);
                 this->uvs.emplace_back(0.04, 0.0);
                 this->uvs.emplace_back(0.0f, 0.04f);
                 this->uvs.emplace_back(0.04f, 0.04f);
 
         }
+
+        this->vertices.emplace_back(i * var_char_width, line_height * char_height, 0.0f);
+        this->vertices.emplace_back(i * var_char_width + var_char_width, line_height * char_height, 0.0f);
+        this->vertices.emplace_back(i * var_char_width, line_height * char_height + char_height, 0.0f);
+        this->vertices.emplace_back(i * var_char_width + var_char_width, line_height * char_height + char_height, 0.0f);
+
+        line_width_accumulator += var_char_width;
+
     }
 
     this->vao = DrawableEntity::initVertexArray(
@@ -336,13 +359,15 @@ TextB::~TextB()
 
     GLuint TextB::getTextureId()
     {
-       static GLuint text_texture = loadTexture(
-                "../textures/mythos_text_map.png",
-                GL_LINEAR,
-                GL_LINEAR,
-                true
-        );
+
+    }
+
+    GLuint TextB::loadTextureIds(){
+
         return text_texture;
+
+
+
     }
 
 
