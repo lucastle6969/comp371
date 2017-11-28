@@ -50,6 +50,7 @@ public:
 	);
 	~World() override;
 	Player* getPlayer();
+    TextB* getMenu();
 	void toggleAxes();
 	void checkPosition();
 };

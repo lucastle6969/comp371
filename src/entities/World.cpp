@@ -29,7 +29,7 @@ World::World(
 {
 	this->player.scale(0.0005f);
 	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
-    this->menu.setPosition(glm::vec3(x_center, 0.01f, z_center));
+    this->menu.setPosition(glm::vec3(x_center-0.05, -0.96f, z_center-0.05));
 
     // hide the axes by default
 	this->axes.hide();
@@ -54,6 +54,11 @@ World::~World()
 Player* World::getPlayer()
 {
 	return &this->player;
+}
+
+TextB* World::getMenu()
+{
+    return  &this->menu;
 }
 
 void World::toggleAxes()
