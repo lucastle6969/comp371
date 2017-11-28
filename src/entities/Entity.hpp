@@ -37,7 +37,7 @@ public:
 	Entity() : Entity(nullptr) {}
 	explicit Entity(Entity* parent);
 	virtual ~Entity() = default;
-	const glm::mat4& getModelMatrix() const;
+	const glm::mat4 getModelMatrix() const;
 	glm::vec3 getPosition() const;
 	glm::vec3 getScale() const;
 	float getOpacity();
