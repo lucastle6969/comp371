@@ -71,6 +71,7 @@ class Tentacle : public Tree {
 private:
 	bool treeLoaded = false;
 	bool treeInit = false;
+	bool isAlien, isTextured;
 
     static constexpr int branches = 1;
     static constexpr int k = 250;
@@ -106,19 +107,15 @@ private:
 
 protected:
 
-	void createSegmentNormals(AttatchmentGroupings* ag,int m);
-
-	void createConnectorElements(AttatchmentGroupings* ag,int m);
-
-
     std::string textureMap;
+	int colorType;
 
     const std::string textureMap1 = "../textures/Tentacle.jpg";
 public:
 	void setTreeLoaded(bool state);
 	void setTreeInit(bool state);
 
-	Tentacle(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+	Tentacle(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed, bool isAlien, bool isTextured);
 
 	GLuint getTextureId();
 	const int getColorType();

@@ -20,18 +20,28 @@
 
 World::World(
 	const GLuint& shader_program,
-	const int& x_center,
-	const int& z_center,
+	const float& player_x_start,
+	const float& player_z_start,
 	Entity* parent
 ) : Entity(parent),
     shader_program(shader_program),
     player(shader_program, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
-    x_center(x_center),
-    z_center(z_center),
+//<<<<<<< HEAD
+//    x_center(x_center),
+//    z_center(z_center),
+	x_center((int)floor(player_x_start)),
+	z_center((int)floor(player_z_start)),
     player_min_world_y(FLT_MAX),
     player_max_world_y(-FLT_MAX)
 {
+//=======
+
+//{
+//	this->player.scale(0.0005f);
+//	this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));
+//
+//>>>>>>> 059ae0cf96f0ff98b816dcb34b9f305e01605639
     // hide the axes by default
 	this->axes.hide();
 
@@ -49,7 +59,7 @@ World::World(
 	// populate tiles
 	int x, z;
 	for (int i = 0; i < 9; i++) {
-		World::tileIndexToLocation(i, x_center, z_center, &x, &z);
+		World::tileIndexToLocation(i, this->x_center, this->z_center, &x, &z);
 		// create tile and add to list of tiles AS WELL AS list of children
 		this->tiles.push_back(new WorldTile(
 				shader_program,
