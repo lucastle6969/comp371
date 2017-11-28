@@ -83,8 +83,8 @@ add_executable(proceduralworld
     src/entities/RockB.cpp
     src/entities/Tentacle.hpp
     src/entities/Tentacle.cpp
-        src/entities/trees/Tree.hpp
-        src/entities/trees/Tree.cpp
+    src/entities/trees/Tree.hpp
+    src/entities/trees/Tree.cpp
         src/entities/trees/TreeA.hpp
         src/entities/trees/TreeA.cpp
         src/entities/trees/TreeA_Autumn.hpp
@@ -109,7 +109,7 @@ add_executable(proceduralworld
         src/entities/trees/LeafContainerC.hpp
     src/entities/Skybox.cpp
     src/entities/Skybox.hpp
-)
+        src/entities/Text.hpp src/entities/Text.cpp)
 
 # Link librarssies
 if(APPLE)
