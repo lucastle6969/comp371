@@ -153,7 +153,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 // Print world seed based on player position
                 glm::vec3 player_position = world->getPlayer()->getPosition();
                 std::cout << "Seed for current world location: ";
-                std::cout << player_position.x << ':' << player_position.z << std::endl;
+                std::cout << player_position.x << ' ' << player_position.z << std::endl;
                 break;
             }
             case GLFW_KEY_M:
