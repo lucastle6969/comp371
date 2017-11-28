@@ -16,20 +16,20 @@
 
 World::World(
 	const GLuint& shader_program,
-	const int& x_center,
-	const int& z_center,
+	const float& player_x_start,
+	const float& player_z_start,
 	Entity* parent
 ) : Entity(parent),
     shader_program(shader_program),
     player(shader_program, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
     menu(shader_program, "menu style}world child}0,1.23,456,789", 0, 0, FONT_STYLE_OUTLINE, this),
-    x_center(x_center),
-    z_center(z_center)
+x_center((int)floor(player_x_start)),
+z_center((int)floor(player_z_start))
 {
-	this->player.scale(0.0005f);
-	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
-    this->menu.setPosition(glm::vec3(x_center-0.05, -0.96f, z_center-0.05));
+    this->player.scale(0.0005f);
+    this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));    this->menu.setPosition(glm::vec3(x_center-0.05, -0.96f, z_center-0.05));
+
 
     // hide the axes by default
 	this->axes.hide();
@@ -37,7 +37,7 @@ World::World(
 	// populate tiles
 	int x, z;
 	for (int i = 0; i < 9; i++) {
-		World::tileIndexToLocation(i, x_center, z_center, &x, &z);
+		World::tileIndexToLocation(i, this->x_center, this->z_center, &x, &z);
 		// create tile and add to list of tiles AS WELL AS list of children
 		this->tiles.push_back(new WorldTile(shader_program, x, z, this));
 	}

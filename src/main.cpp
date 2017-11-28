@@ -13,6 +13,9 @@
 
 #include <iostream>
 #include <algorithm>
+#include <limits>
+#include <cstdlib>
+#include <ctime>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -25,6 +28,7 @@
 #include "constants.hpp"
 #include "TreeDistributor.hpp"
 #include "src/entities/Skybox.hpp"
+#include "utils.hpp"
 
 World* world;
 
@@ -144,11 +148,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_GRAVE_ACCENT:
 				world->toggleAxes();
 				break;
-			case GLFW_KEY_BACKSPACE:
-				// Reset camera
-				pitch = initial_pitch;
-				yaw = initial_yaw;
+			case GLFW_KEY_0: {
+				// Print world seed based on player position
+				glm::vec3 player_position = world->getPlayer()->getPosition();
+				std::cout << "Seed for current world location: ";
+				std::cout << player_position.x << ':' << player_position.z << std::endl;
 				break;
+			}
 			case GLFW_KEY_ESCAPE:
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				break;
@@ -220,9 +226,51 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 	framebuffer_height = height;
 }
 
+void getWorldSeedFromUser(float* const& seed_x, float* const& seed_z)
+{
+	// seed random number generator
+	srand((unsigned int)time(nullptr));
+	bool valid_seed = false;
+	while (!valid_seed) {
+		std::cout << "Enter a world seed (or press ENTER for a random seed):" << std::endl;
+		std::string input;
+		std::getline(std::cin, input);
+		if (input.empty()) {
+			// since the user didn't input anything we'll select a random starting
+			// position within a reasonably safe range
+			*seed_x = utils::randomFloat(-100.0f, 100.0f);
+			*seed_z = utils::randomFloat(-100.0f, 100.0f);
+			valid_seed = true;
+			continue;
+		}
+		std::size_t colon_pos = input.find(':');
+		if (colon_pos == std::string::npos || colon_pos + 1 == input.length()) {
+			std::cout << "invalid seed (no colon separator)" << std::endl;
+			continue;
+		}
+		try {
+			*seed_x = std::stof(input.substr(0, colon_pos));
+			*seed_z = std::stof(input.substr(colon_pos + 1));
+			// if parsing doesn't throw an exception we have a valid
+			// starting position!
+			valid_seed = true;
+			continue;
+		} catch (const std::exception& e) {
+			// invalid seed (invalid floats)
+			continue;
+		}
+	}
+}
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
+	float seed_x;
+	float seed_z;
+	getWorldSeedFromUser(&seed_x, &seed_z);
+
+	std::cout << "Generating a new world at x = " << seed_x << ", z = " << seed_z << "\n";
+
 	GLFWwindow* window = nullptr;
 	setupGlContext(WIDTH, HEIGHT, APP_NAME, &window);
 
@@ -249,7 +297,7 @@ int main()
 		return -1;
 	}
 
-	world = new World(shader_program);
+	world = new World(shader_program, seed_x, seed_z);
 
 	//create light
     Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));

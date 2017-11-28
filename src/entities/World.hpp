@@ -39,13 +39,16 @@ private:
 public:
 	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
 	World(const GLuint& shader_program, Entity* parent)
-		: World(shader_program, 0, 0, parent) {}
-	World(const GLuint& shader_program, const int& x_center, const int& z_center)
-		: World(shader_program, x_center, z_center, nullptr) {}
+		: World(shader_program, 0.0f, 0.0f, parent) {}
 	World(
 		const GLuint& shader_program,
-		const int& x_center,
-		const int& z_center,
+		const float& player_x_start,
+		const float& player_z_start
+	) : World(shader_program, player_x_start, player_z_start, nullptr) {}
+	World(
+		const GLuint& shader_program,
+		const float& player_x_start,
+		const float& player_z_start,
 		Entity* parent
 	);
 	~World() override;
