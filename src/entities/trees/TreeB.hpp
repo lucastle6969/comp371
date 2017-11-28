@@ -60,7 +60,7 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "TrunkA.hpp"
+#include "TrunkAB.hpp"
 #include "LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
@@ -110,5 +110,8 @@ public:
     GLuint getVAO();
 
     TreeB(const GLuint& shader_program, Entity* entity, double trunkDiameter, int seed);
+
+    GLuint getTextureId();
+    const int getColorType();
 };
 #endif //treeA

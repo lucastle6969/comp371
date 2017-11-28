@@ -56,7 +56,7 @@ private:
     float trunkDiameter;
     int previousRotation;
 
-    float widthCutoff = 0.2;
+    float widthCutoff = 0.2;//0.2;
     float finalCutoff;
     bool kill;
 
@@ -92,6 +92,10 @@ public:
     float getTrunkDiameter();
 
     TreeClusterItem(const GLuint& shader_program, Entity* entity, float trunkDiameter, float seed);
+
+    GLuint getTextureId();
+
+    const int getColorType();
 };
 
 #endif //PROCEDURALWORLD_TREECLUSTERITEM_H

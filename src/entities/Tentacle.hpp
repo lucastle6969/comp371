@@ -34,8 +34,8 @@ SEGMENTS ARE STORED INTO ATTATCHMENT GROUPINGS AS A LINKED LIST AND ARE STICHED 
 ANGLES COMPUTED DURING RECURSIONS
 */
 
-#ifndef COMP371_TREE_A_HPP
-#define COMP371_TREE_A_HPP
+#ifndef COMP371_TREnt_A_HPP
+#define COMP371_TREnt_A_HPP
 
 #define START_TRUNK 0
 #define TRUNK 2
@@ -60,14 +60,14 @@ ANGLES COMPUTED DURING RECURSIONS
 #include <ctime>
 
 #include "src/TreeRandom.hpp"
-#include "TrunkA.hpp"
-#include "LeafContainerAB.hpp"
+#include "trees/TrunkAB.hpp"
+#include "trees/LeafContainerAB.hpp"
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
-#include "Tree.hpp"
+#include "trees/Tree.hpp"
 
-class TreeA : public Tree {
+class Tentacle : public Tree {
 private:
 	bool treeLoaded = false;
 	bool treeInit = false;
@@ -77,10 +77,10 @@ private:
 	float limiter = 1;
 	static constexpr int previousRotationCap = 8;
 
-    static constexpr float boostFactor = 0.5;
+    static constexpr float boostFactor = 0.25;//0.5;
     static constexpr int heightChunking = 20;//INVERSE
 
-    static constexpr int minYBranchAngle = 20;
+    static constexpr int minYBranchAngle = 30;
 	static constexpr int maxYBranchAngle = 45;
 	static constexpr int minYTrunkAngle = 0;
 	static constexpr int maxYTrunkAngle = 20;
@@ -97,16 +97,30 @@ private:
 
 	void treeSetup(const GLuint& shader_program, float trunkDiameter, const int&);
 
-	void generateTreeA(const int& _case, float trunkDiameter, const float& seed,
+	void generateTentacle(const int& _case, float trunkDiameter, const float& seed,
 					   float angleX, float angleY, float angleZ,
 					   char tag, AttatchmentGroupings* ag, float lineHeight);
 
 	//PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 	void bufferObject(const GLuint& shader_program);
+
+protected:
+
+	void createSegmentNormals(AttatchmentGroupings* ag,int m);
+
+	void createConnectorElements(AttatchmentGroupings* ag,int m);
+
+
+    std::string textureMap;
+
+    const std::string textureMap1 = "../textures/Tentacle.jpg";
 public:
 	void setTreeLoaded(bool state);
 	void setTreeInit(bool state);
 
-	TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+	Tentacle(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed);
+
+	GLuint getTextureId();
+	const int getColorType();
 };
-#endif //treeA
+#endif //Tentacle
