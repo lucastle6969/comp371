@@ -32,7 +32,7 @@ Entity::Entity(Entity* parent)
 	this->hidden = false;
 }
 
-const glm::mat4& Entity::getModelMatrix() const
+const glm::mat4 Entity::getModelMatrix() const
 {
 	static glm::mat4 identity;
 
