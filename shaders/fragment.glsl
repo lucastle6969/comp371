@@ -42,7 +42,7 @@ const int COLOR_WHITE = 0;
 const int COLOR_COORDINATE_AXES = 1;
 const int COLOR_HEIGHT = 2;
 const int COLOR_TILE = 3;
-const int COLOR_TEXTURE = 4;
+const int COLOR_UNLIT_TEXTURE = 4;
 const int COLOR_LIGHTING = 5;
 const int COLOR_TREE = 6;
 const int COLOR_SKY_TEXTURE = 7;
@@ -81,7 +81,6 @@ uniform float nighttime_value;
 void main()
 {
     switch (color_type) {
-
         case COLOR_COORDINATE_AXES:
             color = vec4(ceil(pos), 1.0f);
             break;
@@ -96,7 +95,8 @@ void main()
                 0.3f * vec3(0.5f, (entity_position_z * 32 - 1) % 256 / 256.0f, entity_position_x * 32 % 256 / 256.0f)
             );
             break;
-        case COLOR_TEXTURE:
+        case COLOR_UNLIT_TEXTURE:
+                    //Does not give light effects
             color = texture(tex_image, tex_coord);
             break;
         case COLOR_LIGHTING:

@@ -7,7 +7,7 @@ static const int COLOR_WHITE = 0;
 static const int COLOR_COORDINATE_AXES = 1;
 static const int COLOR_HEIGHT = 2;
 static const int COLOR_TILE = 3;
-static const int COLOR_TEXTURE = 4;
+static const int COLOR_UNLIT_TEXTURE = 4;
 static const int COLOR_LIGHTING = 5;
 static const int COLOR_TREE = 6;
 static const int COLOR_SKY_TEXTURE = 7;
@@ -26,6 +26,6 @@ static const int WORLD_Y_MAX = 10;
 // this one is only used for the z-axis
 static const int WORLD_Z_MAX = 10;
 
-static const float PLAYER_MOVEMENT_SPEED = 0.01;
+static const float PLAYER_MOVEMENT_SPEED = 0.002;
 
 #endif // PROCEDURALWORLD_CONSTANTS_H

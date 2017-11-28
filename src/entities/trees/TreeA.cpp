@@ -1,8 +1,8 @@
 #include <cmath>
+#include <src/loadTexture.hpp>
 
 #include "Tree.hpp"
 #include "TreeA.hpp"
-#include "TrunkA.hpp"
 
 constexpr int TreeA::branches;
 constexpr int TreeA::k;
@@ -12,25 +12,19 @@ constexpr double TreeA::trunkRatio;
 constexpr double TreeA::branchRatio;
 
 TreeA::TreeA(const GLuint& shader_program, Entity* entity, float trunkDiameter, const int& seed):
-        Tree(heightChunking, boostFactor, shader_program, entity, 'A'){
+        Tree(heightChunking, boostFactor, seed, shader_program, entity, 'A'){
 
-    std::clock_t startTime;
-    double duration;
-    startTime = std::clock();
+        textureMap = textureMap1;
 
     treeSetup(shader_program, trunkDiameter, seed);
-
-    duration = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-   // printf("Duration of A %f Units: %f ms\n", trunkDiameter, duration*1000);
 };
 
 void TreeA::treeSetup(const GLuint& shader_program, float trunkDiameter, const int& seed){
     draw_mode = GL_TRIANGLES;
     if (trunkDiameter <= 0.0) trunkDiameter = 1.0;
-    widthCut = 0.5;//trunkDiameter / 32;
     finalCut = widthCut;
 
-    combinedStartIndices->push_back({-1,0,0,0});
+    combinedStartIndices.push_back({-1,0,0,0});
     generateTreeA(0, trunkDiameter, seed, 0, 0, 0, 'C', nullptr, 0);
     rotate(TreeRandom::treeRandom(trunkDiameter, seed,100), glm::vec3(0.0f,1.0f,0.0f));
     bufferObject(shader_program);
@@ -55,10 +49,10 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             //1A4. Make branch check
             currentLineLength = trunk(trunkDiameter, seed, currentLineLength);
 
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ});
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ});
 
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,		//TYPE //SIDE
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,		//TYPE //SIDE
                                              (int)angleX, (int)angleY, (int)angleZ, 'B', 'C');
 
             //1A5. Start N new recursive functions from seed based angle at a certain base position
@@ -78,9 +72,9 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed* 71, currentLineLength, maxYTrunkAngle, minYTrunkAngle) ;
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 9, currentLineLength, maxYTrunkAngle, minYTrunkAngle); //* (((int)seed) % 2 == 0 ? 1 : -1);
             ///angleY = angleY;
-
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
-
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             initiateMove(agNew);
             agNew->selfErase();
             delete agNew;
@@ -102,11 +96,11 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ += ag->angleZ;
 
             //add the sum of angles onto the current branch
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ });
 
             //store current branch poosition and rotation sum at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1, (int)angleX, (int)angleY, (int)angleZ, 'B', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
 
@@ -132,7 +126,9 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed, currentLineLength, minYTrunkAngle, maxYTrunkAngle);
             angleX = TreeRandom::trunkAngleFromRandom(trunkDiameter, seed * 7, currentLineLength, minYTrunkAngle, maxYTrunkAngle) * (((int)seed) % 2 == 0 ? -1 : 1);;
             angleY = angleY;
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             generateTreeA(TRUNK, ShootDiameterTrunk, seed, std::abs(angleX), angleY, -std::abs(angleZ), 'L', agNew, currentLineLength);
+            TrunkAB::constructionFlowCounter = !TrunkAB::constructionFlowCounter;
             break;
         case LEAF:
             //1B. If trunk width is past a threshold then create a leaf line
@@ -148,11 +144,11 @@ void TreeA::generateTreeA(const int& _case, float trunkDiameter, const float& se
             angleZ += ag->angleZ;
 
             //and add to leaf index with combined
-            combinedStartIndices->push_back({ (int)combinedVertices->size() - 1,(int)angleX,(int)angleY,(int)angleZ });
+            combinedStartIndices.push_back({ (int)combinedVertices.size() - 1,(int)angleX,(int)angleY,(int)angleZ });
 
             //add to grouping at depth
-            agNew = new AttatchmentGroupings(combinedStartIndices->at((int)combinedStartIndices->size() - 2).at(0),
-                                             (int)combinedVertices->size() - 1,
+            agNew = new AttatchmentGroupings(combinedStartIndices.at((int)combinedStartIndices.size() - 2).at(0),
+                                             (int)combinedVertices.size() - 1,
                                              (int)angleX, (int)angleY, (int)angleZ, 'L', tag);
             if (tag == 'R') ag->ag[1] = agNew;
             else			ag->ag[0] = agNew;
@@ -173,7 +169,7 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
     bool loopInitialTrunk;
     const float lineSegments = ((float)lineMax) / heightChunking;
-    TrunkA trunk(combinedVertices,
+    TrunkAB trunk(&combinedVertices, &combinedUV,
                  seed
     );
     do {
@@ -184,38 +180,64 @@ float TreeA::trunk(float trunkDiameter, const float& seed, float lineHeight) {
     else if(!loopInitialTrunk)
         return lineHeight;
     else return -1;
+
 }
 
 void TreeA::leafBranch(float trunkDiameter, const float& seed, float lineHeight) {
     const int lineMax = lineMAX(trunkDiameter, k);
-    LeafContainerA lc(combinedVertices,
-                      combinedIndices,
-                      combinedUV,
+    LeafContainerAB lc(&combinedVertices,
+                       &combinedIndices,
+                       &combinedUV,
                       seed);
     //a leaf container is an object that holds a set of leaves and a branch that they're held on
     lc.buildContainer(trunkDiameter, seed, lineHeight, lineMax);
 }
-
+//atatchment grouping -> See Tree.hpp
 void TreeA::initiateMove(AttatchmentGroupings* ag){
     glm::mat4 rotation;
-    const int circularPoints = TrunkA::trunkPoints;
+    const int circularPoints = TrunkAB::trunkPoints;
     int rotationPoint = std::abs((ag->angleY) % (int)(circularPoints / limiter ));
 
+    //limit rotations to one segment at a time
     rotationPoint = rotationPoint == 0 ? 0 : 1;
 
     const float r = 360.0f/circularPoints  * (rotationPoint);
     const int start = ag->start + 1;
     const int max = ag->end + 1;
     for (int k = start; k < max; k++) {
-        combinedVertices->at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),
+        combinedVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),
                                                  glm::radians((float)ag->angleZ),
-                                                 combinedVertices->at(k));
+                                                 combinedVertices.at(k));
     }
     const int previousRotation = rotationPoint;
+    //create elements for segment
     computeElementsInitial(ag);
     moveSegments(previousRotation, ag);
 }
 
+
+
+/*
+ *
+ * 1_______2
+ *  |     |
+ *  |     |
+ *  |_____|
+ * 0       3
+ *
+ * This figure rotates and needs to connect with a lower square.
+ *
+ * eg.
+ *  0______1
+ *  |     |
+ *  |     |
+ *  |_____|
+ * 3       2
+ *
+ * The methods below do this procedure and pass on rotation information to the move connect, compute and recurse back
+ * through binary recursion until the furthest branch has been reached.
+ *
+ */
 void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) {
     for (int m = 0; m < 2; m++) {
         if (ag->ag[m] == nullptr) continue;
@@ -225,7 +247,7 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         if(previousRotation < previousRotationCap) limiter = 1;
         else if(previousRotation >= previousRotationCap) limiter = 0.01;
 
-        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerA::leafBranchPoints : TrunkA::trunkPoints;
+        int circularPoints = ag->ag[m]->type == 'L' ? LeafContainerAB::leafBranchPoints : TrunkAB::trunkPoints;
         int rotationPoint = std::abs((ag->ag[m]->angleY) % (int)(circularPoints / limiter ));
 
         rotationPoint = rotationPoint < 1 ? 1 : 0;
@@ -248,39 +270,45 @@ void TreeA::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
         const int max = ag->ag[m]->end + 1;
 
         for (int k = start; k < max; k++) {
-            combinedVertices->at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
-                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices->at(k));
+            combinedVertices.at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
+                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices.at(k));
         }
 
         //translate components onto branch(destination - position)
-        const glm::vec3 translation = combinedVertices->at(moveTo) - combinedVertices->at(moveFrom);
+        const glm::vec3 translation = combinedVertices.at(moveTo) - combinedVertices.at(moveFrom);
         //elevate from point
-        const glm::vec3 boost = boostSegment(ag, ag->ag[m], combinedVertices) *  (float)(heightChunking * boostFactor);
+        const glm::vec3 boost = boostSegment(ag, ag->ag[m], &combinedVertices) *  (float)(heightChunking * boostFactor);
         for (int k = start; k < max; k++) {
-            combinedVertices->at(k) += translation + boost;
+            combinedVertices.at(k) += translation + boost;
         }
+        //create the connector's elements from previous to m
+        connectSegments(ag, m,toPnt, fromPnt, circularPoints, &combinedIndices);
+        //create elements for segment
         computeElementsInitial(ag->ag[m]);
-        connectSegments(ag, m,toPnt, fromPnt, circularPoints, combinedIndices);
+        //move them to position
         moveSegments(toPnt, ag->ag[m]);
     }
     return;
-
 }
 
 //PUT TEXTURE LOADING IN SEPERATE CLASS. MAKE IT ONLY CALLED ONCE FOR THE FIRST TREE LOADED.
 void TreeA::bufferObject(const GLuint& shader_program) {
-    //this->vao = Entity::initVertexArray(shader_program, this->combinedNormals, 0);
-    //int map_width, map_height, channels;
-    //unsigned char * image_data = stbi_load("../wall.jpg", &map_width, &map_height, &channels, STBI_rgb);
-    this->vao = initVertexArray( *combinedVertices, *combinedIndices, &vbo, &ebo);
+    this->vao = initVertexArray(combinedVertices, combinedIndices, combinedNormals,
+                                combinedUV,  &vbo, &ebo, &nbo, &uvbo);
     //stbi_image_free(image_data);
 }
 
-void TreeA::setTreeLoaded(bool val){
-    treeLoaded = val;
+//use carlo's loading systems
+GLuint TreeA::getTextureId()
+{
+    static GLuint tA_texture = loadTexture(
+                textureMap,
+                GL_NEAREST,
+                GL_LINEAR
+        );
+    return tA_texture;
 }
 
-void TreeA::setTreeInit(bool val){
-    treeInit = val;
+const int TreeA::getColorType() {
+    return COLOR_LIGHTING;
 }
-

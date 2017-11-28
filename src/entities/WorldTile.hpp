@@ -13,7 +13,7 @@
 
 #include "Entity.hpp"
 #include "Rock.hpp"
-#include "src/entities/Trees/Tree.hpp"
+#include "src/entities/trees/Tree.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "RockB.hpp"

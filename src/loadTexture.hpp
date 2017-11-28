@@ -10,10 +10,20 @@
 
 #include <string>
 
+static GLuint loadImage(std::string path, GLuint rock_texture);
+
 GLuint loadTexture(
 	const std::string& path,
 	const GLint& min_filter,
 	const GLint& mag_filter
+);
+
+GLuint loadTexture(
+		const std::string& path,
+		const GLint& min_filter,
+		const GLint& mag_filter,
+		const GLint& paramS,
+		const GLint& paramT
 );
 
 #endif //PROCEDURALWORLD_LOADTEXTURE_HPP
