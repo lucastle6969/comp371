@@ -849,25 +849,25 @@ TextB::~TextB()
     glDeleteVertexArrays(1, &this->vao);
 }
 
-    const std::vector<glm::vec3>& TextB::getVertices()
-    {
-        return this->vertices;
-    }
+const std::vector<glm::vec3>& TextB::getVertices()
+{
+    return this->vertices;
+}
 
-    GLuint TextB::getVAO()
-    {
-        return this->vao;
-    }
+GLuint TextB::getVAO()
+{
+    return this->vao;
+}
 
-    const int TextB::getColorType()
-    {
-        return COLOR_FONT;
-    }
+const int TextB::getColorType()
+{
+    return COLOR_FONT;
+}
 
-    GLuint TextB::getTextureId()
-    {
-        return this->font_map;
-    }
+GLuint TextB::getTextureId()
+{
+    return this->font_map;
+}
 
 
 
