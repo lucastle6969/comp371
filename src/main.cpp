@@ -245,7 +245,7 @@ void getWorldSeedFromUser(float* const& seed_x, float* const& seed_z)
 		}
 		std::size_t colon_pos = input.find(':');
 		if (colon_pos == std::string::npos || colon_pos + 1 == input.length()) {
-			// invalid seed (no colon separator)
+			std::cout << invalid seed (no colon separator) << std::endl;
 			continue;
 		}
 		try {
