@@ -12,18 +12,16 @@ HitBox2d::HitBox2d(const DrawableEntity& entity, const float& min_y, const float
 {
 	glm::vec3 v;
 	const glm::mat4& model_matrix = entity.getModelMatrix();
-
-	int len = entity.getVertices().size();
-	for(int itterator= 0 ; itterator < len; itterator++){
-			v = glm::vec3(model_matrix * glm::vec4(entity.getVertices().at(itterator), 1.0f));
-			if (v.y < min_y || v.y > max_y) {
-				// we don't want to include vertices outside the specified y range in our box
-				continue;
-			}
-			this->world_min_x = std::min(v.x, this->world_min_x);
-			this->world_min_z = std::min(v.z, this->world_min_z);
-			this->world_max_x = std::max(v.x, this->world_max_x);
-			this->world_max_z = std::max(v.z, this->world_max_z);
+    for (const glm::vec3& vertex : entity.getVertices()) {
+        	v = glm::vec3(model_matrix * glm::vec4(vertex, 1.0f));
+        	if (v.y < min_y || v.y > max_y) {
+            		// we don't want to include vertices outside the specified y range in our box
+                    		continue;
+            	}
+        	this->world_min_x = std::min(v.x, this->world_min_x);
+        	this->world_min_z = std::min(v.z, this->world_min_z);
+        	this->world_max_x = std::max(v.x, this->world_max_x);
+        	this->world_max_z = std::max(v.z, this->world_max_z);
 	}
 }
 
