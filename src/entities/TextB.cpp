@@ -35,8 +35,8 @@ TextB::TextB(
         row_from_bottom = line_height;
     }
 
-    // the height is 0.01 because the char is a a square in a 100 char line BEFORE variable spacing
-
+    // the height is 0.01 so at least 100 chars per line
+    float char_width = 0.01;
     float char_height = 0.01;
 
     //just initializing for good measure (default)
@@ -51,16 +51,6 @@ TextB::TextB(
             break;
 
 
-
-
-
-
-
-        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
-        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
-        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
-        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
-
         this->elements.emplace_back(j+2);
         this->elements.emplace_back(j);
         this->elements.emplace_back(j+1);
@@ -70,10 +60,20 @@ TextB::TextB(
 
 
 
+        //we are not using these but want to keep a consistentency with drawable methods, and they could be used to light text
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+        this->normals.emplace_back(0.0f, 0.0f, 1.0f);
+
+
+
+
+
 
         switch(message[i]){
             case 'a':
-                float char_width = 0.01;
+
                 this->uvs.emplace_back(0, 0.833333);
                 this->uvs.emplace_back(0.166666, 0.833333);
                 this->uvs.emplace_back(0, 1);
@@ -300,6 +300,10 @@ TextB::TextB(
             case ',':
                 break;
             case '.':
+                this->uvs.emplace_back(0.0f, 0.0f);
+                this->uvs.emplace_back(0.04, 0.0);
+                this->uvs.emplace_back(0.0f, 0.04f);
+                this->uvs.emplace_back(0.04f, 0.04f);
                 break;
             default:
                 var_char_width = 0.01;
@@ -359,17 +363,11 @@ TextB::~TextB()
 
     GLuint TextB::getTextureId()
     {
+        if(blabla = 1){
 
-    }
-
-    GLuint TextB::loadTextureIds(){
-
+        }else text_texture = blabla2;
         return text_texture;
-
-
-
     }
-
 
 
 
