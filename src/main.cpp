@@ -44,6 +44,9 @@ const float first_person_pitch = 20.0f;
 const float max_follow_distance = 300.0f;
 const float first_person_follow_distance = 0.01f;
 
+//menu display
+bool menu = true;
+
 // Camera variables
 float pitch = initial_pitch;
 float yaw = initial_yaw;
@@ -136,16 +139,24 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	// ignore key release actions for now
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		switch (key) {
-			case GLFW_KEY_GRAVE_ACCENT:
-				world->toggleAxes();
-				break;
-			case GLFW_KEY_0: {
-				// Print world seed based on player position
-				glm::vec3 player_position = world->getPlayer()->getPosition();
-				std::cout << "Seed for current world location: ";
-				std::cout << player_position.x << ':' << player_position.z << std::endl;
-				break;
-			}
+            case GLFW_KEY_GRAVE_ACCENT:
+                world->toggleAxes();
+                break;
+            case GLFW_KEY_0: {
+                // Print world seed based on player position
+                glm::vec3 player_position = world->getPlayer()->getPosition();
+                std::cout << "Seed for current world location: ";
+                std::cout << player_position.x << ':' << player_position.z << std::endl;
+                break;
+            }
+            case GLFW_KEY_M:
+                //toggle menu
+                if(menu){
+                    menu = false;
+                }else{
+                    menu = true;
+                }
+                break;
 			case GLFW_KEY_ESCAPE:
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				break;
@@ -316,13 +327,20 @@ int main()
 		light.daytime = glm::rotateZ(light.daytime, 0.0005f);
         //move the fog
 		glm::vec3 player_position = world->getPlayer()->getPosition();
-        world->getMenu()->setPosition(glm::vec3(player_position.x -0.05, -0.96, player_position.z-0.05));
 		light.light_position = player_position;
 		skybox.setPosition(player_position);
 
 		light.setDaytime();
 
 		float daytime = -light.light_direction.y;
+
+        world->getMenu()->setPosition(glm::vec3(player_position.x -0.035, -0.96, player_position.z-0.04));
+        if(!menu){
+            world->getMenu()->hide();
+        }else{
+            world->getMenu()->unhide();
+        }
+
 		// Render
 		// Clear the colorbuffer
 		glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
