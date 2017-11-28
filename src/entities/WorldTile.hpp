@@ -15,7 +15,7 @@
 
 #include "Entity.hpp"
 #include "Rock.hpp"
-#include "trees/Tree.hpp"
+#include "Trees/Tree.hpp"
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "RockB.hpp"

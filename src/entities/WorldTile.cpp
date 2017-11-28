@@ -19,11 +19,11 @@
 #include "DrawableEntity.hpp"
 #include "Rock.hpp"
 
-#include "src/entities/trees/Tree.hpp"
-#include "src/entities/trees/TreeA.hpp"
-#include "src/entities/trees/TreeA_Autumn.hpp"
-#include "src/entities/trees/TreeB.hpp"
-#include "src/entities/trees/TreeC.hpp"
+#include "src/entities/Trees/Tree.hpp"
+#include "src/entities/Trees/TreeA.hpp"
+#include "src/entities/Trees/TreeA_Autumn.hpp"
+#include "src/entities/Trees/TreeB.hpp"
+#include "src/entities/Trees/TreeC.hpp"
 #include "WorldTile.hpp"
 #include "Tentacle.hpp"
 
