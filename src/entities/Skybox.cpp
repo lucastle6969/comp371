@@ -18,6 +18,8 @@
 #include "../utils.hpp"
 #include "../constants.hpp"
 #include "../loadTexture.hpp"
+#include "../objloader.hpp"
+
 
 float size = 10;
 
@@ -26,8 +28,7 @@ Skybox::Skybox(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
     this->draw_mode = GL_TRIANGLES;
 
     this->setMaterial(
-            glm::vec3(.5, .5,
-                      .5), // need to change this to some other value... maybe the height of the plane if we ever make it.
+            glm::vec3(.5, .5, .5), // need to change this to some other value... maybe the height of the plane if we ever make it.
             glm::vec3(.5, .5, .5),
             glm::vec3(.25, .25, .25),
             25.0f
@@ -37,8 +38,9 @@ Skybox::Skybox(const GLuint& shader_program, Entity* parent) : DrawableEntity(sh
 Skybox::~Skybox() {}
 
 const std::vector<glm::vec3>& Skybox::getVertices() {
+	/*
 	static const std::vector<glm::vec3> vertices = {
-//front square
+			//front square
             glm::vec3(-size,-size, size), //front down left point   0
             glm::vec3( size,-size, size), //front down right point  1
             glm::vec3(-size, size, size), //front top left point    2
@@ -69,11 +71,19 @@ const std::vector<glm::vec3>& Skybox::getVertices() {
             glm::vec3(-size,-size, size), //down top left point     22
             glm::vec3( size,-size, size), //down top right point    23
 	};
-
-	return vertices;
+*/
+	return this->verticies;
 }
 
 GLuint Skybox::getVAO() {
+
+	std::vector<GLuint> elements;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec2> uvs;
+	loadOBJ("../models/domeshpere.obj", &this->verticies, &normals, &uvs, &elements);
+
+
+	/*
 	static const std::vector<GLuint> elements {
             //front square
             2, 1, 0,
@@ -131,7 +141,7 @@ GLuint Skybox::getVAO() {
     static const std::vector<glm::vec2> uvs {
         //front view
         glm::vec2 (0, 1/3),
-        glm::vec2 (1/4, 1/3),
+        glm::vec2 (1/4, 2/3),
         glm::vec2 (0, 2/3),
         glm::vec2 (1/4, 1/3),
         //right view
@@ -160,7 +170,7 @@ GLuint Skybox::getVAO() {
         glm::vec2(1/4, 1/3),
         glm::vec2(2/4, 1/3)
     };
-
+	*/
 	static GLuint vao;
 	static bool vao_init = false;
 
@@ -186,7 +196,7 @@ GLuint Skybox::getTextureId()
 {
     //from pinterest
     static GLuint cloud_texture = loadTexture(
-            "../textures/clouds.jpg",
+            "../textures/nightskydome1.jpg",
             GL_LINEAR,
             GL_LINEAR
     );

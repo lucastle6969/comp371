@@ -257,8 +257,9 @@ int main()
 		// rotate the sun
 		light.daytime = glm::rotateZ(light.daytime, 0.0005f);
         //move the fog
-
-		light.light_position = world->getPlayer()->getPosition();
+		glm::vec3 player_position = world->getPlayer()->getPosition();
+		light.light_position = player_position;
+		skybox.setPosition(player_position);
 
 		light.setDaytime();
 
@@ -268,8 +269,8 @@ int main()
 		glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::vec3 player_position = world->getPlayer()->getPosition();
 		glm::mat4 view_matrix = glm::lookAt(player_position - follow_vector, player_position, up);
+
 
 		float player_scale = getPlayerScaleCoefficient();
 		glm::mat4 projection_matrix = glm::perspective(
@@ -279,9 +280,16 @@ int main()
 			1500.0f * player_scale
 		);
 
+		glm::mat4 sky_projection_matrix = glm::perspective(
+				glm::radians(fovy),
+				(GLfloat)framebuffer_width / (GLfloat)framebuffer_height,
+				0.1f * player_scale,
+				1000000.0f * player_scale
+		);
+		skybox.draw(view_matrix, sky_projection_matrix, light);
+
 		world->draw(view_matrix, projection_matrix, light);
-        skybox.draw(view_matrix, projection_matrix, light);
-		// Swap the screen buffers
+				// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
 

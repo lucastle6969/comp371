@@ -16,7 +16,7 @@
 
 class Skybox: public DrawableEntity {
 private:
-
+	std::vector<glm::vec3> verticies;
 public:
 
 	explicit Skybox(const GLuint& shader_program) : Skybox(shader_program, nullptr) {}
