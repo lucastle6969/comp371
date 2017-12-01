@@ -57,7 +57,7 @@ WorldTile::WorldTile(
 			terrain_span,
 			this
 	);
-	// terrain height is from 0 to 1 internally
+	// terrain height is from -1 to 1 internally
 	this->terrain->scale(glm::vec3(1.0f, WorldTile::terrain_y_scale, 1.0f));
 
 	this->seed_loc_message.setPosition(glm::vec3(0.5, -0.96, 0.5));

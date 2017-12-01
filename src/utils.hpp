@@ -44,7 +44,7 @@ namespace utils {
 	{
 		static siv::PerlinNoise perlin(0);
 		static std::int32_t octaves = 3;
-		return (float)perlin.octaveNoise0_1(x, y, octaves);
+		return (float)perlin.octaveNoise(x, y, octaves);
 	}
 }
 
