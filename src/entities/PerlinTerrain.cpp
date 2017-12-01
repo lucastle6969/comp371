@@ -35,9 +35,9 @@ PerlinTerrain::PerlinTerrain(
 
 	// generate terrain vertices via Improved Perlin Noise
 	for (int z_i = 0; z_i < z_span; z_i++) {
+		auto z = (float)z_i / (z_span - 1);
 		for (int x_i = 0; x_i < x_span; x_i++) {
 			auto x = (float)x_i / (x_span - 1);
-			auto z = (float)z_i / (z_span - 1);
 			this->vertices.emplace_back(
 					x,
 					utils::getPerlinNoise(world_x_location + x, world_z_location + z),
@@ -74,23 +74,29 @@ PerlinTerrain::PerlinTerrain(
 		if (i % x_span > 0) {
 			point_before_x = this->vertices[i - 1];
 		} else {
-			before_x = world_x_location - 1.0f / (x_span - 1);
+			before_x = 0 - 1.0f / (x_span - 1);
 			curr_z = this->vertices[i].z;
 			point_before_x = glm::vec3(
 					before_x,
-					utils::getPerlinNoise(before_x, curr_z),
+					utils::getPerlinNoise(
+							world_x_location + before_x,
+							world_z_location + curr_z
+					),
 					curr_z
 			);
 		}
 		// find point after along x axis
-		if (i % (x_span + 1) > 0) {
+		if ((i + 1) % x_span > 0) {
 			point_after_x = this->vertices[i + 1];
 		} else {
-			after_x = world_x_location + 1.0f / (x_span - 1);
+			after_x = 1 + 1.0f / (x_span - 1);
 			curr_z = this->vertices[i].z;
 			point_after_x = glm::vec3(
 					after_x,
-					utils::getPerlinNoise(after_x, curr_z),
+					utils::getPerlinNoise(
+							world_x_location + after_x,
+							world_z_location + curr_z
+					),
 					curr_z
 			);
 		}
@@ -99,10 +105,13 @@ PerlinTerrain::PerlinTerrain(
 			point_before_z = this->vertices[i - x_span];
 		} else {
 			curr_x = this->vertices[i].x;
-			before_z = world_z_location - 1.0f / (z_span - 1);
+			before_z = 0 - 1.0f / (z_span - 1);
 			point_before_z = glm::vec3(
 					curr_x,
-					utils::getPerlinNoise(curr_x, before_z),
+					utils::getPerlinNoise(
+							world_x_location + curr_x,
+							world_z_location + before_z
+					),
 					before_z
 			);
 		}
@@ -111,10 +120,13 @@ PerlinTerrain::PerlinTerrain(
 			point_after_z = this->vertices[i + x_span];
 		} else {
 			curr_x = this->vertices[i].x;
-			after_z = world_z_location + 1.0f / (z_span - 1);
-			point_before_z = glm::vec3(
+			after_z = 1 + 1.0f / (z_span - 1);
+			point_after_z = glm::vec3(
 					curr_x,
-					utils::getPerlinNoise(curr_x, after_z),
+					utils::getPerlinNoise(
+							world_x_location + curr_x,
+							world_z_location + after_z
+					),
 					after_z
 			);
 		}
@@ -156,5 +168,5 @@ GLuint PerlinTerrain::getVAO() {
 }
 
 const int PerlinTerrain::getColorType() {
-	return COLOR_HEIGHT;
+	return COLOR_LIGHTING;
 }
