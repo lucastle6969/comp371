@@ -1,0 +1,14 @@
+//
+// Created by Ben Wiley on 2017-11-30.
+//
+
+#ifndef PROCEDURALWORLD_PERLINTERRAIN_HPP
+#define PROCEDURALWORLD_PERLINTERRAIN_HPP
+
+
+class PerlinTerrain {
+
+};
+
+
+#endif //PROCEDURALWORLD_PERLINTERRAIN_HPP
