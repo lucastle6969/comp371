@@ -111,6 +111,8 @@ add_executable(proceduralworld
     src/entities/Skybox.hpp
     src/entities/Text.hpp
     src/entities/Text.cpp
+    src/entities/PerlinTerrain.hpp
+    src/entities/PerlinTerrain.cpp
 )
 
 # Link librarssies

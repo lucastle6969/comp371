@@ -14,20 +14,30 @@
 #include <src/HitBox2d.hpp>
 
 #include "Entity.hpp"
+#include "PerlinTerrain.hpp"
 #include "Rock.hpp"
 #include "Trees/Tree.hpp"
-#include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "RockB.hpp"
 #include "Text.hpp"
 
-class WorldTile: public DrawableEntity {
+class WorldTile: public Entity {
 private:
+	static constexpr int terrain_width = 15;
+	static constexpr float terrain_y_scale = 0.05f;
+	std::vector<glm::vec3> vertices;
+	std::vector<unsigned int> elements;
+	std::vector<glm::vec3> normals;
+	GLuint vao;
+	PerlinTerrain* terrain;
 	std::vector<Rock*> rocks;
     std::vector<RockB*> rocksB;
 	std::vector<Tree*> trees;
 	std::vector<HitBox2d> hitboxes;
     Text seed_loc_message;
+	GLuint vertices_buffer;
+	GLuint element_buffer;
+	GLuint normal_buffer;
 public:
 	WorldTile(
 		const GLuint& shader_program,
@@ -55,9 +65,6 @@ public:
 		Entity* parent
 	);
 	~WorldTile() override;
-	const std::vector<glm::vec3>& getVertices() const override;
-	GLuint getVAO() override;
-	const int getColorType() override;
 	bool collidesWith(const HitBox2d& box) const;
 };
 

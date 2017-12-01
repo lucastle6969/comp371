@@ -16,9 +16,8 @@
 #include <src/HitBox2d.hpp>
 
 #include "Entity.hpp"
-#include "DrawableEntity.hpp"
+#include "PerlinTerrain.hpp"
 #include "Rock.hpp"
-
 #include "src/entities/Trees/Tree.hpp"
 #include "src/entities/Trees/TreeA.hpp"
 #include "src/entities/Trees/TreeA_Autumn.hpp"
@@ -36,7 +35,7 @@ WorldTile::WorldTile(
 	const float& max_hitbox_y,
 	const HitBox2d& player_hitbox,
 	Entity *parent
-) : DrawableEntity(shader_program, parent),
+) : Entity(parent),
     seed_loc_message(
 		    shader_program,
 		    "Seed for current location: " + std::to_string(world_x_location) + ',' + std::to_string(world_z_location),
@@ -45,21 +44,23 @@ WorldTile::WorldTile(
 		    FONT_STYLE_OUTLINE,
 		    this
     )
-
 {
-	this->draw_mode = GL_TRIANGLES;
-
-	this->setMaterial(
-		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
-		glm::vec3(.5,.5,.5),
-		glm::vec3(.25,.25,.25),
-		25.0f
-	);
-
-    seed_loc_message.setPosition(glm::vec3(0.5, -0.96, 0.5));
-
 	// position tile relative to parent based on x, z inputs
 	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));
+
+	int terrain_span = WorldTile::terrain_width;
+	this->terrain = new PerlinTerrain(
+			shader_program,
+			world_x_location,
+			world_z_location,
+			terrain_span,
+			terrain_span,
+			this
+	);
+	// terrain height is from 0 to 1 internally
+	this->terrain->scale(glm::vec3(1.0f, WorldTile::terrain_y_scale, 1.0f));
+
+	this->seed_loc_message.setPosition(glm::vec3(0.5, -0.96, 0.5));
 
 	// initialize random number generator based on world location
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
@@ -366,67 +367,16 @@ WorldTile::WorldTile(
 
 WorldTile::~WorldTile()
 {
+	delete this->terrain;
 	for (Rock* const& rock : this->rocks) {
 		delete rock;
 	}
 	for (Tree* const& tree : this->trees) {
 		delete tree;
 	}
-
     for (RockB* const& rock : this->rocksB) {
-        delete rock;
+	    delete rock;
     }
-}
-
-const std::vector<glm::vec3>& WorldTile::getVertices() const
-{
-	static const std::vector<glm::vec3> vertices = {
-			glm::vec3(0.0f, 0.0f, 0.0f), // bottom-left
-			glm::vec3(1.0f, 0.0f, 0.0f), // bottom-right
-			glm::vec3(1.0f, 0.0f, 1.0f), // top-right
-			glm::vec3(0.0f, 0.0f, 1.0f)  // top-left
-	};
-
-	return vertices;
-}
-
-GLuint WorldTile::getVAO() {
-	static const std::vector<GLuint> elements {
-			// first triangle (ACTUALLY is counterclockwise - negative-Z axis)
-			3, // top-left
-			1, // bottom-right
-			0, // bottom-left
-			// second triangle
-			3, // top-left
-			2, // top-right
-			1  // bottom-right
-	};
-
-	static const std::vector<glm::vec3> normals {
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-	};
-
-	static GLuint vao;
-	static bool vao_init = false;
-
-	if (!vao_init) {
-		// only initialize vao once for all instances
-		vao = this->initVertexArray(
-				this->getVertices(),
-				elements,
-				normals
-		);
-		vao_init = true;
-	}
-
-	return vao;
-}
-
-const int WorldTile::getColorType() {
-	return COLOR_TILE;
 }
 
 // tests for x-z collision between the specified box and any child entities.
