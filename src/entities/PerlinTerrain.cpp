@@ -27,10 +27,10 @@ PerlinTerrain::PerlinTerrain(
 	this->draw_mode = GL_TRIANGLES;
 
 	this->setMaterial(
-			glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
-			glm::vec3(.5,.5,.5),
-			glm::vec3(.25,.25,.25),
-			25.0f
+			glm::vec3(0.05f, 0.1f, 0.0f),
+			glm::vec3(0.25f, 0.5f, 0.0f),
+			glm::vec3(0.5f, 0.5f, 0.5f),
+			1.0f
 	);
 
 	// generate terrain vertices via Improved Perlin Noise
