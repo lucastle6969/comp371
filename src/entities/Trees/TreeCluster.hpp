@@ -33,7 +33,7 @@ private:
     static constexpr int heightChunking = 0;
     static constexpr int boostFactor = 0;
     static int spacingConstant;
-    int maxWidth(const float& trunkDiameter);
+    static int maxWidth(const float& trunkDiameter);
 
 public:
 
