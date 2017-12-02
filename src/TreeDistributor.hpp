@@ -14,7 +14,7 @@
 #include "src/entities/Trees/Tree.hpp"
 #include "src/entities/Trees/TreeA.hpp"
 #include "src/entities/Trees/TreeB.hpp"
-#include "src/entities/Trees/TreeC.hpp"
+#include "src/entities/Trees/TreeCluster.hpp"
 #include<exception>
 
 

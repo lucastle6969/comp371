@@ -99,8 +99,8 @@ add_executable(proceduralworld
     src/entities/Trees/LeafContainerAB.cpp
     src/entities/Trees/TreeB.hpp
     src/entities/Trees/TreeB.cpp
-    src/entities/Trees/TreeC.hpp
-    src/entities/Trees/TreeC.cpp
+    src/entities/Trees/TreeCluster.hpp
+    src/entities/Trees/TreeCluster.cpp
     src/entities/Trees/TreeClusterItem.hpp
     src/entities/Trees/TreeClusterItem.cpp
     src/entities/Trees/TrunkC.hpp

@@ -5,15 +5,15 @@
 
 #include <src/loadTexture.hpp>
 #include <src/entities/World.hpp>
-#include "TreeC.hpp"
+#include "TreeCluster.hpp"
 
-    int TreeC::spacingConstant = 5;
+    int TreeCluster::spacingConstant = 5;
 
-    int TreeC::maxWidth(const float& trunkDiameter){
+    int TreeCluster::maxWidth(const float& trunkDiameter){
         return (int)(pow(spacingConstant * (trunkDiameter+1), 1.0/2) + trunkDiameter);
     }
 
-    TreeC::TreeC(int numberOfTrees, const GLuint& shader_program, Entity* entity, float trunkDiameter, long seed, bool isAlien,
+    TreeCluster::TreeCluster(int numberOfTrees, const GLuint& shader_program, Entity* entity, float trunkDiameter, long seed, bool isAlien,
                  std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude,
                     float min_hitbox_y, float max_hitbox_y, std::vector<HitBox2d>& hbEnt){
 
@@ -60,8 +60,8 @@
     }
 
 
-    void TreeC::setSpacingConstant(int k){
-        TreeC::spacingConstant = k;
+    void TreeCluster::setSpacingConstant(int k){
+        TreeCluster::spacingConstant = k;
     }
 
 

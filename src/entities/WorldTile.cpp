@@ -22,7 +22,7 @@
 #include "src/entities/Trees/TreeA.hpp"
 #include "src/entities/Trees/TreeA_Autumn.hpp"
 #include "src/entities/Trees/TreeB.hpp"
-#include "src/entities/Trees/TreeC.hpp"
+#include "src/entities/Trees/TreeCluster.hpp"
 #include "WorldTile.hpp"
 #include "Tentacle.hpp"
 
@@ -327,7 +327,7 @@ WorldTile::WorldTile(
             } else if (seed % worldBoundries < 7) {
                 tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
             } else {
-                TreeC tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
+                TreeCluster tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
                          {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
 
                 continue;
@@ -344,7 +344,7 @@ WorldTile::WorldTile(
             } else if (seed % worldBoundries < 7) {
                 tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
             } else {
-                TreeC tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
+                TreeCluster tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
                          {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
 
                 continue;
@@ -379,10 +379,10 @@ WorldTile::WorldTile(
                     tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed);
             } else {
 
-                TreeC::setSpacingConstant(10);
-                TreeC tc(0, shader_program, this, internal_tree_width * 1.5, seed, isAlien, trees,
+                TreeCluster::setSpacingConstant(10);
+                TreeCluster tc(0, shader_program, this, internal_tree_width * 1.5, seed, isAlien, trees,
                          {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-                TreeC::setSpacingConstant(10);
+                TreeCluster::setSpacingConstant(10);
                 continue;
             }
         }
