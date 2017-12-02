@@ -58,9 +58,13 @@ WorldTile::WorldTile(
 			this
 	);
 	// terrain height is from -1 to 1 internally
-	this->terrain->scale(glm::vec3(1.0f, WorldTile::terrain_y_scale, 1.0f));
+	glm::vec3 terrain_scale(1.0f, WorldTile::terrain_y_scale, 1.0f);
+	this->terrain->scale(terrain_scale);
 
-	this->seed_loc_message.setPosition(glm::vec3(0.5, -0.96, 0.5));
+	this->seed_loc_message.setPosition(
+			this->terrain->findIntersectionPoint(0, 0) * terrain_scale +
+					glm::vec3(0.0f, -0.95, 0.0f)
+	);
 
 	// initialize random number generator based on world location
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
@@ -104,9 +108,12 @@ WorldTile::WorldTile(
                         z_span,
                         this
                 );
-                rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
                 rockB->scale(glm::vec3(x_span, y_span, z_span));
+	            rockB->setPosition(
+			            this->terrain->findIntersectionPoint(x_position, z_position) *
+					            terrain_scale +
+					            glm::vec3(0.0f, 0.002f, 0.0f)
+	            );
                 // Add rock to rocks array
                 this->rocksB.emplace_back(rockB);
                 this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
@@ -121,9 +128,12 @@ WorldTile::WorldTile(
                         z_span,
                         this
                 );
-                rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
                 rockA->scale(glm::vec3(x_span, y_span, z_span));
+	            rockA->setPosition(
+			            this->terrain->findIntersectionPoint(x_position, z_position) *
+					            terrain_scale +
+					            glm::vec3(0.0f, 0.002f, 0.0f)
+	            );
                 // Add rock to rocks array
                 this->rocks.emplace_back(rockA);
                 this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
@@ -143,8 +153,12 @@ WorldTile::WorldTile(
                     z_span,
                     this
             );
-            rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
             rockB->scale(glm::vec3(x_span, y_span, z_span));
+	        rockB->setPosition(
+			        this->terrain->findIntersectionPoint(x_position, z_position) *
+					        terrain_scale +
+					        glm::vec3(0.0f, 0.002f, 0.0f)
+	        );
             // Add rock to rocks array
             this->rocksB.emplace_back(rockB);
             this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
@@ -164,8 +178,12 @@ WorldTile::WorldTile(
                     z_span,
                     this
             );
-            rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
             rockA->scale(glm::vec3(x_span, y_span, z_span));
+	        rockA->setPosition(
+			        this->terrain->findIntersectionPoint(x_position, z_position) *
+					        terrain_scale +
+					        glm::vec3(0.0f, 0.002f, 0.0f)
+	        );
             // Add rock to rocks array
             this->rocks.emplace_back(rockA);
             this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
@@ -175,20 +193,24 @@ WorldTile::WorldTile(
 
             //Tentacle Biome
         else if(abs(world_x_location) % worldBoundries < tentacleX && abs(world_z_location) % worldBoundries < tentacleY) {
-                // Add rock child
-                RockB* rockB = new RockB(
-                        shader_program,
-                        world_x_location + x_position,
-                        world_z_location + z_position,
-                        x_span,
-                        z_span,
-                        this
-                );
-                rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-                rockB->scale(glm::vec3(x_span, y_span, z_span));
-                // Add rock to rocks array
-                this->rocksB.emplace_back(rockB);
-                this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
+	        // Add rock child
+	        RockB* rockB = new RockB(
+	                shader_program,
+	                world_x_location + x_position,
+	                world_z_location + z_position,
+	                x_span,
+	                z_span,
+	                this
+	        );
+	        rockB->scale(glm::vec3(x_span, y_span, z_span));
+	        rockB->setPosition(
+			        this->terrain->findIntersectionPoint(x_position, z_position) *
+					        terrain_scale +
+					        glm::vec3(0.0f, 0.002f, 0.0f)
+	        );
+	        // Add rock to rocks array
+	        this->rocksB.emplace_back(rockB);
+	        this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
 
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
@@ -204,9 +226,12 @@ WorldTile::WorldTile(
                         z_span,
                         this
                 );
-                rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
                 rockA->scale(glm::vec3(x_span, y_span, z_span));
+		        rockA->setPosition(
+				        this->terrain->findIntersectionPoint(x_position, z_position) *
+						        terrain_scale +
+						        glm::vec3(0.0f, 0.002f, 0.0f)
+		        );
                 // Add rock to rocks array
                 this->rocks.emplace_back(rockA);
                 this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
@@ -225,9 +250,12 @@ WorldTile::WorldTile(
                     z_span,
                     this
             );
-            rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
             rockB->scale(glm::vec3(x_span, y_span, z_span));
+	        rockB->setPosition(
+			        this->terrain->findIntersectionPoint(x_position, z_position) *
+					        terrain_scale +
+					        glm::vec3(0.0f, 0.002f, 0.0f)
+	        );
             // Add rock to rocks array
             this->rocksB.emplace_back(rockB);
             this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
@@ -247,9 +275,12 @@ WorldTile::WorldTile(
                     z_span,
                     this
             );
-            rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
             rockA->scale(glm::vec3(x_span, y_span, z_span));
+	        rockA->setPosition(
+			        this->terrain->findIntersectionPoint(x_position, z_position) *
+					        terrain_scale +
+					        glm::vec3(0.0f, 0.002f, 0.0f)
+	        );
             // Add rock to rocks array
             this->rocks.emplace_back(rockA);
             this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
@@ -356,8 +387,11 @@ WorldTile::WorldTile(
             }
         }
 
-		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
 		tree->scale(1.0f / (scale_factor*10));
+		tree->setPosition(
+				this->terrain->findIntersectionPoint(x_position, z_position) *
+						terrain_scale
+		);
 		// Add tree to trees array
 		this->trees.emplace_back(tree);
 		this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
@@ -389,4 +423,9 @@ bool WorldTile::collidesWith(const HitBox2d &box) const
 		}
 	}
 	return false;
+}
+
+const PerlinTerrain& WorldTile::getTerrain() const
+{
+	return *this->terrain;
 }

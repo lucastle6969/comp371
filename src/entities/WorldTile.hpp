@@ -66,6 +66,7 @@ public:
 	);
 	~WorldTile() override;
 	bool collidesWith(const HitBox2d& box) const;
+	const PerlinTerrain& getTerrain() const;
 };
 
 #endif //PROCEDURALWORLD_WORLDTILE_H

@@ -16,6 +16,8 @@
 
 class PerlinTerrain : public DrawableEntity {
 private:
+	float x_span;
+	float z_span;
 	std::vector<glm::vec3> vertices;
 	std::vector<unsigned int> elements;
 	std::vector<glm::vec3> normals;
@@ -23,6 +25,7 @@ private:
 	GLuint vertices_buffer;
 	GLuint element_buffer;
 	GLuint normal_buffer;
+	const glm::vec3& getPoint(const float& x_i, const float& z_i) const;
 public:
 	PerlinTerrain(
 			const GLuint& shader_program,
@@ -50,6 +53,7 @@ public:
 	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
+	glm::vec3 findIntersectionPoint(const float& x, const float& z) const;
 };
 
 

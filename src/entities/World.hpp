@@ -43,6 +43,7 @@ private:
 	bool collidesWith(const HitBox2d& box);
 	void placeWorldTile(const int& x, const int& z, const HitBox2d& player_hitbox);
 	void checkPosition();
+	glm::vec3 getTerrainIntersectionPoint(const float& x, const float& z);
 public:
 	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
 	World(const GLuint& shader_program, Entity* parent)

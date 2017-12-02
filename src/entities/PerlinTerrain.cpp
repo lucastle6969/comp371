@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <cmath>
 
 #include <src/utils.hpp>
 #include <src/constants.hpp>
@@ -14,7 +15,7 @@
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "PerlinTerrain.hpp"
-
+#include <iostream>
 PerlinTerrain::PerlinTerrain(
 	const GLuint &shader_program,
 	const int& world_x_location,
@@ -22,7 +23,9 @@ PerlinTerrain::PerlinTerrain(
 	const int& x_span,
 	const int& z_span,
 	Entity *parent
-) : DrawableEntity(shader_program, parent)
+) : DrawableEntity(shader_program, parent),
+    x_span(x_span),
+    z_span(z_span)
 {
 	this->draw_mode = GL_TRIANGLES;
 
@@ -169,4 +172,66 @@ GLuint PerlinTerrain::getVAO() {
 
 const int PerlinTerrain::getColorType() {
 	return COLOR_LIGHTING;
+}
+
+glm::vec3 PerlinTerrain::findIntersectionPoint(const float& x, const float& z) const
+{
+	// down vector intersecting triangle
+	static glm::vec3 down(0.0f, -1.0f, 0.0f);
+
+	// compute the lower coordinate of the piece of terrain we're on
+	auto x_i = (int)floor(x * (this->x_span - 1));
+	auto z_i = (int)floor(z * (this->z_span - 1));
+
+	glm::vec3 normal;
+	// find the triangle we're located above and compute its normal
+	const glm::vec3& bottom_left = this->getPoint(x_i, z_i);
+	const glm::vec3& bottom_right = this->getPoint(x_i + 1, z_i);
+	const glm::vec3& top_left = this->getPoint(x_i, z_i + 1);
+	const glm::vec3& top_right = this->getPoint(x_i + 1, z_i + 1);
+	glm::vec2 bl2d(bottom_left.x, bottom_left.z);
+	glm::vec2 tr2d(top_right.x, top_right.z);
+	glm::vec2 p2d(x, z);
+	if (glm::length(p2d - bl2d) < glm::length(p2d - tr2d)) {
+		normal = glm::normalize(glm::cross(
+				bottom_right - bottom_left,
+				top_left - bottom_left
+		));
+	} else {
+		normal = glm::normalize(glm::cross(
+				top_left - top_right,
+				bottom_right - top_right
+		));
+	}
+
+	// arbitrary ray origin safely above terrain
+	glm::vec3 ray_origin(x, 1.0f, z);
+
+	// ray-plane intersection: https://stackoverflow.com/a/23976134/4956731
+	float denom = glm::dot(normal, down);
+	float t = glm::dot(bottom_left - ray_origin, normal) / denom;
+	static bool print_info = true;
+	if (print_info) {
+		std::cout << std::endl;
+		std::cout << "x: " << x << ", x_i: " << x_i << ", z: " << z << ", z_i: " << z_i
+		          << std::endl;
+		std::cout << "bL: " << bottom_left.x << ", " << bottom_left.y << ", "
+		          << bottom_left.z << std::endl;
+		std::cout << "bR: " << bottom_right.x << ", " << bottom_right.y << ", "
+		          << bottom_right.z << std::endl;
+		std::cout << "tL: " << top_left.x << ", " << top_left.y << ", " << top_left.z
+		          << std::endl;
+		std::cout << "tR: " << top_right.x << ", " << top_right.y << ", " << top_right.z
+		          << std::endl;
+		std::cout << "normal: " << normal.x << ", " << normal.y << ", " << normal.z
+		          << std::endl;
+		std::cout << "denom: " << denom << std::endl;
+		std::cout << "t: " << t << std::endl;
+	}
+	return ray_origin + t * down;
+}
+
+const glm::vec3& PerlinTerrain::getPoint(const float& x_i, const float& z_i) const
+{
+	return this->vertices[z_i * this->x_span + x_i];
 }

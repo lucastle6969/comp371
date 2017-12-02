@@ -28,7 +28,6 @@ World::World(
     player(shader_program, this),
     menu(shader_program, "modulus woods}}Andre Marques Manata}Ben Wiley}Kai Nicoll-Griffith}Carlo Gentile}Emile Aoun", 0, 0, FONT_STYLE_MYTHOS, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
-
 	x_center((int)floor(player_x_start)),
 	z_center((int)floor(player_z_start)),
     player_min_world_y(FLT_MAX),
@@ -38,7 +37,7 @@ World::World(
 	this->axes.hide();
 
 	this->player.scale(0.0005f);
-	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
+	this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));
 
 	// assume player's floating position from ground will remain constant and use
 	// the y range of the model to create specialized entity hit boxes for collision
@@ -66,6 +65,13 @@ World::World(
 		));
 	}
 
+	// place player relative to terrain
+	std::cout << "player pos orig " << this->player.getPosition().x << ", " << this->player.getPosition().y << ", " << this->player.getPosition().z << std::endl;
+	this->player.setPosition(
+			this->getTerrainIntersectionPoint(player_x_start, player_z_start) +
+					glm::vec3(0.0f, 0.01f, 0.0f)
+	);
+	std::cout << "player pos new " << this->player.getPosition().x << ", " << this->player.getPosition().y << ", " << this->player.getPosition().z << std::endl;
 }
 
 World::~World()
@@ -233,6 +239,13 @@ void World::movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec
 //            this->player.setPosition(player.oldPosition);
         } else {
             this->checkPosition();
+	        glm::vec3 pos = this->player.getPosition();
+	        this->player.setPosition(
+			        this->getTerrainIntersectionPoint(
+					        pos.x,
+					        pos.z
+			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
+	        );
         }
         player.oldPosition = old_player_position;
     }
@@ -253,6 +266,13 @@ void World::movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, c
 //            this->player.setPosition(player.oldPosition);
         } else {
             this->checkPosition();
+	        glm::vec3 pos = this->player.getPosition();
+	        this->player.setPosition(
+			        this->getTerrainIntersectionPoint(
+					        pos.x,
+					        pos.z
+			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
+	        );
         }
         player.oldPosition = old_player_position;
     }
@@ -272,6 +292,13 @@ void World::movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, c
 //            this->player.setPosition(player.oldPosition);
         } else {
             this->checkPosition();
+	        glm::vec3 pos = this->player.getPosition();
+	        this->player.setPosition(
+			        this->getTerrainIntersectionPoint(
+					        pos.x,
+					        pos.z
+			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
+	        );
         }
         player.oldPosition = old_player_position;
     }
@@ -290,6 +317,13 @@ void World::movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, 
             player.left = true;
         } else {
             this->checkPosition();
+	        glm::vec3 pos = this->player.getPosition();
+	        this->player.setPosition(
+			        this->getTerrainIntersectionPoint(
+					        pos.x,
+					        pos.z
+			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
+	        );
         }
         //player.oldPosition = old_player_position;
     }
@@ -308,6 +342,13 @@ void World::movePlayerForwardLeft(
         this->player.setPosition(player.oldPosition);
     } else {
         this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
     }
     player.oldPosition = old_player_position;
 
@@ -326,6 +367,13 @@ void World::movePlayerForwardRight(
         this->player.setPosition(player.oldPosition);
     } else {
         this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
     }
     player.oldPosition = old_player_position;
 }
@@ -342,6 +390,13 @@ void World::movePlayerBackLeft(
         this->player.setPosition(player.oldPosition);
     } else {
         this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
     }
     player.oldPosition = old_player_position;
 }
@@ -358,6 +413,13 @@ void World::movePlayerBackRight(
         this->player.setPosition(player.oldPosition);
     } else {
         this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
     }
     player.oldPosition = old_player_position;
 }
@@ -370,4 +432,16 @@ bool World::collidesWith(const HitBox2d& box)
 		}
 	}
 	return false;
+}
+
+glm::vec3 World::getTerrainIntersectionPoint(const float& x, const float& z)
+{
+	WorldTile* center = this->tiles[
+			World::locationToTileIndex(this->x_center, this->z_center)
+	];
+	const PerlinTerrain& terrain = center->getTerrain();
+	return glm::vec3(terrain.getModelMatrix() * glm::vec4(terrain.findIntersectionPoint(
+			x - this->x_center,
+			z - this->z_center
+	), 1.0f));
 }
