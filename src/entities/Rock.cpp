@@ -259,191 +259,46 @@ Rock::Rock(
 	);
 
     //bottom face (5x5 between 0 - 1)
-    this->vertices.emplace_back(0.00f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.25f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.50f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.75f, 0.00f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.00f, 0.00f);
-
-    this->vertices.emplace_back(0.00f, 0.00f, -0.25f);
-    this->vertices.emplace_back(0.25f, 0.00f, -0.25f);
-    this->vertices.emplace_back(0.50f, 0.00f, -0.25f);
-    this->vertices.emplace_back(0.75f, 0.00f, -0.25f);
-    this->vertices.emplace_back(1.00f, 0.00f, -0.25f);
-
-    this->vertices.emplace_back(0.00f, 0.00f, -0.50f);
-    this->vertices.emplace_back(0.25f, 0.00f, -0.50f);
-    this->vertices.emplace_back(0.50f, 0.00f, -0.50f);
-    this->vertices.emplace_back(0.75f, 0.00f, -0.50f);
-    this->vertices.emplace_back(1.00f, 0.00f, -0.50f);
-
-    this->vertices.emplace_back(0.00f, 0.00f, -0.75f);
-    this->vertices.emplace_back(0.25f, 0.00f, -0.75f);
-    this->vertices.emplace_back(0.50f, 0.00f, -0.75f);
-    this->vertices.emplace_back(0.75f, 0.00f, -0.75f);
-    this->vertices.emplace_back(1.00f, 0.00f, -0.75f);
-
-    this->vertices.emplace_back(0.00f, 0.00f, -1.0f);
-    this->vertices.emplace_back(0.25f, 0.00f, -1.0f);
-    this->vertices.emplace_back(0.50f, 0.00f, -1.0f);
-    this->vertices.emplace_back(0.75f, 0.00f, -1.0f);
-    this->vertices.emplace_back(1.00f, 0.00f, -1.0f);
+    for (int z_i = 0; z_i < 5; z_i++) {
+        for (int x_i = 0; x_i < 5; x_i++) {
+            this->vertices.emplace_back(0.25f * x_i, 0.0f, -0.25f * z_i);
+        }
+    }
 
     //left (side) face
-    this->vertices.emplace_back(0.00f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.00f, 0.00f, -0.25f);
-    this->vertices.emplace_back(0.00f, 0.00f, -0.50f);
-    this->vertices.emplace_back(0.00f, 0.00f, -0.75f);
-    this->vertices.emplace_back(0.00f, 0.00f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 0.25f, 0.00f);
-    this->vertices.emplace_back(0.00f, 0.25f, -0.25f);
-    this->vertices.emplace_back(0.00f, 0.25f, -0.50f);
-    this->vertices.emplace_back(0.00f, 0.25f, -0.75f);
-    this->vertices.emplace_back(0.00f, 0.25f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 0.50f, 0.00f);
-    this->vertices.emplace_back(0.00f, 0.50f, -0.25f);
-    this->vertices.emplace_back(0.00f, 0.50f, -0.50f);
-    this->vertices.emplace_back(0.00f, 0.50f, -0.75f);
-    this->vertices.emplace_back(0.00f, 0.50f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 0.75f, 0.00f);
-    this->vertices.emplace_back(0.00f, 0.75f, -0.25f);
-    this->vertices.emplace_back(0.00f, 0.75f, -0.50f);
-    this->vertices.emplace_back(0.00f, 0.75f, -0.75f);
-    this->vertices.emplace_back(0.00f, 0.75f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, 0.00f);
-    this->vertices.emplace_back(0.00f, 1.00f, -0.25f);
-    this->vertices.emplace_back(0.00f, 1.00f, -0.50f);
-    this->vertices.emplace_back(0.00f, 1.00f, -0.75f);
-    this->vertices.emplace_back(0.00f, 1.00f, -1.00f);
-
+    for (int y_i = 0; y_i < 5; y_i++) {
+        for (int z_i = 0; z_i < 5; z_i++) {
+            this->vertices.emplace_back(0.0f, 0.25f * y_i, -0.25f * z_i);
+        }
+    }
 
     //back face (5x5 between 0 - 1)
-    this->vertices.emplace_back(0.00f, 0.00f, -1.00f);
-    this->vertices.emplace_back(0.25f, 0.00f, -1.00f);
-    this->vertices.emplace_back(0.50f, 0.00f, -1.00f);
-    this->vertices.emplace_back(0.75f, 0.00f, -1.00f);
-    this->vertices.emplace_back(1.00f, 0.00f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 0.25f, -1.00f);
-    this->vertices.emplace_back(0.25f, 0.25f, -1.00f);
-    this->vertices.emplace_back(0.50f, 0.25f, -1.00f);
-    this->vertices.emplace_back(0.75f, 0.25f, -1.00f);
-    this->vertices.emplace_back(1.00f, 0.25f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 0.50f, -1.00f);
-    this->vertices.emplace_back(0.25f, 0.50f, -1.00f);
-    this->vertices.emplace_back(0.50f, 0.50f, -1.00f);
-    this->vertices.emplace_back(0.75f, 0.50f, -1.00f);
-    this->vertices.emplace_back(1.00f, 0.50f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 0.75f, -1.00f);
-    this->vertices.emplace_back(0.25f, 0.75f, -1.00f);
-    this->vertices.emplace_back(0.50f, 0.75f, -1.00f);
-    this->vertices.emplace_back(0.75f, 0.75f, -1.00f);
-    this->vertices.emplace_back(1.00f, 0.75f, -1.00f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, -1.0f);
-    this->vertices.emplace_back(0.25f, 1.00f, -1.0f);
-    this->vertices.emplace_back(0.50f, 1.00f, -1.0f);
-    this->vertices.emplace_back(0.75f, 1.00f, -1.0f);
-    this->vertices.emplace_back(1.00f, 1.00f, -1.0f);
+    for (int y_i = 0; y_i < 5; y_i++) {
+        for (int x_i = 0; x_i < 5; x_i++) {
+            this->vertices.emplace_back(0.25f * x_i, 0.25f * y_i, -1.0f);
+        }
+    }
 
     //right (side) face
-    this->vertices.emplace_back(1.00f, 0.00f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.00f, -0.25f);
-    this->vertices.emplace_back(1.00f, 0.00f, -0.50f);
-    this->vertices.emplace_back(1.00f, 0.00f, -0.75f);
-    this->vertices.emplace_back(1.00f, 0.00f, -1.00f);
-
-    this->vertices.emplace_back(1.00f, 0.25f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.25f, -0.25f);
-    this->vertices.emplace_back(1.00f, 0.25f, -0.50f);
-    this->vertices.emplace_back(1.00f, 0.25f, -0.75f);
-    this->vertices.emplace_back(1.00f, 0.25f, -1.00f);
-
-    this->vertices.emplace_back(1.00f, 0.50f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.50f, -0.25f);
-    this->vertices.emplace_back(1.00f, 0.50f, -0.50f);
-    this->vertices.emplace_back(1.00f, 0.50f, -0.75f);
-    this->vertices.emplace_back(1.00f, 0.50f, -1.00f);
-
-    this->vertices.emplace_back(1.00f, 0.75f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.75f, -0.25f);
-    this->vertices.emplace_back(1.00f, 0.75f, -0.50f);
-    this->vertices.emplace_back(1.00f, 0.75f, -0.75f);
-    this->vertices.emplace_back(1.00f, 0.75f, -1.00f);
-
-    this->vertices.emplace_back(1.00f, 1.00f, 0.00f);
-    this->vertices.emplace_back(1.00f, 1.00f, -0.25f);
-    this->vertices.emplace_back(1.00f, 1.00f, -0.50f);
-    this->vertices.emplace_back(1.00f, 1.00f, -0.75f);
-    this->vertices.emplace_back(1.00f, 1.00f, -1.00f);
+    for (int y_i = 0; y_i < 5; y_i++) {
+        for (int z_i = 0; z_i < 5; z_i++) {
+            this->vertices.emplace_back(1.0f, 0.25f * y_i, -0.25f * z_i);
+        }
+    }
 
     //front face (5x5 between 0 - 1)
-    this->vertices.emplace_back(0.00f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.25f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.50f, 0.00f, 0.00f);
-    this->vertices.emplace_back(0.75f, 0.00f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.00f, 0.00f);
-
-    this->vertices.emplace_back(0.00f, 0.25f, 0.00f);
-    this->vertices.emplace_back(0.25f, 0.25f, 0.00f);
-    this->vertices.emplace_back(0.50f, 0.25f, 0.00f);
-    this->vertices.emplace_back(0.75f, 0.25f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.25f, 0.00f);
-
-    this->vertices.emplace_back(0.00f, 0.50f, 0.00f);
-    this->vertices.emplace_back(0.25f, 0.50f, 0.00f);
-    this->vertices.emplace_back(0.50f, 0.50f, 0.00f);
-    this->vertices.emplace_back(0.75f, 0.50f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.50f, 0.00f);
-
-    this->vertices.emplace_back(0.00f, 0.75f, 0.00f);
-    this->vertices.emplace_back(0.25f, 0.75f, 0.00f);
-    this->vertices.emplace_back(0.50f, 0.75f, 0.00f);
-    this->vertices.emplace_back(0.75f, 0.75f, 0.00f);
-    this->vertices.emplace_back(1.00f, 0.75f, 0.00f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, 0.0f);
-    this->vertices.emplace_back(0.25f, 1.00f, 0.0f);
-    this->vertices.emplace_back(0.50f, 1.00f, 0.0f);
-    this->vertices.emplace_back(0.75f, 1.00f, 0.0f);
-    this->vertices.emplace_back(1.00f, 1.00f, 0.0f);
+    for (int y_i = 0; y_i < 5; y_i++) {
+        for (int x_i = 0; x_i < 5; x_i++) {
+            this->vertices.emplace_back(0.25f * x_i, 0.25f * y_i, 0.0f);
+        }
+    }
 
     //top face (5x5 between 0 - 1)
-    this->vertices.emplace_back(0.00f, 1.00f, 0.00f);
-    this->vertices.emplace_back(0.25f, 1.00f, 0.00f);
-    this->vertices.emplace_back(0.50f, 1.00f, 0.00f);
-    this->vertices.emplace_back(0.75f, 1.00f, 0.00f);
-    this->vertices.emplace_back(1.00f, 1.00f, 0.00f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, -0.25f);
-    this->vertices.emplace_back(0.25f, 1.00f, -0.25f);
-    this->vertices.emplace_back(0.50f, 1.00f, -0.25f);
-    this->vertices.emplace_back(0.75f, 1.00f, -0.25f);
-    this->vertices.emplace_back(1.00f, 1.00f, -0.25f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, -0.50f);
-    this->vertices.emplace_back(0.25f, 1.00f, -0.50f);
-    this->vertices.emplace_back(0.50f, 1.00f, -0.50f);
-    this->vertices.emplace_back(0.75f, 1.00f, -0.50f);
-    this->vertices.emplace_back(1.00f, 1.00f, -0.50f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, -0.75f);
-    this->vertices.emplace_back(0.25f, 1.00f, -0.75f);
-    this->vertices.emplace_back(0.50f, 1.00f, -0.75f);
-    this->vertices.emplace_back(0.75f, 1.00f, -0.75f);
-    this->vertices.emplace_back(1.00f, 1.00f, -0.75f);
-
-    this->vertices.emplace_back(0.00f, 1.00f, -1.0f);
-    this->vertices.emplace_back(0.25f, 1.00f, -1.0f);
-    this->vertices.emplace_back(0.50f, 1.00f, -1.0f);
-    this->vertices.emplace_back(0.75f, 1.00f, -1.0f);
-    this->vertices.emplace_back(1.00f, 1.00f, -1.0f);
+    for (int z_i = 0; z_i < 5; z_i++) {
+        for (int x_i = 0; x_i < 5; x_i++) {
+            this->vertices.emplace_back(0.25f * x_i, 1.0f, -0.25f * z_i);
+        }
+    }
 
     for (int i=0; i<this->vertices.size(); i++){
 
