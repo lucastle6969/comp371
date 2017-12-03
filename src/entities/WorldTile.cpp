@@ -415,7 +415,9 @@ WorldTile::WorldTile(
 			}
 			tree->setPosition(
 					this->terrain->findIntersectionPoint(tree_pos.x, tree_pos.z) *
-					terrain_scale
+					terrain_scale -
+					// dip tree into ground proportionally to its height
+					glm::vec3(0.0f, tree->getWorldHeight() / 60.0f, 0.0f)
 			);
 			// Add tree to trees array
 			this->trees.emplace_back(tree);

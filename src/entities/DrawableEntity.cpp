@@ -60,6 +60,25 @@ GLuint DrawableEntity::getTextureId()
     return texture_id;
 }
 
+// NOTE: this method iterates all vertices each time it is called
+float DrawableEntity::getWorldHeight() const
+{
+	float min = FLT_MAX;
+	float max = -FLT_MAX;
+	glm::vec3 v;
+	const glm::mat4& model_matrix = this->getModelMatrix();
+	for (const glm::vec3& vertex : this->getVertices()) {
+		v = glm::vec3(this->getModelMatrix() * glm::vec4(vertex, 1.0f));
+		if (v.y < min) {
+			min = v.y;
+		}
+		if (v.y > max) {
+			max = v.y;
+		}
+	}
+	return max - min;
+}
+
 void DrawableEntity::draw(
     const glm::mat4& view_matrix,
     const glm::mat4& projection_matrix,

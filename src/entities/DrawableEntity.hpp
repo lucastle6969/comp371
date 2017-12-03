@@ -71,6 +71,7 @@ public:
 	// end pure virtual functions
 	virtual GLuint getTextureId();
 	GLenum getDrawMode();
+	float getWorldHeight() const;
 	void draw(
 		const glm::mat4& view_matrix,
 		const glm::mat4& projection_matrix,
