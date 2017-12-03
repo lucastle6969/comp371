@@ -428,6 +428,14 @@ Text::Text(
                     this->uvs.emplace_back(0.333333, 0.25f); // 2.0f/6.0f, 3.0f/12.0f
                     this->uvs.emplace_back(0.416666, 0.25f);
                     break;
+                case ':' :
+                    char_l_space = char_width*0.3f;
+                    char_r_space = char_width*0.3f;
+                    this->uvs.emplace_back(0.416666, 0.166666);
+                    this->uvs.emplace_back(0.5, 0.166666);
+                    this->uvs.emplace_back(0.416666, 0.25f);
+                    this->uvs.emplace_back(0.5, 0.25f);
+                    break;
                 case '}' : // new line key
                     line_width_sum = l_margin;
                     line_height += char_height;
