@@ -210,7 +210,7 @@ glm::vec3 PerlinTerrain::findIntersectionPoint(const float& x, const float& z) c
 
 	// ray-plane intersection: https://stackoverflow.com/a/23976134/4956731
 	float denom = glm::dot(normal, down);
-	float t = glm::dot(bottom_left - ray_origin, normal) / denom;
+	float t = glm::dot(bottom_right - ray_origin, normal) / denom;
 	static bool print_info = true;
 	if (print_info) {
 		std::cout << std::endl;
