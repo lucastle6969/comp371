@@ -84,8 +84,8 @@ WorldTile::WorldTile(
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
         float y_span = utils::randomFloat(0.01f, 0.015f);
-		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+		float x_position = utils::randomFloat(0.0f + x_span / 2, 1.0f - x_span / 2);
+		float z_position = utils::randomFloat(0.0f + z_span / 2, 1.0f - z_span / 2);
 
 		HitBox2d box(x_position, z_position, x_position + x_span, z_position + z_span);
 		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
@@ -167,8 +167,8 @@ WorldTile::WorldTile(
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
             float y_span = utils::randomFloat(0.01f, 0.015f);
-            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+	        float x_position = utils::randomFloat(0.0f + x_span / 2, 1.0f - x_span / 2);
+	        float z_position = utils::randomFloat(0.0f + z_span / 2, 1.0f - z_span / 2);
             // Add rock child
             Rock* rockA = new Rock(
                     shader_program,
@@ -215,8 +215,8 @@ WorldTile::WorldTile(
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
             float y_span = utils::randomFloat(0.01f, 0.015f);
-            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+	        float x_position = utils::randomFloat(0.0f + x_span / 2, 1.0f - x_span / 2);
+	        float z_position = utils::randomFloat(0.0f + z_span / 2, 1.0f - z_span / 2);
                 // Add rock child
                 Rock* rockA = new Rock(
                         shader_program,
@@ -263,8 +263,8 @@ WorldTile::WorldTile(
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
             float y_span = utils::randomFloat(0.01f, 0.015f);
-            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+	        float x_position = utils::randomFloat(0.0f + x_span / 2, 1.0f - x_span / 2);
+	        float z_position = utils::randomFloat(0.0f + z_span / 2, 1.0f - z_span / 2);
 
             // Add rock child
             Rock* rockA = new Rock(
@@ -297,8 +297,8 @@ WorldTile::WorldTile(
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
-		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
+		float x_position = utils::randomFloat(0.0f + base_span / 2, 1.0f - base_span / 2);
+		float z_position = utils::randomFloat(0.0f + base_span / 2, 1.0f - base_span / 2);
 
 		HitBox2d box(x_position, z_position, x_position + base_span, z_position + base_span);
 		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
