@@ -340,7 +340,7 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
     if(isAlien)  this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, &vbo, &ebo, &nbo);
     else         this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals,
-                                              combinedUV, &vbo, &ebo,  &uvbo);
+                                              combinedUV, &vbo, &ebo, &nbo, &uvbo);
 }
 
 void TreeClusterItem::setLocationFromCenter(const float& circleAngle, const float& distanceFromCenter){
