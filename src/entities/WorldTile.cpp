@@ -406,6 +406,13 @@ WorldTile::WorldTile(
 			// into account any prior offsets from tree clustering
 			tree->translate(glm::vec3(x_position, 0.0f, z_position));
 			const glm::vec3& tree_pos = tree->getPosition();
+			if (tree_pos.x < 0 || tree_pos.x >= 1 || tree_pos.z < 0 || tree_pos.z >= 1) {
+				// we can't handle trees that don't sit on our tile
+				// (this might happen for tree cluster items)
+				this->detachChild(tree);
+				delete tree;
+				continue;
+			}
 			tree->setPosition(
 					this->terrain->findIntersectionPoint(tree_pos.x, tree_pos.z) *
 					terrain_scale
