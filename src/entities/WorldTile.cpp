@@ -83,7 +83,7 @@ WorldTile::WorldTile(
 	for (int i = 0; i < 7; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
-        float y_span = utils::randomFloat(0.005f, 0.015f);
+        float y_span = utils::randomFloat(0.01f, 0.015f);
 		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
 		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
 
@@ -112,7 +112,7 @@ WorldTile::WorldTile(
 	            rockB->setPosition(
 			            this->terrain->findIntersectionPoint(x_position, z_position) *
 					            terrain_scale +
-					            glm::vec3(0.0f, 0.002f, 0.0f)
+					            glm::vec3(0.0f, 0.0f, 0.0f) // no offset
 	            );
                 // Add rock to rocks array
                 this->rocksB.emplace_back(rockB);
@@ -132,7 +132,7 @@ WorldTile::WorldTile(
 	            rockA->setPosition(
 			            this->terrain->findIntersectionPoint(x_position, z_position) *
 					            terrain_scale +
-					            glm::vec3(0.0f, 0.002f, 0.0f)
+					            glm::vec3(0.0f, -0.004f, 0.0f)
 	            );
                 // Add rock to rocks array
                 this->rocks.emplace_back(rockA);
@@ -157,7 +157,7 @@ WorldTile::WorldTile(
 	        rockB->setPosition(
 			        this->terrain->findIntersectionPoint(x_position, z_position) *
 					        terrain_scale +
-					        glm::vec3(0.0f, 0.002f, 0.0f)
+					        glm::vec3(0.0f, 0.0f, 0.0f) // no offset
 	        );
             // Add rock to rocks array
             this->rocksB.emplace_back(rockB);
@@ -166,7 +166,7 @@ WorldTile::WorldTile(
 
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
-            float y_span = utils::randomFloat(0.005f, 0.015f);
+            float y_span = utils::randomFloat(0.01f, 0.015f);
             float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
             float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
             // Add rock child
@@ -182,7 +182,7 @@ WorldTile::WorldTile(
 	        rockA->setPosition(
 			        this->terrain->findIntersectionPoint(x_position, z_position) *
 					        terrain_scale +
-					        glm::vec3(0.0f, 0.002f, 0.0f)
+					        glm::vec3(0.0f, -0.004f, 0.0f)
 	        );
             // Add rock to rocks array
             this->rocks.emplace_back(rockA);
@@ -206,7 +206,7 @@ WorldTile::WorldTile(
 	        rockB->setPosition(
 			        this->terrain->findIntersectionPoint(x_position, z_position) *
 					        terrain_scale +
-					        glm::vec3(0.0f, 0.002f, 0.0f)
+					        glm::vec3(0.0f, 0.0f, 0.0f) // no offset
 	        );
 	        // Add rock to rocks array
 	        this->rocksB.emplace_back(rockB);
@@ -214,7 +214,7 @@ WorldTile::WorldTile(
 
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
-            float y_span = utils::randomFloat(0.005f, 0.015f);
+            float y_span = utils::randomFloat(0.01f, 0.015f);
             float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
             float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
                 // Add rock child
@@ -230,7 +230,7 @@ WorldTile::WorldTile(
 		        rockA->setPosition(
 				        this->terrain->findIntersectionPoint(x_position, z_position) *
 						        terrain_scale +
-						        glm::vec3(0.0f, 0.002f, 0.0f)
+						        glm::vec3(0.0f, -0.004f, 0.0f)
 		        );
                 // Add rock to rocks array
                 this->rocks.emplace_back(rockA);
@@ -254,7 +254,7 @@ WorldTile::WorldTile(
 	        rockB->setPosition(
 			        this->terrain->findIntersectionPoint(x_position, z_position) *
 					        terrain_scale +
-					        glm::vec3(0.0f, 0.002f, 0.0f)
+					        glm::vec3(0.0f, 0.0f, 0.0f) // no offset
 	        );
             // Add rock to rocks array
             this->rocksB.emplace_back(rockB);
@@ -262,7 +262,7 @@ WorldTile::WorldTile(
 
             float x_span = utils::randomFloat(0.02f, 0.05f);
             float z_span = utils::randomFloat(0.02f, 0.05f);
-            float y_span = utils::randomFloat(0.005f, 0.015f);
+            float y_span = utils::randomFloat(0.01f, 0.015f);
             float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
             float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
 
@@ -279,7 +279,7 @@ WorldTile::WorldTile(
 	        rockA->setPosition(
 			        this->terrain->findIntersectionPoint(x_position, z_position) *
 					        terrain_scale +
-					        glm::vec3(0.0f, 0.002f, 0.0f)
+					        glm::vec3(0.0f, -0.004f, 0.0f)
 	        );
             // Add rock to rocks array
             this->rocks.emplace_back(rockA);

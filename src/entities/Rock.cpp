@@ -258,45 +258,77 @@ Rock::Rock(
 		shininess
 	);
 
+    const int increments = 5;
+    const float x_incr = 0.25f;
+    const float y_incr = 0.25f;
+    const float z_incr = -0.25f;
+    const float x_start = -0.5f;
+    const float y_start = 0.0f;
+    const float z_start = 0.5f;
+
     //bottom face (5x5 between 0 - 1)
-    for (int z_i = 0; z_i < 5; z_i++) {
-        for (int x_i = 0; x_i < 5; x_i++) {
-            this->vertices.emplace_back(0.25f * x_i, 0.0f, -0.25f * z_i);
+    for (int z_i = 0; z_i < increments; z_i++) {
+        for (int x_i = 0; x_i < increments; x_i++) {
+            this->vertices.emplace_back(
+                    x_incr * x_i + x_start,
+                    y_start,
+                    z_incr * z_i + z_start
+            );
         }
     }
 
     //left (side) face
-    for (int y_i = 0; y_i < 5; y_i++) {
-        for (int z_i = 0; z_i < 5; z_i++) {
-            this->vertices.emplace_back(0.0f, 0.25f * y_i, -0.25f * z_i);
+    for (int y_i = 0; y_i < increments; y_i++) {
+        for (int z_i = 0; z_i < increments; z_i++) {
+            this->vertices.emplace_back(
+                    x_start,
+                    y_incr * y_i + y_start,
+                    z_incr * z_i + z_start
+            );
         }
     }
 
     //back face (5x5 between 0 - 1)
-    for (int y_i = 0; y_i < 5; y_i++) {
-        for (int x_i = 0; x_i < 5; x_i++) {
-            this->vertices.emplace_back(0.25f * x_i, 0.25f * y_i, -1.0f);
+    for (int y_i = 0; y_i < increments; y_i++) {
+        for (int x_i = 0; x_i < increments; x_i++) {
+            this->vertices.emplace_back(
+                    x_incr * x_i + x_start,
+                    y_incr * y_i + y_start,
+                    z_incr * (increments - 1) + z_start
+            );
         }
     }
 
     //right (side) face
-    for (int y_i = 0; y_i < 5; y_i++) {
-        for (int z_i = 0; z_i < 5; z_i++) {
-            this->vertices.emplace_back(1.0f, 0.25f * y_i, -0.25f * z_i);
+    for (int y_i = 0; y_i < increments; y_i++) {
+        for (int z_i = 0; z_i < increments; z_i++) {
+            this->vertices.emplace_back(
+                    x_incr * (increments - 1) + x_start,
+                    y_incr * y_i + y_start,
+                    z_incr * z_i + z_start
+            );
         }
     }
 
     //front face (5x5 between 0 - 1)
-    for (int y_i = 0; y_i < 5; y_i++) {
-        for (int x_i = 0; x_i < 5; x_i++) {
-            this->vertices.emplace_back(0.25f * x_i, 0.25f * y_i, 0.0f);
+    for (int y_i = 0; y_i < increments; y_i++) {
+        for (int x_i = 0; x_i < increments; x_i++) {
+            this->vertices.emplace_back(
+                    x_incr * x_i + x_start,
+                    y_incr * y_i + y_start,
+                    z_start
+            );
         }
     }
 
     //top face (5x5 between 0 - 1)
-    for (int z_i = 0; z_i < 5; z_i++) {
-        for (int x_i = 0; x_i < 5; x_i++) {
-            this->vertices.emplace_back(0.25f * x_i, 1.0f, -0.25f * z_i);
+    for (int z_i = 0; z_i < increments; z_i++) {
+        for (int x_i = 0; x_i < increments; x_i++) {
+            this->vertices.emplace_back(
+                    x_incr * x_i + x_start,
+                    y_incr * (increments - 1) + y_start,
+                    z_incr * z_i + z_start
+            );
         }
     }
 
