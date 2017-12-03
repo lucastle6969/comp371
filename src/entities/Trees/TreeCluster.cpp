@@ -11,20 +11,21 @@ int TreeCluster::maxWidth(const float &trunkDiameter) {
 	return (int) (pow(spacingConstant * (trunkDiameter + 1), 1.0 / 2) + trunkDiameter);
 }
 
-TreeCluster::TreeCluster(int numberOfTrees, const GLuint &shader_program, Entity *entity,
-                         float trunkDiameter, long seed, bool isAlien,
-                         std::vector<Tree *> &treeContainer, glm::vec3 pos,
-                         float magnitude,
-                         float min_hitbox_y, float max_hitbox_y,
-                         std::vector<HitBox2d> &hbEnt) {
+void TreeCluster::generateCluster(
+	std::vector<Tree*>* const& treeContainer,
+	Entity* const& parentEntity,
+	long seed,
+	const int& numberOfTrees,
+	const GLuint& shader_program,
+	const float& trunkDiameter,
+	const bool& isAlien,
+	const float& magnitude
+) {
 	//center piece
-	auto *tci = new TreeClusterItem(shader_program, entity, trunkDiameter, seed, isAlien);
+	auto* tci = new TreeClusterItem(shader_program, parentEntity, trunkDiameter, seed, isAlien);
 	tci->setLocationWithPoints(0, 0);
-	tci->setPosition(pos + glm::vec3(tci->xPos, 0, tci->zPos));
-	tci->scale(magnitude);
 
-	treeContainer.emplace_back(tci);
-	hbEnt.emplace_back(*tci, min_hitbox_y, max_hitbox_y);
+	treeContainer->emplace_back(tci);
 
 	//distribute in random cirlce
 	float tempTrunkDiameter;
@@ -54,19 +55,14 @@ TreeCluster::TreeCluster(int numberOfTrees, const GLuint &shader_program, Entity
 		float xPos = cos(glm::radians(circleAngle)) * distanceFromCenter * distScale;
 		float zPos = sin(glm::radians(circleAngle)) * distanceFromCenter * distScale;
 
-		auto *tci = new TreeClusterItem(shader_program, entity,
+		auto* tci = new TreeClusterItem(shader_program, parentEntity,
 		                                tempTrunkDiameter <= 0 ? 0 : tempTrunkDiameter,
 		                                seed, isAlien);
 
 		tci->setLocationWithPoints(xPos, zPos);
-		tci->setPosition(pos + glm::vec3(tci->xPos + 0.05, 0.0, tci->zPos));
-		tci->scale(magnitude);
-
-		treeContainer.emplace_back(tci);
-		hbEnt.emplace_back(*tci, min_hitbox_y, max_hitbox_y);
+		treeContainer->emplace_back(tci);
 	}
 }
-
 
 void TreeCluster::setSpacingConstant(int k) {
 	TreeCluster::spacingConstant = k;

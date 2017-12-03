@@ -311,91 +311,105 @@ WorldTile::WorldTile(
 
 		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
 		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
-        // Add tree child
-        Tree *tree;
 
+		float tree_magnitude = 1.0f / (scale_factor * 10);
 
+		// Add tree children
+        std::vector<Tree*> new_trees;
 
         //general biome
         if (abs(world_x_location) % worldBoundries < generalBiomeX && abs(world_z_location) % worldBoundries < generalBiomeY) {
             bool isAlien = false;
             if (seed % worldBoundries < 2) {
                 if (seed % 2 == 0)
-                    tree = new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien);
+                    new_trees.push_back(new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien));
                 else
-                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
+                    new_trees.push_back(new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed));
             } else if (seed % worldBoundries < 7) {
-                tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
+                new_trees.push_back(new TreeB(shader_program, this, internal_tree_width, seed, isAlien));
             } else {
-                TreeCluster tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
-                         {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-
-                continue;
+	            TreeCluster::generateCluster(
+			            &new_trees,
+			            this,
+			            seed,
+			            seed % 15,
+			            shader_program,
+			            internal_tree_width,
+			            isAlien,
+			            tree_magnitude
+	            );
             }
         }
 
-
-
-            //Alien biome
+        //Alien biome
         else if (abs(world_x_location) % worldBoundries < alienBiomeX  && abs(world_z_location) % worldBoundries < alienBiomeY ) {
             bool isAlien = true;
             if (seed % worldBoundries < 2) {
-                    tree = new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien);
+	            new_trees.push_back(new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien));
             } else if (seed % worldBoundries < 7) {
-                tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
+                new_trees.push_back(new TreeB(shader_program, this, internal_tree_width, seed, isAlien));
             } else {
-                TreeCluster tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
-                         {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-
-                continue;
+	            TreeCluster::generateCluster(
+			            &new_trees,
+			            this,
+			            seed,
+			            seed % 15,
+			            shader_program,
+			            internal_tree_width,
+			            isAlien,
+			            tree_magnitude
+	            );
             }
         }
 
-
-
-            //Tentacle Biome
+        //Tentacle Biome
         else if(abs(world_x_location) % worldBoundries < tentacleX && abs(world_z_location) % worldBoundries < tentacleY) {
             bool isAlien, isTextured;
             if(seed % 3 == 0) {
                 isAlien = false, isTextured = true;
             }
-           else if(seed % 3 == 1)
+            else if(seed % 3 == 1)
                isAlien = true, isTextured = true;
             else
                 isAlien = true, isTextured = false;
 
-            tree =  new Tentacle(shader_program, this, internal_tree_width * 2.5, seed, isAlien, isTextured);
+            new_trees.push_back(new Tentacle(shader_program, this, internal_tree_width * 2.5, seed, isAlien, isTextured));
         }
 
-
-
-            //forest biome (A and C) heavyRenderX heavyRenderY
+        //forest biome (A and C) heavyRenderX heavyRenderY
         else{
             bool isAlien = false;
             if (seed % 10 < 7) {
                 if (seed % 2 == 0)
-                    tree = new TreeA(shader_program, this, internal_tree_width * 3, seed, isAlien);
+                    new_trees.push_back(new TreeA(shader_program, this, internal_tree_width * 3, seed, isAlien));
                 else
-                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed);
+                    new_trees.push_back(new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed));
             } else {
-
-                TreeCluster::setSpacingConstant(10);
-                TreeCluster tc(0, shader_program, this, internal_tree_width * 1.5, seed, isAlien, trees,
-                         {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-                TreeCluster::setSpacingConstant(10);
-                continue;
+	            TreeCluster::setSpacingConstant(10);
+	            TreeCluster::generateCluster(
+			            &new_trees,
+			            this,
+			            seed,
+			            0,
+			            shader_program,
+			            internal_tree_width * 1.5f,
+			            isAlien,
+			            tree_magnitude
+	            );
+	            TreeCluster::setSpacingConstant(10);
             }
         }
 
-		tree->scale(1.0f / (scale_factor*10));
-		tree->setPosition(
-				this->terrain->findIntersectionPoint(x_position, z_position) *
-						terrain_scale
-		);
-		// Add tree to trees array
-		this->trees.emplace_back(tree);
-		this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
-
+		for (Tree* tree : new_trees) {
+			tree->scale(tree_magnitude);
+			tree->setPosition(
+					this->terrain->findIntersectionPoint(x_position, z_position) *
+					terrain_scale
+			);
+			// Add tree to trees array
+			this->trees.emplace_back(tree);
+			this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
+		}
 	}
 }
 
