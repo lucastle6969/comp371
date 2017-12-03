@@ -40,12 +40,14 @@ namespace utils {
 		return glm::vec3(t[0], t[5], t[10]);
 	}
 
-	// returns 3-octave perlin
-	inline float getPerlinNoise(const double& x, const double& y)
-	{
+	inline float getPerlinNoise(
+		const double& x,
+		const double& y,
+		const double scale = 1.0,      // larger scale spreads noise across wider area
+		const std::int32_t octaves = 3 // more octaves = rougher terrain
+	) {
 		static siv::PerlinNoise perlin(0);
-		static std::int32_t octaves = 3;
-		return (float)perlin.octaveNoise(x, y, octaves);
+		return (float)perlin.octaveNoise(x / scale, y / scale, octaves);
 	}
 
 	inline void printVec(const glm::vec3& vec)
