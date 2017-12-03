@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 #include <src/utils.hpp>
 #include <src/constants.hpp>
@@ -15,7 +16,7 @@
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
 #include "PerlinTerrain.hpp"
-#include <iostream>
+
 PerlinTerrain::PerlinTerrain(
 	const GLuint &shader_program,
 	const int& world_x_location,
@@ -215,16 +216,16 @@ glm::vec3 PerlinTerrain::findIntersectionPoint(const float& x, const float& z) c
 		std::cout << std::endl;
 		std::cout << "x: " << x << ", x_i: " << x_i << ", z: " << z << ", z_i: " << z_i
 		          << std::endl;
-		std::cout << "bL: " << bottom_left.x << ", " << bottom_left.y << ", "
-		          << bottom_left.z << std::endl;
-		std::cout << "bR: " << bottom_right.x << ", " << bottom_right.y << ", "
-		          << bottom_right.z << std::endl;
-		std::cout << "tL: " << top_left.x << ", " << top_left.y << ", " << top_left.z
-		          << std::endl;
-		std::cout << "tR: " << top_right.x << ", " << top_right.y << ", " << top_right.z
-		          << std::endl;
-		std::cout << "normal: " << normal.x << ", " << normal.y << ", " << normal.z
-		          << std::endl;
+		std::cout << "bL: ";
+		utils::printVec(bottom_left);
+		std::cout << "bR: ";
+		utils::printVec(bottom_right);
+		std::cout << "tL: ";
+		utils::printVec(top_left);
+		std::cout << "tR: ";
+		utils::printVec(top_right);
+		std::cout << "normal: ";
+		utils::printVec(normal);
 		std::cout << "denom: " << denom << std::endl;
 		std::cout << "t: " << t << std::endl;
 	}

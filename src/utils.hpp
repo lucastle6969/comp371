@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <cstdlib>
 #include <cstdint>
+#include <iostream>
 
 #include <src/vendor/PerlinNoise.hpp>
 
@@ -45,6 +46,11 @@ namespace utils {
 		static siv::PerlinNoise perlin(0);
 		static std::int32_t octaves = 3;
 		return (float)perlin.octaveNoise(x, y, octaves);
+	}
+
+	inline void printVec(const glm::vec3& vec)
+	{
+		std::cout << "[" << vec.x << ", " << vec.y << ", " << vec.z << "]" << std::endl;
 	}
 }
 
