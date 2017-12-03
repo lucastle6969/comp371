@@ -23,8 +23,6 @@ void TreeCluster::generateCluster(
 ) {
 	//center piece
 	auto* tci = new TreeClusterItem(shader_program, parentEntity, trunkDiameter, seed, isAlien);
-	tci->setLocationWithPoints(0, 0);
-
 	treeContainer->emplace_back(tci);
 
 	//distribute in random cirlce
@@ -59,7 +57,7 @@ void TreeCluster::generateCluster(
 		                                tempTrunkDiameter <= 0 ? 0 : tempTrunkDiameter,
 		                                seed, isAlien);
 
-		tci->setLocationWithPoints(xPos, zPos);
+		tci->setPosition(glm::vec3(xPos, 0.0f, zPos));
 		treeContainer->emplace_back(tci);
 	}
 }

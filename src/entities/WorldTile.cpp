@@ -402,8 +402,12 @@ WorldTile::WorldTile(
 
 		for (Tree* tree : new_trees) {
 			tree->scale(tree_magnitude);
+			// use translate instead of setPosition so we can take
+			// into account any prior offsets from tree clustering
+			tree->translate(glm::vec3(x_position, 0.0f, z_position));
+			const glm::vec3& tree_pos = tree->getPosition();
 			tree->setPosition(
-					this->terrain->findIntersectionPoint(x_position, z_position) *
+					this->terrain->findIntersectionPoint(tree_pos.x, tree_pos.z) *
 					terrain_scale
 			);
 			// Add tree to trees array
