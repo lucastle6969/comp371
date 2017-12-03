@@ -46,7 +46,7 @@ namespace utils {
 		const double scale = 1.0,      // larger scale spreads noise across wider area
 		const std::int32_t octaves = 3 // more octaves = rougher terrain
 	) {
-		static siv::PerlinNoise perlin(0);
+		static siv::PerlinNoise perlin(2017);
 		return (float)perlin.octaveNoise(x / scale, y / scale, octaves);
 	}
 
