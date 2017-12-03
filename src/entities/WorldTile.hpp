@@ -23,7 +23,7 @@
 
 class WorldTile: public Entity {
 private:
-	static constexpr int terrain_width = 20;
+	static constexpr int terrain_width = 80;
 	static constexpr float terrain_y_scale = 0.15f;
 	std::vector<glm::vec3> vertices;
 	std::vector<unsigned int> elements;
