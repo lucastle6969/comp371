@@ -1,8 +1,7 @@
 # Documentation on Biomes
 ## MAP		
 
-The following map explains the biomes. 
-Please view on a text editor.
+The following map explains the biomes.
 
 ```
 	 1    2    3    4    5    6    7    8    9  10
