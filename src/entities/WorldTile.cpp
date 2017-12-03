@@ -87,7 +87,12 @@ WorldTile::WorldTile(
 		float x_position = utils::randomFloat(0.0f + x_span / 2, 1.0f - x_span / 2);
 		float z_position = utils::randomFloat(0.0f + z_span / 2, 1.0f - z_span / 2);
 
-		HitBox2d box(x_position, z_position, x_position + x_span, z_position + z_span);
+		HitBox2d box(
+				world_x_location + x_position - x_span / 2,
+				world_z_location + z_position - z_span / 2,
+				world_x_location + x_position + x_span / 2,
+				world_z_location + z_position + z_span / 2
+		);
 		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
 			if (rock_tries_left-- > 0) {
 				// collision! but give it another try
@@ -300,7 +305,12 @@ WorldTile::WorldTile(
 		float x_position = utils::randomFloat(0.0f + base_span / 2, 1.0f - base_span / 2);
 		float z_position = utils::randomFloat(0.0f + base_span / 2, 1.0f - base_span / 2);
 
-		HitBox2d box(x_position, z_position, x_position + base_span, z_position + base_span);
+		HitBox2d box(
+				world_x_location + x_position - base_span / 2,
+				world_z_location + z_position - base_span / 2,
+				world_x_location + x_position + base_span / 2,
+				world_z_location + z_position + base_span / 2
+		);
 		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
 			if (tree_tries_left-- > 0) {
 				// collision! but give it another try
