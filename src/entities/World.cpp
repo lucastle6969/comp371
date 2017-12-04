@@ -46,7 +46,9 @@ World::World(
 	for (const glm::vec3& vertex : this->player.getVertices()) {
         float y = (player_model_matrix * glm::vec4(vertex, 1.0f)).y;
         this->player_base_min_world_y = std::min(this->player_base_min_world_y, y);
-        this->player_base_max_world_y = std::max(this->player_base_max_world_y, y);
+		// the 0.015f gives the player a bit of head room - but it's mainly a hack to
+		// force large trees without vertices at the player's level to still be recognized
+        this->player_base_max_world_y = std::max(this->player_base_max_world_y, y + 0.015f);
 	}
 	HitBox2d player_starting_hitbox(this->player);
 	// populate tiles
