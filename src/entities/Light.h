@@ -19,9 +19,8 @@
         glm::vec3 fog_color;
         glm::vec3 daytime;
 
-        Light(glm::vec3 direction, glm::vec3 color){
+        Light(glm::vec3 direction){
             this->daytime = direction;
-            this->color = color;
             this->position_light_color = glm::vec3(.4, .35, .25);
         }
 

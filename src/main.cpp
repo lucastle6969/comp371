@@ -308,8 +308,8 @@ int main()
 
     world = new World(shader_program, seed_x, seed_z);
 
-    //create light
-    Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
+    //create light starting at 9am
+    Light light(glm::normalize(glm::vec3(-1, -1, 0)));
     //create skybox
     Skybox skybox(shader_program);
 
