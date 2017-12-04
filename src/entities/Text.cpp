@@ -826,6 +826,13 @@ Text::Text(
 
     }
 
+	const float half_text_width = this->vertices.empty()
+	                              ? 0
+	                              : this->vertices[this->vertices.size() - 1].x / 2.0f;
+	for (glm::vec3& vertex : this->vertices) {
+		vertex.x -= half_text_width;
+	}
+
     this->vao = this->initVertexArray(
             this->vertices,
             this->elements,
