@@ -38,8 +38,8 @@ private:
 	int x_center;
 	int z_center;
 	GLuint shader_program;
-	float player_min_world_y;
-	float player_max_world_y;
+	float player_base_min_world_y;
+	float player_base_max_world_y;
 	bool collidesWith(const HitBox2d& box);
 	void placeWorldTile(const int& x, const int& z, const HitBox2d& player_hitbox);
 	void checkPosition();

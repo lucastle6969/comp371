@@ -43,15 +43,15 @@ public:
 		const GLuint& shader_program,
 		const int& world_x_location,
 		const int& world_z_location,
-		const float& min_hitbox_y,
-		const float& max_hitbox_y,
+		const float& base_min_hitbox_y,
+		const float& base_max_hitbox_y,
 		const HitBox2d& player_hitbox
     ) : WorldTile(
 		shader_program,
 		world_x_location,
 		world_z_location,
-		min_hitbox_y,
-		max_hitbox_y,
+		base_min_hitbox_y,
+		base_max_hitbox_y,
 		player_hitbox,
 		nullptr
 	) {}
@@ -59,8 +59,8 @@ public:
 		const GLuint& shader_program,
 		const int& world_x_location,
 		const int& world_z_location,
-		const float& min_hitbox_y,
-		const float& max_hitbox_y,
+		const float& base_min_hitbox_y,
+		const float& base_max_hitbox_y,
 		const HitBox2d& player_hitbox,
 		Entity* parent
 	);

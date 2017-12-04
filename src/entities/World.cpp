@@ -30,8 +30,8 @@ World::World(
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
 	x_center((int)floor(player_x_start)),
 	z_center((int)floor(player_z_start)),
-    player_min_world_y(FLT_MAX),
-    player_max_world_y(-FLT_MAX)
+    player_base_min_world_y(FLT_MAX),
+    player_base_max_world_y(-FLT_MAX)
 {
     // hide the axes by default
 	this->axes.hide();
@@ -45,8 +45,8 @@ World::World(
     glm::mat4 player_model_matrix = player.getModelMatrix();
 	for (const glm::vec3& vertex : this->player.getVertices()) {
         float y = (player_model_matrix * glm::vec4(vertex, 1.0f)).y;
-        this->player_min_world_y = std::min(this->player_min_world_y, y);
-        this->player_max_world_y = std::max(this->player_max_world_y, y);
+        this->player_base_min_world_y = std::min(this->player_base_min_world_y, y);
+        this->player_base_max_world_y = std::max(this->player_base_max_world_y, y);
 	}
 	HitBox2d player_starting_hitbox(this->player);
 	// populate tiles
@@ -58,8 +58,8 @@ World::World(
 				shader_program,
 				x,
 				z,
-				this->player_min_world_y,
-				this->player_max_world_y,
+				this->player_base_min_world_y,
+				this->player_base_max_world_y,
 				player_starting_hitbox,
 				this
 		));
@@ -184,8 +184,8 @@ void World::placeWorldTile(const int &x, const int &z, const HitBox2d& player_hi
 			this->shader_program,
 			x,
 			z,
-			this->player_min_world_y,
-			this->player_max_world_y,
+			this->player_base_min_world_y,
+			this->player_base_max_world_y,
 			player_hitbox,
 			this
 	);
