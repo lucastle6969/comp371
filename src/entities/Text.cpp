@@ -28,6 +28,7 @@ Text::Text(
 ) : DrawableEntity(shader_program, parent) {
 
     this->draw_mode = GL_TRIANGLES;
+    this->should_draw_back_face = true;
 
     if(FONT_STYLE==FONT_STYLE_OUTLINE){
         this->font_map = loadTexture(
