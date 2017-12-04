@@ -25,6 +25,7 @@ private:
 
 protected:
 	GLenum draw_mode;
+	bool should_draw_back_face;
 	GLuint initVertexArray(
 		const std::vector<glm::vec3>& vertices,
 		GLuint* vertices_buffer = nullptr,
