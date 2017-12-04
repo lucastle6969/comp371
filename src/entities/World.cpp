@@ -26,7 +26,7 @@ World::World(
 ) : Entity(parent),
     shader_program(shader_program),
     player(shader_program, this),
-    menu(shader_program, "modulus woods}}Andre Marques Manata}Ben Wiley}Kai Nicoll-Griffith}Carlo Gentile}Emile Aoun", 0, 0, FONT_STYLE_MYTHOS, this),
+    menu(shader_program, "modulus woods\n\nAndre Marques Manata\nBen Wiley\nKai Nicoll-Griffith\nCarlo Gentile\nEmile Aoun", 0, 0, FONT_STYLE_MYTHOS, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
 
 	x_center((int)floor(player_x_start)),
