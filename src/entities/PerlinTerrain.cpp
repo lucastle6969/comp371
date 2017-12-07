@@ -44,7 +44,10 @@ PerlinTerrain::PerlinTerrain(
 			auto x = (float)x_i / (x_span - 1);
 			this->vertices.emplace_back(
 					x,
-					utils::getPerlinNoise(world_x_location + x, world_z_location + z),
+					PerlinTerrain::getTerrainHeight(
+							world_x_location + x,
+							world_z_location + z
+					),
 					z
 			);
 		}
@@ -82,7 +85,7 @@ PerlinTerrain::PerlinTerrain(
 			curr_z = this->vertices[i].z;
 			point_before_x = glm::vec3(
 					before_x,
-					utils::getPerlinNoise(
+					PerlinTerrain::getTerrainHeight(
 							world_x_location + before_x,
 							world_z_location + curr_z
 					),
@@ -97,7 +100,7 @@ PerlinTerrain::PerlinTerrain(
 			curr_z = this->vertices[i].z;
 			point_after_x = glm::vec3(
 					after_x,
-					utils::getPerlinNoise(
+					PerlinTerrain::getTerrainHeight(
 							world_x_location + after_x,
 							world_z_location + curr_z
 					),
@@ -112,7 +115,7 @@ PerlinTerrain::PerlinTerrain(
 			before_z = 0 - 1.0f / (z_span - 1);
 			point_before_z = glm::vec3(
 					curr_x,
-					utils::getPerlinNoise(
+					PerlinTerrain::getTerrainHeight(
 							world_x_location + curr_x,
 							world_z_location + before_z
 					),
@@ -127,7 +130,7 @@ PerlinTerrain::PerlinTerrain(
 			after_z = 1 + 1.0f / (z_span - 1);
 			point_after_z = glm::vec3(
 					curr_x,
-					utils::getPerlinNoise(
+					PerlinTerrain::getTerrainHeight(
 							world_x_location + curr_x,
 							world_z_location + after_z
 					),
@@ -235,4 +238,12 @@ glm::vec3 PerlinTerrain::findIntersectionPoint(const float& x, const float& z) c
 const glm::vec3& PerlinTerrain::getPoint(const float& x_i, const float& z_i) const
 {
 	return this->vertices[z_i * this->x_span + x_i];
+}
+
+float PerlinTerrain::getTerrainHeight(const float& x, const float& z)
+{
+	static const float horizontal_scale = 1.0f;
+	static const float vertical_scale = 1.0f;
+	static const int octaves = 3;
+	return vertical_scale * utils::getPerlinNoise(x, z, horizontal_scale, octaves);
 }
