@@ -92,7 +92,7 @@ private:
 
     static constexpr int branches = 1;
     static constexpr int k = 250;
-	static constexpr float widthCut = 0.3;
+	static constexpr float widthCut = 0.5;
 	static constexpr int previousRotationCap = 8;
 
     static constexpr float boostFactor = 0.25;

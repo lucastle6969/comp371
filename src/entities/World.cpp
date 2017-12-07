@@ -42,7 +42,7 @@ World::World(
 	// assume player's floating position from ground will remain constant and use
 	// the y range of the model to create specialized entity hit boxes for collision
 	// detection
-    glm::mat4 player_model_matrix = player.getModelMatrix();
+	glm::mat4 player_model_matrix = player.getModelMatrix();
 	for (const glm::vec3& vertex : this->player.getVertices()) {
         float y = (player_model_matrix * glm::vec4(vertex, 1.0f)).y;
         this->player_base_min_world_y = std::min(this->player_base_min_world_y, y);
@@ -90,38 +90,6 @@ const Player* World::getPlayer()
 
 Text* World::getMenu() {
 	return &this->menu;
-}
-
-bool World::pollWorld(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units) {
-    if(player.deadTime != player.deadMax){
-        if(player.fore){
-            player.moveBack(view_vec, up_vec, units);
-        }
-        else if(player.back){
-            player.moveForward(view_vec, up_vec, units);
-        }
-        else if(player.left){
-            player.moveRight(view_vec, up_vec, units);
-        }
-        else{
-            player.moveLeft(view_vec, up_vec, units);
-        }
-//        if(player.fore){
-//            player.moveForward(view_vec, up_vec, -units / (float)player.deadMax);
-//        }
-//        else if(player.back){
-//            player.moveBack(view_vec, up_vec, -units/ (float)player.deadMax);
-//        }
-//        else if(player.left){
-//            player.moveLeft(view_vec, up_vec, -units/ (float)player.deadMax);
-//        }
-//        else{
-//            player.moveRight(view_vec, up_vec, -units/ (float)player.deadMax);
-//        }
-        player.deadTime++;
-        return true;
-    }
-    return false;
 }
 
 void World::toggleAxes()
@@ -230,105 +198,82 @@ void World::setPlayerOpacity(const float& opacity)
 
 void World::movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-    if(player.deadTime == player.deadMax) {
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveForward(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox)) {
-            player.deadTime = 0;
-            player.fore = true;
-            this->player.setPosition(old_player_position);
-//            this->player.setPosition(player.oldPosition);
-        } else {
-            this->checkPosition();
-	        glm::vec3 pos = this->player.getPosition();
-	        this->player.setPosition(
-			        this->getTerrainIntersectionPoint(
-					        pos.x,
-					        pos.z
-			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
-	        );
-        }
-        player.oldPosition = old_player_position;
-    }
-    else{  }
+	glm::vec3 old_player_position = this->player.getPosition();
+	HitBox2d player_hitbox(this->player);
+	this->player.moveForward(view_vec, up_vec, units);
+	if (this->collidesWith(player_hitbox)) {
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
+	}
+    player.oldPosition = old_player_position;
 }
 
 void World::movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-
-    if(player.deadTime == player.deadMax){
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveBack(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox) ) {
-            player.deadTime = 0;
-            player.back = true;
-            this->player.setPosition(old_player_position);
-//            this->player.setPosition(player.oldPosition);
-        } else {
-            this->checkPosition();
-	        glm::vec3 pos = this->player.getPosition();
-	        this->player.setPosition(
-			        this->getTerrainIntersectionPoint(
-					        pos.x,
-					        pos.z
-			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
-	        );
-        }
-        player.oldPosition = old_player_position;
-    }
-
+	glm::vec3 old_player_position = this->player.getPosition();
+	HitBox2d player_hitbox(this->player);
+	this->player.moveBack(view_vec, up_vec, units);
+	if (this->collidesWith(player_hitbox)) {
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
+	}
+    player.oldPosition = old_player_position;
 }
 
 void World::movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-    if(player.deadTime == player.deadMax){
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveLeft(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox)) {
-           player.deadTime = 0;
-            player.right = true;
-            this->player.setPosition(old_player_position);
-//            this->player.setPosition(player.oldPosition);
-        } else {
-            this->checkPosition();
-	        glm::vec3 pos = this->player.getPosition();
-	        this->player.setPosition(
-			        this->getTerrainIntersectionPoint(
-					        pos.x,
-					        pos.z
-			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
-	        );
-        }
-        player.oldPosition = old_player_position;
-    }
+	glm::vec3 old_player_position = this->player.getPosition();
+	HitBox2d player_hitbox(this->player);
+	this->player.moveLeft(view_vec, up_vec, units);
+	if (this->collidesWith(player_hitbox)) {
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
+	}
+    player.oldPosition = old_player_position;
 }
 
 void World::movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
 {
-    if(player.deadTime == player.deadMax) {
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveRight(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox)) {
-//            this->player.setPosition(player.oldPosition);
-            this->player.setPosition(old_player_position);
-            player.deadTime = 0;
-            player.left = true;
-        } else {
-            this->checkPosition();
-	        glm::vec3 pos = this->player.getPosition();
-	        this->player.setPosition(
-			        this->getTerrainIntersectionPoint(
-					        pos.x,
-					        pos.z
-			        ) + glm::vec3(0.0f, 0.01f, 0.0f)
-	        );
-        }
-        //player.oldPosition = old_player_position;
-    }
+	glm::vec3 old_player_position = this->player.getPosition();
+	HitBox2d player_hitbox(this->player);
+	this->player.moveRight(view_vec, up_vec, units);
+	if (this->collidesWith(player_hitbox)) {
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getTerrainIntersectionPoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
+	}
+    player.oldPosition = old_player_position;
 }
 
 void World::movePlayerForwardLeft(
@@ -336,14 +281,13 @@ void World::movePlayerForwardLeft(
 	const glm::vec3& up_vec,
 	const float& units
 ) {
-
 	glm::vec3 old_player_position = this->player.getPosition();
 	HitBox2d player_hitbox(this->player);
 	this->player.moveForwardLeft(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
 		this->player.setPosition(
 				this->getTerrainIntersectionPoint(
@@ -351,9 +295,8 @@ void World::movePlayerForwardLeft(
 						pos.z
 				) + glm::vec3(0.0f, 0.01f, 0.0f)
 		);
-    }
+	}
     player.oldPosition = old_player_position;
-
 }
 
 void World::movePlayerForwardRight(
@@ -361,14 +304,13 @@ void World::movePlayerForwardRight(
 	const glm::vec3& up_vec,
 	const float& units
 ) {
-
 	glm::vec3 old_player_position = this->player.getPosition();
 	HitBox2d player_hitbox(this->player);
 	this->player.moveForwardRight(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
 		this->player.setPosition(
 				this->getTerrainIntersectionPoint(
@@ -376,7 +318,7 @@ void World::movePlayerForwardRight(
 						pos.z
 				) + glm::vec3(0.0f, 0.01f, 0.0f)
 		);
-    }
+	}
     player.oldPosition = old_player_position;
 }
 
@@ -389,9 +331,9 @@ void World::movePlayerBackLeft(
 	HitBox2d player_hitbox(this->player);
 	this->player.moveBackLeft(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
 		this->player.setPosition(
 				this->getTerrainIntersectionPoint(
@@ -399,7 +341,7 @@ void World::movePlayerBackLeft(
 						pos.z
 				) + glm::vec3(0.0f, 0.01f, 0.0f)
 		);
-    }
+	}
     player.oldPosition = old_player_position;
 }
 
@@ -412,9 +354,9 @@ void World::movePlayerBackRight(
 	HitBox2d player_hitbox(this->player);
 	this->player.moveBackRight(view_vec, up_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
+		this->player.setPosition(player.oldPosition);
+	} else {
+		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
 		this->player.setPosition(
 				this->getTerrainIntersectionPoint(
@@ -422,7 +364,7 @@ void World::movePlayerBackRight(
 						pos.z
 				) + glm::vec3(0.0f, 0.01f, 0.0f)
 		);
-    }
+	}
     player.oldPosition = old_player_position;
 }
 

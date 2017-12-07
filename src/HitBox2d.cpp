@@ -38,13 +38,10 @@ HitBox2d::HitBox2d(
 bool HitBox2d::collidesWith(const HitBox2d& box) const
 {
 	// basic rectangle intersection test
-	bool r = this->world_min_x < box.world_max_x &&
+	return this->world_min_x < box.world_max_x &&
 			this->world_max_x > box.world_min_x &&
 			this->world_min_z < box.world_max_z &&
 			this->world_max_z > box.world_min_z;
-//	if (r) 	std::cout << "this " << *this << std::endl;
-//	if (r) 	std::cout << "box " << box << std::endl;
-	return r;
 }
 
 std::ostream& operator<<(std::ostream& os, const HitBox2d& box)
