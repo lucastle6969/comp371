@@ -30,8 +30,6 @@ public:
 	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
-
-	glm::vec3 oldPosition;
 };
 
 #endif // COMP371_PLAYER_HPP
