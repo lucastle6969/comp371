@@ -16,6 +16,7 @@
 #include <limits>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -105,6 +106,12 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
+	// delta time solution thanks to: https://gamedev.stackexchange.com/a/112094/109632
+	static auto last_time = std::chrono::steady_clock::now();
+
+	auto current_time = std::chrono::steady_clock::now();
+	float delta_time = std::chrono::duration<float>(current_time - last_time).count();
+	last_time = current_time;
 
     bool up_press = isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP);
     bool down_press = isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN);
@@ -119,23 +126,24 @@ void pollContinuousControls(GLFWwindow* window) {
         left_press = right_press = false;
     }
     if(!move_state) {
+	    float move_unit = PLAYER_MOVEMENT_SPEED * delta_time;
         // first check compound then single movement button actions
         if (up_press && left_press) {
-            world->movePlayerForwardLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerForwardLeft(getViewDirection(), up, move_unit);
         } else if (up_press && right_press) {
-            world->movePlayerForwardRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerForwardRight(getViewDirection(), up, move_unit);
         } else if (down_press && left_press) {
-            world->movePlayerBackLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerBackLeft(getViewDirection(), up, move_unit);
         } else if (down_press && right_press) {
-            world->movePlayerBackRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerBackRight(getViewDirection(), up, move_unit);
         } else if (up_press) {
-            world->movePlayerForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerForward(getViewDirection(), up, move_unit);
         } else if (down_press) {
-            world->movePlayerBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerBack(getViewDirection(), up, move_unit);
         } else if (left_press) {
-            world->movePlayerLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerLeft(getViewDirection(), up, move_unit);
         } else if (right_press) {
-            world->movePlayerRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+            world->movePlayerRight(getViewDirection(), up, move_unit);
         }
     }
 }
@@ -153,7 +161,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 // Print world seed based on player position
                 glm::vec3 player_position = world->getPlayer()->getPosition();
                 std::cout << "Seed for current world location: ";
-                std::cout << player_position.x << ', ' << player_position.z << std::endl;
+                std::cout << player_position.x << ':' << player_position.z << std::endl;
                 break;
             }
             case GLFW_KEY_M:
@@ -308,8 +316,8 @@ int main()
 
     world = new World(shader_program, seed_x, seed_z);
 
-    //create light
-    Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
+    //create light starting at 9am
+    Light light(glm::normalize(glm::vec3(-1, -1, 0)));
     //create skybox
     Skybox skybox(shader_program);
 
