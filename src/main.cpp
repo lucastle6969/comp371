@@ -16,6 +16,7 @@
 #include <limits>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -100,6 +101,13 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
+	// delta time solution thanks to: https://gamedev.stackexchange.com/a/112094/109632
+	static auto last_time = std::chrono::steady_clock::now();
+
+	auto current_time = std::chrono::steady_clock::now();
+	float delta_time = std::chrono::duration<float>(current_time - last_time).count();
+	last_time = current_time;
+
 	// don't try to handle movement if the player is still
 	// getting knocked back from a collision
 	if (!world->handlePlayerKnockback()) {
@@ -151,7 +159,7 @@ void pollContinuousControls(GLFWwindow* window) {
 				move_vec = -left_vec;
 			}
 
-			world->movePlayer(move_vec, PLAYER_MOVEMENT_SPEED);
+			world->movePlayer(move_vec, PLAYER_MOVEMENT_SPEED * delta_time);
 		}
 	}
 }
@@ -320,8 +328,8 @@ int main()
 
 	world = new World(shader_program, seed_x, seed_z);
 
-	//create light
-    Light light(glm::vec3(0, -1, 0), glm::vec3(.5, .5, .5));
+	//create light starting at 9am
+	Light light(glm::normalize(glm::vec3(-1, -1, 0)));
 	//create skybox
 	Skybox skybox(shader_program);
 

@@ -48,6 +48,9 @@ DrawableEntity::DrawableEntity(const GLuint &shader_program, Entity *parent) : E
 
     // the default draw mode will be overridden by derived classes
     this->draw_mode = GL_LINES;
+
+	// don't draw back faces by default
+	this->should_draw_back_face = false;
 }
 
 GLenum DrawableEntity::getDrawMode() {
@@ -170,12 +173,21 @@ void DrawableEntity::draw(
 		int element_buffer_array_size;
 		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE,
 		                       &element_buffer_array_size);
+
+		if (this->should_draw_back_face) {
+			glDisable(GL_CULL_FACE);
+		}
+
 		glDrawElements(
 				draw_mode,
 				element_buffer_array_size / sizeof(GLuint),
 				GL_UNSIGNED_INT,
 				nullptr
 		);
+
+		// we don't want to assume everything will be drawn with the DrawableEntity
+		// class so we should restore the default setting after drawing
+		glEnable(GL_CULL_FACE);
 	}
 
 	glBindVertexArray(0);

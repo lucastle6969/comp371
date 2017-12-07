@@ -38,7 +38,7 @@ WorldTile::WorldTile(
 ) : Entity(parent),
     seed_loc_message(
 		    shader_program,
-		    "Seed for current location: " + std::to_string(world_x_location) + ',' + std::to_string(world_z_location),
+		    "Seed for current location: " + std::to_string(world_x_location) + ':' + std::to_string(world_z_location),
 		    0,
 		    0,
 		    FONT_STYLE_OUTLINE,
