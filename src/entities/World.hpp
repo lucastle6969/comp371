@@ -40,6 +40,8 @@ private:
 	GLuint shader_program;
 	float player_base_min_world_y;
 	float player_base_max_world_y;
+	bool handling_player_knockback;
+	glm::vec3 player_knockback_target;
 	bool collidesWith(const HitBox2d& box);
 	void placeWorldTile(const int& x, const int& z, const HitBox2d& player_hitbox);
 	void checkPosition();
@@ -65,6 +67,7 @@ public:
 	void toggleAxes();
 	void setPlayerOpacity(const float& opacity);
 	void movePlayer(const glm::vec3& move_vec, const float& units = 1.0f);
+	bool handlePlayerKnockback();
 };
 
 

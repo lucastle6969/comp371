@@ -31,7 +31,8 @@ World::World(
 	x_center((int)floor(player_x_start)),
 	z_center((int)floor(player_z_start)),
     player_base_min_world_y(FLT_MAX),
-    player_base_max_world_y(-FLT_MAX)
+    player_base_max_world_y(-FLT_MAX),
+    handling_player_knockback(false)
 {
     // hide the axes by default
 	this->axes.hide();
@@ -203,6 +204,9 @@ void World::movePlayer(const glm::vec3& move_vec, const float& units)
 	this->player.move(move_vec, units);
 	if (this->collidesWith(player_hitbox)) {
 		this->player.setPosition(old_player_position);
+		this->handling_player_knockback = true;
+		this->player_knockback_target =
+				old_player_position - 4.0f * units * glm::normalize(move_vec);
 	} else {
 		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
@@ -235,4 +239,20 @@ glm::vec3 World::getTerrainIntersectionPoint(const float& x, const float& z)
 			x - this->x_center,
 			z - this->z_center
 	), 1.0f));
+}
+
+bool World::handlePlayerKnockback()
+{
+	if (!this->handling_player_knockback) {
+		return false;
+	}
+	float distance = glm::length(
+			this->player_knockback_target - this->player.getPosition()
+	) / 3.0f;
+	this->player.dragTowardTarget(this->player_knockback_target, distance);
+	if (glm::length(this->player_knockback_target - this->player.getPosition()) < 0.001f) {
+		// close enough
+		this->handling_player_knockback = false;
+	}
+	return true;
 }

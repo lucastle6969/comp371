@@ -100,51 +100,59 @@ bool isKeyPressed(GLFWwindow* const& window, const int& key) {
 // controls that should be polled at every frame and read
 // continuously / in combination
 void pollContinuousControls(GLFWwindow* window) {
-	bool up_press = isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP);
-	bool down_press = isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN);
-	bool left_press = isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT);
-	bool right_press = isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT);
+	// don't try to handle movement if the player is still
+	// getting knocked back from a collision
+	if (!world->handlePlayerKnockback()) {
+		bool up_press =
+				isKeyPressed(window, GLFW_KEY_W) || isKeyPressed(window, GLFW_KEY_UP);
+		bool down_press =
+				isKeyPressed(window, GLFW_KEY_S) || isKeyPressed(window, GLFW_KEY_DOWN);
+		bool left_press =
+				isKeyPressed(window, GLFW_KEY_A) || isKeyPressed(window, GLFW_KEY_LEFT);
+		bool right_press =
+				isKeyPressed(window, GLFW_KEY_D) || isKeyPressed(window, GLFW_KEY_RIGHT);
 
-	// ignore action canceling button presses
-	if (up_press && down_press) {
-		up_press = down_press = false;
-	}
-	if (left_press && right_press) {
-		left_press = right_press = false;
-	}
-
-	if (up_press || down_press || left_press || right_press) {
-		glm::vec3 left_vec = glm::cross(up_vec, getViewDirection());
-		glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
-		// first check compound then single movement button actions
-		glm::vec3 move_vec;
-		if (up_press && left_press) {
-			// forward-left
-			move_vec = forward_vec + left_vec;
-		} else if (up_press && right_press) {
-			// forward-right
-			move_vec = forward_vec - left_vec;
-		} else if (down_press && left_press) {
-			// back-left
-			move_vec = -forward_vec + left_vec;
-		} else if (down_press && right_press) {
-			// back-right
-			move_vec = -forward_vec - left_vec;
-		} else if (up_press) {
-			// forward
-			move_vec = forward_vec;
-		} else if (down_press) {
-			// back
-			move_vec = -forward_vec;
-		} else if (left_press) {
-			// left
-			move_vec = left_vec;
-		} else /* if (right_press) */ {
-			// right
-			move_vec = -left_vec;
+		// ignore action canceling button presses
+		if (up_press && down_press) {
+			up_press = down_press = false;
+		}
+		if (left_press && right_press) {
+			left_press = right_press = false;
 		}
 
-		world->movePlayer(move_vec, PLAYER_MOVEMENT_SPEED);
+		if (up_press || down_press || left_press || right_press) {
+			glm::vec3 left_vec = glm::cross(up_vec, getViewDirection());
+			glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
+			// first check compound then single movement button actions
+			glm::vec3 move_vec;
+			if (up_press && left_press) {
+				// forward-left
+				move_vec = forward_vec + left_vec;
+			} else if (up_press && right_press) {
+				// forward-right
+				move_vec = forward_vec - left_vec;
+			} else if (down_press && left_press) {
+				// back-left
+				move_vec = -forward_vec + left_vec;
+			} else if (down_press && right_press) {
+				// back-right
+				move_vec = -forward_vec - left_vec;
+			} else if (up_press) {
+				// forward
+				move_vec = forward_vec;
+			} else if (down_press) {
+				// back
+				move_vec = -forward_vec;
+			} else if (left_press) {
+				// left
+				move_vec = left_vec;
+			} else /* if (right_press) */ {
+				// right
+				move_vec = -left_vec;
+			}
+
+			world->movePlayer(move_vec, PLAYER_MOVEMENT_SPEED);
+		}
 	}
 }
 
