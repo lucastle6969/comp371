@@ -100,13 +100,6 @@ void Entity::move(const glm::vec3& move_vec, const float& units)
 	this->orient(move_vec);
 }
 
-void Entity::dragTowardTarget(const glm::vec3& target_pos, const float& units)
-{
-	glm::vec3 move_vec = target_pos - this->getPosition();
-	float distance = std::min(glm::length(move_vec), units);
-	this->translate(distance * glm::normalize(move_vec));
-}
-
 void Entity::setPosition(const glm::vec3& position)
 {
 	static glm::mat4 identity;

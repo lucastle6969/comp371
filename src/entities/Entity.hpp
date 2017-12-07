@@ -47,8 +47,6 @@ public:
     void rotate(const float& angle, const glm::vec3& axis);
     void resetRotation();
 	void move(const glm::vec3& move_vec, const float& units = 1.0f);
-	// dragTowardTarget, unlike move, does NOT re-orient the entity.
-	void dragTowardTarget(const glm::vec3& target_pos, const float& units = 1.0f);
     void translate(const glm::vec3& translation_vec);
 	void setPosition(const glm::vec3& position);
 	void setOpacity(const float& opacity);

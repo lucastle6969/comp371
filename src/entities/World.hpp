@@ -41,7 +41,7 @@ private:
 	float player_base_min_world_y;
 	float player_base_max_world_y;
 	bool handling_player_knockback;
-	glm::vec3 player_knockback_target;
+	glm::vec2 player_knockback_target_2d;
 	bool collidesWith(const HitBox2d& box);
 	void placeWorldTile(const int& x, const int& z, const HitBox2d& player_hitbox);
 	void checkPosition();

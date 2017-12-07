@@ -205,8 +205,9 @@ void World::movePlayer(const glm::vec3& move_vec, const float& units)
 	if (this->collidesWith(player_hitbox)) {
 		this->player.setPosition(old_player_position);
 		this->handling_player_knockback = true;
-		this->player_knockback_target =
+		glm::vec3 knockback_target =
 				old_player_position - 4.0f * units * glm::normalize(move_vec);
+		this->player_knockback_target_2d = glm::vec2(knockback_target.x, knockback_target.z);
 	} else {
 		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
@@ -246,13 +247,35 @@ bool World::handlePlayerKnockback()
 	if (!this->handling_player_knockback) {
 		return false;
 	}
-	float distance = glm::length(
-			this->player_knockback_target - this->player.getPosition()
+	glm::vec3 player_position = this->player.getPosition();
+
+	// diminish knockback rate over time to simulate friction
+	glm::vec2 knockback_vec_2d = (
+			this->player_knockback_target_2d
+			- glm::vec2(player_position.x, player_position.z)
 	) / 3.0f;
-	this->player.dragTowardTarget(this->player_knockback_target, distance);
-	if (glm::length(this->player_knockback_target - this->player.getPosition()) < 0.001f) {
+
+	// knock back player
+	this->player.translate(glm::vec3(knockback_vec_2d[0], 0.0f, knockback_vec_2d[1]));
+
+	// check if we're close enough to the target to stop knocking back
+	glm::vec3 player_new_position = this->player.getPosition();
+	float distance_left = glm::length(
+			this->player_knockback_target_2d
+			- glm::vec2(player_new_position.x, player_new_position.z)
+	);
+	if (distance_left < 0.001f) {
 		// close enough
 		this->handling_player_knockback = false;
 	}
+
+	// adjust player y to sit on terrain
+	this->player.setPosition(
+			this->getTerrainIntersectionPoint(
+					player_new_position.x,
+					player_new_position.z
+			) + glm::vec3(0.0f, 0.01f, 0.0f)
+	);
+
 	return true;
 }
