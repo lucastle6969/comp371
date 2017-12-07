@@ -93,111 +93,13 @@ void Entity::translate(const glm::vec3& translation_vec) {
             this->translation_matrix, translation_vec);
 }
 
-void Entity::moveForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
+void Entity::move(const glm::vec3& move_vec, const float& units)
 {
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
-
 	this->translation_matrix = glm::translate(
 			this->translation_matrix,
-			(float)units * glm::normalize(forward_vec)
+			(float)units * glm::normalize(move_vec)
 	);
-	this->orient(forward_vec);
-}
-
-void Entity::moveBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
-{
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	glm::vec3 back_vec = -1.0f * glm::cross(left_vec, up_vec);
-	this->translation_matrix = glm::translate(
-			this->translation_matrix,
-			(float)units * glm::normalize(back_vec)
-	);
-	this->orient(back_vec);
-}
-
-void Entity::moveLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
-{
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	this->translation_matrix = glm::translate(
-			this->translation_matrix,
-			(float)units * glm::normalize(left_vec)
-	);
-	this->orient(left_vec);
-}
-
-void Entity::moveRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
-{
-	glm::vec3 right_vec = -1.0f * glm::cross(up_vec, view_vec);
-	this->translation_matrix = glm::translate(
-			this->translation_matrix,
-			(float)units * glm::normalize(right_vec)
-	);
-	this->orient(right_vec);
-}
-
-void Entity::moveForwardLeft(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
-	glm::vec3 forward_left_vec = forward_vec + left_vec;
-
-	this->translation_matrix = glm::translate(
-		this->translation_matrix,
-		(float)units * glm::normalize(forward_left_vec)
-	);
-	this->orient(forward_left_vec);
-}
-
-void Entity::moveForwardRight(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
-	glm::vec3 forward_right_vec = forward_vec - left_vec;
-
-	this->translation_matrix = glm::translate(
-		this->translation_matrix,
-		(float)units * glm::normalize(forward_right_vec)
-	);
-	this->orient(forward_right_vec);
-}
-
-void Entity::moveBackLeft(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
-	glm::vec3 back_left_vec = -1.0f * forward_vec + left_vec;
-
-	this->translation_matrix = glm::translate(
-		this->translation_matrix,
-		(float)units * glm::normalize(back_left_vec)
-	);
-	this->orient(back_left_vec);
-}
-
-void Entity::moveBackRight(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-	glm::vec3 left_vec = glm::cross(up_vec, view_vec);
-	glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
-	glm::vec3 back_right_vec = -1.0f * (forward_vec + left_vec);
-
-	this->translation_matrix = glm::translate(
-		this->translation_matrix,
-		(float)units * glm::normalize(back_right_vec)
-	);
-	this->orient(back_right_vec);
+	this->orient(move_vec);
 }
 
 void Entity::setPosition(const glm::vec3& position)

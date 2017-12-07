@@ -64,14 +64,7 @@ public:
     Text* getMenu();
 	void toggleAxes();
 	void setPlayerOpacity(const float& opacity);
-	void movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerForwardLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerForwardRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerBackLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerBackRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayer(const glm::vec3& move_vec, const float& units = 1.0f);
 };
 
 

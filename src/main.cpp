@@ -33,7 +33,7 @@
 World* world;
 
 // Camera constants
-const glm::vec3 up = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
+const glm::vec3 up_vec = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
 // pitch and yaw stored in degrees for clarity, but must be converted
 // to radians to work well with glm
 const float initial_pitch = -65.0f;
@@ -113,23 +113,38 @@ void pollContinuousControls(GLFWwindow* window) {
 		left_press = right_press = false;
 	}
 
-	// first check compound then single movement button actions
-	if (up_press && left_press) {
-		world->movePlayerForwardLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (up_press && right_press) {
-		world->movePlayerForwardRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (down_press && left_press) {
-		world->movePlayerBackLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (down_press && right_press) {
-		world->movePlayerBackRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (up_press) {
-		world->movePlayerForward(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (down_press) {
-		world->movePlayerBack(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (left_press) {
-		world->movePlayerLeft(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
-	} else if (right_press) {
-		world->movePlayerRight(getViewDirection(), up, PLAYER_MOVEMENT_SPEED);
+	if (up_press || down_press || left_press || right_press) {
+		glm::vec3 left_vec = glm::cross(up_vec, getViewDirection());
+		glm::vec3 forward_vec = glm::cross(left_vec, up_vec);
+		// first check compound then single movement button actions
+		glm::vec3 move_vec;
+		if (up_press && left_press) {
+			// forward-left
+			move_vec = forward_vec + left_vec;
+		} else if (up_press && right_press) {
+			// forward-right
+			move_vec = forward_vec - left_vec;
+		} else if (down_press && left_press) {
+			// back-left
+			move_vec = -forward_vec + left_vec;
+		} else if (down_press && right_press) {
+			// back-right
+			move_vec = -forward_vec - left_vec;
+		} else if (up_press) {
+			// forward
+			move_vec = forward_vec;
+		} else if (down_press) {
+			// back
+			move_vec = -forward_vec;
+		} else if (left_press) {
+			// left
+			move_vec = left_vec;
+		} else /* if (right_press) */ {
+			// right
+			move_vec = -left_vec;
+		}
+
+		world->movePlayer(move_vec, PLAYER_MOVEMENT_SPEED);
 	}
 }
 
@@ -342,7 +357,7 @@ int main()
         glClearColor(light.fog_color.r, light.fog_color.g, light.fog_color.b , 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 view_matrix = glm::lookAt(player_position - follow_vector, player_position, up);
+        glm::mat4 view_matrix = glm::lookAt(player_position - follow_vector, player_position, up_vec);
 
 
         float player_scale = getPlayerScaleCoefficient();
