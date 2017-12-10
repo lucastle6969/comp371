@@ -64,9 +64,14 @@ WorldTile::WorldTile(
 
 	this->water.setPosition(glm::vec3(0.0f, WATER_ELEVATION, 0.0f));
 
+	glm::vec3 terrain_loc_under_seed_loc_message =
+			this->terrain->findIntersectionPoint(0, 0) * terrain_scale;
+	if (terrain_loc_under_seed_loc_message.y < WATER_ELEVATION) {
+		terrain_loc_under_seed_loc_message.y = WATER_ELEVATION;
+	}
+
 	this->seed_loc_message.setPosition(
-			this->terrain->findIntersectionPoint(0, 0) * terrain_scale +
-					glm::vec3(0.0f, -0.95, 0.0f)
+			terrain_loc_under_seed_loc_message + glm::vec3(0.0f, -0.95, 0.0f)
 	);
 
 	// initialize random number generator based on world location
@@ -447,16 +452,22 @@ WorldTile::WorldTile(
 			// into account any prior offsets from tree clustering
 			tree->translate(glm::vec3(x_position, 0.0f, z_position));
 			const glm::vec3& tree_pos = tree->getPosition();
-			if (tree_pos.x < 0 || tree_pos.x >= 1 || tree_pos.z < 0 || tree_pos.z >= 1) {
-				// we can't handle trees that don't sit on our tile
+			glm::vec3 terrain_intersection =
+					this->terrain->findIntersectionPoint(tree_pos.x, tree_pos.z) *
+					terrain_scale;
+			if (terrain_intersection.y < WATER_ELEVATION
+					|| tree_pos.x < 0
+					|| tree_pos.x >= 1
+					|| tree_pos.z < 0
+					|| tree_pos.z >= 1
+			) {
+				// we don't want trees to spawn underwater.
+				// we also can't handle trees that don't sit on the tile
 				// (this might happen for tree cluster items)
 				this->detachChild(tree);
 				delete tree;
 				continue;
 			}
-			glm::vec3 terrain_intersection =
-					this->terrain->findIntersectionPoint(tree_pos.x, tree_pos.z) *
-					terrain_scale;
 			tree->setPosition(
 					terrain_intersection -
 					// dip tree into ground proportionally to its height

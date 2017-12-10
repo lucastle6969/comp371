@@ -69,7 +69,7 @@ World::World(
 	// place player relative to terrain
 	std::cout << "player pos orig " << this->player.getPosition().x << ", " << this->player.getPosition().y << ", " << this->player.getPosition().z << std::endl;
 	this->player.setPosition(
-			this->getTerrainIntersectionPoint(player_x_start, player_z_start) +
+			this->getSurfacePoint(player_x_start, player_z_start) +
 					glm::vec3(0.0f, 0.01f, 0.0f)
 	);
 	std::cout << "player pos new " << this->player.getPosition().x << ", " << this->player.getPosition().y << ", " << this->player.getPosition().z << std::endl;
@@ -210,7 +210,7 @@ void World::movePlayer(const glm::vec3& move_vec, const float& units)
 		this->checkPosition();
 		glm::vec3 pos = this->player.getPosition();
 		this->player.setPosition(
-				this->getTerrainIntersectionPoint(
+				this->getSurfacePoint(
 						pos.x,
 						pos.z
 				) + glm::vec3(0.0f, 0.01f, 0.0f)
@@ -228,16 +228,24 @@ bool World::collidesWith(const HitBox2d& box)
 	return false;
 }
 
-glm::vec3 World::getTerrainIntersectionPoint(const float& x, const float& z)
+glm::vec3 World::getSurfacePoint(const float &x, const float &z)
 {
 	WorldTile* center = this->tiles[
 			World::locationToTileIndex(this->x_center, this->z_center)
 	];
 	const PerlinTerrain& terrain = center->getTerrain();
-	return glm::vec3(terrain.getModelMatrix() * glm::vec4(terrain.findIntersectionPoint(
-			x - this->x_center,
-			z - this->z_center
-	), 1.0f));
+	glm::vec4 world_terrain_intersection_point =
+			terrain.getModelMatrix()
+			* glm::vec4(terrain.findIntersectionPoint(
+					x - this->x_center,
+					z - this->z_center
+			), 1.0f);
+	// return the water surface point if the terrain is below water
+	return glm::vec3(
+			world_terrain_intersection_point.x,
+			std::max(world_terrain_intersection_point.y, WATER_ELEVATION),
+			world_terrain_intersection_point.z
+	);
 }
 
 bool World::handlePlayerKnockback()
@@ -269,7 +277,7 @@ bool World::handlePlayerKnockback()
 
 	// adjust player y to sit on terrain
 	this->player.setPosition(
-			this->getTerrainIntersectionPoint(
+			this->getSurfacePoint(
 					player_new_position.x,
 					player_new_position.z
 			) + glm::vec3(0.0f, 0.01f, 0.0f)
