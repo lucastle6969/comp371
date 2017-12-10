@@ -33,7 +33,7 @@ static const float PLAYER_MOVEMENT_SPEED = 0.2f;
 
 static const float WATER_ELEVATION = -0.04f;
 
-static const float HORIZONTAL_TERRAIN_SCALE = 2.0f;
-static const float VERTICAL_TERRAIN_SCALE = 0.3f;
+static const float HORIZONTAL_TERRAIN_SCALE = 3.0f;
+static const float VERTICAL_TERRAIN_SCALE = 0.4f;
 
 #endif // PROCEDURALWORLD_CONSTANTS_H

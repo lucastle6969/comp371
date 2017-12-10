@@ -18,10 +18,10 @@ WaterSurface::WaterSurface(const GLuint &shader_program, Entity* parent)
 {
 	this->draw_mode = GL_TRIANGLES;
 	this->setMaterial(
-		glm::vec3(0.0f, 0.05f, 0.1f),
-		glm::vec3(0.0f, 0.5f, 0.8f),
-		glm::vec3(0.9f, 0.09f, 0.9f),
-		15.0f
+		glm::vec3(0.023f, 0.07f, 0.082f),
+		glm::vec3(0.23f, 0.7f, 0.82f),
+		glm::vec3(0.8f, 0.8f, 0.8f),
+		10.0f
 	);
 }
 
