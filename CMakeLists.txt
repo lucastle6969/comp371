@@ -113,6 +113,8 @@ add_executable(proceduralworld
     src/entities/Text.cpp
     src/entities/PerlinTerrain.hpp
     src/entities/PerlinTerrain.cpp
+    src/entities/WaterSurface.cpp
+    src/entities/WaterSurface.hpp
 )
 
 # Link librarssies

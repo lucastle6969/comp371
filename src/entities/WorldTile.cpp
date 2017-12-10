@@ -28,7 +28,7 @@
 
 
 WorldTile::WorldTile(
-	const GLuint &shader_program,
+	const GLuint& shader_program,
 	const int& world_x_location,
 	const int& world_z_location,
 	const float& base_min_hitbox_y,
@@ -36,6 +36,7 @@ WorldTile::WorldTile(
 	const HitBox2d& player_hitbox,
 	Entity *parent
 ) : Entity(parent),
+    water(shader_program, this),
     seed_loc_message(
 		    shader_program,
 		    "Seed for current location: " + std::to_string(world_x_location) + ':' + std::to_string(world_z_location),
@@ -58,8 +59,10 @@ WorldTile::WorldTile(
 			this
 	);
 	// terrain height is from -1 to 1 internally
-	glm::vec3 terrain_scale(1.0f, WorldTile::terrain_y_scale, 1.0f);
+	glm::vec3 terrain_scale(1.0f, VERTICAL_TERRAIN_SCALE, 1.0f);
 	this->terrain->scale(terrain_scale);
+
+	this->water.setPosition(glm::vec3(0.0f, WATER_ELEVATION, 0.0f));
 
 	this->seed_loc_message.setPosition(
 			this->terrain->findIntersectionPoint(0, 0) * terrain_scale +

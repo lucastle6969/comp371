@@ -16,7 +16,7 @@
 
 class PerlinTerrain : public DrawableEntity {
 private:
-	static float getTerrainHeight(const float& x, const float& z);
+	static float computeTerrainHeight(const float &x, const float &z);
 	float x_span;
 	float z_span;
 	std::vector<glm::vec3> vertices;
