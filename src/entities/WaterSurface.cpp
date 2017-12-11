@@ -21,7 +21,7 @@ WaterSurface::WaterSurface(const GLuint &shader_program, Entity* parent)
 		glm::vec3(0.023f, 0.07f, 0.082f),
 		glm::vec3(0.23f, 0.7f, 0.82f),
 		glm::vec3(0.8f, 0.8f, 0.8f),
-		10.0f
+		20.0f
 	);
 }
 
