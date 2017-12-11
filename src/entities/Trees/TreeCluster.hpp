@@ -31,8 +31,7 @@ private:
     static constexpr float sizeVariation = 1.2;
     static constexpr int heightChunking = 0;
     static constexpr int boostFactor = 0;
-    static int spacingConstant;
-    static int maxWidth(const float& trunkDiameter);
+    static int maxWidth(const float& trunkDiameter, const int& spacing);
 
 public:
     static void generateCluster(
@@ -43,8 +42,8 @@ public:
 		const GLuint& shader_program,
 	    const float& trunkDiameter,
 	    const bool& isAlien,
-	    const float& magnitude
+	    const float& magnitude,
+	    const int& spacing
     );
-    static void setSpacingConstant(int k);
 };
 #endif

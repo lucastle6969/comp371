@@ -5,10 +5,8 @@
 #include <src/entities/World.hpp>
 #include "TreeCluster.hpp"
 
-int TreeCluster::spacingConstant = 5;
-
-int TreeCluster::maxWidth(const float &trunkDiameter) {
-	return (int) (pow(spacingConstant * (trunkDiameter + 1), 1.0 / 2) + trunkDiameter);
+int TreeCluster::maxWidth(const float &trunkDiameter, const int& spacing) {
+	return (int) (pow(spacing * (trunkDiameter + 1), 1.0 / 2) + trunkDiameter);
 }
 
 void TreeCluster::generateCluster(
@@ -19,7 +17,8 @@ void TreeCluster::generateCluster(
 	const GLuint& shader_program,
 	const float& trunkDiameter,
 	const bool& isAlien,
-	const float& magnitude
+	const float& magnitude,
+	const int& spacing
 ) {
 	//center piece
 	auto* tci = new TreeClusterItem(shader_program, parentEntity, trunkDiameter, seed, isAlien);
@@ -36,15 +35,19 @@ void TreeCluster::generateCluster(
 		} else tempTrunkDiameter = trunkDiameter / 1.0f;
 		seed = seed == 0 ? (tempTrunkDiameter + 1) * 913 * magnitude : seed;
 
-		float distanceFromCenter = TreeRandom::middleSquareRange(seed,
-		                                                         maxWidth(trunkDiameter),
-		                                                         1.0);
+		float distanceFromCenter = TreeRandom::middleSquareRange(
+				seed,
+				maxWidth(trunkDiameter, spacing),
+				1.0f
+		);
 		distanceFromCenter =
-				distanceFromCenter <= 1 ? TreeRandom::middleSquareRange(seed * 2,
-				                                                        maxWidth(
-						                                                        trunkDiameter) *
-				                                                        1.00, 1.0)
-				                        : distanceFromCenter;
+				distanceFromCenter <= 1
+				? TreeRandom::middleSquareRange(
+						seed * 2,
+						maxWidth(trunkDiameter, spacing) * 1.0f,
+						1.0f
+				)
+				: distanceFromCenter;
 		float circleAngle = TreeRandom::middleSquareRange(seed, 360.0, 0.0) *
 		                    TreeRandom::treeOddEvenRandom(distanceFromCenter, seed,
 		                                                  circleAngle);
@@ -61,10 +64,5 @@ void TreeCluster::generateCluster(
 		treeContainer->emplace_back(tci);
 	}
 }
-
-void TreeCluster::setSpacingConstant(int k) {
-	TreeCluster::spacingConstant = k;
-}
-
 
 #endif

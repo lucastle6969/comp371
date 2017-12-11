@@ -239,7 +239,8 @@ WorldTile::WorldTile(
 			            shader_program,
 			            internal_tree_width,
 			            isAlien,
-			            tree_magnitude
+			            tree_magnitude,
+			            5
 	            );
             }
         } else if (current_biome == ALIEN_BIOME) {
@@ -257,7 +258,8 @@ WorldTile::WorldTile(
 			            shader_program,
 			            internal_tree_width,
 			            isAlien,
-			            tree_magnitude
+			            tree_magnitude,
+			            5
 	            );
             }
         } else if (current_biome == TENTACLE_BIOME) {
@@ -279,7 +281,6 @@ WorldTile::WorldTile(
                 else
                     new_trees.push_back(new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed));
             } else {
-	            TreeCluster::setSpacingConstant(10);
 	            TreeCluster::generateCluster(
 			            &new_trees,
 			            this,
@@ -288,9 +289,9 @@ WorldTile::WorldTile(
 			            shader_program,
 			            internal_tree_width * 1.5f,
 			            isAlien,
-			            tree_magnitude
+			            tree_magnitude,
+			            10
 	            );
-	            TreeCluster::setSpacingConstant(10);
             }
         }
 
