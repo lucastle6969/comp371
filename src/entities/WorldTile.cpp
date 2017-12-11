@@ -141,6 +141,15 @@ WorldTile::WorldTile(
 			continue;
 		}
 
+		glm::vec3 terrain_intersection =
+				this->terrain->findIntersectionPoint(x_position, z_position) *
+				terrain_scale;
+
+		if (terrain_intersection.y < WATER_ELEVATION) {
+			// we don't want to waste time placing rocks underwater
+			continue;
+		}
+
 		bool use_rock_b = (int)(ceil(x_position * y_span + world_z_location)) % 2 == 0;
 
 		DrawableEntity* rock;
@@ -165,9 +174,6 @@ WorldTile::WorldTile(
 		}
 
 		rock->scale(glm::vec3(x_span, y_span, z_span));
-		glm::vec3 terrain_intersection =
-				this->terrain->findIntersectionPoint(x_position, z_position) *
-				terrain_scale;
 		rock->setPosition(
 				terrain_intersection + (use_rock_b ? rock_b_offset : rock_a_offset)
 		);
