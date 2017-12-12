@@ -24,7 +24,7 @@
 
 class WorldTile: public Entity {
 private:
-	static constexpr int terrain_width = 80;
+	static constexpr int terrain_width = 50;
 	WaterSurface water;
 	std::vector<glm::vec3> vertices;
 	std::vector<unsigned int> elements;

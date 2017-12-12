@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "src/entities/Entity.hpp"
 #include "src/entities/DrawableEntity.hpp"
@@ -49,24 +50,8 @@ glm::vec3 Tree::boostSegment(const AttatchmentGroupings* agLow,const Attatchment
 }
 
 //values in radians
-glm::vec3 Tree::makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3 vector){
-    //ROTATION ABOUT X
-    vector = glm::vec3(
-            vector.x
-            , vector.y * cos(xRot) - vector.z * sin(xRot)
-            ,	vector.y * sin(xRot) + vector.z * cos(xRot));
-    //ROTATION ABOUT Z
-    vector = glm::vec3(
-            vector.x * cos(zRot) - vector.y * sin(zRot)
-            , vector.x * sin(zRot) + vector.y * cos(zRot)
-            ,	vector.z );
-    //ROTATION ABOUT Y
-    vector = glm::vec3(
-            vector.x * cos(yRot) + vector.z * sin(yRot)
-            , vector.y
-            ,	-(vector.x * sin(yRot)) + vector.z * cos(yRot));
-
-    return vector;
+void Tree::makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3* const& vec){
+    *vec = glm::rotateY(glm::rotateZ(glm::rotateX(*vec, xRot), zRot), yRot);
 }
 
 void Tree::connectSegments(const AttatchmentGroupings* ag, const int& m,
