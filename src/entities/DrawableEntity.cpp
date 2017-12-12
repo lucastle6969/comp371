@@ -71,7 +71,7 @@ float DrawableEntity::getWorldHeight() const
 	glm::vec3 v;
 	const glm::mat4& model_matrix = this->getModelMatrix();
 	for (const glm::vec3& vertex : this->getVertices()) {
-		v = glm::vec3(this->getModelMatrix() * glm::vec4(vertex, 1.0f));
+		v = glm::vec3(model_matrix * glm::vec4(vertex, 1.0f));
 		if (v.y < min) {
 			min = v.y;
 		}

@@ -211,12 +211,13 @@ void TreeB::initiateMove(AttatchmentGroupings* ag){
 
     rotationPoint = rotationPoint == 0 ? 1 : 0;
 
-    float r = 360.0/circularPoints  * (rotationPoint);
+    float r = glm::radians(360.0/circularPoints  * (rotationPoint));
     int start = ag->start + 1;
     int max = ag->end + 1;
+    const float angleX = glm::radians((float)ag->angleX);
+    const float angleZ = glm::radians((float)ag->angleZ);
     for (int k = start; k < max; k++) {
-        combinedVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(r),glm::radians((float)ag->angleZ),
-                                                 combinedVertices.at(k));
+        makeRotations(angleX, r, angleZ, &combinedVertices[k]);
     }
     int previousRotation = rotationPoint;
     computeElementsInitial(ag);
@@ -251,22 +252,21 @@ void TreeB::moveSegments(const int& previousRotation, AttatchmentGroupings* ag) 
             moveFrom = (ag->ag[m]->start + 1) + (int)(0  + fromPnt) % circularPoints;
         }
 
-        float r = 360.0/circularPoints  * (fromPnt);
+        const float r = glm::radians(360.0/circularPoints  * (fromPnt));
 
-        int start = ag->ag[m]->start + 1;
-        int max = ag->ag[m]->end + 1;
-
+        const int start = ag->ag[m]->start + 1;
+        const int max = ag->ag[m]->end + 1;
+        const float angleX = glm::radians((float)ag->ag[m]->angleX);
+        const float angleZ = glm::radians((float)ag->ag[m]->angleZ);
         for (int k = start; k < max; k++) {
-            combinedVertices.at(k) = makeRotations( glm::radians((float)ag->ag[m]->angleX), glm::radians(r),
-                                                     glm::radians((float)ag->ag[m]->angleZ), combinedVertices.at(k));
+            makeRotations(angleX, r, angleZ, &combinedVertices[k]);
         }
 
         //translate components onto branch(destination - position)
         glm::vec3 translation = combinedVertices.at(moveTo) - combinedVertices.at(moveFrom);
         //elevate from point
         glm::vec3 boost = boostSegment(ag, ag->ag[m], &combinedVertices) *  (heightChunking * boostFactor);
-        start = ag->ag[m]->start + 1;
-        max = ag->ag[m]->end + 1;
+
         for (int k = start; k < max; k++) {
             combinedVertices.at(k) += translation + boost;
         }
