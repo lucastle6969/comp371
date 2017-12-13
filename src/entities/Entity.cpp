@@ -144,8 +144,13 @@ void Entity::drawIfTransparent(
 	const Light& light
 ) {
 	// draw transparent objects
-	for (Entity* child : this->children) {
-		child->drawIfTransparent(view_matrix, projection_matrix, light);
+
+	// We're iterating in reverse since we know the player entity will be first,
+	// and the only currently known transparency issue is drawing the player before
+	// other transparent objects which are closer to the camera.
+	// TODO: Actually sort transparent objects? Though would be slower / maybe unnecessary
+	for (size_t i = this->children.size(); i--; ) {
+		this->children[i]->drawIfTransparent(view_matrix, projection_matrix, light);
 	}
 }
 
