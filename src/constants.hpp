@@ -1,6 +1,13 @@
 #ifndef PROCEDURALWORLD_CONSTANTS_H
 #define PROCEDURALWORLD_CONSTANTS_H
 
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
+#else
+#include <GL/glew.h> // include GL Extension Wrangler
+#endif
+
 #include <string>
 
 static const int COLOR_WHITE = 0;
@@ -35,5 +42,12 @@ static const float WATER_ELEVATION = -0.04f;
 
 static const float HORIZONTAL_TERRAIN_SCALE = 3.0f;
 static const float VERTICAL_TERRAIN_SCALE = 0.4f;
+
+static const GLint DEFAULT_MINIFICATION_FILTER = GL_NEAREST;
+static const GLint DEFAULT_MAGNIFICATION_FILTER = GL_NEAREST;
+
+static const GLint DEFAULT_TEXTURE_WRAP = GL_MIRRORED_REPEAT;
+
+static const bool DEFAULT_STB_VERT_ALIGN_FLIP = false;
 
 #endif // PROCEDURALWORLD_CONSTANTS_H
