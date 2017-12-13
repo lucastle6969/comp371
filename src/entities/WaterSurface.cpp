@@ -25,7 +25,7 @@ WaterSurface::WaterSurface(const GLuint &shader_program, Entity* parent)
 		20.0f
 	);
 
-	this->setOpacity(0.75f);
+	this->setOpacity(0.7f);
 }
 
 const std::vector<glm::vec3>& WaterSurface::getVertices() const

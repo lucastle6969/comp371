@@ -390,9 +390,12 @@ int main()
                 0.1f * player_scale,
                 1000000.0f * player_scale
         );
-        skybox.draw(view_matrix, sky_projection_matrix, light);
 
-        world->draw(view_matrix, projection_matrix, light);
+		skybox.drawIfOpaque(view_matrix, sky_projection_matrix, light);
+		world->drawIfOpaque(view_matrix, projection_matrix, light);
+		skybox.drawIfTransparent(view_matrix, sky_projection_matrix, light);
+		world->drawIfTransparent(view_matrix, projection_matrix, light);
+
         // Swap the screen buffers
         glfwSwapBuffers(window);
     }

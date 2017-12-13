@@ -53,7 +53,12 @@ public:
 	void hide();
 	void unhide();
 	void toggleHide();
-	virtual void draw(
+	virtual void drawIfOpaque(
+		const glm::mat4& view_matrix,
+		const glm::mat4& projection_matrix,
+		const Light& light
+	);
+	virtual void drawIfTransparent(
 		const glm::mat4& view_matrix,
 		const glm::mat4& projection_matrix,
 		const Light& light

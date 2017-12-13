@@ -82,13 +82,11 @@ float DrawableEntity::getWorldHeight() const
 	return max - min;
 }
 
-void DrawableEntity::draw(
+void DrawableEntity::drawSelf(
     const glm::mat4& view_matrix,
     const glm::mat4& projection_matrix,
     const Light& light
 ) {
-	Entity::draw(view_matrix, projection_matrix, light);
-
 	if (this->isHidden()) {
 		return;
 	}
@@ -193,6 +191,28 @@ void DrawableEntity::draw(
 	glBindVertexArray(0);
 
 	glUseProgram(0);
+}
+
+void DrawableEntity::drawIfOpaque(
+	const glm::mat4& view_matrix,
+	const glm::mat4& projection_matrix,
+	const Light& light
+) {
+	Entity::drawIfOpaque(view_matrix, projection_matrix, light);
+	if (this->getOpacity() >= 1.0f) {
+		this->drawSelf(view_matrix, projection_matrix, light);
+	}
+}
+
+void DrawableEntity::drawIfTransparent(
+	const glm::mat4& view_matrix,
+	const glm::mat4& projection_matrix,
+	const Light& light
+) {
+	Entity::drawIfTransparent(view_matrix, projection_matrix, light);
+	if (this->getOpacity() < 1.0f) {
+		this->drawSelf(view_matrix, projection_matrix, light);
+	}
 }
 
 GLuint DrawableEntity::initVertexArray(

@@ -127,22 +127,25 @@ void Entity::toggleHide()
 	this->hidden = !this->hidden;
 }
 
-void Entity::draw(
+void Entity::drawIfOpaque(
 	const glm::mat4& view_matrix,
 	const glm::mat4& projection_matrix,
 	const Light& light
 ) {
 	// draw opaque objects
 	for (Entity* child : this->children) {
-		if (child->getOpacity() >= 1.0f) {
-			child->draw(view_matrix, projection_matrix, light);
-		}
+		child->drawIfOpaque(view_matrix, projection_matrix, light);
 	}
+}
+
+void Entity::drawIfTransparent(
+	const glm::mat4& view_matrix,
+	const glm::mat4& projection_matrix,
+	const Light& light
+) {
 	// draw transparent objects
 	for (Entity* child : this->children) {
-		if (child->getOpacity() < 1.0f) {
-			child->draw(view_matrix, projection_matrix, light);
-		}
+		child->drawIfTransparent(view_matrix, projection_matrix, light);
 	}
 }
 
