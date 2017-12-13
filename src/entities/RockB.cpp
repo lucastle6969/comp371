@@ -258,7 +258,9 @@ GLuint RockB::getTextureId()
     static GLuint rock_texture = loadTexture(
             "../textures/stoneC.jpg",
             GL_LINEAR,
-            GL_LINEAR
+            GL_LINEAR,
+            GL_MIRRORED_REPEAT,
+            GL_MIRRORED_REPEAT
     );
     return rock_texture;
 }
