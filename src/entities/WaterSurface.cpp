@@ -60,7 +60,7 @@ GLuint WaterSurface::getVAO() {
 	};
 
 	// in one tile we'll have uv_repeats^2 instances of the water texture
-	static const int uv_repeats = 8;
+	static const int uv_repeats = 4;
 	static const std::vector<glm::vec2> uvs = {
 			glm::vec2(0.0f, uv_repeats),       // bottom-left
 			glm::vec2(uv_repeats, uv_repeats), // bottom-right
@@ -95,7 +95,7 @@ GLuint WaterSurface::getTextureId()
 	static GLuint texture = loadTexture(
 			"../textures/water.jpg",
 			GL_NEAREST,
-			GL_NEAREST
+			GL_LINEAR
 	);
 	return texture;
 }
