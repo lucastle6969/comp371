@@ -12,6 +12,7 @@ public:
 	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
+	GLuint getTextureId() override;
 };
 
 

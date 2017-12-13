@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#include <src/loadTexture.hpp>
 #include <src/constants.hpp>
 
 #include "DrawableEntity.hpp"
@@ -23,6 +24,8 @@ WaterSurface::WaterSurface(const GLuint &shader_program, Entity* parent)
 		glm::vec3(0.8f, 0.8f, 0.8f),
 		20.0f
 	);
+
+	this->setOpacity(0.75f);
 }
 
 const std::vector<glm::vec3>& WaterSurface::getVertices() const
@@ -56,6 +59,15 @@ GLuint WaterSurface::getVAO() {
 			glm::vec3(0.0f, 1.0f, 0.0f),
 	};
 
+	// in one tile we'll have uv_repeats^2 instances of the water texture
+	static const int uv_repeats = 8;
+	static const std::vector<glm::vec2> uvs = {
+			glm::vec2(0.0f, uv_repeats),       // bottom-left
+			glm::vec2(uv_repeats, uv_repeats), // bottom-right
+			glm::vec2(uv_repeats, 0.0f),       // top-right
+			glm::vec2(0.0f, 0.0f)              // top-left
+	};
+
 	static GLuint vao;
 	static bool vao_init = false;
 
@@ -64,7 +76,8 @@ GLuint WaterSurface::getVAO() {
 		vao = this->initVertexArray(
 				this->getVertices(),
 				elements,
-				normals
+				normals,
+				uvs
 		);
 		vao_init = true;
 	}
@@ -74,4 +87,15 @@ GLuint WaterSurface::getVAO() {
 
 const int WaterSurface::getColorType() {
 	return COLOR_LIGHTING;
+}
+
+GLuint WaterSurface::getTextureId()
+{
+	// water texture from https://www.textures.com/download/waterplain0012/9438
+	static GLuint texture = loadTexture(
+			"../textures/water.jpg",
+			GL_NEAREST,
+			GL_NEAREST
+	);
+	return texture;
 }
