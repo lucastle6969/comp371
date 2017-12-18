@@ -38,11 +38,14 @@ private:
 	int x_center;
 	int z_center;
 	GLuint shader_program;
-	float player_min_world_y;
-	float player_max_world_y;
+	float player_base_min_world_y;
+	float player_base_max_world_y;
+	bool handling_player_knockback;
+	glm::vec2 player_knockback_target_2d;
 	bool collidesWith(const HitBox2d& box);
 	void placeWorldTile(const int& x, const int& z, const HitBox2d& player_hitbox);
 	void checkPosition();
+	glm::vec3 getSurfacePoint(const float &x, const float &z);
 public:
 	explicit World(const GLuint& shader_program) : World(shader_program, nullptr) {}
 	World(const GLuint& shader_program, Entity* parent)
@@ -59,24 +62,12 @@ public:
 		Entity* parent
 	);
 	~World() override;
-
-
-	///////////
-	bool pollWorld(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	/////////////
-
 	const Player* getPlayer();
     Text* getMenu();
 	void toggleAxes();
 	void setPlayerOpacity(const float& opacity);
-	void movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerForwardLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerForwardRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerBackLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
-	void movePlayerBackRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units = 1.0f);
+	void movePlayer(const glm::vec3& move_vec, const float& units = 1.0f);
+	bool handlePlayerKnockback();
 };
 
 

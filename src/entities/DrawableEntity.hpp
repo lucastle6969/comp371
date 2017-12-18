@@ -72,10 +72,21 @@ public:
 	// end pure virtual functions
 	virtual GLuint getTextureId();
 	GLenum getDrawMode();
-	void draw(
-		const glm::mat4& view_matrix,
-		const glm::mat4& projection_matrix,
-		const Light& light
+	float getWorldHeight() const;
+	void drawSelf(
+			const glm::mat4& view_matrix,
+			const glm::mat4& projection_matrix,
+			const Light& light
+	);
+	void drawIfOpaque(
+			const glm::mat4& view_matrix,
+			const glm::mat4& projection_matrix,
+			const Light& light
+	) override;
+	void drawIfTransparent(
+			const glm::mat4& view_matrix,
+			const glm::mat4& projection_matrix,
+			const Light& light
 	) override;
 };
 

@@ -34,6 +34,7 @@ Beyond the C++ standard library this application relies on:
 * [GLFW](http://www.glfw.org/)
 * [GLEW](http://glew.sourceforge.net/)
 * [GLM](https://glm.g-truc.net/0.9.8/index.html)
+* [siv::PerlinNoise](https://github.com/Reputeless/PerlinNoise) (generates 2D heightmaps for terrain)
 * [tinyobjloader](https://github.com/syoyo/tinyobjloader)
 * [stb image](https://github.com/nothings/stb)
 
@@ -43,4 +44,4 @@ Beyond the C++ standard library this application relies on:
 
 * Starter skeleton code adapted from [LearnOpenGL.com](https://learnopengl.com/) and COMP 371 at Concordia University
 * Cross platform CMake setup created using [Hunter](https://github.com/ruslo/hunter)
-
+* Thanks to Adrian Biagioli for discussing the Improved Perlin Noise algorithm in [clear terms](http://flafla2.github.io/2014/08/09/perlinnoise.html).

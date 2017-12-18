@@ -14,34 +14,45 @@
 #include <src/HitBox2d.hpp>
 
 #include "Entity.hpp"
+#include "PerlinTerrain.hpp"
+#include "WaterSurface.hpp"
 #include "Rock.hpp"
 #include "Trees/Tree.hpp"
-#include "DrawableEntity.hpp"
 #include "Rock.hpp"
 #include "RockB.hpp"
 #include "Text.hpp"
 
-class WorldTile: public DrawableEntity {
+class WorldTile: public Entity {
 private:
+	static constexpr int terrain_width = 50;
+	WaterSurface water;
+	std::vector<glm::vec3> vertices;
+	std::vector<unsigned int> elements;
+	std::vector<glm::vec3> normals;
+	GLuint vao;
+	PerlinTerrain* terrain;
 	std::vector<Rock*> rocks;
     std::vector<RockB*> rocksB;
 	std::vector<Tree*> trees;
 	std::vector<HitBox2d> hitboxes;
     Text seed_loc_message;
+	GLuint vertices_buffer;
+	GLuint element_buffer;
+	GLuint normal_buffer;
 public:
 	WorldTile(
 		const GLuint& shader_program,
 		const int& world_x_location,
 		const int& world_z_location,
-		const float& min_hitbox_y,
-		const float& max_hitbox_y,
+		const float& base_min_hitbox_y,
+		const float& base_max_hitbox_y,
 		const HitBox2d& player_hitbox
     ) : WorldTile(
 		shader_program,
 		world_x_location,
 		world_z_location,
-		min_hitbox_y,
-		max_hitbox_y,
+		base_min_hitbox_y,
+		base_max_hitbox_y,
 		player_hitbox,
 		nullptr
 	) {}
@@ -49,16 +60,14 @@ public:
 		const GLuint& shader_program,
 		const int& world_x_location,
 		const int& world_z_location,
-		const float& min_hitbox_y,
-		const float& max_hitbox_y,
+		const float& base_min_hitbox_y,
+		const float& base_max_hitbox_y,
 		const HitBox2d& player_hitbox,
 		Entity* parent
 	);
 	~WorldTile() override;
-	const std::vector<glm::vec3>& getVertices() const override;
-	GLuint getVAO() override;
-	const int getColorType() override;
 	bool collidesWith(const HitBox2d& box) const;
+	const PerlinTerrain& getTerrain() const;
 };
 
 #endif //PROCEDURALWORLD_WORLDTILE_H

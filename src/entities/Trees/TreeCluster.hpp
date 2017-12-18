@@ -20,29 +20,30 @@
 #include <ctime>
 
 
-#include "src/entities/DrawableEntity.hpp"
+#include "../DrawableEntity.hpp"
+#include "../Entity.hpp"
 #include "Tree.hpp"
 #include "TreeClusterItem.hpp"
 #include "src/TreeRandom.hpp"
 
-class TreeC{
+class TreeCluster{
 private:
-    std::vector<Tree*>* trees;
-
     static constexpr float sizeVariation = 1.2;
     static constexpr int heightChunking = 0;
     static constexpr int boostFactor = 0;
-    static int spacingConstant;
-    int maxWidth(const float& trunkDiameter);
+    static int maxWidth(const float& trunkDiameter, const int& spacing);
 
 public:
-
-    TreeC(int numberOfTrees, const GLuint& shader_program,
-          Entity* entity, float trunkDiameter, long seed, bool isAlien,
-            std::vector<Tree*>& treeContainer, glm::vec3 pos, float magnitude,
-          float min_hitbox_y, float max_hitbox_y, std::vector<HitBox2d>& hbEnt);
-
-    static void setSpacingConstant(int k);
-
+    static void generateCluster(
+	    std::vector<Tree*>* const& treeContainer,
+	    Entity* const& parentEntity,
+	    long seed,
+	    const int& numberOfTrees,
+		const GLuint& shader_program,
+	    const float& trunkDiameter,
+	    const bool& isAlien,
+	    const float& magnitude,
+	    const int& spacing
+    );
 };
 #endif

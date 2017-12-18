@@ -30,13 +30,6 @@ public:
 	const std::vector<glm::vec3>& getVertices() const override;
 	GLuint getVAO() override;
 	const int getColorType() override;
-
-	static constexpr int deadMax = 20;
-	int deadTime =  deadMax;
-	glm::vec3 oldPosition;
-
-	void updateDeadtime();
-	bool fore, back, left, right;
 };
 
 #endif // COMP371_PLAYER_HPP

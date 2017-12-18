@@ -26,25 +26,24 @@ Text::Text(
         const unsigned int FONT_STYLE,
         Entity* parent
 ) : DrawableEntity(shader_program, parent) {
+	static const GLuint outline_font = loadTexture(
+			"../textures/outline_text_map.png",
+			GL_LINEAR,
+			GL_LINEAR,
+			true
+	);
+
+	static const GLuint mythos_font = this->font_map = loadTexture(
+			"../textures/mythos_text_map.png",
+			GL_LINEAR,
+			GL_LINEAR,
+			true
+	);
 
     this->draw_mode = GL_TRIANGLES;
     this->should_draw_back_face = true;
 
-    if(FONT_STYLE==FONT_STYLE_OUTLINE){
-        this->font_map = loadTexture(
-                "../textures/outline_text_map.png",
-                GL_LINEAR,
-                GL_LINEAR,
-                true
-        );
-    }else{
-        this->font_map = loadTexture(
-                "../textures/mythos_text_map.png",
-                GL_LINEAR,
-                GL_LINEAR,
-                true
-        );
-    }
+    this->font_map = FONT_STYLE == FONT_STYLE_OUTLINE ? outline_font : mythos_font;
 
     // 0.01 scale for at least 100 chars per line
     float char_width = 0.01;
@@ -842,6 +841,13 @@ Text::Text(
         this->vertices.emplace_back(cursor - char_l_space + char_width, 1.0f - line_height, 0.0f);
 
     }
+
+	const float half_text_width = this->vertices.empty()
+	                              ? 0
+	                              : this->vertices[this->vertices.size() - 1].x / 2.0f;
+	for (glm::vec3& vertex : this->vertices) {
+		vertex.x -= half_text_width;
+	}
 
     this->vao = this->initVertexArray(
             this->vertices,

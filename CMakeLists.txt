@@ -54,6 +54,8 @@ add_executable(proceduralworld
     src/glsetup.cpp
     src/shaderprogram.hpp
     src/shaderprogram.cpp
+    src/ShaderUniformLocationCache.hpp
+    src/ShaderUniformLocationCache.cpp
     src/objloader.hpp
     src/objloader.cpp
     src/loadTexture.hpp
@@ -99,8 +101,8 @@ add_executable(proceduralworld
     src/entities/Trees/LeafContainerAB.cpp
     src/entities/Trees/TreeB.hpp
     src/entities/Trees/TreeB.cpp
-    src/entities/Trees/TreeC.hpp
-    src/entities/Trees/TreeC.cpp
+    src/entities/Trees/TreeCluster.hpp
+    src/entities/Trees/TreeCluster.cpp
     src/entities/Trees/TreeClusterItem.hpp
     src/entities/Trees/TreeClusterItem.cpp
     src/entities/Trees/TrunkC.hpp
@@ -111,6 +113,10 @@ add_executable(proceduralworld
     src/entities/Skybox.hpp
     src/entities/Text.hpp
     src/entities/Text.cpp
+    src/entities/PerlinTerrain.hpp
+    src/entities/PerlinTerrain.cpp
+    src/entities/WaterSurface.cpp
+    src/entities/WaterSurface.hpp
 )
 
 # Link librarssies

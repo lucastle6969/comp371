@@ -89,7 +89,7 @@ void main()
             color = WHITE;
             break;
         case COLOR_HEIGHT:
-             color = calculateColor(0.3f * vec3(pos.y));
+             color = vec4(vec3(pos.y), 1.0f);
             break;
         case COLOR_TILE:
             color = calculateColor(

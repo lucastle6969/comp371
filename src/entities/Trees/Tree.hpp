@@ -89,7 +89,7 @@ public:
                            const std::vector<glm::vec3>* vPntr);
 
     //values in radians
-    glm::vec3 makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3 vector);
+    void makeRotations(const float& xRot, const float& yRot, const float& zRot, glm::vec3* const& vec);
 
     void connectSegments(const AttatchmentGroupings* ag, const int& m,
                          const int& rotPoint, const int& prevPoint, const int& circularPoints,

@@ -17,26 +17,27 @@
 
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
+#include "PerlinTerrain.hpp"
 #include "Rock.hpp"
-
 #include "src/entities/Trees/Tree.hpp"
 #include "src/entities/Trees/TreeA.hpp"
 #include "src/entities/Trees/TreeA_Autumn.hpp"
 #include "src/entities/Trees/TreeB.hpp"
-#include "src/entities/Trees/TreeC.hpp"
+#include "src/entities/Trees/TreeCluster.hpp"
 #include "WorldTile.hpp"
 #include "Tentacle.hpp"
 
 
 WorldTile::WorldTile(
-	const GLuint &shader_program,
+	const GLuint& shader_program,
 	const int& world_x_location,
 	const int& world_z_location,
-	const float& min_hitbox_y,
-	const float& max_hitbox_y,
+	const float& base_min_hitbox_y,
+	const float& base_max_hitbox_y,
 	const HitBox2d& player_hitbox,
 	Entity *parent
-) : DrawableEntity(shader_program, parent),
+) : Entity(parent),
+    water(shader_program, this),
     seed_loc_message(
 		    shader_program,
 		    "Seed for current location: " + std::to_string(world_x_location) + ':' + std::to_string(world_z_location),
@@ -45,21 +46,34 @@ WorldTile::WorldTile(
 		    FONT_STYLE_OUTLINE,
 		    this
     )
-
 {
-	this->draw_mode = GL_TRIANGLES;
-
-	this->setMaterial(
-		glm::vec3(.5,.5,.5), // need to change this to some other value... maybe the height of the plane if we ever make it.
-		glm::vec3(.5,.5,.5),
-		glm::vec3(.25,.25,.25),
-		25.0f
-	);
-
-    seed_loc_message.setPosition(glm::vec3(0.5, -0.96, 0.5));
-
 	// position tile relative to parent based on x, z inputs
 	this->translate(glm::vec3(world_x_location, 0.0f, world_z_location));
+
+	int terrain_span = WorldTile::terrain_width;
+	this->terrain = new PerlinTerrain(
+			shader_program,
+			world_x_location,
+			world_z_location,
+			terrain_span,
+			terrain_span,
+			this
+	);
+	// terrain height is from -1 to 1 internally
+	glm::vec3 terrain_scale(1.0f, VERTICAL_TERRAIN_SCALE, 1.0f);
+	this->terrain->scale(terrain_scale);
+
+	this->water.setPosition(glm::vec3(0.0f, WATER_ELEVATION, 0.0f));
+
+	glm::vec3 terrain_loc_under_seed_loc_message =
+			this->terrain->findIntersectionPoint(0, 0) * terrain_scale;
+	if (terrain_loc_under_seed_loc_message.y < WATER_ELEVATION) {
+		terrain_loc_under_seed_loc_message.y = WATER_ELEVATION;
+	}
+
+	this->seed_loc_message.setPosition(
+			terrain_loc_under_seed_loc_message + glm::vec3(0.0f, -0.95, 0.0f)
+	);
 
 	// initialize random number generator based on world location
 	srand((unsigned int)(world_x_location * world_z_location + world_x_location + world_z_location));
@@ -67,22 +81,58 @@ WorldTile::WorldTile(
 	// TODO: better tree/rock distribution?
 	// TODO: test/remove tree/rock overlaps
 
-    const int generalBiomeX = 5, generalBiomeY = 5;
-    const int alienBiomeX = 5, alienBiomeY = 10;
-    const int tentacleX = 10, tentacleY = 5;
-    const int heavyRenderX = 10, heavyRenderY = 10;
-    const int worldBoundries = 10;
+	static const glm::vec3 rock_a_offset(0.0f, -0.004f, 0.0f);
+	static const glm::vec3 rock_b_offset(0.0f, 0.0f, 0.0f);
+
+	static const int max_rocks_general = 7;
+	static const int max_rocks_alien = 14;
+	static const int max_rocks_tentacle = 14;
+	static const int max_rocks_forest = 14;
+
+	static const int max_trees = 5;
+
+    static const int general_biome_max_x = 5, general_biome_max_z = 5;
+    static const int alien_biome_max_x = 5, alien_biome_max_z = 10;
+    static const int tentacle_biome_max_x = 10, tentacle_biome_max_z = 5;
+    static const int worldBoundaries = 10;
+
+	static const int GENERAL_BIOME = 0;
+	static const int ALIEN_BIOME = 1;
+	static const int TENTACLE_BIOME = 2;
+	static const int FOREST_BIOME = 3;
+
+	int current_biome = FOREST_BIOME;
+	int max_rocks = max_rocks_forest;
+	{
+		int b_x = abs(world_x_location) % worldBoundaries;
+		int b_z = abs(world_z_location) % worldBoundaries;
+		if (b_x < general_biome_max_x && b_z < general_biome_max_z) {
+			current_biome = GENERAL_BIOME;
+			max_rocks = max_rocks_general;
+		} else if (b_x < alien_biome_max_x && b_z < alien_biome_max_z) {
+			current_biome = ALIEN_BIOME;
+			max_rocks = max_rocks_alien;
+		} else if (b_x < tentacle_biome_max_x && b_z < tentacle_biome_max_z) {
+			current_biome = TENTACLE_BIOME;
+			max_rocks = max_rocks_tentacle;
+		}
+	}
 
 	// add rocks
-	int rock_tries_left = 3;
-	for (int i = 0; i < 7; i++) {
+	int rock_tries_left = max_rocks / 2;
+	for (int i = 0; i < max_rocks; i++) {
 		float x_span = utils::randomFloat(0.02f, 0.05f);
 		float z_span = utils::randomFloat(0.02f, 0.05f);
-        float y_span = utils::randomFloat(0.005f, 0.015f);
-		float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-		float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
+        float y_span = utils::randomFloat(0.01f, 0.015f);
+		float x_position = utils::randomFloat(0.0f + x_span / 2, 1.0f - x_span / 2);
+		float z_position = utils::randomFloat(0.0f + z_span / 2, 1.0f - z_span / 2);
 
-		HitBox2d box(x_position, z_position, x_position + x_span, z_position + z_span);
+		HitBox2d box(
+				world_x_location + x_position - x_span / 2,
+				world_z_location + z_position - z_span / 2,
+				world_x_location + x_position + x_span / 2,
+				world_z_location + z_position + z_span / 2
+		);
 		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
 			if (rock_tries_left-- > 0) {
 				// collision! but give it another try
@@ -91,184 +141,70 @@ WorldTile::WorldTile(
 			continue;
 		}
 
-        //general biome
-        if (abs(world_x_location) % worldBoundries < generalBiomeX && abs(world_z_location) % worldBoundries < generalBiomeY) {
-            if((int)(ceil(x_position * y_span + world_z_location)) % 2 == 0){
-                // Add rock child
-                RockB* rockB = new RockB(
-                        shader_program,
-                        world_x_location + x_position,
-                        world_z_location + z_position,
-                        x_span,
-                        z_span,
-                        this
-                );
-                rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
+		glm::vec3 terrain_intersection =
+				this->terrain->findIntersectionPoint(x_position, z_position) *
+				terrain_scale;
 
-                rockB->scale(glm::vec3(x_span, y_span, z_span));
-                // Add rock to rocks array
-                this->rocksB.emplace_back(rockB);
-                this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
-            }
-            else{
-                // Add rock child
-                Rock* rockA = new Rock(
-                        shader_program,
-                        world_x_location + x_position,
-                        world_z_location + z_position,
-                        x_span,
-                        z_span,
-                        this
-                );
-                rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
+		if (terrain_intersection.y < WATER_ELEVATION) {
+			// we don't want to waste time placing rocks underwater
+			continue;
+		}
 
-                rockA->scale(glm::vec3(x_span, y_span, z_span));
-                // Add rock to rocks array
-                this->rocks.emplace_back(rockA);
-                this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
-            }
-        }
+		bool use_rock_b = (int)(ceil(x_position * y_span + world_z_location)) % 2 == 0;
 
+		DrawableEntity* rock;
+		if (use_rock_b) {
+			rock = new RockB(
+					shader_program,
+					world_x_location + x_position,
+					world_z_location + z_position,
+					x_span,
+					z_span,
+					this
+			);
+		} else {
+			rock = new Rock(
+					shader_program,
+					world_x_location + x_position,
+					world_z_location + z_position,
+					x_span,
+					z_span,
+					this
+			);
+		}
 
-
-            //Alien biome
-        else if (abs(world_x_location) % worldBoundries < alienBiomeX  && abs(world_z_location) % worldBoundries < alienBiomeY ) {
-            // Add rock child
-            RockB* rockB = new RockB(
-                    shader_program,
-                    world_x_location + x_position,
-                    world_z_location + z_position,
-                    x_span,
-                    z_span,
-                    this
-            );
-            rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-            rockB->scale(glm::vec3(x_span, y_span, z_span));
-            // Add rock to rocks array
-            this->rocksB.emplace_back(rockB);
-            this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
-
-
-            float x_span = utils::randomFloat(0.02f, 0.05f);
-            float z_span = utils::randomFloat(0.02f, 0.05f);
-            float y_span = utils::randomFloat(0.005f, 0.015f);
-            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
-            // Add rock child
-            Rock* rockA = new Rock(
-                    shader_program,
-                    world_x_location + x_position,
-                    world_z_location + z_position,
-                    x_span,
-                    z_span,
-                    this
-            );
-            rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-            rockA->scale(glm::vec3(x_span, y_span, z_span));
-            // Add rock to rocks array
-            this->rocks.emplace_back(rockA);
-            this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
-        }
-
-
-
-            //Tentacle Biome
-        else if(abs(world_x_location) % worldBoundries < tentacleX && abs(world_z_location) % worldBoundries < tentacleY) {
-                // Add rock child
-                RockB* rockB = new RockB(
-                        shader_program,
-                        world_x_location + x_position,
-                        world_z_location + z_position,
-                        x_span,
-                        z_span,
-                        this
-                );
-                rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-                rockB->scale(glm::vec3(x_span, y_span, z_span));
-                // Add rock to rocks array
-                this->rocksB.emplace_back(rockB);
-                this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
-
-            float x_span = utils::randomFloat(0.02f, 0.05f);
-            float z_span = utils::randomFloat(0.02f, 0.05f);
-            float y_span = utils::randomFloat(0.005f, 0.015f);
-            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
-                // Add rock child
-                Rock* rockA = new Rock(
-                        shader_program,
-                        world_x_location + x_position,
-                        world_z_location + z_position,
-                        x_span,
-                        z_span,
-                        this
-                );
-                rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
-                rockA->scale(glm::vec3(x_span, y_span, z_span));
-                // Add rock to rocks array
-                this->rocks.emplace_back(rockA);
-                this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
-        }
-
-
-
-            //forest biome (A and C) heavyRenderX heavyRenderY
-        else{
-            // Add rock child
-            RockB* rockB = new RockB(
-                    shader_program,
-                    world_x_location + x_position,
-                    world_z_location + z_position,
-                    x_span,
-                    z_span,
-                    this
-            );
-            rockB->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
-            rockB->scale(glm::vec3(x_span, y_span, z_span));
-            // Add rock to rocks array
-            this->rocksB.emplace_back(rockB);
-            this->hitboxes.emplace_back(*rockB, min_hitbox_y, max_hitbox_y);
-
-            float x_span = utils::randomFloat(0.02f, 0.05f);
-            float z_span = utils::randomFloat(0.02f, 0.05f);
-            float y_span = utils::randomFloat(0.005f, 0.015f);
-            float x_position = utils::randomFloat(0.0f, 1.0f - x_span);
-            float z_position = utils::randomFloat(0.0f, 1.0f - z_span);
-
-            // Add rock child
-            Rock* rockA = new Rock(
-                    shader_program,
-                    world_x_location + x_position,
-                    world_z_location + z_position,
-                    x_span,
-                    z_span,
-                    this
-            );
-            rockA->setPosition(glm::vec3(x_position, 0.002f, z_position));
-
-            rockA->scale(glm::vec3(x_span, y_span, z_span));
-            // Add rock to rocks array
-            this->rocks.emplace_back(rockA);
-            this->hitboxes.emplace_back(*rockA, min_hitbox_y, max_hitbox_y);
-            break;
-            }
+		rock->scale(glm::vec3(x_span, y_span, z_span));
+		rock->setPosition(
+				terrain_intersection + (use_rock_b ? rock_b_offset : rock_a_offset)
+		);
+		// Add rock to rocks array
+		if (use_rock_b) {
+			this->rocksB.push_back((RockB*)rock);
+		} else {
+			this->rocks.push_back((Rock*)rock);
+		}
+		this->hitboxes.emplace_back(
+				*rock,
+				base_min_hitbox_y + terrain_intersection.y,
+				base_max_hitbox_y + terrain_intersection.y
+		);
 	}
 
-
-	//enable tree distributor function
-	//TreeDistributor::setEntity(this);
 	// add trees
-	int tree_tries_left = 2;
-	for (int i = 0; i < 5; i++) {
+	int tree_tries_left = max_trees / 2;
+	for (int i = 0; i < max_trees; i++) {
 		static const float scale_factor = 100;
 		float base_span = utils::randomFloat(0.02f, 0.05f);
 		float internal_tree_width = base_span * scale_factor;
-		float x_position = utils::randomFloat(0.0f, 1.0f - base_span);
-		float z_position = utils::randomFloat(0.0f, 1.0f - base_span);
+		float x_position = utils::randomFloat(0.0f + base_span / 2, 1.0f - base_span / 2);
+		float z_position = utils::randomFloat(0.0f + base_span / 2, 1.0f - base_span / 2);
 
-		HitBox2d box(x_position, z_position, x_position + base_span, z_position + base_span);
+		HitBox2d box(
+				world_x_location + x_position - base_span / 2,
+				world_z_location + z_position - base_span / 2,
+				world_x_location + x_position + base_span / 2,
+				world_z_location + z_position + base_span / 2
+		);
 		if (this->collidesWith(box) || player_hitbox.collidesWith(box)) {
 			if (tree_tries_left-- > 0) {
 				// collision! but give it another try
@@ -279,154 +215,136 @@ WorldTile::WorldTile(
 
 		int seed = std::abs((world_x_location + x_position) * (world_z_location + z_position))*scale_factor;
 		seed = seed == 0 ? (world_x_location + x_position + world_z_location + z_position+3 )* 7: seed;
-        // Add tree child
-        Tree *tree;
 
+		float tree_magnitude = 1.0f / (scale_factor * 10);
 
+		// Add tree children
+        std::vector<Tree*> new_trees;
 
-        //general biome
-        if (abs(world_x_location) % worldBoundries < generalBiomeX && abs(world_z_location) % worldBoundries < generalBiomeY) {
+        if (current_biome == GENERAL_BIOME) {
             bool isAlien = false;
-            if (seed % worldBoundries < 2) {
+            if (seed % worldBoundaries < 2) {
                 if (seed % 2 == 0)
-                    tree = new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien);
+                    new_trees.push_back(new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien));
                 else
-                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed);
-            } else if (seed % worldBoundries < 7) {
-                tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
+                    new_trees.push_back(new TreeA_Autumn(shader_program, this, internal_tree_width * 2.5, seed));
+            } else if (seed % worldBoundaries < 7) {
+                new_trees.push_back(new TreeB(shader_program, this, internal_tree_width, seed, isAlien));
             } else {
-                TreeC tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
-                         {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-
-                continue;
+	            TreeCluster::generateCluster(
+			            &new_trees,
+			            this,
+			            seed,
+			            seed % 15,
+			            shader_program,
+			            internal_tree_width,
+			            isAlien,
+			            tree_magnitude,
+			            5
+	            );
             }
-        }
-
-
-
-            //Alien biome
-        else if (abs(world_x_location) % worldBoundries < alienBiomeX  && abs(world_z_location) % worldBoundries < alienBiomeY ) {
+        } else if (current_biome == ALIEN_BIOME) {
             bool isAlien = true;
-            if (seed % worldBoundries < 2) {
-                    tree = new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien);
-            } else if (seed % worldBoundries < 7) {
-                tree = new TreeB(shader_program, this, internal_tree_width, seed, isAlien);
+            if (seed % worldBoundaries < 2) {
+	            new_trees.push_back(new TreeA(shader_program, this, internal_tree_width * 2.5, seed, isAlien));
+            } else if (seed % worldBoundaries < 7) {
+                new_trees.push_back(new TreeB(shader_program, this, internal_tree_width, seed, isAlien));
             } else {
-                TreeC tc(seed % 15, shader_program, this, internal_tree_width, seed, isAlien, trees,
-                         {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-
-                continue;
+	            TreeCluster::generateCluster(
+			            &new_trees,
+			            this,
+			            seed,
+			            seed % 15,
+			            shader_program,
+			            internal_tree_width,
+			            isAlien,
+			            tree_magnitude,
+			            5
+	            );
             }
-        }
-
-
-
-            //Tentacle Biome
-        else if(abs(world_x_location) % worldBoundries < tentacleX && abs(world_z_location) % worldBoundries < tentacleY) {
+        } else if (current_biome == TENTACLE_BIOME) {
             bool isAlien, isTextured;
             if(seed % 3 == 0) {
                 isAlien = false, isTextured = true;
             }
-           else if(seed % 3 == 1)
+            else if(seed % 3 == 1)
                isAlien = true, isTextured = true;
             else
                 isAlien = true, isTextured = false;
 
-            tree =  new Tentacle(shader_program, this, internal_tree_width * 2.5, seed, isAlien, isTextured);
-        }
-
-
-
-            //forest biome (A and C) heavyRenderX heavyRenderY
-        else{
+            new_trees.push_back(new Tentacle(shader_program, this, internal_tree_width * 2.5, seed, isAlien, isTextured));
+        } else /* if (current_biome == FOREST_BIOME) */ {
             bool isAlien = false;
             if (seed % 10 < 7) {
                 if (seed % 2 == 0)
-                    tree = new TreeA(shader_program, this, internal_tree_width * 3, seed, isAlien);
+                    new_trees.push_back(new TreeA(shader_program, this, internal_tree_width * 3, seed, isAlien));
                 else
-                    tree = new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed);
+                    new_trees.push_back(new TreeA_Autumn(shader_program, this, internal_tree_width * 3, seed));
             } else {
-
-                TreeC::setSpacingConstant(10);
-                TreeC tc(0, shader_program, this, internal_tree_width * 1.5, seed, isAlien, trees,
-                         {x_position, 0.0f, z_position}, 1.0f / (scale_factor*10), min_hitbox_y, max_hitbox_y, hitboxes);
-                TreeC::setSpacingConstant(10);
-                continue;
+	            TreeCluster::generateCluster(
+			            &new_trees,
+			            this,
+			            seed,
+			            0,
+			            shader_program,
+			            internal_tree_width * 1.5f,
+			            isAlien,
+			            tree_magnitude,
+			            10
+	            );
             }
         }
 
-		tree->setPosition(glm::vec3(x_position, 0.0f, z_position));
-		tree->scale(1.0f / (scale_factor*10));
-		// Add tree to trees array
-		this->trees.emplace_back(tree);
-		this->hitboxes.emplace_back(*tree, min_hitbox_y, max_hitbox_y);
-
+		for (Tree* tree : new_trees) {
+			tree->scale(tree_magnitude);
+			// use translate instead of setPosition so we can take
+			// into account any prior offsets from tree clustering
+			tree->translate(glm::vec3(x_position, 0.0f, z_position));
+			const glm::vec3& tree_pos = tree->getPosition();
+			glm::vec3 terrain_intersection =
+					this->terrain->findIntersectionPoint(tree_pos.x, tree_pos.z) *
+					terrain_scale;
+			if (terrain_intersection.y < WATER_ELEVATION
+					|| tree_pos.x < 0
+					|| tree_pos.x >= 1
+					|| tree_pos.z < 0
+					|| tree_pos.z >= 1
+			) {
+				// we don't want trees to spawn underwater.
+				// we also can't handle trees that don't sit on the tile
+				// (this might happen for tree cluster items)
+				this->detachChild(tree);
+				delete tree;
+				continue;
+			}
+			tree->setPosition(
+					terrain_intersection -
+					// dip tree into ground proportionally to its height
+					glm::vec3(0.0f, tree->getWorldHeight() / 30.0f, 0.0f)
+			);
+			// Add tree to trees array
+			this->trees.emplace_back(tree);
+			this->hitboxes.emplace_back(
+					*tree,
+					base_min_hitbox_y + terrain_intersection.y,
+					base_max_hitbox_y + terrain_intersection.y
+			);
+		}
 	}
 }
 
 WorldTile::~WorldTile()
 {
+	delete this->terrain;
 	for (Rock* const& rock : this->rocks) {
 		delete rock;
 	}
 	for (Tree* const& tree : this->trees) {
 		delete tree;
 	}
-
     for (RockB* const& rock : this->rocksB) {
-        delete rock;
+	    delete rock;
     }
-}
-
-const std::vector<glm::vec3>& WorldTile::getVertices() const
-{
-	static const std::vector<glm::vec3> vertices = {
-			glm::vec3(0.0f, 0.0f, 0.0f), // bottom-left
-			glm::vec3(1.0f, 0.0f, 0.0f), // bottom-right
-			glm::vec3(1.0f, 0.0f, 1.0f), // top-right
-			glm::vec3(0.0f, 0.0f, 1.0f)  // top-left
-	};
-
-	return vertices;
-}
-
-GLuint WorldTile::getVAO() {
-	static const std::vector<GLuint> elements {
-			// first triangle (ACTUALLY is counterclockwise - negative-Z axis)
-			3, // top-left
-			1, // bottom-right
-			0, // bottom-left
-			// second triangle
-			3, // top-left
-			2, // top-right
-			1  // bottom-right
-	};
-
-	static const std::vector<glm::vec3> normals {
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-	};
-
-	static GLuint vao;
-	static bool vao_init = false;
-
-	if (!vao_init) {
-		// only initialize vao once for all instances
-		vao = this->initVertexArray(
-				this->getVertices(),
-				elements,
-				normals
-		);
-		vao_init = true;
-	}
-
-	return vao;
-}
-
-const int WorldTile::getColorType() {
-	return COLOR_TILE;
 }
 
 // tests for x-z collision between the specified box and any child entities.
@@ -439,4 +357,9 @@ bool WorldTile::collidesWith(const HitBox2d &box) const
 		}
 	}
 	return false;
+}
+
+const PerlinTerrain& WorldTile::getTerrain() const
+{
+	return *this->terrain;
 }

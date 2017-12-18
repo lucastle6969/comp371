@@ -14,6 +14,9 @@
 #include <stdexcept>
 #include <climits>
 
+#include <src/ShaderUniformLocationCache.hpp>
+#include <src/constants.hpp>
+
 #include "Light.h"
 #include "Entity.hpp"
 #include "DrawableEntity.hpp"
@@ -63,42 +66,114 @@ GLuint DrawableEntity::getTextureId()
     return texture_id;
 }
 
-void DrawableEntity::draw(
+// NOTE: this method iterates all vertices each time it is called
+float DrawableEntity::getWorldHeight() const
+{
+	float min = FLT_MAX;
+	float max = -FLT_MAX;
+	glm::vec3 v;
+	const glm::mat4& model_matrix = this->getModelMatrix();
+	for (const glm::vec3& vertex : this->getVertices()) {
+		v = glm::vec3(model_matrix * glm::vec4(vertex, 1.0f));
+		if (v.y < min) {
+			min = v.y;
+		}
+		if (v.y > max) {
+			max = v.y;
+		}
+	}
+	return max - min;
+}
+
+void DrawableEntity::drawSelf(
     const glm::mat4& view_matrix,
     const glm::mat4& projection_matrix,
     const Light& light
 ) {
-	Entity::draw(view_matrix, projection_matrix, light);
-
 	if (this->isHidden()) {
 		return;
 	}
 
-	auto mvp_matrix_loc = (GLuint)glGetUniformLocation(this->shader_program, "mvp_matrix");
-    auto model_loc = (GLuint)glGetUniformLocation(this->shader_program, "model");
-    auto color_type_loc = (GLuint)glGetUniformLocation(this->shader_program, "color_type");
-	auto position_x_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_x");
-	auto position_z_loc = (GLuint)glGetUniformLocation(this->shader_program, "entity_position_z");
-	auto opacity_loc = (GLuint)glGetUniformLocation(this->shader_program, "opacity");
-    auto worldViewPos_loc = (GLuint)glGetUniformLocation(this->shader_program, "worldViewPos");
+	GLuint mvp_matrix_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::mvp_matrix
+	);
+	GLuint model_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::model
+	);
+	GLuint color_type_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::color_type
+	);
+	GLuint position_x_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::position_x
+	);
+	GLuint position_z_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::position_z
+	);
+	GLuint opacity_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::opacity
+	);
+	GLuint worldViewPos_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::worldViewPos
+	);
 
-    auto material_ambient_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.ambient");
-    auto material_diffuse_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.diffuse");
-    auto material_specular_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.specular");
-    auto material_shininess_loc = (GLuint)glGetUniformLocation(this->shader_program, "material.shininess");
+	GLuint material_ambient_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::material_ambient
+	);
+	GLuint material_diffuse_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::material_diffuse
+	);
+	GLuint material_specular_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::material_specular
+	);
+	GLuint material_shininess_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::material_shininess
+	);
 
+	GLuint sun_direction_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::sun_direction
+	);
+	GLuint sun_color_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::sun_color
+	);
+	GLuint point_light_pos_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::point_light_pos
+	);
+	GLuint point_light_color_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::point_light_color
+	);
 
-	auto sun_direction_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.direction");
-	auto sun_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "sunLight.color");
-	auto point_light_pos_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.position");
-	auto point_light_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "pointLight.color");
+	GLuint use_texture_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::use_texture
+	);
 
-	auto use_texture_loc = (GLuint)glGetUniformLocation(this->shader_program, "use_texture");
-
-	auto fog_color_loc = (GLuint)glGetUniformLocation(this->shader_program, "fog_color");
-	auto daytime_value_loc = (GLuint)glGetUniformLocation(this->shader_program, "daytime_value");
-	auto nighttime_value_loc = (GLuint)glGetUniformLocation(this->shader_program, "nighttime_value");
-
+	GLuint fog_color_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::fog_color
+	);
+	GLuint daytime_value_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::daytime_value
+	);
+	GLuint nighttime_value_loc = ShaderUniformLocationCache::getLocation(
+		this->shader_program,
+		SHADER_UNIFORMS::nighttime_value
+	);
 
 	glUseProgram(this->shader_program);
 
@@ -174,6 +249,28 @@ void DrawableEntity::draw(
 	glBindVertexArray(0);
 
 	glUseProgram(0);
+}
+
+void DrawableEntity::drawIfOpaque(
+	const glm::mat4& view_matrix,
+	const glm::mat4& projection_matrix,
+	const Light& light
+) {
+	Entity::drawIfOpaque(view_matrix, projection_matrix, light);
+	if (this->getOpacity() >= 1.0f) {
+		this->drawSelf(view_matrix, projection_matrix, light);
+	}
+}
+
+void DrawableEntity::drawIfTransparent(
+	const glm::mat4& view_matrix,
+	const glm::mat4& projection_matrix,
+	const Light& light
+) {
+	Entity::drawIfTransparent(view_matrix, projection_matrix, light);
+	if (this->getOpacity() < 1.0f) {
+		this->drawSelf(view_matrix, projection_matrix, light);
+	}
 }
 
 GLuint DrawableEntity::initVertexArray(

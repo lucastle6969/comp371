@@ -28,26 +28,26 @@ World::World(
     player(shader_program, this),
     menu(shader_program, "modulus woods\n\nAndre Marques Manata\nBen Wiley\nKai Nicoll-Griffith\nCarlo Gentile\nEmile Aoun", 0, 0, FONT_STYLE_MYTHOS, this),
     axes(shader_program, WORLD_X_MAX, WORLD_X_MAX, WORLD_Z_MAX, this),
-
 	x_center((int)floor(player_x_start)),
 	z_center((int)floor(player_z_start)),
-    player_min_world_y(FLT_MAX),
-    player_max_world_y(-FLT_MAX)
+    player_base_min_world_y(FLT_MAX),
+    player_base_max_world_y(-FLT_MAX),
+    handling_player_knockback(false)
 {
     // hide the axes by default
 	this->axes.hide();
 
 	this->player.scale(0.0005f);
-	this->player.setPosition(glm::vec3(x_center, 0.01f, z_center));
+	this->player.setPosition(glm::vec3(player_x_start, 0.01f, player_z_start));
 
 	// assume player's floating position from ground will remain constant and use
 	// the y range of the model to create specialized entity hit boxes for collision
 	// detection
-    glm::mat4 player_model_matrix = player.getModelMatrix();
+	glm::mat4 player_model_matrix = player.getModelMatrix();
 	for (const glm::vec3& vertex : this->player.getVertices()) {
         float y = (player_model_matrix * glm::vec4(vertex, 1.0f)).y;
-        this->player_min_world_y = std::min(this->player_min_world_y, y);
-        this->player_max_world_y = std::max(this->player_max_world_y, y);
+        this->player_base_min_world_y = std::min(this->player_base_min_world_y, y);
+        this->player_base_max_world_y = std::max(this->player_base_max_world_y, y);
 	}
 	HitBox2d player_starting_hitbox(this->player);
 	// populate tiles
@@ -59,13 +59,20 @@ World::World(
 				shader_program,
 				x,
 				z,
-				this->player_min_world_y,
-				this->player_max_world_y,
+				this->player_base_min_world_y,
+				this->player_base_max_world_y,
 				player_starting_hitbox,
 				this
 		));
 	}
 
+	// place player relative to terrain
+	std::cout << "player pos orig " << this->player.getPosition().x << ", " << this->player.getPosition().y << ", " << this->player.getPosition().z << std::endl;
+	this->player.setPosition(
+			this->getSurfacePoint(player_x_start, player_z_start) +
+					glm::vec3(0.0f, 0.01f, 0.0f)
+	);
+	std::cout << "player pos new " << this->player.getPosition().x << ", " << this->player.getPosition().y << ", " << this->player.getPosition().z << std::endl;
 }
 
 World::~World()
@@ -82,38 +89,6 @@ const Player* World::getPlayer()
 
 Text* World::getMenu() {
 	return &this->menu;
-}
-
-bool World::pollWorld(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units) {
-    if(player.deadTime != player.deadMax){
-        if(player.fore){
-            player.moveBack(view_vec, up_vec, units);
-        }
-        else if(player.back){
-            player.moveForward(view_vec, up_vec, units);
-        }
-        else if(player.left){
-            player.moveRight(view_vec, up_vec, units);
-        }
-        else{
-            player.moveLeft(view_vec, up_vec, units);
-        }
-//        if(player.fore){
-//            player.moveForward(view_vec, up_vec, -units / (float)player.deadMax);
-//        }
-//        else if(player.back){
-//            player.moveBack(view_vec, up_vec, -units/ (float)player.deadMax);
-//        }
-//        else if(player.left){
-//            player.moveLeft(view_vec, up_vec, -units/ (float)player.deadMax);
-//        }
-//        else{
-//            player.moveRight(view_vec, up_vec, -units/ (float)player.deadMax);
-//        }
-        player.deadTime++;
-        return true;
-    }
-    return false;
 }
 
 void World::toggleAxes()
@@ -178,8 +153,8 @@ void World::placeWorldTile(const int &x, const int &z, const HitBox2d& player_hi
 			this->shader_program,
 			x,
 			z,
-			this->player_min_world_y,
-			this->player_max_world_y,
+			this->player_base_min_world_y,
+			this->player_base_max_world_y,
 			player_hitbox,
 			this
 	);
@@ -220,146 +195,27 @@ void World::setPlayerOpacity(const float& opacity)
 	this->player.setOpacity(opacity);
 }
 
-void World::movePlayerForward(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
+void World::movePlayer(const glm::vec3& move_vec, const float& units)
 {
-    if(player.deadTime == player.deadMax) {
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveForward(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox)) {
-            player.deadTime = 0;
-            player.fore = true;
-            this->player.setPosition(old_player_position);
-//            this->player.setPosition(player.oldPosition);
-        } else {
-            this->checkPosition();
-        }
-        player.oldPosition = old_player_position;
-    }
-    else{  }
-}
-
-void World::movePlayerBack(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
-{
-
-    if(player.deadTime == player.deadMax){
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveBack(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox) ) {
-            player.deadTime = 0;
-            player.back = true;
-            this->player.setPosition(old_player_position);
-//            this->player.setPosition(player.oldPosition);
-        } else {
-            this->checkPosition();
-        }
-        player.oldPosition = old_player_position;
-    }
-
-}
-
-void World::movePlayerLeft(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
-{
-    if(player.deadTime == player.deadMax){
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveLeft(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox)) {
-           player.deadTime = 0;
-            player.right = true;
-            this->player.setPosition(old_player_position);
-//            this->player.setPosition(player.oldPosition);
-        } else {
-            this->checkPosition();
-        }
-        player.oldPosition = old_player_position;
-    }
-}
-
-void World::movePlayerRight(const glm::vec3& view_vec, const glm::vec3& up_vec, const float& units)
-{
-    if(player.deadTime == player.deadMax) {
-        glm::vec3 old_player_position = this->player.getPosition();
-        HitBox2d player_hitbox(this->player);
-        this->player.moveRight(view_vec, up_vec, units);
-        if (this->collidesWith(player_hitbox)) {
-//            this->player.setPosition(player.oldPosition);
-            this->player.setPosition(old_player_position);
-            player.deadTime = 0;
-            player.left = true;
-        } else {
-            this->checkPosition();
-        }
-        //player.oldPosition = old_player_position;
-    }
-}
-
-void World::movePlayerForwardLeft(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-
 	glm::vec3 old_player_position = this->player.getPosition();
 	HitBox2d player_hitbox(this->player);
-	this->player.moveForwardLeft(view_vec, up_vec, units);
+	this->player.move(move_vec, units);
 	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
-    }
-    player.oldPosition = old_player_position;
-
-}
-
-void World::movePlayerForwardRight(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveForwardRight(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
-    }
-    player.oldPosition = old_player_position;
-}
-
-void World::movePlayerBackLeft(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveBackLeft(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
-    }
-    player.oldPosition = old_player_position;
-}
-
-void World::movePlayerBackRight(
-	const glm::vec3& view_vec,
-	const glm::vec3& up_vec,
-	const float& units
-) {
-	glm::vec3 old_player_position = this->player.getPosition();
-	HitBox2d player_hitbox(this->player);
-	this->player.moveBackRight(view_vec, up_vec, units);
-	if (this->collidesWith(player_hitbox)) {
-        this->player.setPosition(player.oldPosition);
-    } else {
-        this->checkPosition();
-    }
-    player.oldPosition = old_player_position;
+		this->player.setPosition(old_player_position);
+		this->handling_player_knockback = true;
+		glm::vec3 knockback_target =
+				old_player_position - 4.0f * units * glm::normalize(move_vec);
+		this->player_knockback_target_2d = glm::vec2(knockback_target.x, knockback_target.z);
+	} else {
+		this->checkPosition();
+		glm::vec3 pos = this->player.getPosition();
+		this->player.setPosition(
+				this->getSurfacePoint(
+						pos.x,
+						pos.z
+				) + glm::vec3(0.0f, 0.01f, 0.0f)
+		);
+	}
 }
 
 bool World::collidesWith(const HitBox2d& box)
@@ -370,4 +226,62 @@ bool World::collidesWith(const HitBox2d& box)
 		}
 	}
 	return false;
+}
+
+glm::vec3 World::getSurfacePoint(const float &x, const float &z)
+{
+	WorldTile* center = this->tiles[
+			World::locationToTileIndex(this->x_center, this->z_center)
+	];
+	const PerlinTerrain& terrain = center->getTerrain();
+	glm::vec4 world_terrain_intersection_point =
+			terrain.getModelMatrix()
+			* glm::vec4(terrain.findIntersectionPoint(
+					x - this->x_center,
+					z - this->z_center
+			), 1.0f);
+	// return the water surface point if the terrain is below water
+	return glm::vec3(
+			world_terrain_intersection_point.x,
+			std::max(world_terrain_intersection_point.y, WATER_ELEVATION),
+			world_terrain_intersection_point.z
+	);
+}
+
+bool World::handlePlayerKnockback()
+{
+	if (!this->handling_player_knockback) {
+		return false;
+	}
+	glm::vec3 player_position = this->player.getPosition();
+
+	// diminish knockback rate over time to simulate friction
+	glm::vec2 knockback_vec_2d = (
+			this->player_knockback_target_2d
+			- glm::vec2(player_position.x, player_position.z)
+	) / 3.0f;
+
+	// knock back player
+	this->player.translate(glm::vec3(knockback_vec_2d[0], 0.0f, knockback_vec_2d[1]));
+
+	// check if we're close enough to the target to stop knocking back
+	glm::vec3 player_new_position = this->player.getPosition();
+	float distance_left = glm::length(
+			this->player_knockback_target_2d
+			- glm::vec2(player_new_position.x, player_new_position.z)
+	);
+	if (distance_left < 0.001f) {
+		// close enough
+		this->handling_player_knockback = false;
+	}
+
+	// adjust player y to sit on terrain
+	this->player.setPosition(
+			this->getSurfacePoint(
+					player_new_position.x,
+					player_new_position.z
+			) + glm::vec3(0.0f, 0.01f, 0.0f)
+	);
+
+	return true;
 }

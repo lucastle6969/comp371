@@ -10,161 +10,131 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <src/vendor/stb_image.h>
 
-static GLuint loadImage(std::string path, GLuint rock_texture);
+#include "constants.hpp"
+#include "loadTexture.hpp"
+
+GLuint loadTexture(const std::string& path)
+{
+	return loadTexture(
+			path,
+			DEFAULT_MINIFICATION_FILTER,
+			DEFAULT_MAGNIFICATION_FILTER,
+			DEFAULT_TEXTURE_WRAP,
+			DEFAULT_TEXTURE_WRAP,
+			DEFAULT_STB_VERT_ALIGN_FLIP
+	);
+}
+
+GLuint loadTexture(const std::string& path, const bool& vert_align_flip)
+{
+	return loadTexture(
+			path,
+			DEFAULT_MINIFICATION_FILTER,
+			DEFAULT_MAGNIFICATION_FILTER,
+			DEFAULT_TEXTURE_WRAP,
+			DEFAULT_TEXTURE_WRAP,
+			vert_align_flip
+	);
+}
 
 GLuint loadTexture(
 	const std::string& path,
 	const GLint& min_filter,
 	const GLint& mag_filter
 ) {
-	GLuint rock_texture;
-	glGenTextures(1, &rock_texture);
-	glBindTexture(GL_TEXTURE_2D, rock_texture);
+	return loadTexture(
+			path,
+			min_filter,
+			mag_filter,
+			DEFAULT_TEXTURE_WRAP,
+			DEFAULT_TEXTURE_WRAP,
+			DEFAULT_STB_VERT_ALIGN_FLIP
+	);
+}
+
+GLuint loadTexture(
+	const std::string& path,
+	const GLint& min_filter,
+	const GLint& mag_filter,
+	const bool& vert_align_flip
+) {
+	return loadTexture(
+			path,
+			min_filter,
+			mag_filter,
+			DEFAULT_TEXTURE_WRAP,
+			DEFAULT_TEXTURE_WRAP,
+			vert_align_flip
+	);
+}
+
+GLuint loadTexture(
+	const std::string& path,
+	const GLint& min_filter,
+	const GLint& mag_filter,
+	const GLint& texture_wrap_s,
+	const GLint& texture_wrap_t
+) {
+	return loadTexture(
+			path,
+			min_filter,
+			mag_filter,
+			texture_wrap_s,
+			texture_wrap_t,
+			DEFAULT_STB_VERT_ALIGN_FLIP
+	);
+}
+
+GLuint loadTexture(
+	const std::string& path,
+	const GLint& min_filter,
+	const GLint& mag_filter,
+	const GLint& texture_wrap_s,
+	const GLint& texture_wrap_t,
+	const bool& vert_align_flip
+) {
+	GLuint texture_id;
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
 
 	//set wrapping params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	// GL_MIRRORED_REPEAT is default?
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_wrap_s);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_wrap_t);
 
 	//set texture filtering params
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
 
 	//load image, create texture and generate mipmaps
-	int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
+	int texture_width, texture_height, texture_channels;
 
-	unsigned char* rock_tex_data = stbi_load(
+	stbi_set_flip_vertically_on_load(vert_align_flip);
+	unsigned char* texture_data = stbi_load(
 			path.c_str(),
-			&rock_tex_width,
-			&rock_tex_height,
-			&rock_tex_nrChannels,
-			0
+			&texture_width,
+			&texture_height,
+			&texture_channels,
+			4
 	);
-	if (rock_tex_data) {
-		glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RGB,
-				rock_tex_width,
-				rock_tex_height,
-				0,
-				GL_RGB,
-				GL_UNSIGNED_BYTE,
-				rock_tex_data
-		);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	} else {
-		throw std::runtime_error("Failed to load image \'" + path + "\': ");
-	}
-	stbi_image_free(rock_tex_data);
-
-	return loadImage(path, rock_texture);
-}
-
-
-
-GLuint loadTexture(
-		const std::string& path,
-		const GLint& min_filter,
-		const GLint& mag_filter,
-		const GLint& paramS,
-		const GLint& paramT
-) {
-	GLuint rock_texture;
-	glGenTextures(1, &rock_texture);
-	glBindTexture(GL_TEXTURE_2D, rock_texture);
-
-	//set wrapping params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, paramS);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, paramT);
-
-	//set texture filtering params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
-
-	return loadImage(path, rock_texture);
-}
-
-
-//reduction to the size of load texture
-static GLuint loadImage(std::string path, GLuint rock_texture){
-	//load image, create texture and generate mipmaps
-	int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
-
-	unsigned char* rock_tex_data = stbi_load(
-			path.c_str(),
-			&rock_tex_width,
-			&rock_tex_height,
-			&rock_tex_nrChannels,
-			0
-	);
-	if (rock_tex_data) {
-		glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RGB,
-				rock_tex_width,
-				rock_tex_height,
-				0,
-				GL_RGB,
-				GL_UNSIGNED_BYTE,
-				rock_tex_data
-		);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	} else {
-		throw std::runtime_error("Failed to load image \'" + path + "\': ");
-	}
-	stbi_image_free(rock_tex_data);
-
-	return rock_texture;
-}
-
-GLuint loadTexture(
-        const std::string& path,
-        const GLint& min_filter,
-        const GLint& mag_filter,
-        bool vert_align_flip
-) {
-    GLuint rock_texture;
-    glGenTextures(1, &rock_texture);
-    glBindTexture(GL_TEXTURE_2D, rock_texture);
-
-    //set wrapping params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-    //set texture filtering params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
-
-    //load image, create texture and generate mipmaps
-    int rock_tex_width, rock_tex_height, rock_tex_nrChannels;
-
-    stbi_set_flip_vertically_on_load(vert_align_flip);
-    unsigned char* rock_tex_data = stbi_load(
-            path.c_str(),
-            &rock_tex_width,
-            &rock_tex_height,
-            &rock_tex_nrChannels,
-            0
-    );
 	stbi_set_flip_vertically_on_load(false);
-	if (rock_tex_data) {
-        glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RGBA,
-                rock_tex_width,
-                rock_tex_height,
-                0,
-                GL_RGBA,
-                GL_UNSIGNED_BYTE,
-                rock_tex_data
-        );
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        throw std::runtime_error("Failed to load image \'" + path + "\': ");
-    }
-    stbi_image_free(rock_tex_data);
+	if (texture_data) {
+		glTexImage2D(
+				GL_TEXTURE_2D,
+				0,
+				GL_RGBA,
+				texture_width,
+				texture_height,
+				0,
+				GL_RGBA,
+				GL_UNSIGNED_BYTE,
+				texture_data
+		);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	} else {
+		throw std::runtime_error("Failed to load image \'" + path + "\': ");
+	}
+	stbi_image_free(texture_data);
 
-    return rock_texture;
+	return texture_id;
 }

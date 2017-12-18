@@ -10,7 +10,9 @@
 
 #include <string>
 
-static GLuint loadImage(std::string path, GLuint rock_texture);
+GLuint loadTexture(const std::string& path);
+
+GLuint loadTexture(const std::string& path, const bool& vert_align_flip);
 
 GLuint loadTexture(
 	const std::string& path,
@@ -19,18 +21,27 @@ GLuint loadTexture(
 );
 
 GLuint loadTexture(
-		const std::string& path,
-		const GLint& min_filter,
-		const GLint& mag_filter,
-		const GLint& paramS,
-		const GLint& paramT
+	const std::string& path,
+	const GLint& min_filter,
+	const GLint& mag_filter,
+	const bool& vert_align_flip
 );
 
 GLuint loadTexture(
-        const std::string& path,
-        const GLint& min_filter,
-        const GLint& mag_filter,
-        const bool vert_align_flip
+	const std::string& path,
+	const GLint& min_filter,
+	const GLint& mag_filter,
+	const GLint& texture_wrap_s,
+	const GLint& texture_wrap_t
+);
+
+GLuint loadTexture(
+	const std::string& path,
+	const GLint& min_filter,
+	const GLint& mag_filter,
+	const GLint& texture_wrap_s,
+	const GLint& texture_wrap_t,
+	const bool& vert_align_flip
 );
 
 #endif //PROCEDURALWORLD_LOADTEXTURE_HPP

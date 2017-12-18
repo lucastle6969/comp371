@@ -221,11 +221,13 @@ void TreeClusterItem::leafBranch(const float& trunkDiameter, const float& seed, 
     lcC.buildAllComponenets(trunkDiameter, widthCutoff,  seed, lineHeight);
 }
 void TreeClusterItem::initiateMove(AttatchmentGroupings* ag){
-     int start = ag->start + 1;
-    int max = ag->end + 1;
+    static const float r = glm::radians(0.0f);
+    const int start = ag->start + 1;
+    const int max = ag->end + 1;
+    const float angleX = glm::radians((float)ag->angleX);
+    const float angleZ = glm::radians((float)ag->angleZ);
     for (int k = start; k < max; k++) {
-        combinedVertices.at(k)  = makeRotations(glm::radians((float)ag->angleX), glm::radians(0.0f),
-                                                 glm::radians((float)ag->angleZ), combinedVertices.at(k));
+        makeRotations(angleX, r, angleZ, &combinedVertices[k]);
     }
     moveSegments(0, ag);
     return;
@@ -248,23 +250,13 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             moveFrom = (ag->ag[m]->start + 1) ;
         }
 
-        if (ag->ag[m]->type == 'B') {
-            const int start = ag->ag[m]->start + 1;
-            const  int max = ag->ag[m]->end + 1;
-            for (int k = start; k < max; k++) {
-                combinedVertices.at(k) = makeRotations(glm::radians(
-                        (float)ag->ag[m]->angleX), -glm::radians(0.0f), glm::radians((float)ag->ag[m]->angleZ),
-                                                        combinedVertices.at(k));
-            }
-        }
-        else {
-            const int start = ag->ag[m]->start + 1;
-            const int max = ag->ag[m]->end + 1;
-            for (int k = start; k < max; k++) {
-                combinedVertices.at(k) = makeRotations(glm::radians((float)ag->ag[m]->angleX), -glm::radians(0.0f),
-                                                       glm::radians((float)ag->ag[m]->angleZ),
-                                                        combinedVertices.at(k));
-            }
+        static const float r = -glm::radians(0.0f);
+        const int start = ag->ag[m]->start + 1;
+        const int max = ag->ag[m]->end + 1;
+        const float angleX = glm::radians((float)ag->ag[m]->angleX);
+        const float angleZ = glm::radians((float)ag->ag[m]->angleZ);
+        for (int k = start; k < max; k++) {
+            makeRotations(angleX, r, angleZ, &combinedVertices[k]);
         }
 
         //translate components onto branch(destination - position)
@@ -274,20 +266,10 @@ void TreeClusterItem::moveSegments(int rotationPoint, AttatchmentGroupings* ag){
             boost = boostSegment(ag,ag->ag[m], &combinedVertices);
         }
 
-        if (ag->ag[m]->type == 'B') {
-            int start = ag->ag[m]->start + 1;
-            int max = ag->ag[m]->end + 1;
-            for (int k = start; k < max; k++) {
-                combinedVertices.at(k) += translation + boost;
-            }
+        for (int k = start; k < max; k++) {
+            combinedVertices.at(k) += translation + boost;
         }
-        else {
-            int start = ag->ag[m]->start + 1;
-            int max = ag->ag[m]->end + 1;
-            for (int k = start; k < max; k++) {
-                combinedVertices.at(k) += translation + boost;
-            }
-        }
+
         connectSegments(ag, m);
         moveSegments(0, ag->ag[m]);
     }
@@ -340,7 +322,7 @@ void TreeClusterItem::connectSegments(AttatchmentGroupings* ag, const int& m){
 void TreeClusterItem::bufferObject(const GLuint& shader_program) {
     if(isAlien)  this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals, &vbo, &ebo, &nbo);
     else         this->vao = initVertexArray( combinedVertices, combinedIndices, combinedNormals,
-                                              combinedUV, &vbo, &ebo,  &uvbo);
+                                              combinedUV, &vbo, &ebo, &nbo, &uvbo);
 }
 
 void TreeClusterItem::setLocationFromCenter(const float& circleAngle, const float& distanceFromCenter){

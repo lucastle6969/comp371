@@ -8,11 +8,15 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <map>
+
+#include "constants.hpp"
+#include "ShaderUniformLocationCache.hpp"
 
 // Build and compile our shader program
 GLuint prepareShaderProgram(const std::string& vertex_shader_path,
                             const std::string& fragment_shader_path,
-                            bool* ok)
+                            bool* const& ok)
 {
 	*ok = true;
 
@@ -94,6 +98,88 @@ GLuint prepareShaderProgram(const std::string& vertex_shader_path,
 	// free up memory
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+	if (*ok) {
+		// add uniform variable locations to cache
+		ShaderUniformLocationCache::uniforms_locations[shaderProgram] = {
+			{
+				SHADER_UNIFORMS::mvp_matrix,
+				(GLuint)glGetUniformLocation(shaderProgram, "mvp_matrix")
+			},
+			{
+				SHADER_UNIFORMS::model,
+				(GLuint)glGetUniformLocation(shaderProgram, "model")
+			},
+			{
+				SHADER_UNIFORMS::color_type,
+				(GLuint)glGetUniformLocation(shaderProgram, "color_type")
+			},
+			{
+				SHADER_UNIFORMS::position_x,
+				(GLuint)glGetUniformLocation(shaderProgram, "entity_position_x")
+			},
+			{
+				SHADER_UNIFORMS::position_z,
+				(GLuint)glGetUniformLocation(shaderProgram, "entity_position_z")
+			},
+			{
+				SHADER_UNIFORMS::opacity,
+				(GLuint)glGetUniformLocation(shaderProgram, "opacity")
+			},
+			{
+				SHADER_UNIFORMS::worldViewPos,
+				(GLuint)glGetUniformLocation(shaderProgram, "worldViewPos")
+			},
+			{
+				SHADER_UNIFORMS::material_ambient,
+				(GLuint)glGetUniformLocation(shaderProgram, "material.ambient")
+			},
+			{
+				SHADER_UNIFORMS::material_diffuse,
+				(GLuint)glGetUniformLocation(shaderProgram, "material.diffuse")
+			},
+			{
+				SHADER_UNIFORMS::material_specular,
+				(GLuint)glGetUniformLocation(shaderProgram, "material.specular")
+			},
+			{
+				SHADER_UNIFORMS::material_shininess,
+				(GLuint)glGetUniformLocation(shaderProgram, "material.shininess")
+			},
+			{
+				SHADER_UNIFORMS::sun_direction,
+				(GLuint)glGetUniformLocation(shaderProgram, "sunLight.direction")
+			},
+			{
+				SHADER_UNIFORMS::sun_color,
+				(GLuint)glGetUniformLocation(shaderProgram, "sunLight.color")
+			},
+			{
+				SHADER_UNIFORMS::point_light_pos,
+				(GLuint)glGetUniformLocation(shaderProgram, "pointLight.position")
+			},
+			{
+				SHADER_UNIFORMS::point_light_color,
+				(GLuint)glGetUniformLocation(shaderProgram, "pointLight.color")
+			},
+			{
+				SHADER_UNIFORMS::use_texture,
+				(GLuint)glGetUniformLocation(shaderProgram, "use_texture")
+			},
+			{
+				SHADER_UNIFORMS::fog_color,
+				(GLuint)glGetUniformLocation(shaderProgram, "fog_color")
+			},
+			{
+				SHADER_UNIFORMS::daytime_value,
+				(GLuint)glGetUniformLocation(shaderProgram, "daytime_value")
+			},
+			{
+				SHADER_UNIFORMS::nighttime_value,
+				(GLuint)glGetUniformLocation(shaderProgram, "nighttime_value")
+			}
+		};
+	}
 
 	return shaderProgram;
 }

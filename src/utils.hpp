@@ -8,6 +8,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <cstdlib>
+#include <cstdint>
+#include <iostream>
+
+#include <src/vendor/PerlinNoise.hpp>
 
 namespace utils {
 	// https://stackoverflow.com/a/30099727
@@ -34,6 +38,21 @@ namespace utils {
 	inline glm::vec3 getScaleVector(const glm::mat4 &scale_matrix) {
 		const float *t = glm::value_ptr(scale_matrix);
 		return glm::vec3(t[0], t[5], t[10]);
+	}
+
+	inline float getPerlinNoise(
+		const double& x,
+		const double& y,
+		const double scale = 1.0,      // larger scale spreads noise across wider area
+		const std::int32_t octaves = 3 // more octaves = rougher terrain
+	) {
+		static siv::PerlinNoise perlin(2017);
+		return (float)perlin.octaveNoise(x / scale, y / scale, octaves);
+	}
+
+	inline void printVec(const glm::vec3& vec)
+	{
+		std::cout << "[" << vec.x << ", " << vec.y << ", " << vec.z << "]" << std::endl;
 	}
 }
 
