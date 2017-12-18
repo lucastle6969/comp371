@@ -54,6 +54,8 @@ add_executable(proceduralworld
     src/glsetup.cpp
     src/shaderprogram.hpp
     src/shaderprogram.cpp
+    src/ShaderUniformLocationCache.hpp
+    src/ShaderUniformLocationCache.cpp
     src/objloader.hpp
     src/objloader.cpp
     src/loadTexture.hpp

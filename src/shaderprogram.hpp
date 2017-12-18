@@ -13,7 +13,7 @@
 GLuint prepareShaderProgram(
 	const std::string& vertex_shader_path,
 	const std::string& fragment_shader_path,
-	bool* ok
+	bool* const& ok
 );
 
 #endif //PACMAN3D_SHADER_PROGRAM_H

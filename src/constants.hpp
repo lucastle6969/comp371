@@ -50,4 +50,26 @@ static const GLint DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 
 static const bool DEFAULT_STB_VERT_ALIGN_FLIP = false;
 
+namespace SHADER_UNIFORMS {
+	static const int mvp_matrix = 0;
+	static const int model = 1;
+	static const int color_type = 2;
+	static const int position_x = 3;
+	static const int position_z = 4;
+	static const int opacity = 5;
+	static const int worldViewPos = 6;
+	static const int material_ambient = 7;
+	static const int material_diffuse = 8;
+	static const int material_specular = 9;
+	static const int material_shininess = 10;
+	static const int sun_direction = 11;
+	static const int sun_color = 12;
+	static const int point_light_pos = 13;
+	static const int point_light_color = 14;
+	static const int use_texture = 15;
+	static const int fog_color = 16;
+	static const int daytime_value = 17;
+	static const int nighttime_value = 18;
+}
+
 #endif // PROCEDURALWORLD_CONSTANTS_H
