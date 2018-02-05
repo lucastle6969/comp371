@@ -7,6 +7,7 @@
 #else
 #include <GL/glew.h> // include GL Extension Wrangler
 #endif
+#include <glm/glm.hpp>
 
 #include <string>
 
@@ -37,6 +38,8 @@ static const int WORLD_Y_MAX = 10;
 static const int WORLD_Z_MAX = 10;
 
 static const float PLAYER_MOVEMENT_SPEED = 0.2f;
+
+static const float MAX_PLAYER_ROTATION_PER_SECOND_RADIANS = glm::radians(180.0f);
 
 static const float WATER_ELEVATION = -0.04f;
 

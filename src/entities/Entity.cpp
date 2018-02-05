@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <vector>
 #include <algorithm>
 
@@ -94,10 +95,34 @@ void Entity::translate(const glm::vec3& translation_vec) {
             this->translation_matrix, translation_vec);
 }
 
-void Entity::move(const glm::vec3& move_vec, const float& units)
-{
-	this->translate(units * glm::normalize(move_vec));
-	this->orient(move_vec);
+glm::vec3 Entity::move(
+	const glm::vec3& move_vec,
+	const float& units,
+	const float& max_rotation_angle
+) {
+	// the specification of a greater-than-zero max_rotation_angle allows us
+	// to say which direction we'd like to move eventually while changing
+	// direction gradually
+	glm::vec3 real_move_vec = move_vec;
+	if (max_rotation_angle > 0.0f) {
+		const glm::vec3 current_face_vector = glm::vec3(
+			this->translation_matrix *
+			glm::vec4(this->getDefaultFaceVector(), 1.0f)
+		);
+		std::cout << "x: " << current_face_vector.x << " y: " << current_face_vector.y << " z: " << current_face_vector.z << "\n";
+		const float target_rotation_angle = (float)acos(glm::dot(
+			glm::normalize(current_face_vector),
+			glm::normalize(move_vec)
+		));
+		if (target_rotation_angle > max_rotation_angle) {
+			const glm::vec3& axis = glm::cross(current_face_vector, move_vec);
+			real_move_vec = glm::rotate(current_face_vector, max_rotation_angle, axis);
+		}
+	}
+	this->translate(units * glm::normalize(real_move_vec));
+	this->orient(real_move_vec);
+
+	return real_move_vec;
 }
 
 void Entity::setPosition(const glm::vec3& position)

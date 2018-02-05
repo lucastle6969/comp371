@@ -159,7 +159,11 @@ void pollContinuousControls(GLFWwindow* window) {
 				move_vec = -left_vec;
 			}
 
-			world->movePlayer(move_vec, PLAYER_MOVEMENT_SPEED * delta_time);
+			world->movePlayer(
+				move_vec,
+				PLAYER_MOVEMENT_SPEED * delta_time,
+				MAX_PLAYER_ROTATION_PER_SECOND_RADIANS * delta_time
+			);
 		}
 	}
 }
