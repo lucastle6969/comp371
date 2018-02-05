@@ -66,7 +66,11 @@ public:
     Text* getMenu();
 	void toggleAxes();
 	void setPlayerOpacity(const float& opacity);
-	void movePlayer(const glm::vec3& move_vec, const float& units = 1.0f);
+	void movePlayer(
+		const glm::vec3& move_vec,
+		const float& units = 1.0f,
+		const float& max_rotation_angle = 0.0f
+	);
 	bool handlePlayerKnockback();
 };
 

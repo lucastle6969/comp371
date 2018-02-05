@@ -46,7 +46,11 @@ public:
     void scale(const glm::vec3& scale_vector);
     void rotate(const float& angle, const glm::vec3& axis);
     void resetRotation();
-	void move(const glm::vec3& move_vec, const float& units = 1.0f);
+	glm::vec3 move(
+		const glm::vec3& move_vec,
+		const float& units = 1.0f,
+		const float& max_rotation_angle = 0.0f
+	);
     void translate(const glm::vec3& translation_vec);
 	void setPosition(const glm::vec3& position);
 	void setOpacity(const float& opacity);

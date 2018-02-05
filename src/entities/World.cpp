@@ -195,16 +195,19 @@ void World::setPlayerOpacity(const float& opacity)
 	this->player.setOpacity(opacity);
 }
 
-void World::movePlayer(const glm::vec3& move_vec, const float& units)
-{
+void World::movePlayer(
+	const glm::vec3& move_vec,
+	const float& units,
+	const float& max_rotation_angle
+) {
 	glm::vec3 old_player_position = this->player.getPosition();
 	HitBox2d player_hitbox(this->player);
-	this->player.move(move_vec, units);
+	const glm::vec3 real_move_vec = this->player.move(move_vec, units, max_rotation_angle);
 	if (this->collidesWith(player_hitbox)) {
 		this->player.setPosition(old_player_position);
 		this->handling_player_knockback = true;
 		glm::vec3 knockback_target =
-				old_player_position - 4.0f * units * glm::normalize(move_vec);
+				old_player_position - 4.0f * units * glm::normalize(real_move_vec);
 		this->player_knockback_target_2d = glm::vec2(knockback_target.x, knockback_target.z);
 	} else {
 		this->checkPosition();
